@@ -138,125 +138,6 @@ export default function MallorcaClient({ properties }: MallorcaClientProps) {
         </motion.div>
       </section>
 
-      {/* ========== PROPERTIES SHOWCASE ========== */}
-      <section id="villas" className="bg-cream-50 pt-32 pb-28 scroll-mt-28">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-20"
-          >
-            <p className="text-gold-600 text-sm font-semibold tracking-[0.3em] uppercase mb-5">
-              Our Collection
-            </p>
-            <h2 className="font-merriweather text-4xl md:text-5xl lg:text-6xl text-charcoal-900 mb-6">
-              Handpicked Luxury Villas
-            </h2>
-            <p className="text-charcoal-500 text-xl max-w-3xl mx-auto">
-              Each property personally vetted to ensure it meets our exacting standards. 
-              These aren't just houses—they're experiences waiting to unfold.
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-            {properties.map((property, index) => (
-              <motion.div
-                key={property.id}
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.15 }}
-              >
-                <Link href={`/properties/${property.slug}`} className="group block">
-                  <div className="relative aspect-[4/3] rounded-2xl overflow-hidden mb-6 shadow-xl">
-                    <img
-                      src={property.featured_image || ''}
-                      alt={property.name}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                    
-                    {property.is_featured && (
-                      <div className="absolute top-5 left-5 bg-gold-500 text-white px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-2 shadow-lg">
-                        <Star className="w-4 h-4 fill-white" />
-                        Featured
-                      </div>
-                    )}
-
-                    <div className="absolute top-5 right-5 bg-white/95 backdrop-blur-sm text-charcoal-900 px-4 py-2 rounded-full text-sm font-semibold shadow-lg">
-                      {property.house_type}
-                    </div>
-
-                    {/* Quick stats on hover */}
-                    <div className="absolute bottom-5 left-5 right-5 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-4 group-hover:translate-y-0">
-                      <div className="bg-white/95 backdrop-blur-sm rounded-xl px-5 py-4 flex items-center justify-between">
-                        <div className="flex items-center gap-5 text-charcoal-700">
-                          <span className="flex items-center gap-2">
-                            <Bed className="w-5 h-5" /> {property.bedrooms}
-                          </span>
-                          <span className="flex items-center gap-2">
-                            <Bath className="w-5 h-5" /> {property.bathrooms}
-                          </span>
-                          <span className="flex items-center gap-2">
-                            <Users className="w-5 h-5" /> {property.max_guests}
-                          </span>
-                        </div>
-                        <ArrowRight className="w-5 h-5 text-gold-500" />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-2 text-charcoal-500 text-sm mb-3">
-                    <MapPin className="w-4 h-4 text-gold-500" />
-                    <span>{property.city}, Mallorca</span>
-                </div>
-
-                  <h3 className="font-merriweather text-2xl text-charcoal-900 mb-3 group-hover:text-gold-600 transition-colors">
-                    {property.name}
-                </h3>
-
-                  <p className="text-charcoal-500 leading-relaxed">
-                    {property.short_description}
-                </p>
-                </Link>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ========== THE EMOTIONAL HOOK ========== */}
-      <section className="py-32 bg-charcoal-900 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-30">
-          <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-gold-500 rounded-full blur-[200px]" />
-          <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-gold-600 rounded-full blur-[150px]" />
-        </div>
-        
-        <div className="max-w-5xl mx-auto px-6 lg:px-8 text-center relative">
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 1 }}
-          >
-            <Sparkles className="w-10 h-10 text-gold-400 mx-auto mb-10" />
-            
-            <h2 className="font-merriweather text-3xl md:text-5xl lg:text-6xl text-white mb-10 leading-tight">
-              This isn't just a vacation.
-              <br />
-              <span className="text-gold-400">This is the life you deserve.</span>
-            </h2>
-            
-            <p className="text-white/60 text-xl md:text-2xl max-w-4xl mx-auto leading-relaxed">
-              Imagine waking up to the sound of waves. Coffee on a terrace overlooking 
-              the Mediterranean. Your private pool glistening under the Balearic sun. 
-              <span className="text-white/80 font-medium"> No crowds. No compromises. Just pure, unfiltered luxury.</span>
-            </p>
-          </motion.div>
-        </div>
-      </section>
-
       {/* ========== WHY MALLORCA - VISUAL STORY ========== */}
       <section className="py-28 bg-cream-50">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
@@ -498,6 +379,83 @@ export default function MallorcaClient({ properties }: MallorcaClientProps) {
               </motion.div>
             </motion.div>
             </div>
+        </div>
+      </section>
+
+      {/* ========== PROPERTIES SHOWCASE ========== */}
+      <section id="villas" className="bg-cream-50 pt-32 pb-28 scroll-mt-28">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="text-center mb-20">
+            <p className="text-gold-600 text-sm font-semibold tracking-[0.3em] uppercase mb-5">
+              Our Collection
+            </p>
+            <h2 className="font-merriweather text-4xl md:text-5xl lg:text-6xl text-charcoal-900 mb-6">
+              Handpicked Luxury Villas
+            </h2>
+            <p className="text-charcoal-500 text-xl max-w-3xl mx-auto">
+              Each property personally vetted to ensure it meets our exacting standards. 
+              These aren't just houses—they're experiences waiting to unfold.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+            {properties.map((property) => (
+              <div key={property.id}>
+                <Link href={`/properties/${property.slug}`} className="group block">
+                  <div className="relative aspect-[4/3] rounded-2xl overflow-hidden mb-6 shadow-xl">
+                    <img
+                      src={property.featured_image || ''}
+                      alt={property.name}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    
+                    {property.is_featured && (
+                      <div className="absolute top-5 left-5 bg-gold-500 text-white px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-2 shadow-lg">
+                        <Star className="w-4 h-4 fill-white" />
+                        Featured
+                      </div>
+                    )}
+
+                    <div className="absolute top-5 right-5 bg-white/95 backdrop-blur-sm text-charcoal-900 px-4 py-2 rounded-full text-sm font-semibold shadow-lg">
+                      {property.house_type}
+                    </div>
+
+                    {/* Quick stats on hover */}
+                    <div className="absolute bottom-5 left-5 right-5 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-4 group-hover:translate-y-0">
+                      <div className="bg-white/95 backdrop-blur-sm rounded-xl px-5 py-4 flex items-center justify-between">
+                        <div className="flex items-center gap-5 text-charcoal-700">
+                          <span className="flex items-center gap-2">
+                            <Bed className="w-5 h-5" /> {property.bedrooms}
+                          </span>
+                          <span className="flex items-center gap-2">
+                            <Bath className="w-5 h-5" /> {property.bathrooms}
+                          </span>
+                          <span className="flex items-center gap-2">
+                            <Users className="w-5 h-5" /> {property.max_guests}
+                          </span>
+                        </div>
+                        <ArrowRight className="w-5 h-5 text-gold-500" />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 text-charcoal-500 text-sm mb-3">
+                    <MapPin className="w-4 h-4 text-gold-500" />
+                    <span>{property.city}, Mallorca</span>
+                  </div>
+
+                  <h3 className="font-merriweather text-2xl text-charcoal-900 mb-3 group-hover:text-gold-600 transition-colors">
+                    {property.name}
+                  </h3>
+
+                  <p className="text-charcoal-500 leading-relaxed">
+                    {property.short_description}
+                  </p>
+                </Link>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
