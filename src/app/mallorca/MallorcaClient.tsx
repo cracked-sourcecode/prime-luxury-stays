@@ -141,12 +141,7 @@ export default function MallorcaClient({ properties }: MallorcaClientProps) {
       {/* ========== WHY MALLORCA - VISUAL STORY ========== */}
       <section className="py-28 bg-cream-50">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-20"
-          >
+          <div className="text-center mb-20">
             <p className="text-gold-600 text-sm font-semibold tracking-[0.3em] uppercase mb-5">
               The Island
             </p>
@@ -155,7 +150,7 @@ export default function MallorcaClient({ properties }: MallorcaClientProps) {
               <br />
               <span className="text-gold-600">Choose Mallorca</span>
             </h2>
-          </motion.div>
+          </div>
 
           {/* Immersive Bento Grid */}
           <div className="grid grid-cols-12 gap-5 auto-rows-[200px]">
