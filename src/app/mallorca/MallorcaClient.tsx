@@ -139,7 +139,7 @@ export default function MallorcaClient({ properties }: MallorcaClientProps) {
       </section>
 
       {/* ========== PROPERTIES SHOWCASE ========== */}
-      <section id="villas" className="py-28 bg-cream-50">
+      <section id="villas" className="bg-cream-50 pt-32 pb-28 scroll-mt-28">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
