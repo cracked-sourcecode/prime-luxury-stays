@@ -139,7 +139,7 @@ export default function MallorcaClient({ properties }: MallorcaClientProps) {
       </section>
 
       {/* ========== THE PROMISE - WHAT WE OFFER ========== */}
-      <section className="py-28 bg-white">
+      <section className="relative z-20 py-28 bg-white">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-20 items-center">
             <div>
@@ -210,7 +210,7 @@ export default function MallorcaClient({ properties }: MallorcaClientProps) {
       </section>
 
       {/* ========== WHY MALLORCA - VISUAL STORY ========== */}
-      <section className="py-28 bg-cream-50">
+      <section className="relative z-20 py-28 bg-cream-50">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="text-center mb-20">
             <p className="text-gold-600 text-sm font-semibold tracking-[0.3em] uppercase mb-5">
@@ -328,7 +328,7 @@ export default function MallorcaClient({ properties }: MallorcaClientProps) {
       </section>
 
       {/* ========== PROPERTIES SHOWCASE ========== */}
-      <section id="villas" className="bg-cream-50 pt-32 pb-28 scroll-mt-28">
+      <section id="villas" className="relative z-20 bg-cream-50 pt-32 pb-28 scroll-mt-28">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="text-center mb-20">
             <p className="text-gold-600 text-sm font-semibold tracking-[0.3em] uppercase mb-5">
