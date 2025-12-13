@@ -138,163 +138,11 @@ export default function MallorcaClient({ properties }: MallorcaClientProps) {
         </motion.div>
       </section>
 
-      {/* ========== WHY MALLORCA - VISUAL STORY ========== */}
-      <section className="py-28 bg-cream-50">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="text-center mb-20">
-            <p className="text-gold-600 text-sm font-semibold tracking-[0.3em] uppercase mb-5">
-              The Island
-            </p>
-            <h2 className="font-merriweather text-4xl md:text-5xl lg:text-6xl text-charcoal-900 mb-6">
-              Why the World's Elite
-              <br />
-              <span className="text-gold-600">Choose Mallorca</span>
-            </h2>
-          </div>
-
-          {/* Immersive Bento Grid */}
-          <div className="grid grid-cols-12 gap-5 auto-rows-[200px]">
-            {/* Large Feature - Beaches */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="col-span-12 md:col-span-8 row-span-2 relative rounded-3xl overflow-hidden group cursor-pointer"
-            >
-              <img 
-                src="https://images.unsplash.com/photo-1539037116277-4db20889f2d4?w=1200&q=80"
-                alt="Mallorca Coast"
-                className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
-              <div className="absolute bottom-0 left-0 right-0 p-10">
-                <div className="flex items-center gap-3 text-gold-400 mb-4">
-                  <Waves className="w-6 h-6" />
-                  <span className="text-sm font-semibold tracking-[0.2em] uppercase">262 Beaches</span>
-                </div>
-                <h3 className="font-merriweather text-3xl md:text-4xl text-white mb-4">
-                  Crystal Clear Mediterranean
-                </h3>
-                <p className="text-white/70 text-lg max-w-xl">
-                  From hidden coves to pristine sandy beaches, discover waters so clear 
-                  you'll see the bottom 30 meters down.
-                </p>
-            </div>
-            </motion.div>
-
-            {/* Mountains */}
-                <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.1 }}
-              className="col-span-12 md:col-span-4 row-span-1 relative rounded-3xl overflow-hidden group cursor-pointer"
-                >
-                  <img 
-                src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80"
-                alt="Tramuntana Mountains"
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                  />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-black/20" />
-              <div className="absolute bottom-0 left-0 right-0 p-6">
-                <div className="flex items-center gap-2 text-gold-400 mb-2">
-                  <Mountain className="w-5 h-5" />
-                  <span className="text-xs font-semibold tracking-[0.15em] uppercase">UNESCO Heritage</span>
-                    </div>
-                <h3 className="font-merriweather text-xl text-white">
-                  Serra de Tramuntana
-                    </h3>
-                    </div>
-            </motion.div>
-
-            {/* Gastronomy */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2 }}
-              className="col-span-6 md:col-span-4 row-span-1 relative rounded-3xl overflow-hidden group cursor-pointer"
-            >
-              <img 
-                src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80"
-                alt="Fine Dining"
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-black/20" />
-              <div className="absolute bottom-0 left-0 right-0 p-6">
-                <div className="flex items-center gap-2 text-gold-400 mb-2">
-                  <Wine className="w-5 h-5" />
-                  <span className="text-xs font-semibold tracking-[0.15em] uppercase">Michelin Stars</span>
-                </div>
-                <h3 className="font-merriweather text-xl text-white">
-                  World-Class Dining
-                </h3>
-                  </div>
-                </motion.div>
-
-            {/* Yachts */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.3 }}
-              className="col-span-6 md:col-span-4 row-span-1 relative rounded-3xl overflow-hidden group cursor-pointer"
-            >
-              <img 
-                src="https://images.unsplash.com/photo-1540946485063-a40da27545f8?w=800&q=80"
-                alt="Yacht Marina"
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-black/20" />
-              <div className="absolute bottom-0 left-0 right-0 p-6">
-                <div className="flex items-center gap-2 text-gold-400 mb-2">
-                  <Anchor className="w-5 h-5" />
-                  <span className="text-xs font-semibold tracking-[0.15em] uppercase">Nautical Paradise</span>
-                </div>
-                <h3 className="font-merriweather text-xl text-white">
-                  Premier Marinas
-                  </h3>
-                          </div>
-            </motion.div>
-
-            {/* Sunshine */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.4 }}
-              className="col-span-12 md:col-span-4 row-span-1 relative rounded-3xl overflow-hidden group cursor-pointer"
-            >
-              <img 
-                src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=800&q=80"
-                alt="Sunny Days"
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-black/20" />
-              <div className="absolute bottom-0 left-0 right-0 p-6">
-                <div className="flex items-center gap-2 text-gold-400 mb-2">
-                  <Sun className="w-5 h-5" />
-                  <span className="text-xs font-semibold tracking-[0.15em] uppercase">300+ Days / Year</span>
-                </div>
-                <h3 className="font-merriweather text-xl text-white">
-                  Endless Sunshine
-                </h3>
-              </div>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
       {/* ========== THE PROMISE - WHAT WE OFFER ========== */}
       <section className="py-28 bg-white">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-20 items-center">
-            <motion.div
-              initial={{ opacity: 0, x: -40 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
-            >
+            <div>
               <p className="text-gold-600 text-sm font-semibold tracking-[0.3em] uppercase mb-5">
                 The Prime Luxury Stays Difference
               </p>
@@ -314,13 +162,9 @@ export default function MallorcaClient({ properties }: MallorcaClientProps) {
                   { icon: Clock, title: '24/7 Concierge', desc: 'Dedicated support from booking to checkout' },
                   { icon: Heart, title: 'Curated Experiences', desc: 'Private chefs, yacht charters, exclusive access' },
                   { icon: Star, title: 'Best Price Guarantee', desc: 'Direct booking means no middleman markups' },
-                ].map((item, i) => (
-                  <motion.div
+                ].map((item) => (
+                  <div
                     key={item.title}
-                    initial={{ opacity: 0, x: -30 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: i * 0.1 }}
                     className="flex items-start gap-5"
                   >
                     <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-gold-100 to-gold-50 flex items-center justify-center flex-shrink-0">
@@ -330,33 +174,21 @@ export default function MallorcaClient({ properties }: MallorcaClientProps) {
                       <h4 className="font-semibold text-charcoal-900 text-lg mb-1">{item.title}</h4>
                       <p className="text-charcoal-500">{item.desc}</p>
                     </div>
-                  </motion.div>
+                  </div>
                 ))}
               </div>
-            </motion.div>
+            </div>
 
-            <motion.div
-              initial={{ opacity: 0, x: 40 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
-              className="relative"
-            >
+            <div className="relative">
               <div className="aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl">
                 <img 
                   src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1000&q=80"
                   alt="Luxury Villa"
                   className="w-full h-full object-cover"
                 />
-                  </div>
+              </div>
               {/* Floating testimonial */}
-              <motion.div 
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.4 }}
-                className="absolute -bottom-10 -left-10 bg-white rounded-2xl shadow-2xl p-8 max-w-sm border border-gray-100"
-              >
+              <div className="absolute -bottom-10 -left-10 bg-white rounded-2xl shadow-2xl p-8 max-w-sm border border-gray-100">
                 <Quote className="w-10 h-10 text-gold-400 mb-4" />
                 <p className="text-charcoal-700 text-lg italic mb-5 leading-relaxed">
                   "The villa exceeded every expectation. The concierge arranged everything 
@@ -371,9 +203,127 @@ export default function MallorcaClient({ properties }: MallorcaClientProps) {
                     <p className="text-charcoal-400 text-sm">Vista Malgrat, July 2024</p>
                   </div>
                 </div>
-              </motion.div>
-            </motion.div>
+              </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ========== WHY MALLORCA - VISUAL STORY ========== */}
+      <section className="py-28 bg-cream-50">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="text-center mb-20">
+            <p className="text-gold-600 text-sm font-semibold tracking-[0.3em] uppercase mb-5">
+              The Island
+            </p>
+            <h2 className="font-merriweather text-4xl md:text-5xl lg:text-6xl text-charcoal-900 mb-6">
+              Why the World's Elite
+              <br />
+              <span className="text-gold-600">Choose Mallorca</span>
+            </h2>
+          </div>
+
+          {/* Immersive Bento Grid */}
+          <div className="grid grid-cols-12 gap-5 auto-rows-[200px]">
+            {/* Large Feature - Beaches */}
+            <div className="col-span-12 md:col-span-8 row-span-2 relative rounded-3xl overflow-hidden group cursor-pointer">
+              <img 
+                src="https://images.unsplash.com/photo-1539037116277-4db20889f2d4?w=1200&q=80"
+                alt="Mallorca Coast"
+                className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+              <div className="absolute bottom-0 left-0 right-0 p-10">
+                <div className="flex items-center gap-3 text-gold-400 mb-4">
+                  <Waves className="w-6 h-6" />
+                  <span className="text-sm font-semibold tracking-[0.2em] uppercase">262 Beaches</span>
+                </div>
+                <h3 className="font-merriweather text-3xl md:text-4xl text-white mb-4">
+                  Crystal Clear Mediterranean
+                </h3>
+                <p className="text-white/70 text-lg max-w-xl">
+                  From hidden coves to pristine sandy beaches, discover waters so clear 
+                  you'll see the bottom 30 meters down.
+                </p>
+              </div>
+            </div>
+
+            {/* Mountains */}
+            <div className="col-span-12 md:col-span-4 row-span-1 relative rounded-3xl overflow-hidden group cursor-pointer">
+              <img 
+                src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80"
+                alt="Tramuntana Mountains"
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-black/20" />
+              <div className="absolute bottom-0 left-0 right-0 p-6">
+                <div className="flex items-center gap-2 text-gold-400 mb-2">
+                  <Mountain className="w-5 h-5" />
+                  <span className="text-xs font-semibold tracking-[0.15em] uppercase">UNESCO Heritage</span>
+                </div>
+                <h3 className="font-merriweather text-xl text-white">
+                  Serra de Tramuntana
+                </h3>
+              </div>
+            </div>
+
+            {/* Gastronomy */}
+            <div className="col-span-6 md:col-span-4 row-span-1 relative rounded-3xl overflow-hidden group cursor-pointer">
+              <img 
+                src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80"
+                alt="Fine Dining"
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-black/20" />
+              <div className="absolute bottom-0 left-0 right-0 p-6">
+                <div className="flex items-center gap-2 text-gold-400 mb-2">
+                  <Wine className="w-5 h-5" />
+                  <span className="text-xs font-semibold tracking-[0.15em] uppercase">Michelin Stars</span>
+                </div>
+                <h3 className="font-merriweather text-xl text-white">
+                  World-Class Dining
+                </h3>
+              </div>
+            </div>
+
+            {/* Yachts */}
+            <div className="col-span-6 md:col-span-4 row-span-1 relative rounded-3xl overflow-hidden group cursor-pointer">
+              <img 
+                src="https://images.unsplash.com/photo-1540946485063-a40da27545f8?w=800&q=80"
+                alt="Yacht Marina"
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-black/20" />
+              <div className="absolute bottom-0 left-0 right-0 p-6">
+                <div className="flex items-center gap-2 text-gold-400 mb-2">
+                  <Anchor className="w-5 h-5" />
+                  <span className="text-xs font-semibold tracking-[0.15em] uppercase">Nautical Paradise</span>
+                </div>
+                <h3 className="font-merriweather text-xl text-white">
+                  Premier Marinas
+                </h3>
+              </div>
+            </div>
+
+            {/* Sunshine */}
+            <div className="col-span-12 md:col-span-4 row-span-1 relative rounded-3xl overflow-hidden group cursor-pointer">
+              <img 
+                src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=800&q=80"
+                alt="Sunny Days"
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-black/20" />
+              <div className="absolute bottom-0 left-0 right-0 p-6">
+                <div className="flex items-center gap-2 text-gold-400 mb-2">
+                  <Sun className="w-5 h-5" />
+                  <span className="text-xs font-semibold tracking-[0.15em] uppercase">300+ Days / Year</span>
+                </div>
+                <h3 className="font-merriweather text-xl text-white">
+                  Endless Sunshine
+                </h3>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
