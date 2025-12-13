@@ -173,7 +173,7 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
                 <Heart className={`w-5 h-5 ${isLiked ? 'fill-red-500 text-red-500' : 'text-charcoal-600'}`} />
               </button>
               <Link 
-                href="/#contact"
+                href={`/inquire?property=${property.slug}`}
                 className="hidden sm:block bg-gold-500 text-charcoal-900 px-5 py-2.5 rounded-lg font-semibold hover:bg-gold-400 transition-colors text-sm"
               >
                 Inquire Now
@@ -546,7 +546,7 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
 
                 {/* CTA */}
                 <Link
-                  href="/#contact"
+                  href={`/inquire?property=${property.slug}`}
                   className="btn-gold w-full flex items-center justify-center gap-3 text-lg py-5 mb-4"
                 >
                   <Calendar className="w-5 h-5" />

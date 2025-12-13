@@ -66,12 +66,36 @@ async function migrate() {
   `;
   console.log('   ✅ admin_sessions table created');
 
+  // Create inquiries table (lead capture)
+  console.log('📨 Creating inquiries table...');
+  await sql`
+    CREATE TABLE IF NOT EXISTS inquiries (
+      id SERIAL PRIMARY KEY,
+      property_id INTEGER REFERENCES properties(id) ON DELETE SET NULL,
+      property_slug TEXT,
+      property_name TEXT,
+      check_in DATE,
+      check_out DATE,
+      guests INTEGER,
+      full_name TEXT NOT NULL,
+      email TEXT NOT NULL,
+      phone TEXT,
+      message TEXT,
+      source_url TEXT,
+      status VARCHAR(20) DEFAULT 'new',
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )
+  `;
+  console.log('   ✅ inquiries table created');
+
   // Add index for better query performance
   console.log('📊 Creating indexes...');
   await sql`CREATE INDEX IF NOT EXISTS idx_property_images_property ON property_images(property_id)`;
   await sql`CREATE INDEX IF NOT EXISTS idx_availability_property ON property_availability(property_id)`;
   await sql`CREATE INDEX IF NOT EXISTS idx_availability_dates ON property_availability(start_date, end_date)`;
   await sql`CREATE INDEX IF NOT EXISTS idx_sessions_token ON admin_sessions(session_token)`;
+  await sql`CREATE INDEX IF NOT EXISTS idx_inquiries_created_at ON inquiries(created_at DESC)`;
+  await sql`CREATE INDEX IF NOT EXISTS idx_inquiries_status ON inquiries(status)`;
   console.log('   ✅ Indexes created');
 
   // Create default admin user (password: admin123 - CHANGE IN PRODUCTION!)
