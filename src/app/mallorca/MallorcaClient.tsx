@@ -33,10 +33,7 @@ interface MallorcaClientProps {
 export default function MallorcaClient({ properties }: MallorcaClientProps) {
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null)
   const heroCandidates = [
-    'https://storage.googleapis.com/primeluxurystays/Untitled%20design%20(62).png',
-    'https://storage.googleapis.com/primeluxurystays/Mallorca%20Photo%20(Mallorca%20Hero).png',
-    // Fallback public image
-    'https://images.unsplash.com/photo-1539037116277-4db20889f2d4?w=2400&q=80&auto=format&fit=crop',
+    'https://storage.googleapis.com/primeluxurystays/Mallorca%20page%20Hero%20Section.png',
   ]
   const [heroImageUrl, setHeroImageUrl] = useState(heroCandidates[0])
   const [heroTryIndex, setHeroTryIndex] = useState(0)
