@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import Link from 'next/link'
 import { 
@@ -32,6 +32,15 @@ interface MallorcaClientProps {
 
 export default function MallorcaClient({ properties }: MallorcaClientProps) {
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null)
+  const heroCandidates = [
+    'https://storage.googleapis.com/primeluxurystays/Untitled%20design%20(62).png',
+    'https://storage.googleapis.com/primeluxurystays/Mallorca%20Photo%20(Mallorca%20Hero).png',
+    // Fallback public image
+    'https://images.unsplash.com/photo-1539037116277-4db20889f2d4?w=2400&q=80&auto=format&fit=crop',
+  ]
+  const [heroImageUrl, setHeroImageUrl] = useState(heroCandidates[0])
+  const [heroTryIndex, setHeroTryIndex] = useState(0)
+
   const heroRef = useRef(null)
   const { scrollYProgress } = useScroll({
     target: heroRef,
@@ -40,17 +49,36 @@ export default function MallorcaClient({ properties }: MallorcaClientProps) {
   const heroY = useTransform(scrollYProgress, [0, 1], ['0%', '50%'])
   const heroOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0])
 
+  useEffect(() => {
+    // Reset hero image if the candidates ever change
+    setHeroImageUrl(heroCandidates[0])
+    setHeroTryIndex(0)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const handleHeroImageError = () => {
+    const nextIndex = heroTryIndex + 1
+    if (nextIndex < heroCandidates.length) {
+      setHeroTryIndex(nextIndex)
+      setHeroImageUrl(heroCandidates[nextIndex])
+    }
+  }
+
   return (
     <div className="overflow-hidden">
       {/* ========== CINEMATIC HERO ========== */}
       <section ref={heroRef} className="relative h-screen min-h-[800px]">
         <motion.div style={{ y: heroY }} className="absolute inset-0">
-        <div 
-          className="absolute inset-0 bg-cover bg-center"
-          style={{
-              backgroundImage: `url('https://storage.googleapis.com/primeluxurystays/Untitled%20design%20(62).png')`,
-          }}
-        />
+          {/* Background image */}
+          <img
+            key={heroImageUrl}
+            src={heroImageUrl}
+            alt="Mallorca"
+            className="absolute inset-0 w-full h-full object-cover"
+            loading="eager"
+            onError={handleHeroImageError}
+          />
+          {/* Contrast overlay */}
           <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-charcoal-900" />
         </motion.div>
         
