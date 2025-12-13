@@ -45,12 +45,12 @@ export default function MallorcaClient({ properties }: MallorcaClientProps) {
       {/* ========== CINEMATIC HERO ========== */}
       <section ref={heroRef} className="relative h-screen min-h-[800px]">
         <motion.div style={{ y: heroY }} className="absolute inset-0">
-          <div 
-            className="absolute inset-0 bg-cover bg-center"
-            style={{
+        <div 
+          className="absolute inset-0 bg-cover bg-center"
+          style={{
               backgroundImage: `url('https://storage.googleapis.com/primeluxurystays/Untitled%20design%20(62).png')`,
-            }}
-          />
+          }}
+        />
           <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-charcoal-900" />
         </motion.div>
         
@@ -82,7 +82,7 @@ export default function MallorcaClient({ properties }: MallorcaClientProps) {
               Where turquoise waters meet ancient mountains. Where every sunset 
               feels like the first. Where your private paradise awaits.
             </p>
-            
+
             <div className="flex flex-col sm:flex-row items-center justify-center gap-5">
               <a href="#villas" className="btn-gold text-base px-10 py-5 flex items-center gap-2">
                 <span>Explore Our Villas</span>
@@ -95,13 +95,13 @@ export default function MallorcaClient({ properties }: MallorcaClientProps) {
           </motion.div>
 
           {/* Scroll indicator */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 2 }}
             className="absolute bottom-12"
           >
-            <motion.div 
+            <motion.div
               animate={{ y: [0, 12, 0] }}
               transition={{ duration: 2, repeat: Infinity }}
               className="flex flex-col items-center gap-3 text-white/60"
@@ -185,15 +185,15 @@ export default function MallorcaClient({ properties }: MallorcaClientProps) {
                   <div className="flex items-center gap-2 text-charcoal-500 text-sm mb-3">
                     <MapPin className="w-4 h-4 text-gold-500" />
                     <span>{property.city}, Mallorca</span>
-                  </div>
+                </div>
 
                   <h3 className="font-merriweather text-2xl text-charcoal-900 mb-3 group-hover:text-gold-600 transition-colors">
                     {property.name}
-                  </h3>
+                </h3>
 
                   <p className="text-charcoal-500 leading-relaxed">
                     {property.short_description}
-                  </p>
+                </p>
                 </Link>
               </motion.div>
             ))}
@@ -278,32 +278,32 @@ export default function MallorcaClient({ properties }: MallorcaClientProps) {
                   From hidden coves to pristine sandy beaches, discover waters so clear 
                   you'll see the bottom 30 meters down.
                 </p>
-              </div>
+            </div>
             </motion.div>
 
             {/* Mountains */}
-            <motion.div
+                <motion.div
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
               className="col-span-12 md:col-span-4 row-span-1 relative rounded-3xl overflow-hidden group cursor-pointer"
-            >
-              <img 
+                >
+                  <img 
                 src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80"
                 alt="Tramuntana Mountains"
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-              />
+                  />
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-black/20" />
               <div className="absolute bottom-0 left-0 right-0 p-6">
                 <div className="flex items-center gap-2 text-gold-400 mb-2">
                   <Mountain className="w-5 h-5" />
                   <span className="text-xs font-semibold tracking-[0.15em] uppercase">UNESCO Heritage</span>
-                </div>
+                    </div>
                 <h3 className="font-merriweather text-xl text-white">
                   Serra de Tramuntana
-                </h3>
-              </div>
+                    </h3>
+                    </div>
             </motion.div>
 
             {/* Gastronomy */}
@@ -328,8 +328,8 @@ export default function MallorcaClient({ properties }: MallorcaClientProps) {
                 <h3 className="font-merriweather text-xl text-white">
                   World-Class Dining
                 </h3>
-              </div>
-            </motion.div>
+                  </div>
+                </motion.div>
 
             {/* Yachts */}
             <motion.div
@@ -352,8 +352,8 @@ export default function MallorcaClient({ properties }: MallorcaClientProps) {
                 </div>
                 <h3 className="font-merriweather text-xl text-white">
                   Premier Marinas
-                </h3>
-              </div>
+                  </h3>
+                          </div>
             </motion.div>
 
             {/* Sunshine */}
@@ -447,7 +447,7 @@ export default function MallorcaClient({ properties }: MallorcaClientProps) {
                   alt="Luxury Villa"
                   className="w-full h-full object-cover"
                 />
-              </div>
+                  </div>
               {/* Floating testimonial */}
               <motion.div 
                 initial={{ opacity: 0, y: 30 }}
@@ -472,7 +472,7 @@ export default function MallorcaClient({ properties }: MallorcaClientProps) {
                 </div>
               </motion.div>
             </motion.div>
-          </div>
+            </div>
         </div>
       </section>
 
@@ -525,7 +525,7 @@ export default function MallorcaClient({ properties }: MallorcaClientProps) {
                 <div className="text-white/70 text-sm">{region.name}</div>
               </motion.div>
             ))}
-          </div>
+                  </div>
 
           <div className="h-[500px] rounded-3xl overflow-hidden shadow-2xl border border-white/10">
             <PropertyMap 
@@ -533,7 +533,7 @@ export default function MallorcaClient({ properties }: MallorcaClientProps) {
               selectedProperty={selectedProperty}
               onPropertySelect={setSelectedProperty}
             />
-          </div>
+                  </div>
 
           {selectedProperty && (
             <motion.div
@@ -550,7 +550,7 @@ export default function MallorcaClient({ properties }: MallorcaClientProps) {
               </Link>
             </motion.div>
           )}
-        </div>
+                  </div>
       </section>
 
       {/* ========== URGENCY / SOCIAL PROOF ========== */}
@@ -613,7 +613,7 @@ export default function MallorcaClient({ properties }: MallorcaClientProps) {
               >
                 <Calendar className="w-5 h-5" />
                 Request Your Villa
-              </Link>
+            </Link>
               <a href="tel:+18885989870" className="text-white/70 hover:text-white transition-colors text-lg">
                 or call <span className="text-gold-400 font-semibold">+1 (888) LUXURY-0</span>
               </a>
