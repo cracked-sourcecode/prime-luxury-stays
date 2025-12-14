@@ -362,33 +362,77 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
                 <h2 className="font-merriweather text-3xl text-charcoal-900 mb-6">
                   Photo Gallery
                 </h2>
-                <div className="grid grid-cols-3 gap-4">
-                  {galleryImages.slice(0, 3).map((img, i) => (
+                <div className="grid grid-cols-4 grid-rows-2 gap-3 h-[400px] md:h-[500px]">
+                  {/* Large main image */}
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    onClick={() => {
+                      setCurrentImageIndex(0)
+                      setShowGallery(true)
+                    }}
+                    className="relative col-span-2 row-span-2 rounded-2xl overflow-hidden cursor-pointer group"
+                  >
+                    <OptimizedImage 
+                      src={galleryImages[0]} 
+                      alt={`${property.name} - Photo 1`}
+                      className="transition-transform duration-700 group-hover:scale-110"
+                      fill
+                    />
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center">
+                      <Maximize className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </div>
+                  </motion.div>
+                  
+                  {/* Top right image */}
+                  {galleryImages[1] && (
                     <motion.div
-                      key={i}
                       initial={{ opacity: 0, scale: 0.9 }}
                       whileInView={{ opacity: 1, scale: 1 }}
                       viewport={{ once: true }}
-                      transition={{ delay: i * 0.1 }}
+                      transition={{ delay: 0.1 }}
                       onClick={() => {
-                        setCurrentImageIndex(i)
+                        setCurrentImageIndex(1)
                         setShowGallery(true)
                       }}
-                      className={`relative rounded-2xl overflow-hidden cursor-pointer group ${
-                        i === 0 ? 'col-span-2 row-span-2 aspect-[4/3]' : 'aspect-square'
-                      }`}
+                      className="relative col-span-2 rounded-2xl overflow-hidden cursor-pointer group"
                     >
                       <OptimizedImage 
-                        src={img} 
-                        alt={`${property.name} - Photo ${i + 1}`}
+                        src={galleryImages[1]} 
+                        alt={`${property.name} - Photo 2`}
                         className="transition-transform duration-700 group-hover:scale-110"
                         fill
                       />
                       <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center">
                         <Maximize className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
                       </div>
-                      {/* Show "View All" overlay on third image if more photos exist */}
-                      {i === 2 && galleryImages.length > 3 && (
+                    </motion.div>
+                  )}
+                  
+                  {/* Bottom right image with +X overlay */}
+                  {galleryImages[2] && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 0.2 }}
+                      onClick={() => {
+                        setCurrentImageIndex(2)
+                        setShowGallery(true)
+                      }}
+                      className="relative col-span-2 rounded-2xl overflow-hidden cursor-pointer group"
+                    >
+                      <OptimizedImage 
+                        src={galleryImages[2]} 
+                        alt={`${property.name} - Photo 3`}
+                        className="transition-transform duration-700 group-hover:scale-110"
+                        fill
+                      />
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center">
+                        <Maximize className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                      </div>
+                      {galleryImages.length > 3 && (
                         <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
                           <div className="text-center text-white">
                             <Grid3X3 className="w-8 h-8 mx-auto mb-2" />
@@ -397,7 +441,7 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
                         </div>
                       )}
                     </motion.div>
-                  ))}
+                  )}
                 </div>
               </motion.section>
             )}
@@ -709,35 +753,40 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
             </button>
 
             {/* Main Image */}
-            <div className="w-full h-full flex items-center justify-center p-12">
+            <div className="w-full h-full flex items-center justify-center p-4 md:p-12">
               <motion.div
                 key={currentImageIndex}
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
-                className="max-w-full max-h-full"
+                className="relative w-full h-full max-w-[90vw] max-h-[80vh]"
               >
-                <OptimizedImage
+                <img
                   src={galleryImages[currentImageIndex]}
                   alt={`${property.name} - Photo ${currentImageIndex + 1}`}
-                  className="max-w-full max-h-full object-contain rounded-lg"
+                  className="w-full h-full object-contain rounded-lg"
                 />
               </motion.div>
             </div>
 
             {/* Thumbnails */}
-            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2 max-w-[90vw] overflow-x-auto pb-2">
-              {galleryImages.slice(0, 10).map((img, i) => (
+            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2 max-w-[90vw] overflow-x-auto pb-2 px-4">
+              {galleryImages.slice(0, 12).map((img, i) => (
                 <button
                   key={i}
                   onClick={() => setCurrentImageIndex(i)}
                   className={`relative w-16 h-12 flex-shrink-0 rounded-lg overflow-hidden border-2 transition-all ${
-                    i === currentImageIndex ? 'border-gold-500 scale-110' : 'border-transparent opacity-50 hover:opacity-100'
+                    i === currentImageIndex ? 'border-gold-500 scale-110' : 'border-transparent opacity-60 hover:opacity-100'
                   }`}
                 >
-                  <OptimizedImage src={img} alt="" className="object-cover" fill />
+                  <img src={img} alt="" className="w-full h-full object-cover" />
                 </button>
               ))}
+              {galleryImages.length > 12 && (
+                <div className="flex-shrink-0 w-16 h-12 rounded-lg bg-white/20 flex items-center justify-center text-white text-sm font-medium">
+                  +{galleryImages.length - 12}
+                </div>
+              )}
             </div>
           </motion.div>
         )}
