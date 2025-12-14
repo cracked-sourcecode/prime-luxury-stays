@@ -33,6 +33,53 @@ import {
 import type { Property } from '@/lib/properties'
 import type { PropertyImage, PropertyAvailability } from '@/lib/admin'
 
+// Compress image before upload
+async function compressImage(file: File, maxWidth = 1920, quality = 0.8): Promise<File> {
+  return new Promise((resolve) => {
+    // Skip compression for non-image files or small files
+    if (!file.type.startsWith('image/') || file.size < 500000) {
+      resolve(file)
+      return
+    }
+
+    const img = new Image()
+    const canvas = document.createElement('canvas')
+    const ctx = canvas.getContext('2d')
+
+    img.onload = () => {
+      // Calculate new dimensions
+      let { width, height } = img
+      if (width > maxWidth) {
+        height = (height * maxWidth) / width
+        width = maxWidth
+      }
+
+      canvas.width = width
+      canvas.height = height
+      ctx?.drawImage(img, 0, 0, width, height)
+
+      canvas.toBlob(
+        (blob) => {
+          if (blob) {
+            const compressedFile = new File([blob], file.name, {
+              type: 'image/jpeg',
+              lastModified: Date.now(),
+            })
+            resolve(compressedFile)
+          } else {
+            resolve(file)
+          }
+        },
+        'image/jpeg',
+        quality
+      )
+    }
+
+    img.onerror = () => resolve(file)
+    img.src = URL.createObjectURL(file)
+  })
+}
+
 interface PropertyEditorProps {
   property: Property | null;
   images: PropertyImage[];
@@ -84,6 +131,8 @@ export default function PropertyEditor({ property, images: initialImages, availa
   const [newImageCaption, setNewImageCaption] = useState('')
   const [uploading, setUploading] = useState(false)
   const [uploadProgress, setUploadProgress] = useState('')
+  const [selectedImages, setSelectedImages] = useState<Set<number>>(new Set())
+  const [deletingBulk, setDeletingBulk] = useState(false)
 
   // Video state
   const [videoUrl, setVideoUrl] = useState(property?.video_url || '')
@@ -198,12 +247,21 @@ export default function PropertyEditor({ property, images: initialImages, availa
 
     for (let i = 0; i < files.length; i++) {
       const file = files[i]
-      setUploadProgress(`Uploading ${i + 1}/${files.length}: ${file.name}`)
+      setUploadProgress(`Compressing ${i + 1}/${files.length}: ${file.name}`)
 
       try {
+        // Compress image before upload (max 1920px, 80% quality)
+        const compressedFile = await compressImage(file, 1920, 0.8)
+        const sizeSaved = file.size - compressedFile.size
+        if (sizeSaved > 0) {
+          console.log(`Compressed ${file.name}: ${(file.size / 1024 / 1024).toFixed(2)}MB → ${(compressedFile.size / 1024 / 1024).toFixed(2)}MB`)
+        }
+
+        setUploadProgress(`Uploading ${i + 1}/${files.length}: ${file.name}`)
+
         // Upload to GCS
         const uploadFormData = new FormData()
-        uploadFormData.append('file', file)
+        uploadFormData.append('file', compressedFile)
         uploadFormData.append('propertySlug', property.slug || `property-${property.id}`)
         uploadFormData.append('propertyId', property.id.toString())
 
@@ -329,8 +387,56 @@ export default function PropertyEditor({ property, images: initialImages, availa
         method: 'DELETE',
       })
       setImages(prev => prev.filter(img => img.id !== imageId))
+      setSelectedImages(prev => {
+        const next = new Set(prev)
+        next.delete(imageId)
+        return next
+      })
     } catch (err) {
       setError('Failed to delete image')
+    }
+  }
+
+  const handleBulkDelete = async () => {
+    if (selectedImages.size === 0) return
+    if (!confirm(`Delete ${selectedImages.size} selected image${selectedImages.size > 1 ? 's' : ''}?`)) return
+
+    setDeletingBulk(true)
+    setError('')
+
+    try {
+      const deletePromises = Array.from(selectedImages).map(imageId =>
+        fetch(`/api/admin/properties/${property?.id}/images/${imageId}`, {
+          method: 'DELETE',
+        })
+      )
+      await Promise.all(deletePromises)
+      setImages(prev => prev.filter(img => !selectedImages.has(img.id)))
+      setSelectedImages(new Set())
+    } catch (err) {
+      setError('Failed to delete some images')
+    } finally {
+      setDeletingBulk(false)
+    }
+  }
+
+  const toggleImageSelection = (imageId: number) => {
+    setSelectedImages(prev => {
+      const next = new Set(prev)
+      if (next.has(imageId)) {
+        next.delete(imageId)
+      } else {
+        next.add(imageId)
+      }
+      return next
+    })
+  }
+
+  const selectAllImages = () => {
+    if (selectedImages.size === images.length) {
+      setSelectedImages(new Set())
+    } else {
+      setSelectedImages(new Set(images.map(img => img.id)))
     }
   }
 
@@ -992,9 +1098,53 @@ export default function PropertyEditor({ property, images: initialImages, availa
 
             <div className="border-t border-gray-100 pt-8">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold text-charcoal-900">Property Images ({images.length})</h3>
+                <div className="flex items-center gap-4">
+                  <h3 className="font-semibold text-charcoal-900">Property Images ({images.length})</h3>
+                  {images.length > 0 && (
+                    <button
+                      onClick={selectAllImages}
+                      className="text-sm text-gold-600 hover:text-gold-700 font-medium"
+                    >
+                      {selectedImages.size === images.length ? 'Deselect all' : 'Select all'}
+                    </button>
+                  )}
+                </div>
                 <p className="text-sm text-charcoal-400">Drag or use arrows to reorder. First image shows on property cards.</p>
               </div>
+
+              {/* Bulk action bar */}
+              {selectedImages.size > 0 && (
+                <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-4 flex items-center justify-between">
+                  <span className="text-red-700 font-medium">
+                    {selectedImages.size} image{selectedImages.size > 1 ? 's' : ''} selected
+                  </span>
+                  <div className="flex items-center gap-3">
+                    <button
+                      onClick={() => setSelectedImages(new Set())}
+                      className="px-4 py-2 text-charcoal-600 hover:text-charcoal-900 font-medium"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={handleBulkDelete}
+                      disabled={deletingBulk}
+                      className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex items-center gap-2 disabled:opacity-50"
+                    >
+                      {deletingBulk ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          Deleting...
+                        </>
+                      ) : (
+                        <>
+                          <Trash2 className="w-4 h-4" />
+                          Delete Selected
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+              )}
               
               {images.length === 0 ? (
                 <div className="text-center py-12 text-charcoal-400">
@@ -1006,8 +1156,22 @@ export default function PropertyEditor({ property, images: initialImages, availa
                   {images.map((image, index) => (
                     <div 
                       key={image.id} 
-                      className="flex items-center gap-4 bg-gray-50 rounded-xl p-3 group hover:bg-gray-100 transition-colors"
+                      className={`flex items-center gap-4 rounded-xl p-3 group transition-colors ${
+                        selectedImages.has(image.id) 
+                          ? 'bg-gold-50 border-2 border-gold-300' 
+                          : 'bg-gray-50 hover:bg-gray-100 border-2 border-transparent'
+                      }`}
                     >
+                      {/* Checkbox */}
+                      <div className="flex-shrink-0">
+                        <input
+                          type="checkbox"
+                          checked={selectedImages.has(image.id)}
+                          onChange={() => toggleImageSelection(image.id)}
+                          className="w-5 h-5 rounded border-gray-300 text-gold-500 focus:ring-gold-500 cursor-pointer"
+                        />
+                      </div>
+
                       {/* Order number & controls */}
                       <div className="flex flex-col items-center gap-1 w-12">
                         <button

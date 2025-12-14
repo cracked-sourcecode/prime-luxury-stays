@@ -377,8 +377,8 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
                 <h2 className="font-merriweather text-3xl text-charcoal-900 mb-6">
                   Photo Gallery
                 </h2>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  {galleryImages.map((img, i) => (
+                <div className="grid grid-cols-3 gap-4">
+                  {galleryImages.slice(0, 3).map((img, i) => (
                     <motion.div
                       key={i}
                       initial={{ opacity: 0, scale: 0.9 }}
@@ -390,7 +390,7 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
                         setShowGallery(true)
                       }}
                       className={`relative rounded-2xl overflow-hidden cursor-pointer group ${
-                        i === 0 && galleryImages.length > 2 ? 'md:col-span-2 md:row-span-2 aspect-[4/3]' : 'aspect-square'
+                        i === 0 ? 'col-span-2 row-span-2 aspect-[4/3]' : 'aspect-square'
                       }`}
                     >
                       <OptimizedImage 
@@ -402,6 +402,15 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
                       <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center">
                         <Maximize className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
                       </div>
+                      {/* Show "View All" overlay on third image if more photos exist */}
+                      {i === 2 && galleryImages.length > 3 && (
+                        <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                          <div className="text-center text-white">
+                            <Grid3X3 className="w-8 h-8 mx-auto mb-2" />
+                            <span className="text-lg font-semibold">+{galleryImages.length - 3} photos</span>
+                          </div>
+                        </div>
+                      )}
                     </motion.div>
                   ))}
                 </div>
