@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
+import Image from 'next/image'
 import dynamic from 'next/dynamic'
 import { 
   ArrowLeft, 
@@ -38,9 +39,69 @@ import {
   Home,
   Maximize,
   Grid3X3,
-  Quote
+  Quote,
+  ImageOff
 } from 'lucide-react'
 import type { Property } from '@/lib/properties'
+
+// Optimized image component with loading state and error handling
+function OptimizedImage({ 
+  src, 
+  alt, 
+  className = "", 
+  priority = false,
+  fill = false 
+}: { 
+  src: string; 
+  alt: string; 
+  className?: string; 
+  priority?: boolean;
+  fill?: boolean;
+}) {
+  const [isLoading, setIsLoading] = useState(true)
+  const [hasError, setHasError] = useState(false)
+  
+  // Decode URL if it's double-encoded
+  const decodedSrc = src.includes('%25') ? decodeURIComponent(src) : src
+  
+  if (hasError) {
+    return (
+      <div className={`bg-cream-100 flex items-center justify-center ${className}`}>
+        <ImageOff className="w-12 h-12 text-charcoal-300" />
+      </div>
+    )
+  }
+  
+  return (
+    <div className={`relative ${fill ? 'w-full h-full' : ''}`}>
+      {isLoading && (
+        <div className={`absolute inset-0 bg-cream-100 animate-pulse flex items-center justify-center ${className}`}>
+          <div className="w-8 h-8 border-2 border-gold-500 border-t-transparent rounded-full animate-spin" />
+        </div>
+      )}
+      {fill ? (
+        <Image
+          src={decodedSrc}
+          alt={alt}
+          fill
+          className={`object-cover transition-opacity duration-300 ${isLoading ? 'opacity-0' : 'opacity-100'} ${className}`}
+          onLoad={() => setIsLoading(false)}
+          onError={() => { setHasError(true); setIsLoading(false); }}
+          priority={priority}
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+        />
+      ) : (
+        <img
+          src={decodedSrc}
+          alt={alt}
+          className={`transition-opacity duration-300 ${isLoading ? 'opacity-0' : 'opacity-100'} ${className}`}
+          onLoad={() => setIsLoading(false)}
+          onError={() => { setHasError(true); setIsLoading(false); }}
+        />
+      )}
+    </div>
+  )
+}
 
 // Dynamically import the map to avoid SSR issues
 const PropertyMap = dynamic(() => import('@/components/PropertyMap'), { 
@@ -121,10 +182,12 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
           transition={{ duration: 1.5 }}
           className="absolute inset-0"
         >
-          <img
+          <OptimizedImage
             src={galleryImages[0]}
             alt={property.name}
             className="w-full h-full object-cover"
+            fill
+            priority
           />
           <div className="absolute inset-0 bg-gradient-to-t from-charcoal-900 via-charcoal-900/30 to-transparent" />
         </motion.div>
@@ -330,10 +393,11 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
                         i === 0 && galleryImages.length > 2 ? 'md:col-span-2 md:row-span-2 aspect-[4/3]' : 'aspect-square'
                       }`}
                     >
-                      <img 
+                      <OptimizedImage 
                         src={img} 
                         alt={`${property.name} - Photo ${i + 1}`}
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                        className="transition-transform duration-700 group-hover:scale-110"
+                        fill
                       />
                       <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center">
                         <Maximize className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -652,28 +716,32 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
 
             {/* Main Image */}
             <div className="w-full h-full flex items-center justify-center p-12">
-              <motion.img
+              <motion.div
                 key={currentImageIndex}
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.9 }}
-                src={galleryImages[currentImageIndex]}
-                alt={`${property.name} - Photo ${currentImageIndex + 1}`}
-                className="max-w-full max-h-full object-contain rounded-lg"
-              />
+                className="max-w-full max-h-full"
+              >
+                <OptimizedImage
+                  src={galleryImages[currentImageIndex]}
+                  alt={`${property.name} - Photo ${currentImageIndex + 1}`}
+                  className="max-w-full max-h-full object-contain rounded-lg"
+                />
+              </motion.div>
             </div>
 
             {/* Thumbnails */}
-            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2">
-              {galleryImages.map((img, i) => (
+            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2 max-w-[90vw] overflow-x-auto pb-2">
+              {galleryImages.slice(0, 10).map((img, i) => (
                 <button
                   key={i}
                   onClick={() => setCurrentImageIndex(i)}
-                  className={`w-16 h-12 rounded-lg overflow-hidden border-2 transition-all ${
+                  className={`relative w-16 h-12 flex-shrink-0 rounded-lg overflow-hidden border-2 transition-all ${
                     i === currentImageIndex ? 'border-gold-500 scale-110' : 'border-transparent opacity-50 hover:opacity-100'
                   }`}
                 >
-                  <img src={img} alt="" className="w-full h-full object-cover" />
+                  <OptimizedImage src={img} alt="" className="object-cover" fill />
                 </button>
               ))}
             </div>

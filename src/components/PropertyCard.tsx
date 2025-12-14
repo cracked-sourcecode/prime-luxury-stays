@@ -1,8 +1,10 @@
 'use client'
 
+import { useState } from 'react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
-import { MapPin, Bed, Bath, Users, Star, Waves, Mountain } from 'lucide-react'
+import Image from 'next/image'
+import { MapPin, Bed, Bath, Users, Star, Waves, Mountain, ImageOff } from 'lucide-react'
 import type { Property } from '@/lib/properties'
 
 interface PropertyCardProps {
@@ -11,6 +13,13 @@ interface PropertyCardProps {
 }
 
 export default function PropertyCard({ property, index = 0 }: PropertyCardProps) {
+  const [imageLoading, setImageLoading] = useState(true)
+  const [imageError, setImageError] = useState(false)
+  
+  const imageSrc = property.featured_image || 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&q=80'
+  // Handle potentially double-encoded URLs
+  const decodedSrc = imageSrc.includes('%25') ? decodeURIComponent(imageSrc) : imageSrc
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -20,11 +29,26 @@ export default function PropertyCard({ property, index = 0 }: PropertyCardProps)
       <Link href={`/properties/${property.slug}`} className="group block">
         {/* Image */}
         <div className="relative aspect-[4/3] rounded-2xl overflow-hidden mb-4 shadow-lg">
-          <img
-            src={property.featured_image || 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&q=80'}
-            alt={property.name}
-            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-          />
+          {imageLoading && (
+            <div className="absolute inset-0 bg-cream-100 animate-pulse flex items-center justify-center">
+              <div className="w-8 h-8 border-2 border-gold-500 border-t-transparent rounded-full animate-spin" />
+            </div>
+          )}
+          {imageError ? (
+            <div className="absolute inset-0 bg-cream-100 flex items-center justify-center">
+              <ImageOff className="w-12 h-12 text-charcoal-300" />
+            </div>
+          ) : (
+            <Image
+              src={decodedSrc}
+              alt={property.name}
+              fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              className={`object-cover transition-all duration-700 group-hover:scale-110 ${imageLoading ? 'opacity-0' : 'opacity-100'}`}
+              onLoad={() => setImageLoading(false)}
+              onError={() => { setImageError(true); setImageLoading(false); }}
+            />
+          )}
           
           {/* Overlay gradient */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
