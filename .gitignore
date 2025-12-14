@@ -38,3 +38,5 @@ next-env.d.ts
 .idea
 .vscode
 
+gcs-key.json
+gcs-key-base64.txt

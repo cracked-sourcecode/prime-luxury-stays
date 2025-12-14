@@ -26,7 +26,9 @@ import {
   ChevronUp,
   ChevronDown,
   GripVertical,
-  Crown
+  Crown,
+  Upload,
+  CloudUpload
 } from 'lucide-react'
 import type { Property } from '@/lib/properties'
 import type { PropertyImage, PropertyAvailability } from '@/lib/admin'
@@ -80,6 +82,8 @@ export default function PropertyEditor({ property, images: initialImages, availa
   const [images, setImages] = useState<PropertyImage[]>(initialImages)
   const [newImageUrl, setNewImageUrl] = useState('')
   const [newImageCaption, setNewImageCaption] = useState('')
+  const [uploading, setUploading] = useState(false)
+  const [uploadProgress, setUploadProgress] = useState('')
 
   // Availability state
   const [availability, setAvailability] = useState<PropertyAvailability[]>(initialAvailability)
@@ -178,6 +182,68 @@ export default function PropertyEditor({ property, images: initialImages, availa
     } catch (err) {
       setError('Failed to add image')
     }
+  }
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files
+    if (!files || files.length === 0 || !property?.id) return
+
+    setUploading(true)
+    setError('')
+
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i]
+      setUploadProgress(`Uploading ${i + 1}/${files.length}: ${file.name}`)
+
+      try {
+        // Upload to GCS
+        const uploadFormData = new FormData()
+        uploadFormData.append('file', file)
+        uploadFormData.append('propertySlug', property.slug || `property-${property.id}`)
+        uploadFormData.append('propertyId', property.id.toString())
+
+        const uploadRes = await fetch('/api/admin/upload', {
+          method: 'POST',
+          body: uploadFormData,
+        })
+
+        const uploadData = await uploadRes.json()
+
+        if (!uploadData.success) {
+          setError(`Failed to upload ${file.name}: ${uploadData.error}`)
+          continue
+        }
+
+        // Add to property images
+        const res = await fetch(`/api/admin/properties/${property.id}/images`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            image_url: uploadData.url,
+            caption: null
+          }),
+        })
+
+        const data = await res.json()
+        if (data.success) {
+          setImages(prev => [...prev, { 
+            id: data.id, 
+            property_id: property.id, 
+            image_url: uploadData.url,
+            caption: null,
+            display_order: images.length + i,
+            is_featured: false
+          }])
+        }
+      } catch (err) {
+        setError(`Failed to upload ${file.name}`)
+      }
+    }
+
+    setUploading(false)
+    setUploadProgress('')
+    // Reset file input
+    e.target.value = ''
   }
 
   const handleDeleteImage = async (imageId: number) => {
@@ -782,12 +848,48 @@ export default function PropertyEditor({ property, images: initialImages, availa
         {/* Images Tab */}
         {activeTab === 'images' && !isNew && (
           <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
+            {/* Direct Upload Section */}
             <div className="mb-8">
-              <h3 className="font-semibold text-charcoal-900 mb-4">Add New Image</h3>
-              <p className="text-charcoal-500 text-sm mb-4">
-                Upload images to Google Cloud Storage first, then paste the URL here.
-              </p>
-              <div className="flex flex-col md:flex-row gap-4">
+              <h3 className="font-semibold text-charcoal-900 mb-4 flex items-center gap-2">
+                <CloudUpload className="w-5 h-5 text-gold-500" />
+                Upload Images
+              </h3>
+              <div className="border-2 border-dashed border-gold-200 rounded-xl p-8 bg-gold-50/30 hover:bg-gold-50/50 transition-colors">
+                <input
+                  type="file"
+                  id="image-upload"
+                  multiple
+                  accept="image/*"
+                  onChange={handleFileUpload}
+                  disabled={uploading}
+                  className="hidden"
+                />
+                <label 
+                  htmlFor="image-upload"
+                  className={`flex flex-col items-center justify-center cursor-pointer ${uploading ? 'opacity-50' : ''}`}
+                >
+                  {uploading ? (
+                    <>
+                      <Loader2 className="w-12 h-12 text-gold-500 animate-spin mb-4" />
+                      <p className="text-charcoal-700 font-medium">{uploadProgress}</p>
+                    </>
+                  ) : (
+                    <>
+                      <Upload className="w-12 h-12 text-gold-500 mb-4" />
+                      <p className="text-charcoal-700 font-medium mb-1">Click to upload images</p>
+                      <p className="text-charcoal-400 text-sm">or drag and drop (PNG, JPG, WEBP)</p>
+                    </>
+                  )}
+                </label>
+              </div>
+            </div>
+
+            {/* Manual URL Section (collapsed) */}
+            <details className="mb-8">
+              <summary className="cursor-pointer text-charcoal-500 text-sm hover:text-charcoal-700 mb-4">
+                Or paste image URL manually...
+              </summary>
+              <div className="flex flex-col md:flex-row gap-4 mt-4">
                 <input
                   type="url"
                   value={newImageUrl}
@@ -811,7 +913,7 @@ export default function PropertyEditor({ property, images: initialImages, availa
                   Add
                 </button>
               </div>
-            </div>
+            </details>
 
             <div className="border-t border-gray-100 pt-8">
               <div className="flex items-center justify-between mb-4">
