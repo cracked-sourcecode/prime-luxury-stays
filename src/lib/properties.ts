@@ -30,6 +30,7 @@ export interface Property {
   is_active: boolean;
   is_featured: boolean;
   is_hero_featured: boolean;
+  video_url: string | null;
   min_stay_nights: number;
 }
 

@@ -28,7 +28,7 @@ async function checkAuth() {
   return await validateSession(token);
 }
 
-// POST - Upload image to GCS
+// POST - Upload image or video to GCS
 export async function POST(request: NextRequest) {
   const user = await checkAuth();
   if (!user) {
@@ -40,6 +40,7 @@ export async function POST(request: NextRequest) {
     const file = formData.get('file') as File;
     const propertySlug = formData.get('propertySlug') as string;
     const propertyId = formData.get('propertyId') as string;
+    const fileType = formData.get('fileType') as string || 'image'; // 'image' or 'video'
     
     if (!file) {
       return NextResponse.json({ success: false, error: 'No file provided' }, { status: 400 });
@@ -49,10 +50,19 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: false, error: 'Property slug required' }, { status: 400 });
     }
 
-    // Create safe filename
+    // Validate file type
+    const isVideo = fileType === 'video' || file.type.startsWith('video/');
+    const isImage = file.type.startsWith('image/');
+    
+    if (!isVideo && !isImage) {
+      return NextResponse.json({ success: false, error: 'File must be an image or video' }, { status: 400 });
+    }
+
+    // Create safe filename with subfolder for videos
     const timestamp = Date.now();
     const safeName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
-    const storagePath = `${propertySlug}/${timestamp}-${safeName}`;
+    const subfolder = isVideo ? 'videos' : 'images';
+    const storagePath = `${propertySlug}/${subfolder}/${timestamp}-${safeName}`;
     
     // Get file buffer
     const bytes = await file.arrayBuffer();
@@ -80,6 +90,7 @@ export async function POST(request: NextRequest) {
       url: publicUrl,
       storagePath,
       fileName: safeName,
+      fileType: isVideo ? 'video' : 'image',
     });
   } catch (error) {
     console.error('Upload error:', error);

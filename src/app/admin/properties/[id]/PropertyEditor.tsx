@@ -85,6 +85,11 @@ export default function PropertyEditor({ property, images: initialImages, availa
   const [uploading, setUploading] = useState(false)
   const [uploadProgress, setUploadProgress] = useState('')
 
+  // Video state
+  const [videoUrl, setVideoUrl] = useState(property?.video_url || '')
+  const [uploadingVideo, setUploadingVideo] = useState(false)
+  const [videoUploadProgress, setVideoUploadProgress] = useState('')
+
   // Availability state
   const [availability, setAvailability] = useState<PropertyAvailability[]>(initialAvailability)
   const [isHeroFeatured, setIsHeroFeatured] = useState(property?.is_hero_featured || false)
@@ -244,6 +249,76 @@ export default function PropertyEditor({ property, images: initialImages, availa
     setUploadProgress('')
     // Reset file input
     e.target.value = ''
+  }
+
+  // Video upload handler
+  const handleVideoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file || !property?.id) return
+
+    setUploadingVideo(true)
+    setError('')
+    setVideoUploadProgress(`Uploading video: ${file.name}`)
+
+    try {
+      // Upload to GCS
+      const uploadFormData = new FormData()
+      uploadFormData.append('file', file)
+      uploadFormData.append('propertySlug', property.slug || `property-${property.id}`)
+      uploadFormData.append('propertyId', property.id.toString())
+      uploadFormData.append('fileType', 'video')
+
+      const uploadRes = await fetch('/api/admin/upload', {
+        method: 'POST',
+        body: uploadFormData,
+      })
+
+      const uploadData = await uploadRes.json()
+
+      if (!uploadData.success) {
+        throw new Error(uploadData.error || 'Upload failed')
+      }
+
+      // Save video URL to property
+      const saveRes = await fetch(`/api/admin/properties/${property.id}/video`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ video_url: uploadData.url }),
+      })
+
+      if (!saveRes.ok) {
+        throw new Error('Failed to save video')
+      }
+
+      setVideoUrl(uploadData.url)
+      setSuccess('Video uploaded successfully!')
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to upload video')
+    } finally {
+      setUploadingVideo(false)
+      setVideoUploadProgress('')
+      e.target.value = ''
+    }
+  }
+
+  // Remove video handler
+  const handleRemoveVideo = async () => {
+    if (!property?.id) return
+
+    try {
+      const res = await fetch(`/api/admin/properties/${property.id}/video`, {
+        method: 'DELETE',
+      })
+
+      if (!res.ok) {
+        throw new Error('Failed to remove video')
+      }
+
+      setVideoUrl('')
+      setSuccess('Video removed successfully!')
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to remove video')
+    }
   }
 
   const handleDeleteImage = async (imageId: number) => {
@@ -1005,6 +1080,73 @@ export default function PropertyEditor({ property, images: initialImages, availa
                       </div>
                     </div>
                   ))}
+                </div>
+              )}
+            </div>
+
+            {/* Video Section */}
+            <div className="border-t border-gray-100 pt-8 mt-8">
+              <h3 className="font-semibold text-charcoal-900 mb-4 flex items-center gap-2">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                </svg>
+                Property Video
+              </h3>
+              <p className="text-sm text-charcoal-400 mb-4">
+                Upload a showcase video for this property. Video will appear on the property page if added.
+              </p>
+
+              {videoUrl ? (
+                <div className="bg-gray-50 rounded-xl p-4">
+                  <div className="flex items-start gap-4">
+                    <div className="flex-1">
+                      <video 
+                        src={videoUrl} 
+                        controls 
+                        className="w-full max-w-lg rounded-lg"
+                      >
+                        Your browser does not support the video tag.
+                      </video>
+                      <p className="text-sm text-charcoal-500 mt-2 break-all">{videoUrl}</p>
+                    </div>
+                    <button
+                      onClick={handleRemoveVideo}
+                      className="p-2 text-charcoal-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                      title="Remove video"
+                    >
+                      <Trash2 className="w-5 h-5" />
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="border-2 border-dashed border-gold-300 rounded-xl p-8 text-center bg-gold-50/30 hover:bg-gold-50/50 transition-colors">
+                  <input
+                    type="file"
+                    accept="video/*"
+                    id="video-upload"
+                    onChange={handleVideoUpload}
+                    disabled={uploadingVideo}
+                    className="hidden"
+                  />
+                  <label 
+                    htmlFor="video-upload"
+                    className={`flex flex-col items-center justify-center cursor-pointer ${uploadingVideo ? 'opacity-50' : ''}`}
+                  >
+                    {uploadingVideo ? (
+                      <>
+                        <Loader2 className="w-12 h-12 text-gold-500 animate-spin mb-4" />
+                        <p className="text-charcoal-700 font-medium">{videoUploadProgress}</p>
+                      </>
+                    ) : (
+                      <>
+                        <svg className="w-12 h-12 text-gold-500 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                        </svg>
+                        <p className="text-charcoal-700 font-medium mb-1">Click to upload video</p>
+                        <p className="text-charcoal-400 text-sm">MP4, MOV, WebM (max 100MB recommended)</p>
+                      </>
+                    )}
+                  </label>
                 </div>
               )}
             </div>

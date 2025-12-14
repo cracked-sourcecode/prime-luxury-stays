@@ -377,6 +377,40 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
               </div>
             </motion.section>
 
+            {/* ===== VIDEO SHOWCASE ===== */}
+            {property.video_url && (
+              <motion.section
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="bg-charcoal-900 rounded-3xl p-8 md:p-10 shadow-xl overflow-hidden"
+              >
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-12 h-12 rounded-2xl bg-gold-500/20 flex items-center justify-center">
+                    <svg className="w-6 h-6 text-gold-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-semibold text-white">Property Showcase</h3>
+                    <p className="text-charcoal-400 text-sm">Take a virtual tour of {property.name}</p>
+                  </div>
+                </div>
+                <div className="rounded-2xl overflow-hidden bg-black">
+                  <video 
+                    controls 
+                    className="w-full aspect-video"
+                    poster={property.featured_image || undefined}
+                  >
+                    <source src={property.video_url} type="video/mp4" />
+                    <source src={property.video_url} type="video/webm" />
+                    Your browser does not support the video tag.
+                  </video>
+                </div>
+              </motion.section>
+            )}
+
             {/* ===== EXPERIENCES ===== */}
             <motion.section
               initial={{ opacity: 0, y: 30 }}
