@@ -18,7 +18,7 @@ export default function About() {
   const isInView = useInView(ref, { once: true, margin: '-100px' })
 
   return (
-    <section id="about" ref={ref} className="py-24 lg:py-32 relative overflow-hidden">
+    <section id="about" ref={ref} className="py-16 lg:py-20 relative overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-b from-white via-cream-50 to-white" />
       

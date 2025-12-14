@@ -46,7 +46,7 @@ export default function Destinations() {
   const isInView = useInView(ref, { once: true, margin: '-100px' })
 
   return (
-    <section id="destinations" ref={ref} className="py-24 lg:py-32 pattern-bg">
+    <section id="destinations" ref={ref} className="py-16 lg:py-20 pattern-bg">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         {/* Section Header */}
         <motion.div

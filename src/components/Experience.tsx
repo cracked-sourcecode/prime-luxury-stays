@@ -31,7 +31,7 @@ export default function Experience() {
   const y = useTransform(scrollYProgress, [0, 1], ['0%', '10%'])
 
   return (
-    <section id="experience" ref={containerRef} className="relative py-24 lg:py-32 overflow-hidden">
+    <section id="experience" ref={containerRef} className="relative py-16 lg:py-20 overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-b from-cream-100 via-white to-cream-50" />
       
