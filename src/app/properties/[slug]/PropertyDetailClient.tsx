@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
-import Image from 'next/image'
 import dynamic from 'next/dynamic'
 import { 
   ArrowLeft, 
@@ -44,12 +43,11 @@ import {
 } from 'lucide-react'
 import type { Property } from '@/lib/properties'
 
-// Optimized image component with loading state and error handling
+// Simple image component with loading state and error handling
 function OptimizedImage({ 
   src, 
   alt, 
   className = "", 
-  priority = false,
   fill = false 
 }: { 
   src: string; 
@@ -66,40 +64,27 @@ function OptimizedImage({
   
   if (hasError) {
     return (
-      <div className={`bg-cream-100 flex items-center justify-center ${className}`}>
+      <div className={`bg-cream-100 flex items-center justify-center ${fill ? 'absolute inset-0' : ''} ${className}`}>
         <ImageOff className="w-12 h-12 text-charcoal-300" />
       </div>
     )
   }
   
   return (
-    <div className={`relative ${fill ? 'w-full h-full' : ''}`}>
+    <>
       {isLoading && (
-        <div className={`absolute inset-0 bg-cream-100 animate-pulse flex items-center justify-center ${className}`}>
+        <div className={`${fill ? 'absolute inset-0' : ''} bg-cream-100 animate-pulse flex items-center justify-center`}>
           <div className="w-8 h-8 border-2 border-gold-500 border-t-transparent rounded-full animate-spin" />
         </div>
       )}
-      {fill ? (
-        <Image
-          src={decodedSrc}
-          alt={alt}
-          fill
-          className={`object-cover transition-opacity duration-300 ${isLoading ? 'opacity-0' : 'opacity-100'} ${className}`}
-          onLoad={() => setIsLoading(false)}
-          onError={() => { setHasError(true); setIsLoading(false); }}
-          priority={priority}
-          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-        />
-      ) : (
-        <img
-          src={decodedSrc}
-          alt={alt}
-          className={`transition-opacity duration-300 ${isLoading ? 'opacity-0' : 'opacity-100'} ${className}`}
-          onLoad={() => setIsLoading(false)}
-          onError={() => { setHasError(true); setIsLoading(false); }}
-        />
-      )}
-    </div>
+      <img
+        src={decodedSrc}
+        alt={alt}
+        className={`${fill ? 'absolute inset-0 w-full h-full object-cover' : ''} transition-opacity duration-300 ${isLoading ? 'opacity-0' : 'opacity-100'} ${className}`}
+        onLoad={() => setIsLoading(false)}
+        onError={() => { setHasError(true); setIsLoading(false); }}
+      />
+    </>
   )
 }
 

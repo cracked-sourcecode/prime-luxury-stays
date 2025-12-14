@@ -3,7 +3,6 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
-import Image from 'next/image'
 import { MapPin, Bed, Bath, Users, Star, Waves, Mountain, ImageOff } from 'lucide-react'
 import type { Property } from '@/lib/properties'
 
@@ -39,12 +38,10 @@ export default function PropertyCard({ property, index = 0 }: PropertyCardProps)
               <ImageOff className="w-12 h-12 text-charcoal-300" />
             </div>
           ) : (
-            <Image
+            <img
               src={decodedSrc}
               alt={property.name}
-              fill
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              className={`object-cover transition-all duration-700 group-hover:scale-110 ${imageLoading ? 'opacity-0' : 'opacity-100'}`}
+              className={`w-full h-full object-cover transition-all duration-700 group-hover:scale-110 ${imageLoading ? 'opacity-0' : 'opacity-100'}`}
               onLoad={() => setImageLoading(false)}
               onError={() => { setImageError(true); setImageLoading(false); }}
             />
