@@ -69,8 +69,8 @@ export async function POST(request: NextRequest) {
       },
     });
     
-    // Make the file public
-    await blob.makePublic();
+    // Note: Bucket has uniform bucket-level access, so files inherit bucket's public access
+    // No need to call makePublic() on individual files
     
     // Get public URL
     const publicUrl = `https://storage.googleapis.com/${BUCKET_NAME}/${encodeURIComponent(storagePath).replace(/%2F/g, '/')}`;
