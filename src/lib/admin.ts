@@ -11,9 +11,16 @@ export interface PropertyImage {
   id: number;
   property_id: number;
   image_url: string;
+  storage_bucket: string | null;
+  storage_path: string | null;
   caption: string | null;
+  alt_text: string | null;
   display_order: number;
   is_featured: boolean;
+  image_type: 'hero' | 'gallery' | 'floor_plan' | 'amenity';
+  width: number | null;
+  height: number | null;
+  file_size: number | null;
 }
 
 export interface PropertyAvailability {
@@ -150,7 +157,31 @@ export async function getPropertyImages(propertyId: number): Promise<PropertyIma
   return images as PropertyImage[];
 }
 
-export async function addPropertyImage(propertyId: number, imageUrl: string, caption?: string, isFeatured: boolean = false) {
+// Parse GCS URL to extract bucket and path
+function parseGcsUrl(url: string): { bucket: string | null; path: string | null } {
+  // Format: https://storage.googleapis.com/BUCKET/PATH
+  const match = url.match(/https:\/\/storage\.googleapis\.com\/([^\/]+)\/(.+)/);
+  if (match) {
+    return { bucket: match[1], path: match[2] };
+  }
+  return { bucket: null, path: null };
+}
+
+export async function addPropertyImage(
+  propertyId: number, 
+  imageUrl: string, 
+  options?: {
+    caption?: string;
+    altText?: string;
+    isFeatured?: boolean;
+    imageType?: 'hero' | 'gallery' | 'floor_plan' | 'amenity';
+  }
+) {
+  const { caption, altText, isFeatured = false, imageType = 'gallery' } = options || {};
+  
+  // Parse GCS URL for bucket/path
+  const { bucket, path } = parseGcsUrl(imageUrl);
+  
   // Get max display order
   const maxOrder = await sql`
     SELECT COALESCE(MAX(display_order), 0) as max_order 
@@ -161,8 +192,14 @@ export async function addPropertyImage(propertyId: number, imageUrl: string, cap
   const displayOrder = (maxOrder[0]?.max_order || 0) + 1;
   
   const result = await sql`
-    INSERT INTO property_images (property_id, image_url, caption, display_order, is_featured)
-    VALUES (${propertyId}, ${imageUrl}, ${caption || null}, ${displayOrder}, ${isFeatured})
+    INSERT INTO property_images (
+      property_id, image_url, storage_bucket, storage_path,
+      caption, alt_text, display_order, is_featured, image_type
+    )
+    VALUES (
+      ${propertyId}, ${imageUrl}, ${bucket}, ${path},
+      ${caption || null}, ${altText || null}, ${displayOrder}, ${isFeatured}, ${imageType}
+    )
     RETURNING id
   `;
   

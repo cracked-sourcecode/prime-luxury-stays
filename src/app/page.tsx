@@ -6,12 +6,15 @@ import Services from '@/components/Services'
 import About from '@/components/About'
 import Contact from '@/components/Contact'
 import Footer from '@/components/Footer'
+import { getHeroFeaturedProperty } from '@/lib/properties'
 
-export default function Home() {
+export default async function Home() {
+  const heroProperty = await getHeroFeaturedProperty()
+  
   return (
     <main className="min-h-screen">
       <Navigation />
-      <Hero />
+      <Hero heroProperty={heroProperty} />
       <Destinations />
       <Experience />
       <Services />

@@ -1,18 +1,27 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Search, MapPin, Calendar, Users, Star, Shield, Clock } from 'lucide-react'
+import { Search, MapPin, Calendar, Users, Star, Shield, Clock, Crown } from 'lucide-react'
+import Link from 'next/link'
+import type { Property } from '@/lib/properties'
 
 const featuredDestinations = [
-  { name: 'Mallorca', image: 'https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?w=400&q=80' },
-  { name: 'Swiss Alps', image: 'https://images.unsplash.com/photo-1502784444187-359ac186c5bb?w=400&q=80' },
-  { name: 'St. Barts', image: 'https://images.unsplash.com/photo-1580541631950-7282082b53ce?w=400&q=80' },
-  { name: 'Marbella', image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=400&q=80' },
+  { name: 'Mallorca', href: '/mallorca', image: 'https://storage.googleapis.com/primeluxurystays/Mallorca%20Global%20Hero%20Section%20Image' },
+  { name: 'Swiss Alps', href: '/properties', image: 'https://images.unsplash.com/photo-1502784444187-359ac186c5bb?w=600&q=80' },
 ]
 
-export default function Hero() {
+interface HeroProps {
+  heroProperty: Property | null
+}
+
+export default function Hero({ heroProperty }: HeroProps) {
+  // Use hero property data
+  const heroImage = heroProperty?.featured_image || ''
+  const heroName = heroProperty?.name || ''
+  const heroSlug = heroProperty?.slug || ''
+  const heroCity = heroProperty?.city || ''
   return (
-    <section className="relative min-h-screen bg-cream-50 pt-24 pb-16 overflow-hidden">
+    <section className="relative min-h-screen bg-cream-50 pt-28 lg:pt-32 pb-16 overflow-hidden">
       {/* Subtle background pattern */}
       <div className="absolute inset-0 opacity-30">
         <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-gradient-to-bl from-gold-100 to-transparent rounded-full blur-3xl -translate-y-1/2 translate-x-1/3" />
@@ -140,33 +149,50 @@ export default function Hero() {
             className="order-1 lg:order-2"
           >
             <div className="grid grid-cols-2 gap-4">
-              {/* Main large image */}
+              {/* Main Hero Featured Property */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.6, delay: 0.4 }}
                 className="col-span-2 relative aspect-[16/10] rounded-3xl overflow-hidden shadow-2xl group cursor-pointer"
               >
-                <img
-                  src="https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=1200&q=80"
-                  alt="Luxury Villa"
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-                <div className="absolute bottom-6 left-6 right-6">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="flex items-center gap-1 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full">
-                      <Star className="w-4 h-4 fill-gold-500 text-gold-500" />
-                      <span className="text-sm font-semibold text-charcoal-900">4.98</span>
+                {heroImage ? (
+                  <Link href={heroSlug ? `/properties/${heroSlug}` : '/mallorca'} className="block w-full h-full">
+                    <img
+                      src={heroImage}
+                      alt={heroName}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+                    
+                    {/* Hero Featured Badge */}
+                    <div className="absolute top-4 left-4">
+                      <div className="flex items-center gap-1.5 bg-gold-500 text-white px-3 py-1.5 rounded-full shadow-lg">
+                        <Crown className="w-4 h-4" />
+                        <span className="text-sm font-semibold">Featured Property</span>
+                      </div>
                     </div>
-                    <span className="text-white/80 text-sm">Superhost</span>
+                    
+                    <div className="absolute bottom-6 left-6 right-6">
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="flex items-center gap-1 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full">
+                          <Star className="w-4 h-4 fill-gold-500 text-gold-500" />
+                          <span className="text-sm font-semibold text-charcoal-900">5.0</span>
+                        </div>
+                        {heroCity && <span className="text-white/90 text-sm">{heroCity}</span>}
+                      </div>
+                      <h3 className="font-merriweather text-xl lg:text-2xl text-white">{heroName}</h3>
+                    </div>
+                  </Link>
+                ) : (
+                  <div className="w-full h-full bg-gradient-to-br from-gold-100 to-cream-200 flex items-center justify-center">
+                    <p className="text-charcoal-400">Set a Hero Featured property in admin</p>
                   </div>
-                  <h3 className="font-merriweather text-xl text-white">Featured: Mediterranean Villa</h3>
-                </div>
+                )}
               </motion.div>
 
-              {/* Smaller images */}
-              {featuredDestinations.slice(0, 2).map((dest, index) => (
+              {/* Secondary destination cards */}
+              {featuredDestinations.map((dest, index) => (
                 <motion.div
                   key={dest.name}
                   initial={{ opacity: 0, y: 20 }}
@@ -174,15 +200,18 @@ export default function Hero() {
                   transition={{ duration: 0.6, delay: 0.5 + index * 0.1 }}
                   className="relative aspect-square rounded-2xl overflow-hidden shadow-lg group cursor-pointer"
                 >
-                  <img
-                    src={dest.image}
-                    alt={dest.name}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-                  <div className="absolute bottom-4 left-4">
-                    <p className="text-white font-semibold">{dest.name}</p>
-                  </div>
+                  <Link href={dest.href} className="block w-full h-full">
+                    <img
+                      src={dest.image}
+                      alt={dest.name}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                    <div className="absolute bottom-4 left-4">
+                      <p className="text-white font-semibold text-lg">{dest.name}</p>
+                      <p className="text-white/80 text-sm">Explore →</p>
+                    </div>
+                  </Link>
                 </motion.div>
               ))}
             </div>

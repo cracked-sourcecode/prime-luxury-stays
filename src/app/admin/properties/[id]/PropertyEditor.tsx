@@ -22,7 +22,11 @@ import {
   X,
   ExternalLink,
   AlertCircle,
-  Loader2
+  Loader2,
+  ChevronUp,
+  ChevronDown,
+  GripVertical,
+  Crown
 } from 'lucide-react'
 import type { Property } from '@/lib/properties'
 import type { PropertyImage, PropertyAvailability } from '@/lib/admin'
@@ -79,6 +83,7 @@ export default function PropertyEditor({ property, images: initialImages, availa
 
   // Availability state
   const [availability, setAvailability] = useState<PropertyAvailability[]>(initialAvailability)
+  const [isHeroFeatured, setIsHeroFeatured] = useState(property?.is_hero_featured || false)
   const [newAvailability, setNewAvailability] = useState({
     start_date: '',
     end_date: '',
@@ -207,6 +212,41 @@ export default function PropertyEditor({ property, images: initialImages, availa
     }
   }
 
+  const handleMoveImage = async (imageId: number, direction: 'up' | 'down') => {
+    const currentIndex = images.findIndex(img => img.id === imageId)
+    if (currentIndex === -1) return
+    
+    const newIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1
+    if (newIndex < 0 || newIndex >= images.length) return
+
+    // Swap images in local state
+    const newImages = [...images]
+    const temp = newImages[currentIndex]
+    newImages[currentIndex] = newImages[newIndex]
+    newImages[newIndex] = temp
+
+    // Update display_order for all images
+    const reorderedImages = newImages.map((img, idx) => ({
+      ...img,
+      display_order: idx + 1
+    }))
+    
+    setImages(reorderedImages)
+
+    // Save to server
+    try {
+      await fetch(`/api/admin/properties/${property?.id}/images/reorder`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          images: reorderedImages.map(img => ({ id: img.id, display_order: img.display_order }))
+        }),
+      })
+    } catch (err) {
+      setError('Failed to reorder images')
+    }
+  }
+
   const handleAddAvailability = async () => {
     if (!newAvailability.start_date || !newAvailability.end_date || !newAvailability.price_per_week || !property?.id) return
 
@@ -271,6 +311,25 @@ export default function PropertyEditor({ property, images: initialImages, availa
       router.push('/admin')
     } catch (err) {
       setError('Failed to delete property')
+    }
+  }
+
+  const handleSetHeroFeatured = async () => {
+    if (!property?.id) return
+    
+    try {
+      const res = await fetch(`/api/admin/properties/${property.id}/hero-featured`, {
+        method: 'POST',
+      })
+      const data = await res.json()
+      if (data.success) {
+        setIsHeroFeatured(true)
+        setSuccess('This property is now the Hero Featured property on the homepage!')
+      } else {
+        setError(data.error || 'Failed to set hero featured')
+      }
+    } catch (err) {
+      setError('Failed to set hero featured')
     }
   }
 
@@ -612,7 +671,7 @@ export default function PropertyEditor({ property, images: initialImages, availa
               {/* Status */}
               <section>
                 <h3 className="font-semibold text-charcoal-900 mb-4">Status</h3>
-                <div className="flex flex-wrap gap-6">
+                <div className="flex flex-wrap gap-6 mb-6">
                   <label className="flex items-center gap-3 cursor-pointer">
                     <input
                       type="checkbox"
@@ -638,6 +697,41 @@ export default function PropertyEditor({ property, images: initialImages, availa
                     </span>
                   </label>
                 </div>
+                
+                {/* Hero Featured - Only one property can have this */}
+                {!isNew && (
+                  <div className="p-4 rounded-xl border-2 border-dashed border-gold-200 bg-gold-50/50">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-10 h-10 rounded-full flex items-center justify-center ${isHeroFeatured ? 'bg-gold-500' : 'bg-gray-200'}`}>
+                          <Crown className={`w-5 h-5 ${isHeroFeatured ? 'text-white' : 'text-gray-500'}`} />
+                        </div>
+                        <div>
+                          <p className="font-semibold text-charcoal-900">Homepage Hero Featured</p>
+                          <p className="text-sm text-charcoal-500">
+                            {isHeroFeatured 
+                              ? 'This property is shown in the main hero section on the homepage'
+                              : 'Set this property as the main featured property on the homepage'}
+                          </p>
+                        </div>
+                      </div>
+                      {isHeroFeatured ? (
+                        <span className="px-4 py-2 bg-gold-500 text-white rounded-lg font-semibold flex items-center gap-2">
+                          <Crown className="w-4 h-4" />
+                          Hero Featured
+                        </span>
+                      ) : (
+                        <button
+                          onClick={handleSetHeroFeatured}
+                          className="px-4 py-2 bg-charcoal-900 text-white rounded-lg font-semibold hover:bg-charcoal-800 transition-colors flex items-center gap-2"
+                        >
+                          <Crown className="w-4 h-4" />
+                          Set as Hero Featured
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                )}
               </section>
 
               {/* Featured Image URL */}
@@ -720,7 +814,10 @@ export default function PropertyEditor({ property, images: initialImages, availa
             </div>
 
             <div className="border-t border-gray-100 pt-8">
-              <h3 className="font-semibold text-charcoal-900 mb-4">Property Images ({images.length})</h3>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-semibold text-charcoal-900">Property Images ({images.length})</h3>
+                <p className="text-sm text-charcoal-400">Drag or use arrows to reorder. First image shows on property cards.</p>
+              </div>
               
               {images.length === 0 ? (
                 <div className="text-center py-12 text-charcoal-400">
@@ -728,25 +825,69 @@ export default function PropertyEditor({ property, images: initialImages, availa
                   <p>No images yet. Add your first image above.</p>
                 </div>
               ) : (
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                  {images.map((image) => (
-                    <div key={image.id} className="relative group">
-                      <img
-                        src={image.image_url}
-                        alt={image.caption || 'Property image'}
-                        className="w-full aspect-square object-cover rounded-lg"
-                      />
-                      {image.is_featured && (
-                        <div className="absolute top-2 left-2 bg-gold-500 text-white text-xs px-2 py-1 rounded-full flex items-center gap-1">
-                          <Star className="w-3 h-3 fill-white" />
-                          Featured
+                <div className="space-y-3">
+                  {images.map((image, index) => (
+                    <div 
+                      key={image.id} 
+                      className="flex items-center gap-4 bg-gray-50 rounded-xl p-3 group hover:bg-gray-100 transition-colors"
+                    >
+                      {/* Order number & controls */}
+                      <div className="flex flex-col items-center gap-1 w-12">
+                        <button
+                          onClick={() => handleMoveImage(image.id, 'up')}
+                          disabled={index === 0}
+                          className="p-1 text-charcoal-400 hover:text-charcoal-700 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                          title="Move up"
+                        >
+                          <ChevronUp className="w-5 h-5" />
+                        </button>
+                        <div className="w-8 h-8 rounded-full bg-charcoal-900 text-white flex items-center justify-center text-sm font-bold">
+                          {index + 1}
                         </div>
-                      )}
-                      <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center gap-2">
+                        <button
+                          onClick={() => handleMoveImage(image.id, 'down')}
+                          disabled={index === images.length - 1}
+                          className="p-1 text-charcoal-400 hover:text-charcoal-700 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                          title="Move down"
+                        >
+                          <ChevronDown className="w-5 h-5" />
+                        </button>
+                      </div>
+
+                      {/* Image thumbnail */}
+                      <div className="relative w-24 h-24 rounded-lg overflow-hidden flex-shrink-0">
+                        <img
+                          src={image.image_url}
+                          alt={image.caption || 'Property image'}
+                          className="w-full h-full object-cover"
+                        />
+                        {image.is_featured && (
+                          <div className="absolute top-1 left-1 bg-gold-500 text-white text-[10px] px-1.5 py-0.5 rounded-full flex items-center gap-0.5">
+                            <Star className="w-2.5 h-2.5 fill-white" />
+                            Featured
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Image info */}
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm text-charcoal-600 truncate font-mono">
+                          {image.image_url.split('/').pop()}
+                        </p>
+                        {image.caption && (
+                          <p className="text-sm text-charcoal-400 truncate mt-1">{image.caption}</p>
+                        )}
+                        <p className="text-xs text-charcoal-300 mt-1">
+                          {index === 0 ? '← Shows on property cards' : `Position ${index + 1}`}
+                        </p>
+                      </div>
+
+                      {/* Actions */}
+                      <div className="flex items-center gap-2">
                         {!image.is_featured && (
                           <button
                             onClick={() => handleSetFeatured(image.id)}
-                            className="bg-white text-charcoal-900 p-2 rounded-lg hover:bg-gold-100 transition-colors"
+                            className="p-2 text-charcoal-400 hover:text-gold-600 hover:bg-gold-50 rounded-lg transition-colors"
                             title="Set as featured"
                           >
                             <Star className="w-5 h-5" />
@@ -754,15 +895,12 @@ export default function PropertyEditor({ property, images: initialImages, availa
                         )}
                         <button
                           onClick={() => handleDeleteImage(image.id)}
-                          className="bg-white text-red-600 p-2 rounded-lg hover:bg-red-50 transition-colors"
+                          className="p-2 text-charcoal-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                           title="Delete image"
                         >
                           <Trash2 className="w-5 h-5" />
                         </button>
                       </div>
-                      {image.caption && (
-                        <p className="mt-2 text-sm text-charcoal-500 truncate">{image.caption}</p>
-                      )}
                     </div>
                   ))}
                 </div>

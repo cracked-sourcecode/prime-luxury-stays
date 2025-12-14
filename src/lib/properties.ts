@@ -29,6 +29,7 @@ export interface Property {
   is_beachfront: boolean;
   is_active: boolean;
   is_featured: boolean;
+  is_hero_featured: boolean;
   min_stay_nights: number;
 }
 
@@ -65,5 +66,14 @@ export async function getAllPropertySlugs(): Promise<string[]> {
     SELECT slug FROM properties WHERE is_active = true
   `;
   return properties.map((p: any) => p.slug);
+}
+
+export async function getHeroFeaturedProperty(): Promise<Property | null> {
+  const properties = await sql`
+    SELECT * FROM properties 
+    WHERE is_hero_featured = true AND is_active = true
+    LIMIT 1
+  `;
+  return properties[0] as Property || null;
 }
 

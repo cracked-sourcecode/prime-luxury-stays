@@ -5,19 +5,40 @@ const sql = neon(process.env.DATABASE_URL || 'postgresql://neondb_owner:npg_sylB
 async function migrate() {
   console.log('🔧 Running admin schema migration...\n');
 
-  // Create property_images table
+  // Create property_images table with cloud storage fields
   console.log('📸 Creating property_images table...');
   await sql`
     CREATE TABLE IF NOT EXISTS property_images (
       id SERIAL PRIMARY KEY,
       property_id INTEGER NOT NULL REFERENCES properties(id) ON DELETE CASCADE,
       image_url TEXT NOT NULL,
+      storage_bucket VARCHAR(255),
+      storage_path VARCHAR(500),
       caption TEXT,
+      alt_text VARCHAR(255),
       display_order INTEGER DEFAULT 0,
       is_featured BOOLEAN DEFAULT FALSE,
+      image_type VARCHAR(50) DEFAULT 'gallery',
+      width INTEGER,
+      height INTEGER,
+      file_size INTEGER,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
   `;
+  
+  // Add new columns if they don't exist (for existing tables)
+  console.log('   Adding new columns if needed...');
+  try {
+    await sql`ALTER TABLE property_images ADD COLUMN IF NOT EXISTS storage_bucket VARCHAR(255)`;
+    await sql`ALTER TABLE property_images ADD COLUMN IF NOT EXISTS storage_path VARCHAR(500)`;
+    await sql`ALTER TABLE property_images ADD COLUMN IF NOT EXISTS alt_text VARCHAR(255)`;
+    await sql`ALTER TABLE property_images ADD COLUMN IF NOT EXISTS image_type VARCHAR(50) DEFAULT 'gallery'`;
+    await sql`ALTER TABLE property_images ADD COLUMN IF NOT EXISTS width INTEGER`;
+    await sql`ALTER TABLE property_images ADD COLUMN IF NOT EXISTS height INTEGER`;
+    await sql`ALTER TABLE property_images ADD COLUMN IF NOT EXISTS file_size INTEGER`;
+  } catch (e) {
+    // Columns may already exist
+  }
   console.log('   ✅ property_images table created');
 
   // Create property_availability table  

@@ -28,10 +28,19 @@ export async function POST(request: NextRequest, { params }: Props) {
   }
 
   try {
-    const { image_url, caption, is_featured } = await request.json();
+    const { image_url, caption, alt_text, is_featured, image_type } = await request.json();
 
     if (!image_url) {
       return NextResponse.json({ success: false, error: 'Image URL required' }, { status: 400 });
+    }
+
+    // Parse GCS URL for bucket/path
+    let storageBucket = null;
+    let storagePath = null;
+    const match = image_url.match(/https:\/\/storage\.googleapis\.com\/([^\/]+)\/(.+)/);
+    if (match) {
+      storageBucket = match[1];
+      storagePath = match[2];
     }
 
     // Get max display order
@@ -44,8 +53,15 @@ export async function POST(request: NextRequest, { params }: Props) {
     const displayOrder = (maxOrder[0]?.max_order || 0) + 1;
 
     const result = await sql`
-      INSERT INTO property_images (property_id, image_url, caption, display_order, is_featured)
-      VALUES (${propertyId}, ${image_url}, ${caption || null}, ${displayOrder}, ${is_featured || false})
+      INSERT INTO property_images (
+        property_id, image_url, storage_bucket, storage_path,
+        caption, alt_text, display_order, is_featured, image_type
+      )
+      VALUES (
+        ${propertyId}, ${image_url}, ${storageBucket}, ${storagePath},
+        ${caption || null}, ${alt_text || null}, ${displayOrder}, 
+        ${is_featured || false}, ${image_type || 'gallery'}
+      )
       RETURNING id
     `;
 
