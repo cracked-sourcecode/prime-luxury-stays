@@ -359,10 +359,11 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
               >
-                <h2 className="font-merriweather text-3xl text-charcoal-900 mb-6">
+                <h2 className="font-merriweather text-2xl md:text-3xl text-charcoal-900 mb-4 md:mb-6">
                   Photo Gallery
                 </h2>
-                <div className="grid grid-cols-4 grid-rows-2 gap-3 h-[400px] md:h-[500px]">
+                {/* Mobile: 2 column grid, Desktop: 4 column grid */}
+                <div className="grid grid-cols-2 md:grid-cols-4 md:grid-rows-2 gap-2 md:gap-3 md:h-[500px]">
                   {/* Large main image */}
                   <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
@@ -372,7 +373,7 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
                       setCurrentImageIndex(0)
                       setShowGallery(true)
                     }}
-                    className="relative col-span-2 row-span-2 rounded-2xl overflow-hidden cursor-pointer group"
+                    className="relative col-span-2 md:row-span-2 aspect-[4/3] md:aspect-auto rounded-xl md:rounded-2xl overflow-hidden cursor-pointer group"
                   >
                     <OptimizedImage 
                       src={galleryImages[0]} 
@@ -381,11 +382,11 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
                       fill
                     />
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center">
-                      <Maximize className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                      <Maximize className="w-6 h-6 md:w-8 md:h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
                     </div>
                   </motion.div>
                   
-                  {/* Top right image */}
+                  {/* Second image */}
                   {galleryImages[1] && (
                     <motion.div
                       initial={{ opacity: 0, scale: 0.9 }}
@@ -396,7 +397,7 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
                         setCurrentImageIndex(1)
                         setShowGallery(true)
                       }}
-                      className="relative col-span-2 rounded-2xl overflow-hidden cursor-pointer group"
+                      className="relative aspect-square md:aspect-auto md:col-span-2 rounded-xl md:rounded-2xl overflow-hidden cursor-pointer group"
                     >
                       <OptimizedImage 
                         src={galleryImages[1]} 
@@ -405,12 +406,12 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
                         fill
                       />
                       <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center">
-                        <Maximize className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                        <Maximize className="w-6 h-6 md:w-8 md:h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
                       </div>
                     </motion.div>
                   )}
                   
-                  {/* Bottom right image with +X overlay */}
+                  {/* Third image with +X overlay */}
                   {galleryImages[2] && (
                     <motion.div
                       initial={{ opacity: 0, scale: 0.9 }}
@@ -421,7 +422,7 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
                         setCurrentImageIndex(2)
                         setShowGallery(true)
                       }}
-                      className="relative col-span-2 rounded-2xl overflow-hidden cursor-pointer group"
+                      className="relative aspect-square md:aspect-auto md:col-span-2 rounded-xl md:rounded-2xl overflow-hidden cursor-pointer group"
                     >
                       <OptimizedImage 
                         src={galleryImages[2]} 
@@ -430,13 +431,13 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
                         fill
                       />
                       <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center">
-                        <Maximize className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                        <Maximize className="w-6 h-6 md:w-8 md:h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
                       </div>
                       {galleryImages.length > 3 && (
                         <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
                           <div className="text-center text-white">
-                            <Grid3X3 className="w-8 h-8 mx-auto mb-2" />
-                            <span className="text-lg font-semibold">+{galleryImages.length - 3} photos</span>
+                            <Grid3X3 className="w-6 h-6 md:w-8 md:h-8 mx-auto mb-1 md:mb-2" />
+                            <span className="text-base md:text-lg font-semibold">+{galleryImages.length - 3}</span>
                           </div>
                         </div>
                       )}
@@ -635,8 +636,8 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
             </motion.section>
           </div>
 
-          {/* ===== STICKY SIDEBAR ===== */}
-          <div className="lg:col-span-1">
+          {/* ===== STICKY SIDEBAR (Hidden on mobile) ===== */}
+          <div className="hidden lg:block lg:col-span-1">
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -791,6 +792,30 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* ========== MOBILE STICKY CTA BAR ========== */}
+      <div className="fixed bottom-0 left-0 right-0 z-50 lg:hidden bg-white border-t border-gray-200 p-4 shadow-2xl">
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex-1 min-w-0">
+            <p className="font-merriweather text-charcoal-900 font-semibold truncate">
+              {property.name}
+            </p>
+            <p className="text-charcoal-500 text-sm">
+              {property.city}, Mallorca
+            </p>
+          </div>
+          <Link
+            href={`/inquire?property=${property.slug}`}
+            className="btn-gold flex-shrink-0 flex items-center gap-2 !py-3 !px-6"
+          >
+            <Calendar className="w-4 h-4" />
+            <span>Inquire</span>
+          </Link>
+        </div>
+      </div>
+
+      {/* Spacer for mobile sticky bar */}
+      <div className="h-20 lg:hidden" />
     </div>
   )
 }

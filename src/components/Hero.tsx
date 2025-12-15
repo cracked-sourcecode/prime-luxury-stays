@@ -124,19 +124,19 @@ export default function Hero({ heroProperty }: HeroProps) {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, delay: 0.7 }}
-              className="flex flex-wrap items-center gap-6 mt-10"
+              className="flex flex-wrap items-center gap-4 md:gap-6 mt-6 md:mt-10"
             >
               <div className="flex items-center gap-2 text-charcoal-600">
-                <Shield className="w-5 h-5 text-gold-500" />
-                <span className="text-sm font-medium">Verified Properties</span>
+                <Shield className="w-4 h-4 md:w-5 md:h-5 text-gold-500" />
+                <span className="text-xs md:text-sm font-medium">Verified Properties</span>
               </div>
               <div className="flex items-center gap-2 text-charcoal-600">
-                <Clock className="w-5 h-5 text-gold-500" />
-                <span className="text-sm font-medium">24/7 Concierge</span>
+                <Clock className="w-4 h-4 md:w-5 md:h-5 text-gold-500" />
+                <span className="text-xs md:text-sm font-medium">24/7 Concierge</span>
               </div>
               <div className="flex items-center gap-2 text-charcoal-600">
-                <Star className="w-5 h-5 text-gold-500" />
-                <span className="text-sm font-medium">5-Star Service</span>
+                <Star className="w-4 h-4 md:w-5 md:h-5 text-gold-500" />
+                <span className="text-xs md:text-sm font-medium">5-Star Service</span>
               </div>
             </motion.div>
           </motion.div>
@@ -148,13 +148,13 @@ export default function Hero({ heroProperty }: HeroProps) {
             transition={{ duration: 0.8, delay: 0.3 }}
             className="order-1 lg:order-2"
           >
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-2 md:gap-4">
               {/* Main Hero Featured Property */}
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.6, delay: 0.4 }}
-                className="col-span-2 relative aspect-[16/10] rounded-3xl overflow-hidden shadow-2xl group cursor-pointer"
+                className="col-span-2 relative aspect-[4/3] md:aspect-[16/10] rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl group cursor-pointer"
               >
                 {heroImage ? (
                   <Link href={heroSlug ? `/properties/${heroSlug}` : '/mallorca'} className="block w-full h-full">
@@ -166,39 +166,39 @@ export default function Hero({ heroProperty }: HeroProps) {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
                     
                     {/* Hero Featured Badge */}
-                    <div className="absolute top-4 left-4">
-                      <div className="flex items-center gap-1.5 bg-gold-500 text-white px-3 py-1.5 rounded-full shadow-lg">
-                        <Crown className="w-4 h-4" />
-                        <span className="text-sm font-semibold">Featured Property</span>
+                    <div className="absolute top-3 left-3 md:top-4 md:left-4">
+                      <div className="flex items-center gap-1 md:gap-1.5 bg-gold-500 text-white px-2 py-1 md:px-3 md:py-1.5 rounded-full shadow-lg">
+                        <Crown className="w-3 h-3 md:w-4 md:h-4" />
+                        <span className="text-xs md:text-sm font-semibold">Featured</span>
                       </div>
                     </div>
                     
-                    <div className="absolute bottom-6 left-6 right-6">
-                      <div className="flex items-center gap-2 mb-2">
-                        <div className="flex items-center gap-1 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full">
-                          <Star className="w-4 h-4 fill-gold-500 text-gold-500" />
-                          <span className="text-sm font-semibold text-charcoal-900">5.0</span>
+                    <div className="absolute bottom-4 left-4 right-4 md:bottom-6 md:left-6 md:right-6">
+                      <div className="flex items-center gap-2 mb-1 md:mb-2">
+                        <div className="flex items-center gap-1 bg-white/90 backdrop-blur-sm px-2 py-0.5 md:px-3 md:py-1 rounded-full">
+                          <Star className="w-3 h-3 md:w-4 md:h-4 fill-gold-500 text-gold-500" />
+                          <span className="text-xs md:text-sm font-semibold text-charcoal-900">5.0</span>
                         </div>
-                        {heroCity && <span className="text-white/90 text-sm">{heroCity}</span>}
+                        {heroCity && <span className="text-white/90 text-xs md:text-sm">{heroCity}</span>}
                       </div>
-                      <h3 className="font-merriweather text-xl lg:text-2xl text-white">{heroName}</h3>
+                      <h3 className="font-merriweather text-base md:text-xl lg:text-2xl text-white line-clamp-1">{heroName}</h3>
                     </div>
                   </Link>
                 ) : (
                   <div className="w-full h-full bg-gradient-to-br from-gold-100 to-cream-200 flex items-center justify-center">
-                    <p className="text-charcoal-400">Set a Hero Featured property in admin</p>
+                    <p className="text-charcoal-400 text-sm md:text-base">Set a Hero Featured property in admin</p>
                   </div>
                 )}
               </motion.div>
 
-              {/* Secondary destination cards */}
+              {/* Secondary destination cards - hidden on very small screens */}
               {featuredDestinations.map((dest, index) => (
                 <motion.div
                   key={dest.name}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 0.5 + index * 0.1 }}
-                  className="relative aspect-square rounded-2xl overflow-hidden shadow-lg group cursor-pointer"
+                  className="relative aspect-[4/3] md:aspect-square rounded-xl md:rounded-2xl overflow-hidden shadow-lg group cursor-pointer"
                 >
                   <Link href={dest.href} className="block w-full h-full">
                     <img
@@ -207,34 +207,34 @@ export default function Hero({ heroProperty }: HeroProps) {
                       className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-                    <div className="absolute bottom-4 left-4">
-                      <p className="text-white font-semibold text-lg">{dest.name}</p>
-                      <p className="text-white/80 text-sm">Explore →</p>
+                    <div className="absolute bottom-3 left-3 md:bottom-4 md:left-4">
+                      <p className="text-white font-semibold text-sm md:text-lg">{dest.name}</p>
+                      <p className="text-white/80 text-xs md:text-sm">Explore →</p>
                     </div>
                   </Link>
                 </motion.div>
               ))}
             </div>
 
-            {/* Floating Stats Card */}
+            {/* Floating Stats Card - Smaller on mobile */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.8 }}
-              className="absolute -bottom-4 left-1/2 lg:left-auto lg:right-12 transform -translate-x-1/2 lg:translate-x-0 bg-white rounded-2xl shadow-xl p-6 flex items-center gap-8"
+              className="hidden md:flex absolute -bottom-4 left-1/2 lg:left-auto lg:right-12 transform -translate-x-1/2 lg:translate-x-0 bg-white rounded-2xl shadow-xl p-4 md:p-6 items-center gap-4 md:gap-8"
             >
               <div className="text-center">
-                <div className="font-merriweather text-3xl text-gold-600">200+</div>
+                <div className="font-merriweather text-2xl md:text-3xl text-gold-600">200+</div>
                 <div className="text-xs text-charcoal-500 font-medium">Properties</div>
               </div>
-              <div className="w-px h-12 bg-gray-200" />
+              <div className="w-px h-10 md:h-12 bg-gray-200" />
               <div className="text-center">
-                <div className="font-merriweather text-3xl text-gold-600">15+</div>
+                <div className="font-merriweather text-2xl md:text-3xl text-gold-600">15+</div>
                 <div className="text-xs text-charcoal-500 font-medium">Destinations</div>
               </div>
-              <div className="w-px h-12 bg-gray-200" />
+              <div className="w-px h-10 md:h-12 bg-gray-200" />
               <div className="text-center">
-                <div className="font-merriweather text-3xl text-gold-600">98%</div>
+                <div className="font-merriweather text-2xl md:text-3xl text-gold-600">98%</div>
                 <div className="text-xs text-charcoal-500 font-medium">Satisfaction</div>
               </div>
             </motion.div>
