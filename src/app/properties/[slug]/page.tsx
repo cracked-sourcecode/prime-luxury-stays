@@ -45,9 +45,6 @@ export default async function PropertyPage({ params }: PropertyPageProps) {
 
   // Fetch gallery images from database
   const galleryImages = await getPropertyImages(property.id)
-  
-  // Debug log
-  console.log(`Property ${property.slug}: Found ${galleryImages.length} images`)
 
   // Map and filter out any with missing URLs
   const mappedImages = galleryImages

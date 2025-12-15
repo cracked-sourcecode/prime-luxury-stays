@@ -73,8 +73,8 @@ export default function Navigation() {
 
             {/* CTA Button */}
             <div className="hidden lg:block">
-              <a href="#contact" className="btn-gold">
-                Request Access
+              <a href="/destinations" className="btn-gold">
+                View Destinations
               </a>
             </div>
 
@@ -130,8 +130,8 @@ export default function Navigation() {
                   transition={{ delay: 0.5 }}
                   className="mt-8"
                 >
-                  <a href="#contact" className="btn-gold block text-center">
-                    Request Access
+                  <a href="/destinations" className="btn-gold block text-center">
+                    View Destinations
                   </a>
                 </motion.div>
               </div>
