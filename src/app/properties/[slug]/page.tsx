@@ -45,6 +45,19 @@ export default async function PropertyPage({ params }: PropertyPageProps) {
 
   // Fetch gallery images from database
   const galleryImages = await getPropertyImages(property.id)
+  
+  // Debug log
+  console.log(`Property ${property.slug}: Found ${galleryImages.length} images`)
+
+  // Map and filter out any with missing URLs
+  const mappedImages = galleryImages
+    .filter((img: any) => img.image_url && img.image_url.length > 0)
+    .map((img: any) => ({
+      id: img.id,
+      url: img.image_url,
+      caption: img.caption,
+      is_featured: img.is_featured
+    }))
 
   return (
     <>
@@ -52,12 +65,7 @@ export default async function PropertyPage({ params }: PropertyPageProps) {
       <main className="min-h-screen bg-cream-50 pt-20">
         <PropertyDetailClient 
           property={property} 
-          galleryImages={galleryImages.map((img: any) => ({
-            id: img.id,
-            url: img.image_url,
-            caption: img.caption,
-            is_featured: img.is_featured
-          }))}
+          galleryImages={mappedImages}
         />
       </main>
       <Footer />

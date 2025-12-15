@@ -7,7 +7,7 @@ import type { Property } from '@/lib/properties'
 
 const featuredDestinations = [
   { name: 'Mallorca', href: '/mallorca', image: 'https://storage.googleapis.com/primeluxurystays/Mallorca%20Global%20Hero%20Section%20Image' },
-  { name: 'Swiss Alps', href: '/properties', image: 'https://images.unsplash.com/photo-1502784444187-359ac186c5bb?w=600&q=80' },
+  { name: 'South of France', href: '/destinations', image: 'https://images.unsplash.com/photo-1533104816931-20fa691ff6ca?w=600&q=80' },
 ]
 
 interface HeroProps {
@@ -109,7 +109,7 @@ export default function Hero({ heroProperty }: HeroProps) {
                 {/* Search Button */}
                 <div className="p-2 flex items-center">
 <a
-                  href="/mallorca"
+                  href="/destinations"
                   className="w-full sm:w-auto btn-gold flex items-center justify-center gap-2 !rounded-xl !py-4 !px-8"
                 >
                   <Search className="w-5 h-5" />
@@ -157,7 +157,7 @@ export default function Hero({ heroProperty }: HeroProps) {
                 className="col-span-2 relative aspect-[4/3] md:aspect-[16/10] rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl group cursor-pointer"
               >
                 {heroImage ? (
-                  <Link href={heroSlug ? `/properties/${heroSlug}` : '/mallorca'} className="block w-full h-full">
+                  <Link href={heroSlug ? `/properties/${heroSlug}` : '/destinations'} className="block w-full h-full">
                     <img
                       src={heroImage}
                       alt={heroName}

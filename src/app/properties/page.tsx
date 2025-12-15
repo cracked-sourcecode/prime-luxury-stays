@@ -17,7 +17,7 @@ export default async function PropertiesPage() {
   return (
     <>
       <Navigation />
-      <main className="min-h-screen bg-cream-50 pt-24">
+      <main className="min-h-screen bg-cream-50 pt-20">
         <Suspense fallback={<PropertiesLoading />}>
           <PropertiesClient properties={properties} />
         </Suspense>

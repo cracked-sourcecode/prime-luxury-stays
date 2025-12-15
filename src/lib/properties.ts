@@ -37,7 +37,7 @@ export interface Property {
 export async function getActiveProperties(): Promise<Property[]> {
   const properties = await sql`
     SELECT * FROM properties 
-    WHERE is_active = true 
+    WHERE is_active = true OR is_active IS NULL
     ORDER BY is_featured DESC, name ASC
   `;
   return properties as Property[];

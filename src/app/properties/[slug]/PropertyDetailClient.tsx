@@ -56,13 +56,11 @@ function OptimizedImage({
   priority?: boolean;
   fill?: boolean;
 }) {
-  const [isLoading, setIsLoading] = useState(true)
   const [hasError, setHasError] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
   
-  // Decode URL if it's double-encoded
-  const decodedSrc = src.includes('%25') ? decodeURIComponent(src) : src
-  
-  if (hasError) {
+  // Handle missing src
+  if (!src || hasError) {
     return (
       <div className={`bg-cream-100 flex items-center justify-center ${fill ? 'absolute inset-0' : ''} ${className}`}>
         <ImageOff className="w-12 h-12 text-charcoal-300" />
@@ -70,19 +68,27 @@ function OptimizedImage({
     )
   }
   
+  // Decode URL if it's double-encoded (contains %25 which is encoded %)
+  let decodedSrc = src
+  try {
+    if (src.includes('%25')) {
+      decodedSrc = decodeURIComponent(src)
+    }
+  } catch (e) {
+    // If decoding fails, use original
+  }
+  
   return (
     <>
-      {isLoading && (
-        <div className={`${fill ? 'absolute inset-0' : ''} bg-cream-100 animate-pulse flex items-center justify-center`}>
-          <div className="w-8 h-8 border-2 border-gold-500 border-t-transparent rounded-full animate-spin" />
-        </div>
+      {isLoading && fill && (
+        <div className="absolute inset-0 bg-cream-100 animate-pulse" />
       )}
       <img
         src={decodedSrc}
         alt={alt}
-        className={`${fill ? 'absolute inset-0 w-full h-full object-cover' : ''} transition-opacity duration-300 ${isLoading ? 'opacity-0' : 'opacity-100'} ${className}`}
+        className={`${fill ? 'absolute inset-0 w-full h-full object-cover' : ''} ${className} ${isLoading ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300`}
         onLoad={() => setIsLoading(false)}
-        onError={() => { setHasError(true); setIsLoading(false); }}
+        onError={() => { setHasError(true); setIsLoading(false) }}
       />
     </>
   )
@@ -117,9 +123,13 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
   const [isScrolled, setIsScrolled] = useState(false)
   
   // Use database images if available, otherwise use featured image
+  // Filter out any null/undefined/empty URLs
   const galleryImages = dbImages.length > 0 
-    ? dbImages.map(img => img.url)
+    ? dbImages.map(img => img.url).filter((url): url is string => !!url && url.length > 0)
     : [property.featured_image || 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=1600&q=80']
+  
+  // Debug: log gallery images count
+  console.log('Gallery images count:', galleryImages.length, 'from dbImages:', dbImages.length)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -201,7 +211,7 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
               <div className="hidden md:block h-8 w-px bg-gray-200" />
               
               <Link 
-                href="/mallorca"
+                href="/properties"
                 className="hidden md:flex items-center gap-2 text-charcoal-600 hover:text-gold-600 transition-colors text-sm"
               >
                 <ArrowLeft className="w-4 h-4" />
@@ -362,9 +372,9 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
                 <h2 className="font-merriweather text-2xl md:text-3xl text-charcoal-900 mb-4 md:mb-6">
                   Photo Gallery
                 </h2>
-                {/* Mobile: 2 column grid, Desktop: 4 column grid */}
-                <div className="grid grid-cols-2 md:grid-cols-4 md:grid-rows-2 gap-2 md:gap-3 md:h-[500px]">
-                  {/* Large main image */}
+                {/* Photo Grid - show first 3 images */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  {/* Large main image - spans 2 cols on mobile, 2 cols 2 rows on desktop */}
                   <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
                     whileInView={{ opacity: 1, scale: 1 }}
@@ -373,7 +383,7 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
                       setCurrentImageIndex(0)
                       setShowGallery(true)
                     }}
-                    className="relative col-span-2 md:row-span-2 aspect-[4/3] md:aspect-auto rounded-xl md:rounded-2xl overflow-hidden cursor-pointer group"
+                    className="relative col-span-2 row-span-2 aspect-[4/3] md:aspect-[3/4] rounded-2xl overflow-hidden cursor-pointer group bg-cream-100"
                   >
                     <OptimizedImage 
                       src={galleryImages[0]} 
@@ -382,12 +392,12 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
                       fill
                     />
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center">
-                      <Maximize className="w-6 h-6 md:w-8 md:h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                      <Maximize className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
                     </div>
                   </motion.div>
                   
                   {/* Second image */}
-                  {galleryImages[1] && (
+                  {galleryImages.length > 1 && (
                     <motion.div
                       initial={{ opacity: 0, scale: 0.9 }}
                       whileInView={{ opacity: 1, scale: 1 }}
@@ -397,7 +407,7 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
                         setCurrentImageIndex(1)
                         setShowGallery(true)
                       }}
-                      className="relative aspect-square md:aspect-auto md:col-span-2 rounded-xl md:rounded-2xl overflow-hidden cursor-pointer group"
+                      className="relative col-span-1 aspect-square rounded-2xl overflow-hidden cursor-pointer group bg-cream-100"
                     >
                       <OptimizedImage 
                         src={galleryImages[1]} 
@@ -406,13 +416,13 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
                         fill
                       />
                       <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center">
-                        <Maximize className="w-6 h-6 md:w-8 md:h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                        <Maximize className="w-6 h-6 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
                       </div>
                     </motion.div>
                   )}
                   
                   {/* Third image with +X overlay */}
-                  {galleryImages[2] && (
+                  {galleryImages.length > 2 && (
                     <motion.div
                       initial={{ opacity: 0, scale: 0.9 }}
                       whileInView={{ opacity: 1, scale: 1 }}
@@ -422,7 +432,7 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
                         setCurrentImageIndex(2)
                         setShowGallery(true)
                       }}
-                      className="relative aspect-square md:aspect-auto md:col-span-2 rounded-xl md:rounded-2xl overflow-hidden cursor-pointer group"
+                      className="relative col-span-1 aspect-square rounded-2xl overflow-hidden cursor-pointer group bg-cream-100"
                     >
                       <OptimizedImage 
                         src={galleryImages[2]} 
@@ -431,16 +441,41 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
                         fill
                       />
                       <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center">
-                        <Maximize className="w-6 h-6 md:w-8 md:h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                        <Maximize className="w-6 h-6 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
                       </div>
                       {galleryImages.length > 3 && (
-                        <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                        <div className="absolute inset-0 bg-black/50 flex items-center justify-center pointer-events-none">
                           <div className="text-center text-white">
-                            <Grid3X3 className="w-6 h-6 md:w-8 md:h-8 mx-auto mb-1 md:mb-2" />
-                            <span className="text-base md:text-lg font-semibold">+{galleryImages.length - 3}</span>
+                            <Grid3X3 className="w-8 h-8 mx-auto mb-2" />
+                            <span className="text-lg font-semibold">+{galleryImages.length - 3}</span>
                           </div>
                         </div>
                       )}
+                    </motion.div>
+                  )}
+                  
+                  {/* Fourth image - only on desktop */}
+                  {galleryImages.length > 3 && (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      whileInView={{ opacity: 1, scale: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 0.3 }}
+                      onClick={() => {
+                        setCurrentImageIndex(3)
+                        setShowGallery(true)
+                      }}
+                      className="relative hidden md:block col-span-1 aspect-square rounded-2xl overflow-hidden cursor-pointer group bg-cream-100"
+                    >
+                      <OptimizedImage 
+                        src={galleryImages[3]} 
+                        alt={`${property.name} - Photo 4`}
+                        className="transition-transform duration-700 group-hover:scale-110"
+                        fill
+                      />
+                      <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center">
+                        <Maximize className="w-6 h-6 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                      </div>
                     </motion.div>
                   )}
                 </div>
@@ -763,7 +798,9 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
                 className="relative w-full h-full max-w-[90vw] max-h-[80vh]"
               >
                 <img
-                  src={galleryImages[currentImageIndex]}
+                  src={galleryImages[currentImageIndex]?.includes('%25') 
+                    ? decodeURIComponent(galleryImages[currentImageIndex]) 
+                    : galleryImages[currentImageIndex]}
                   alt={`${property.name} - Photo ${currentImageIndex + 1}`}
                   className="w-full h-full object-contain rounded-lg"
                 />
@@ -772,17 +809,20 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
 
             {/* Thumbnails */}
             <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex items-center gap-2 max-w-[90vw] overflow-x-auto pb-2 px-4">
-              {galleryImages.slice(0, 12).map((img, i) => (
-                <button
-                  key={i}
-                  onClick={() => setCurrentImageIndex(i)}
-                  className={`relative w-16 h-12 flex-shrink-0 rounded-lg overflow-hidden border-2 transition-all ${
-                    i === currentImageIndex ? 'border-gold-500 scale-110' : 'border-transparent opacity-60 hover:opacity-100'
-                  }`}
-                >
-                  <img src={img} alt="" className="w-full h-full object-cover" />
-                </button>
-              ))}
+              {galleryImages.slice(0, 12).map((img, i) => {
+                const decodedImg = img?.includes('%25') ? decodeURIComponent(img) : img
+                return (
+                  <button
+                    key={i}
+                    onClick={() => setCurrentImageIndex(i)}
+                    className={`relative w-16 h-12 flex-shrink-0 rounded-lg overflow-hidden border-2 transition-all ${
+                      i === currentImageIndex ? 'border-gold-500 scale-110' : 'border-transparent opacity-60 hover:opacity-100'
+                    }`}
+                  >
+                    <img src={decodedImg} alt="" className="w-full h-full object-cover" />
+                  </button>
+                )
+              })}
               {galleryImages.length > 12 && (
                 <div className="flex-shrink-0 w-16 h-12 rounded-lg bg-white/20 flex items-center justify-center text-white text-sm font-medium">
                   +{galleryImages.length - 12}

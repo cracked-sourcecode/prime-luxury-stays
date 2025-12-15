@@ -19,9 +19,8 @@ export default function Navigation() {
   }, [])
 
   const navLinks = [
-    { name: 'Mallorca', href: '/mallorca' },
-    { name: 'Experience', href: '#experience' },
-    { name: 'Services', href: '#services' },
+    { name: 'Destinations', href: '/destinations' },
+    { name: 'Properties', href: '/properties' },
     { name: 'About', href: '#about' },
     { name: 'Contact', href: '#contact' },
   ]
