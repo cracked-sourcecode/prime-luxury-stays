@@ -1,8 +1,10 @@
 'use client'
 
+import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Search, MapPin, Calendar, Users, Star, Shield, Clock, Crown } from 'lucide-react'
+import { Search, MapPin, Calendar, Users, Star, Shield, Clock, Crown, ChevronDown } from 'lucide-react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import type { Property } from '@/lib/properties'
 
 const featuredDestinations = [
@@ -10,11 +12,29 @@ const featuredDestinations = [
   { name: 'South of France', href: '/destinations', image: 'https://images.unsplash.com/photo-1533104816931-20fa691ff6ca?w=600&q=80' },
 ]
 
+const availableDestinations = [
+  { value: 'mallorca', label: 'Mallorca, Spain' },
+]
+
 interface HeroProps {
   heroProperty: Property | null
 }
 
 export default function Hero({ heroProperty }: HeroProps) {
+  const router = useRouter()
+  const [destination, setDestination] = useState('')
+  const [checkIn, setCheckIn] = useState('')
+  const [checkOut, setCheckOut] = useState('')
+
+  const handleSearch = () => {
+    const params = new URLSearchParams()
+    if (destination) params.set('destination', destination)
+    if (checkIn) params.set('checkIn', checkIn)
+    if (checkOut) params.set('checkOut', checkOut)
+    // Navigate to properties page with filters and anchor to the properties section
+    router.push(`/properties${params.toString() ? '?' + params.toString() : ''}#properties`)
+  }
+
   // Use hero property data
   const heroImage = heroProperty?.featured_image || ''
   const heroName = heroProperty?.name || ''
@@ -72,49 +92,65 @@ export default function Hero({ heroProperty }: HeroProps) {
               extraordinary destinations. Your private paradise awaits.
             </motion.p>
 
-            {/* Search Box - Airbnb Style */}
+            {/* Search Box - Simple CTA */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.5 }}
-              className="bg-white rounded-2xl p-2 shadow-xl border border-gray-100 max-w-xl"
+              className="bg-white rounded-2xl p-4 shadow-xl border border-gray-100 max-w-2xl text-left"
             >
-              <div className="flex flex-col sm:flex-row">
-                {/* Where */}
-                <div className="flex-1 p-4 border-b sm:border-b-0 sm:border-r border-gray-100 cursor-pointer hover:bg-gray-50 rounded-xl transition-colors group">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-gold-100 flex items-center justify-center group-hover:bg-gold-200 transition-colors">
-                      <MapPin className="w-5 h-5 text-gold-600" />
-                    </div>
-                    <div className="text-left">
-                      <p className="text-xs font-semibold text-charcoal-400 uppercase tracking-wide">Where</p>
-                      <p className="text-charcoal-900 font-medium">Search destinations</p>
-                    </div>
+              <div className="flex flex-col sm:flex-row sm:items-end gap-4">
+                {/* Destination Dropdown */}
+                <div className="flex-1">
+                  <label className="block text-[10px] font-bold text-charcoal-500 uppercase tracking-wider mb-2">Destination</label>
+                  <div className="relative">
+                    <select
+                      value={destination}
+                      onChange={(e) => setDestination(e.target.value)}
+                      className="w-full appearance-none bg-transparent border-b-2 border-gray-200 pb-2 text-charcoal-900 font-medium cursor-pointer focus:outline-none focus:border-gold-500 pr-6 text-sm"
+                    >
+                      <option value="">All Destinations</option>
+                      {availableDestinations.map(d => (
+                        <option key={d.value} value={d.value}>{d.label}</option>
+                      ))}
+                    </select>
+                    <ChevronDown className="absolute right-0 top-1/2 -translate-y-1/2 w-4 h-4 text-charcoal-400 pointer-events-none" />
                   </div>
                 </div>
 
-                {/* When */}
-                <div className="flex-1 p-4 border-b sm:border-b-0 sm:border-r border-gray-100 cursor-pointer hover:bg-gray-50 rounded-xl transition-colors group">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-gold-100 flex items-center justify-center group-hover:bg-gold-200 transition-colors">
-                      <Calendar className="w-5 h-5 text-gold-600" />
-                    </div>
-                    <div className="text-left">
-                      <p className="text-xs font-semibold text-charcoal-400 uppercase tracking-wide">When</p>
-                      <p className="text-charcoal-900 font-medium">Add dates</p>
-                    </div>
-                  </div>
+                {/* Check-in Date */}
+                <div className="flex-1">
+                  <label className="block text-[10px] font-bold text-charcoal-500 uppercase tracking-wider mb-2">Check In</label>
+                  <input
+                    type="date"
+                    value={checkIn}
+                    onChange={(e) => setCheckIn(e.target.value)}
+                    min={new Date().toISOString().split('T')[0]}
+                    className="w-full bg-transparent border-b-2 border-gray-200 pb-2 text-charcoal-900 font-medium focus:outline-none focus:border-gold-500 cursor-pointer text-sm"
+                  />
+                </div>
+
+                {/* Check-out Date */}
+                <div className="flex-1">
+                  <label className="block text-[10px] font-bold text-charcoal-500 uppercase tracking-wider mb-2">Check Out</label>
+                  <input
+                    type="date"
+                    value={checkOut}
+                    onChange={(e) => setCheckOut(e.target.value)}
+                    min={checkIn || new Date().toISOString().split('T')[0]}
+                    className="w-full bg-transparent border-b-2 border-gray-200 pb-2 text-charcoal-900 font-medium focus:outline-none focus:border-gold-500 cursor-pointer text-sm"
+                  />
                 </div>
 
                 {/* Search Button */}
-                <div className="p-2 flex items-center">
-<a
-                  href="/destinations"
-                  className="w-full sm:w-auto btn-gold flex items-center justify-center gap-2 !rounded-xl !py-4 !px-8"
-                >
-                  <Search className="w-5 h-5" />
-                  <span>Search</span>
-                </a>
+                <div className="flex-shrink-0">
+                  <button
+                    onClick={handleSearch}
+                    className="w-full sm:w-auto btn-gold flex items-center justify-center gap-2 !rounded-lg !py-2.5 !px-6"
+                  >
+                    <Search className="w-4 h-4" />
+                    <span>Search</span>
+                  </button>
                 </div>
               </div>
             </motion.div>

@@ -1,8 +1,9 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
 import { 
   Search,
   Filter, 
@@ -58,17 +59,31 @@ function PropertyImage({ src, alt, className }: { src: string; alt: string; clas
 }
 
 export default function PropertiesClient({ properties }: PropertiesClientProps) {
+  const searchParams = useSearchParams()
   const [viewMode, setViewMode] = useState<'grid' | 'map'>('grid')
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null)
-  const [searchQuery, setSearchQuery] = useState('')
+  const [showFilters, setShowFilters] = useState(false)
+  
+  // Guest-focused search filters - initialized from URL params
   const [filters, setFilters] = useState({
-    type: 'all',
-    bedrooms: 'any',
+    destination: searchParams.get('destination') || 'all',
     guests: 'any',
+    checkIn: searchParams.get('checkIn') || '',
+    checkOut: searchParams.get('checkOut') || '',
+    priceRange: 'any',
+    bedrooms: 'any',
     seaView: false,
     pool: false,
   })
-  const [showFilters, setShowFilters] = useState(false)
+
+  // Scroll to properties section if coming from home page search
+  useEffect(() => {
+    if (searchParams.get('destination') || searchParams.get('checkIn')) {
+      setTimeout(() => {
+        document.getElementById('properties')?.scrollIntoView({ behavior: 'smooth' })
+      }, 300)
+    }
+  }, [searchParams])
 
   const heroRef = useRef(null)
   const { scrollYProgress } = useScroll({
@@ -78,23 +93,17 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
   const heroY = useTransform(scrollYProgress, [0, 1], ['0%', '30%'])
   const heroOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0])
 
-  // Filter and search properties
+  // Get unique destinations
+  const destinations = [...new Set(properties.map(p => p.city).filter(Boolean))]
+
+  // Filter properties based on guest-focused criteria
   const filteredProperties = properties.filter(property => {
-    // Search filter
-    if (searchQuery) {
-      const query = searchQuery.toLowerCase()
-      const matchesSearch = 
-        property.name?.toLowerCase().includes(query) ||
-        property.city?.toLowerCase().includes(query) ||
-        property.short_description?.toLowerCase().includes(query)
-      if (!matchesSearch) return false
-    }
-    
-    if (filters.type !== 'all' && property.house_type?.toLowerCase() !== filters.type) return false
-    if (filters.bedrooms !== 'any' && (property.bedrooms || 0) < parseInt(filters.bedrooms)) return false
+    if (filters.destination !== 'all' && property.city?.toLowerCase() !== filters.destination.toLowerCase()) return false
     if (filters.guests !== 'any' && (property.max_guests || 0) < parseInt(filters.guests)) return false
+    if (filters.bedrooms !== 'any' && (property.bedrooms || 0) < parseInt(filters.bedrooms)) return false
     if (filters.seaView && !property.has_sea_view) return false
     if (filters.pool && !property.has_pool) return false
+    // Note: Date and price filtering would require availability data - placeholder for now
     return true
   })
 
@@ -152,46 +161,94 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
               Search our collection of handpicked luxury properties
             </p>
 
-            {/* Search Bar */}
-            <div className="bg-white rounded-2xl p-2 shadow-2xl max-w-3xl mx-auto">
-              <div className="flex flex-col md:flex-row">
-                {/* Search Input */}
-                <div className="flex-1 flex items-center gap-3 px-5 py-4 border-b md:border-b-0 md:border-r border-gray-100">
-                  <Search className="w-5 h-5 text-charcoal-400" />
-                  <input
-                    type="text"
-                    placeholder="Search by name or location..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="flex-1 outline-none text-charcoal-900 placeholder-charcoal-400"
-                  />
-                  {searchQuery && (
-                    <button onClick={() => setSearchQuery('')} className="text-charcoal-400 hover:text-charcoal-600">
-                      <X className="w-4 h-4" />
-                    </button>
-                  )}
+            {/* Guest-Focused Search Bar */}
+            <div className="bg-white rounded-2xl p-4 shadow-2xl max-w-5xl mx-auto">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+                {/* Destination */}
+                <div className="col-span-1 bg-gray-50 rounded-xl p-3 text-left">
+                  <label className="block text-[10px] font-bold text-charcoal-400 uppercase tracking-wider mb-1">
+                    Destination
+                  </label>
+                  <select
+                    value={filters.destination}
+                    onChange={(e) => setFilters(f => ({ ...f, destination: e.target.value }))}
+                    className="w-full bg-transparent text-charcoal-900 font-medium focus:outline-none cursor-pointer text-sm text-left"
+                  >
+                    <option value="all">All</option>
+                    {destinations.map(d => (
+                      <option key={d} value={d?.toLowerCase()}>{d}</option>
+                    ))}
+                  </select>
                 </div>
-                
-                {/* Guests Dropdown */}
-                <div className="flex items-center gap-3 px-5 py-4 border-b md:border-b-0 md:border-r border-gray-100">
-                  <Users className="w-5 h-5 text-charcoal-400" />
+
+                {/* Guests */}
+                <div className="col-span-1 bg-gray-50 rounded-xl p-3 text-left">
+                  <label className="block text-[10px] font-bold text-charcoal-400 uppercase tracking-wider mb-1">
+                    Guests
+                  </label>
                   <select
                     value={filters.guests}
                     onChange={(e) => setFilters(f => ({ ...f, guests: e.target.value }))}
-                    className="outline-none text-charcoal-900 bg-transparent cursor-pointer"
+                    className="w-full bg-transparent text-charcoal-900 font-medium focus:outline-none cursor-pointer text-sm text-left"
                   >
-                    <option value="any">Any guests</option>
-                    <option value="4">4+ guests</option>
-                    <option value="6">6+ guests</option>
-                    <option value="8">8+ guests</option>
-                    <option value="10">10+ guests</option>
+                    <option value="any">Any</option>
+                    <option value="2">2+</option>
+                    <option value="4">4+</option>
+                    <option value="6">6+</option>
+                    <option value="8">8+</option>
                   </select>
                 </div>
-                
+
+                {/* Check-in */}
+                <div className="col-span-1 bg-gray-50 rounded-xl p-3 text-left">
+                  <label className="block text-[10px] font-bold text-charcoal-400 uppercase tracking-wider mb-1">
+                    Check In
+                  </label>
+                  <input
+                    type="date"
+                    value={filters.checkIn}
+                    onChange={(e) => setFilters(f => ({ ...f, checkIn: e.target.value }))}
+                    min={new Date().toISOString().split('T')[0]}
+                    className="w-full bg-transparent text-charcoal-900 font-medium focus:outline-none cursor-pointer text-sm text-left"
+                  />
+                </div>
+
+                {/* Check-out */}
+                <div className="col-span-1 bg-gray-50 rounded-xl p-3 text-left">
+                  <label className="block text-[10px] font-bold text-charcoal-400 uppercase tracking-wider mb-1">
+                    Check Out
+                  </label>
+                  <input
+                    type="date"
+                    value={filters.checkOut}
+                    onChange={(e) => setFilters(f => ({ ...f, checkOut: e.target.value }))}
+                    min={filters.checkIn || new Date().toISOString().split('T')[0]}
+                    className="w-full bg-transparent text-charcoal-900 font-medium focus:outline-none cursor-pointer text-sm text-left"
+                  />
+                </div>
+
+                {/* Bedrooms */}
+                <div className="col-span-1 bg-gray-50 rounded-xl p-3 text-left">
+                  <label className="block text-[10px] font-bold text-charcoal-400 uppercase tracking-wider mb-1">
+                    Bedrooms
+                  </label>
+                  <select
+                    value={filters.bedrooms}
+                    onChange={(e) => setFilters(f => ({ ...f, bedrooms: e.target.value }))}
+                    className="w-full bg-transparent text-charcoal-900 font-medium focus:outline-none cursor-pointer text-sm text-left"
+                  >
+                    <option value="any">Any</option>
+                    <option value="2">2+</option>
+                    <option value="3">3+</option>
+                    <option value="4">4+</option>
+                    <option value="5">5+</option>
+                  </select>
+                </div>
+
                 {/* Search Button */}
                 <a
                   href="#properties"
-                  className="flex items-center justify-center gap-2 bg-gold-500 text-charcoal-900 px-8 py-4 rounded-xl font-semibold hover:bg-gold-400 transition-colors m-1"
+                  className="col-span-2 sm:col-span-1 flex items-center justify-center gap-2 bg-gold-500 text-charcoal-900 rounded-xl font-semibold hover:bg-gold-400 transition-colors"
                 >
                   <Search className="w-5 h-5" />
                   <span className="hidden sm:inline">Search</span>
@@ -426,29 +483,16 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
               className="bg-cream-50 rounded-2xl p-6 mb-8"
             >
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold text-charcoal-900">Filter Properties</h3>
+                <h3 className="font-semibold text-charcoal-900">Refine Your Search</h3>
                 <button
-                  onClick={() => setFilters({ type: 'all', bedrooms: 'any', guests: 'any', seaView: false, pool: false })}
+                  onClick={() => setFilters({ destination: 'all', guests: 'any', checkIn: '', checkOut: '', priceRange: 'any', bedrooms: 'any', seaView: false, pool: false })}
                   className="text-sm text-gold-600 hover:text-gold-700"
                 >
                   Clear all
                 </button>
               </div>
 
-              <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-                <div>
-                  <label className="block text-xs font-medium text-charcoal-500 mb-1.5 uppercase">Type</label>
-                  <select
-                    value={filters.type}
-                    onChange={(e) => setFilters(f => ({ ...f, type: e.target.value }))}
-                    className="w-full px-3 py-2.5 rounded-xl border border-gray-200 bg-white text-sm"
-                  >
-                    <option value="all">All Types</option>
-                    {propertyTypes.map(type => (
-                      <option key={type} value={type}>{type?.charAt(0).toUpperCase()}{type?.slice(1)}</option>
-                    ))}
-                  </select>
-                </div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div>
                   <label className="block text-xs font-medium text-charcoal-500 mb-1.5 uppercase">Bedrooms</label>
                   <select
@@ -457,22 +501,25 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
                     className="w-full px-3 py-2.5 rounded-xl border border-gray-200 bg-white text-sm"
                   >
                     <option value="any">Any</option>
+                    <option value="2">2+</option>
                     <option value="3">3+</option>
                     <option value="4">4+</option>
                     <option value="5">5+</option>
+                    <option value="6">6+</option>
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-charcoal-500 mb-1.5 uppercase">Guests</label>
+                  <label className="block text-xs font-medium text-charcoal-500 mb-1.5 uppercase">Price Range</label>
                   <select
-                    value={filters.guests}
-                    onChange={(e) => setFilters(f => ({ ...f, guests: e.target.value }))}
+                    value={filters.priceRange}
+                    onChange={(e) => setFilters(f => ({ ...f, priceRange: e.target.value }))}
                     className="w-full px-3 py-2.5 rounded-xl border border-gray-200 bg-white text-sm"
                   >
-                    <option value="any">Any</option>
-                    <option value="6">6+</option>
-                    <option value="8">8+</option>
-                    <option value="10">10+</option>
+                    <option value="any">Any Price</option>
+                    <option value="budget">Budget-Friendly</option>
+                    <option value="mid">Mid-Range</option>
+                    <option value="luxury">Luxury</option>
+                    <option value="ultra">Ultra-Luxury</option>
                   </select>
                 </div>
                 <div className="col-span-2 flex items-end gap-4">
@@ -483,7 +530,7 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
                       onChange={(e) => setFilters(f => ({ ...f, seaView: e.target.checked }))}
                       className="w-5 h-5 rounded border-gray-300 text-gold-500"
                     />
-                    <span className="text-sm">Sea View</span>
+                    <span className="text-sm text-charcoal-700">Sea View</span>
                   </label>
                   <label className="flex items-center gap-2 cursor-pointer">
                     <input
@@ -492,7 +539,7 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
                       onChange={(e) => setFilters(f => ({ ...f, pool: e.target.checked }))}
                       className="w-5 h-5 rounded border-gray-300 text-gold-500"
                     />
-                    <span className="text-sm">Pool</span>
+                    <span className="text-sm text-charcoal-700">Private Pool</span>
                   </label>
                 </div>
               </div>
