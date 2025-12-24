@@ -10,7 +10,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   
   try {
     properties = await sql`
-      SELECT slug, updated_at, created_at, featured_image FROM properties WHERE status = 'active'
+      SELECT slug, updated_at, created_at, featured_image FROM properties WHERE is_active = true OR is_active IS NULL
     `
   } catch (error) {
     console.error('Error fetching properties for sitemap:', error)
@@ -19,7 +19,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   try {
     // Get unique destinations from properties
     destinations = await sql`
-      SELECT DISTINCT destination FROM properties WHERE status = 'active' AND destination IS NOT NULL
+      SELECT DISTINCT region FROM properties WHERE (is_active = true OR is_active IS NULL) AND region IS NOT NULL
     `
   } catch (error) {
     console.error('Error fetching destinations for sitemap:', error)
@@ -69,7 +69,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // Destination pages
   const destinationPages: MetadataRoute.Sitemap = destinations.map((dest) => ({
-    url: `${SITE_URL}/destinations/${dest.destination?.toLowerCase().replace(/\s+/g, '-')}`,
+    url: `${SITE_URL}/destinations/${dest.region?.toLowerCase().replace(/\s+/g, '-')}`,
     lastModified: new Date(),
     changeFrequency: 'weekly' as const,
     priority: 0.75,
