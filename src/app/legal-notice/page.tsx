@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import Header from '@/components/Header'
+import Navigation from '@/components/Navigation'
 import Footer from '@/components/Footer'
 import Link from 'next/link'
 import { ArrowLeft, ExternalLink } from 'lucide-react'
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default function LegalNoticePage() {
   return (
     <div className="min-h-screen bg-cream-50">
-      <Header />
+      <Navigation />
       
       <main className="pt-28 pb-20">
         <div className="max-w-4xl mx-auto px-6 lg:px-8">
