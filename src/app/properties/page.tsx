@@ -1,21 +1,79 @@
 import { Suspense } from 'react'
+import { Metadata } from 'next'
+import Script from 'next/script'
 import { getActiveProperties } from '@/lib/properties'
 import PropertiesClient from './PropertiesClient'
 import Navigation from '@/components/Navigation'
 import Footer from '@/components/Footer'
 
-export const metadata = {
-  title: 'Properties | Prime Luxury Stays',
-  description: 'Browse our exclusive collection of luxury villas and estates in Mallorca.',
+const SITE_URL = 'https://primeluxurystays.com'
+
+export const metadata: Metadata = {
+  title: 'Luxury Villas & Estates For Rent | Prime Luxury Stays',
+  description: 'Browse our exclusive collection of luxury villas, private estates, and premium vacation rentals in the world\'s most sought-after destinations. Book your dream getaway today.',
+  keywords: 'luxury villas for rent, private estates, vacation rentals, luxury homes, beachfront villas, mountain retreats, exclusive properties',
+  openGraph: {
+    title: 'Luxury Villas & Estates For Rent | Prime Luxury Stays',
+    description: 'Browse our exclusive collection of luxury villas, private estates, and premium vacation rentals in the world\'s most sought-after destinations.',
+    url: `${SITE_URL}/properties`,
+    siteName: 'Prime Luxury Stays',
+    type: 'website',
+    images: [
+      {
+        url: 'https://storage.googleapis.com/primeluxurystays/Company%20Logo',
+        width: 1200,
+        height: 630,
+        alt: 'Prime Luxury Stays Properties',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Luxury Villas & Estates For Rent | Prime Luxury Stays',
+    description: 'Browse our exclusive collection of luxury villas and premium vacation rentals.',
+    images: ['https://storage.googleapis.com/primeluxurystays/Company%20Logo'],
+  },
+  alternates: {
+    canonical: `${SITE_URL}/properties`,
+  },
 }
 
 export const dynamic = 'force-dynamic'
 
+// Generate ItemList schema for properties page
+function generatePropertiesListSchema(properties: any[]) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'Luxury Properties',
+    description: 'Browse our exclusive collection of luxury villas and estates',
+    numberOfItems: properties.length,
+    itemListElement: properties.slice(0, 10).map((property, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      item: {
+        '@type': 'LodgingBusiness',
+        name: property.name,
+        url: `${SITE_URL}/properties/${property.slug}`,
+        image: property.featured_image,
+        description: property.short_description,
+        priceRange: '$$$$$',
+      },
+    })),
+  }
+}
+
 export default async function PropertiesPage() {
   const properties = await getActiveProperties()
+  const propertiesListSchema = generatePropertiesListSchema(properties)
 
   return (
     <>
+      <Script
+        id="properties-list-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(propertiesListSchema) }}
+      />
       <Navigation />
       <main className="min-h-screen bg-cream-50 pt-20">
         <Suspense fallback={<PropertiesLoading />}>

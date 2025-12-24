@@ -1,11 +1,39 @@
+import { Metadata } from 'next'
 import { getActiveProperties } from '@/lib/properties'
 import Navigation from '@/components/Navigation'
 import Footer from '@/components/Footer'
 import LocationsClient from './LocationsClient'
 
-export const metadata = {
-  title: 'Destinations | Prime Luxury Stays',
-  description: 'Explore our exclusive collection of luxury properties across the world\'s most desirable destinations.',
+const SITE_URL = 'https://primeluxurystays.com'
+
+export const metadata: Metadata = {
+  title: 'Luxury Vacation Destinations | Mallorca, Ibiza & More | Prime Luxury Stays',
+  description: 'Explore our exclusive collection of luxury properties across the world\'s most desirable destinations. From Mediterranean islands to the French Riviera, find your perfect escape.',
+  keywords: 'luxury destinations, Mallorca villas, Ibiza properties, Mediterranean luxury, French Riviera, vacation rentals',
+  openGraph: {
+    title: 'Luxury Vacation Destinations | Prime Luxury Stays',
+    description: 'Explore our exclusive collection of luxury properties across the world\'s most desirable destinations.',
+    url: `${SITE_URL}/destinations`,
+    siteName: 'Prime Luxury Stays',
+    type: 'website',
+    images: [
+      {
+        url: 'https://storage.googleapis.com/primeluxurystays/Mallorca%20Global%20Hero%20Section%20Image',
+        width: 1200,
+        height: 630,
+        alt: 'Prime Luxury Stays Destinations',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Luxury Vacation Destinations | Prime Luxury Stays',
+    description: 'Explore our exclusive collection of luxury properties across the world\'s most desirable destinations.',
+    images: ['https://storage.googleapis.com/primeluxurystays/Mallorca%20Global%20Hero%20Section%20Image'],
+  },
+  alternates: {
+    canonical: `${SITE_URL}/destinations`,
+  },
 }
 
 export const dynamic = 'force-dynamic'

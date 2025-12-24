@@ -1,13 +1,35 @@
 import { Suspense } from 'react'
+import { Metadata } from 'next'
 import { getPropertyBySlug } from '@/lib/properties'
 import InquireClient from './InquireClient'
 import Navigation from '@/components/Navigation'
 import Footer from '@/components/Footer'
 
-export const metadata = {
-  title: 'Request to Book | Prime Luxury Stays',
-  description:
-    'Submit your dates and preferences. Our concierge team will confirm availability and craft a tailored quote.',
+const SITE_URL = 'https://primeluxurystays.com'
+
+export const metadata: Metadata = {
+  title: 'Book Your Luxury Stay | Request a Quote | Prime Luxury Stays',
+  description: 'Submit your dates and preferences for your luxury villa rental. Our dedicated concierge team will confirm availability and craft a personalized quote for your dream vacation.',
+  keywords: 'book luxury villa, request quote, vacation rental booking, concierge service, luxury stay reservation',
+  openGraph: {
+    title: 'Book Your Luxury Stay | Prime Luxury Stays',
+    description: 'Submit your dates and preferences. Our concierge team will confirm availability and craft a tailored quote.',
+    url: `${SITE_URL}/inquire`,
+    siteName: 'Prime Luxury Stays',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'Book Your Luxury Stay | Prime Luxury Stays',
+    description: 'Submit your dates and preferences. Our concierge team will confirm availability and craft a tailored quote.',
+  },
+  alternates: {
+    canonical: `${SITE_URL}/inquire`,
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 }
 
 export const dynamic = 'force-dynamic'
