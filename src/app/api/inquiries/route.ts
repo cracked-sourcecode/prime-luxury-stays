@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getPropertyBySlug } from '@/lib/properties'
 import { createInquiry } from '@/lib/inquiries'
+import { sendInquiryNotification, sendInquiryConfirmation } from '@/lib/email'
 
 export async function POST(req: NextRequest) {
   try {
@@ -26,6 +27,7 @@ export async function POST(req: NextRequest) {
 
     const property = property_slug ? await getPropertyBySlug(property_slug) : null
 
+    // Save to database
     const id = await createInquiry({
       property,
       property_slug: property_slug ?? null,
@@ -37,6 +39,29 @@ export async function POST(req: NextRequest) {
       phone: phone ?? null,
       message: message ?? null,
       source_url: source_url ?? null,
+    })
+
+    // Send email notifications (non-blocking)
+    const emailData = {
+      fullName: full_name,
+      email,
+      phone: phone ?? null,
+      message: message ?? null,
+      propertyName: property?.name ?? null,
+      checkIn: check_in ?? null,
+      checkOut: check_out ?? null,
+      guests: typeof guests === 'number' ? guests : null,
+      sourceUrl: source_url ?? null,
+    }
+
+    // Send notification to admin
+    sendInquiryNotification(emailData).catch(err => {
+      console.error('Failed to send admin notification:', err)
+    })
+
+    // Send confirmation to customer
+    sendInquiryConfirmation(emailData).catch(err => {
+      console.error('Failed to send customer confirmation:', err)
     })
 
     return NextResponse.json({ success: true, id })

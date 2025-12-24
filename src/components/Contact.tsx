@@ -2,7 +2,7 @@
 
 import { motion, useInView } from 'framer-motion'
 import { useRef, useState } from 'react'
-import { Send, Phone, Mail, MapPin, MessageCircle } from 'lucide-react'
+import { Send, Phone, Mail, MapPin, Check, Loader2 } from 'lucide-react'
 
 export default function Contact() {
   const ref = useRef(null)
@@ -13,11 +13,41 @@ export default function Contact() {
     phone: '',
     message: '',
   })
+  const [submitting, setSubmitting] = useState(false)
+  const [submitted, setSubmitted] = useState(false)
+  const [error, setError] = useState('')
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Handle form submission - will connect to backend later
-    console.log('Form submitted:', formState)
+    setSubmitting(true)
+    setError('')
+
+    try {
+      const res = await fetch('/api/inquiries', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          full_name: formState.name,
+          email: formState.email,
+          phone: formState.phone || null,
+          message: formState.message || null,
+          source_url: typeof window !== 'undefined' ? window.location.href : null,
+        }),
+      })
+
+      const data = await res.json()
+
+      if (data.success) {
+        setSubmitted(true)
+        setFormState({ name: '', email: '', phone: '', message: '' })
+      } else {
+        setError(data.error || 'Something went wrong. Please try again.')
+      }
+    } catch (err) {
+      setError('Something went wrong. Please try again.')
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   return (
@@ -177,10 +207,39 @@ export default function Contact() {
                 />
               </div>
 
-              <button type="submit" className="btn-gold w-full flex items-center justify-center gap-3">
-                <span>Submit Inquiry</span>
-                <Send className="w-4 h-4" />
-              </button>
+              {error && (
+                <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm">
+                  {error}
+                </div>
+              )}
+
+              {submitted ? (
+                <div className="text-center py-6">
+                  <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Check className="w-8 h-8 text-green-600" />
+                  </div>
+                  <h4 className="font-merriweather text-xl text-charcoal-900 mb-2">Thank You!</h4>
+                  <p className="text-charcoal-500">We've received your inquiry and will be in touch within 2 hours.</p>
+                </div>
+              ) : (
+                <button 
+                  type="submit" 
+                  disabled={submitting}
+                  className="btn-gold w-full flex items-center justify-center gap-3 disabled:opacity-50"
+                >
+                  {submitting ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span>Sending...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>Submit Inquiry</span>
+                      <Send className="w-4 h-4" />
+                    </>
+                  )}
+                </button>
+              )}
 
               <p className="text-charcoal-400 text-xs text-center mt-6">
                 By submitting this form, you agree to our privacy policy. 
