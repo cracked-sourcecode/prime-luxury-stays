@@ -49,21 +49,17 @@ const responsiveStyles = `
   /* Mobile styles */
   @media only screen and (max-width: 620px) {
     .container { width: 100% !important; max-width: 100% !important; }
-    .content { padding-left: 16px !important; padding-right: 16px !important; }
-    .header { padding: 20px 16px 16px !important; }
-    .footer { padding: 16px !important; }
-    .button { padding: 14px 20px !important; font-size: 14px !important; }
-    .button-cell { display: block !important; width: 100% !important; }
-    .heading { font-size: 24px !important; }
-    .subheading { font-size: 15px !important; }
-    .property-title { font-size: 17px !important; }
+    .content { padding-left: 20px !important; padding-right: 20px !important; padding-bottom: 24px !important; }
+    .header { padding: 24px 20px 20px !important; }
+    .footer { padding: 20px !important; }
+    .button { padding: 16px 24px !important; font-size: 15px !important; }
+    .heading { font-size: 26px !important; }
+    .subheading { font-size: 16px !important; }
+    .property-title { font-size: 18px !important; }
     .property-details { font-size: 13px !important; }
-    .dates-box { padding: 14px !important; }
-    .date-label { font-size: 10px !important; }
-    .date-value { font-size: 14px !important; }
-    .logo { width: 150px !important; }
-    .card-padding { padding: 14px !important; }
-    .section-gap { padding-bottom: 16px !important; }
+    .date-label { font-size: 11px !important; }
+    .date-value { font-size: 15px !important; }
+    .logo { width: 160px !important; }
   }
 </style>
 `
@@ -301,7 +297,7 @@ We've received your inquiry and will respond within <strong style="color:${GOLD}
 ${data.propertyName ? `
 <!-- Property Card -->
 <tr>
-<td class="content section-gap" style="padding:0 40px 20px;">
+<td class="content" style="padding:0 40px 28px;">
 <table width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #e0e0e0; border-radius:8px; overflow:hidden;">
 ${data.propertyImage ? `
 <tr>
@@ -313,12 +309,12 @@ ${data.propertyImage ? `
 </tr>
 ` : ''}
 <tr>
-<td class="card-padding" style="padding:16px;">
-<p style="margin:0 0 3px; font-size:10px; color:${GOLD}; text-transform:uppercase; letter-spacing:1px; font-weight:bold;">Your Selection</p>
-<p class="property-title" style="margin:0 0 4px; font-size:20px; color:${CHARCOAL}; font-weight:bold; font-family:Georgia, serif;">
+<td style="padding:20px;">
+<p style="margin:0 0 4px; font-size:11px; color:${GOLD}; text-transform:uppercase; letter-spacing:1px; font-weight:bold;">Your Selection</p>
+<p class="property-title" style="margin:0 0 6px; font-size:20px; color:${CHARCOAL}; font-weight:bold; font-family:Georgia, serif;">
 <a href="https://primeluxurystays.com/properties/${data.propertySlug || ''}" style="color:${CHARCOAL}; text-decoration:none;">${data.propertyName}</a>
 </p>
-${data.propertyLocation ? `<p class="property-details" style="margin:0 0 6px; font-size:14px; color:#666;">${data.propertyLocation}</p>` : ''}
+${data.propertyLocation ? `<p class="property-details" style="margin:0 0 8px; font-size:14px; color:#666;">${data.propertyLocation}</p>` : ''}
 ${data.propertyBedrooms || data.propertyBathrooms ? `
 <p class="property-details" style="margin:0; font-size:13px; color:#888;">
 ${data.propertyBedrooms ? `${data.propertyBedrooms} bedrooms` : ''}${data.propertyBathrooms ? ` · ${data.propertyBathrooms} baths` : ''}${data.propertyMaxGuests ? ` · Up to ${data.propertyMaxGuests} guests` : ''}
@@ -334,28 +330,28 @@ ${data.propertyBedrooms ? `${data.propertyBedrooms} bedrooms` : ''}${data.proper
 ${data.checkIn ? `
 <!-- Booking Details -->
 <tr>
-<td class="content section-gap" style="padding:0 40px 20px;">
+<td class="content" style="padding:0 40px 28px;">
 <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:${CREAM}; border-radius:8px;">
 <tr>
-<td class="dates-box card-padding" style="padding:20px;">
-<p style="margin:0 0 12px; font-size:11px; color:#888; text-transform:uppercase; letter-spacing:1px; font-weight:bold;">Your Request</p>
+<td style="padding:20px;">
+<p style="margin:0 0 14px; font-size:11px; color:#888; text-transform:uppercase; letter-spacing:1px; font-weight:bold;">Your Request</p>
 <table width="100%" cellpadding="0" cellspacing="0" border="0">
 <tr>
 <td width="48%" valign="top">
-<p class="date-label" style="margin:0 0 3px; font-size:11px; color:#888; text-transform:uppercase;">Check-in</p>
+<p class="date-label" style="margin:0 0 4px; font-size:11px; color:#888; text-transform:uppercase;">Check-in</p>
 <p class="date-value" style="margin:0; font-size:16px; color:${CHARCOAL}; font-weight:bold;">${formatDate(data.checkIn)}</p>
 </td>
 <td width="4%"></td>
 <td width="48%" valign="top">
-<p class="date-label" style="margin:0 0 3px; font-size:11px; color:#888; text-transform:uppercase;">Check-out</p>
+<p class="date-label" style="margin:0 0 4px; font-size:11px; color:#888; text-transform:uppercase;">Check-out</p>
 <p class="date-value" style="margin:0; font-size:16px; color:${CHARCOAL}; font-weight:bold;">${data.checkOut ? formatDate(data.checkOut) : 'TBD'}</p>
 </td>
 </tr>
 </table>
 ${nights || data.guests ? `
-<p style="margin:12px 0 0; font-size:14px;">
+<p style="margin:14px 0 0; font-size:14px;">
 ${nights ? `<strong style="color:${GOLD};">${nights} nights</strong>` : ''}
-${data.guests ? `<span style="color:#666; margin-left:12px;">${data.guests} guests</span>` : ''}
+${data.guests ? `<span style="color:#666; margin-left:14px;">${data.guests} guests</span>` : ''}
 </p>
 ` : ''}
 </td>
@@ -367,11 +363,11 @@ ${data.guests ? `<span style="color:#666; margin-left:12px;">${data.guests} gues
 
 <!-- CTA Button -->
 <tr>
-<td class="content section-gap" align="center" style="padding:0 40px 24px;">
+<td class="content" align="center" style="padding:0 40px 32px;">
 <table width="100%" cellpadding="0" cellspacing="0" border="0">
 <tr>
-<td class="button-cell" align="center" style="background-color:${GOLD}; border-radius:6px;">
-<a class="button" href="https://primeluxurystays.com/properties" style="display:block; padding:14px 24px; font-size:15px; color:#ffffff; text-decoration:none; font-family:Georgia, serif; text-align:center;">
+<td align="center" style="background-color:${GOLD}; border-radius:6px;">
+<a class="button" href="https://primeluxurystays.com/properties" style="display:block; padding:16px 28px; font-size:15px; color:#ffffff; text-decoration:none; font-family:Georgia, serif; text-align:center;">
 Browse More Properties
 </a>
 </td>
@@ -382,13 +378,13 @@ Browse More Properties
 
 <!-- Footer -->
 <tr>
-<td class="footer" style="padding:20px 30px; background-color:#2a2a2a; text-align:center;">
-<p style="margin:0 0 5px; font-size:13px; font-weight:bold; color:#fff;">Need immediate assistance?</p>
-<p style="margin:0 0 12px;">
-<a href="mailto:concierge@primeluxurystays.com" style="color:${GOLD}; text-decoration:none; font-size:13px;">Email concierge@primeluxurystays.com</a>
+<td class="footer" style="padding:28px 24px; background-color:#2a2a2a; text-align:center; border-radius:0 0 8px 8px;">
+<p style="margin:0 0 8px; font-size:14px; font-weight:bold; color:#ffffff;">Need immediate assistance?</p>
+<p style="margin:0 0 16px; font-size:14px;">
+<a href="mailto:concierge@primeluxurystays.com" style="color:${GOLD}; text-decoration:none;">concierge@primeluxurystays.com</a>
 </p>
-<p style="margin:0 0 4px; font-size:11px; color:#888;">Prime Luxury Stays · Exclusive Villas & Estates</p>
-<p style="margin:0; font-size:11px;">
+<p style="margin:0 0 8px; font-size:12px; color:#999;">Prime Luxury Stays · Exclusive Villas & Estates</p>
+<p style="margin:0; font-size:12px; line-height:1.6;">
 <a href="https://primeluxurystays.com/mallorca" style="color:${GOLD}; text-decoration:none;">Mallorca</a>
 <span style="color:#666;"> · </span>
 <a href="https://primeluxurystays.com/ibiza" style="color:${GOLD}; text-decoration:none;">Ibiza</a>
