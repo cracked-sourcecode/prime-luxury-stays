@@ -168,7 +168,7 @@ export default function Hero({ heroProperty }: HeroProps) {
               </div>
               <div className="flex items-center gap-2 text-charcoal-600">
                 <Clock className="w-4 h-4 md:w-5 md:h-5 text-gold-500" />
-                <span className="text-xs md:text-sm font-medium">24/7 Concierge</span>
+                <span className="text-xs md:text-sm font-medium">Dedicated Concierge</span>
               </div>
               <div className="flex items-center gap-2 text-charcoal-600">
                 <Star className="w-4 h-4 md:w-5 md:h-5 text-gold-500" />

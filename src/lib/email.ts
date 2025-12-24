@@ -2,8 +2,8 @@ import { Resend } from 'resend'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
-const FROM_EMAIL = 'Prime Luxury Stays <concierge@primeluxurystays.com>'
-const ADMIN_EMAIL = 'concierge@primeluxurystays.com'
+const FROM_EMAIL = 'Prime Luxury Stays <info@primeluxurystays.com>'
+const ADMIN_EMAIL = 'info@primeluxurystays.com'
 
 interface InquiryEmailData {
   fullName: string
@@ -379,7 +379,7 @@ Browse More Properties
 <!-- Footer -->
 <tr>
 <td class="footer" style="padding:24px 20px; background-color:${CREAM}; text-align:center; border-top:1px solid #e0e0e0;">
-<p style="margin:0 0 8px; font-size:15px; color:${CHARCOAL};">Questions? <a href="mailto:concierge@primeluxurystays.com" style="color:${GOLD}; text-decoration:none; font-weight:bold;">concierge@primeluxurystays.com</a></p>
+<p style="margin:0 0 8px; font-size:15px; color:${CHARCOAL};">Questions? <a href="mailto:info@primeluxurystays.com" style="color:${GOLD}; text-decoration:none; font-weight:bold;">info@primeluxurystays.com</a></p>
 <p style="margin:0; font-size:14px; color:#666;">Prime Luxury Stays · <a href="https://primeluxurystays.com/mallorca" style="color:${GOLD}; text-decoration:none;">Mallorca</a> · <a href="https://primeluxurystays.com/ibiza" style="color:${GOLD}; text-decoration:none;">Ibiza</a> · <a href="https://primeluxurystays.com/properties" style="color:${GOLD}; text-decoration:none;">All Properties</a></p>
 </td>
 </tr>

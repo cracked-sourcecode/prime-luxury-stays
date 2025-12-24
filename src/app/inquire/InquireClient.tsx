@@ -108,7 +108,7 @@ export default function InquireClient({
               </span>
             </Link>
             <a
-              href="tel:+18885989870"
+              href="tel:+498989930046"
               className="hidden sm:inline-flex items-center gap-2 bg-white/10 border border-white/15 text-white px-4 py-2 rounded-xl hover:bg-white/15 transition-colors"
             >
               <Phone className="w-4 h-4" />
@@ -179,7 +179,7 @@ export default function InquireClient({
                   </p>
                   <div className="mt-6 flex flex-col sm:flex-row gap-3">
                     <a
-                      href="tel:+18885989870"
+                      href="tel:+498989930046"
                       className="bg-charcoal-900 text-white px-6 py-3 rounded-2xl font-semibold inline-flex items-center justify-center gap-2"
                     >
                       <Phone className="w-4 h-4" />
@@ -322,8 +322,8 @@ export default function InquireClient({
                     </button>
                     <div className="text-sm text-charcoal-500">
                       Prefer to talk? Call{' '}
-                      <a className="text-gold-700 font-semibold" href="tel:+18885989870">
-                        +1 (888) LUXURY-0
+                      <a className="text-gold-700 font-semibold" href="tel:+498989930046">
+                        +49 89 899 300 46
                       </a>
                     </div>
                   </div>
@@ -367,7 +367,7 @@ export default function InquireClient({
                   </div>
                   <div className="rounded-2xl bg-cream-50 border border-cream-200 px-4 py-3">
                     <div className="text-charcoal-500">Support</div>
-                    <div className="font-semibold text-charcoal-900">24/7 concierge</div>
+                    <div className="font-semibold text-charcoal-900">Dedicated concierge</div>
                   </div>
                 </div>
               </div>

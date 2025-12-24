@@ -46,8 +46,8 @@ const services = [
   },
   {
     icon: Clock,
-    title: '24/7 Support',
-    description: 'Round-the-clock assistance ensuring a seamless, worry-free experience.',
+    title: 'Priority Support',
+    description: 'Dedicated assistance ensuring a seamless, worry-free experience.',
   },
   {
     icon: HeartHandshake,

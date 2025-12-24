@@ -159,7 +159,7 @@ export default function MallorcaClient({ properties }: MallorcaClientProps) {
               <div className="space-y-6">
                 {[
                   { icon: Shield, title: 'Verified Excellence', desc: 'Every villa personally inspected by our team' },
-                  { icon: Clock, title: '24/7 Concierge', desc: 'Dedicated support from booking to checkout' },
+                  { icon: Clock, title: 'Dedicated Concierge', desc: 'Personal support from booking to checkout' },
                   { icon: Heart, title: 'Curated Experiences', desc: 'Private chefs, yacht charters, exclusive access' },
                   { icon: Star, title: 'Best Price Guarantee', desc: 'Direct booking means no middleman markups' },
                 ].map((item) => (
@@ -489,7 +489,7 @@ export default function MallorcaClient({ properties }: MallorcaClientProps) {
               { value: '98%', label: 'Guest Satisfaction' },
               { value: '500+', label: 'Happy Guests' },
               { value: '7', label: 'Exclusive Properties' },
-              { value: '24/7', label: 'Concierge Support' },
+              { value: '5★', label: 'Service Rating' },
             ].map((stat, i) => (
               <motion.div
                 key={stat.label}
@@ -542,8 +542,8 @@ export default function MallorcaClient({ properties }: MallorcaClientProps) {
                 <Calendar className="w-5 h-5" />
                 Request Your Villa
             </Link>
-              <a href="tel:+18885989870" className="text-white/70 hover:text-white transition-colors text-lg">
-                or call <span className="text-gold-400 font-semibold">+1 (888) LUXURY-0</span>
+              <a href="tel:+498989930046" className="text-white/70 hover:text-white transition-colors text-lg">
+                or call <span className="text-gold-400 font-semibold">+49 89 899 300 46</span>
               </a>
             </div>
           </motion.div>

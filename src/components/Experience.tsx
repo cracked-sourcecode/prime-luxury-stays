@@ -8,7 +8,7 @@ const stats = [
   { value: '200+', label: 'Exclusive Properties' },
   { value: '15+', label: 'Destinations' },
   { value: '98%', label: 'Guest Satisfaction' },
-  { value: '24/7', label: 'Concierge Service' },
+  { value: '5★', label: 'Service Rating' },
 ]
 
 const features = [

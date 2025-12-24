@@ -143,7 +143,7 @@ export default function SouthOfFranceClient({ properties }: SouthOfFranceClientP
               <div className="space-y-6">
                 {[
                   { icon: Shield, title: 'Verified Excellence', desc: 'Every villa personally inspected by our team' },
-                  { icon: Clock, title: '24/7 Concierge', desc: 'Private chefs, yacht charters, exclusive access' },
+                  { icon: Clock, title: 'Dedicated Concierge', desc: 'Private chefs, yacht charters, exclusive access' },
                   { icon: Heart, title: 'Curated Experiences', desc: 'Wine tours, art galleries, Michelin dining' },
                   { icon: Star, title: 'Best Price Guarantee', desc: 'Direct booking means no middleman markups' },
                 ].map((item) => (

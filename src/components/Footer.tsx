@@ -58,10 +58,16 @@ export default function Footer() {
                   </p>
                 </div>
               </div>
-              <p className="text-charcoal-500 leading-relaxed mb-8 max-w-sm">
+              <p className="text-charcoal-500 leading-relaxed mb-4 max-w-sm">
                 Curating extraordinary experiences in the world's most 
                 exceptional private residences. Where luxury meets legacy.
               </p>
+              <div className="text-charcoal-500 text-sm mb-6 space-y-1">
+                <p><a href="tel:+498989930046" className="hover:text-gold-600 transition-colors">+49 89 899 300 46</a></p>
+                <p><a href="mailto:info@primeluxurystays.com" className="hover:text-gold-600 transition-colors">info@primeluxurystays.com</a></p>
+                <p>Munich, Germany</p>
+              </div>
+              <p className="text-xs text-charcoal-400 mb-6">EU Registered Business</p>
 
               {/* Social Links */}
               <div className="flex items-center gap-3">
@@ -136,7 +142,7 @@ export default function Footer() {
             <p className="text-charcoal-400 text-sm">
               © {currentYear} Prime Luxury Stays Management. All rights reserved.
             </p>
-            <div className="flex items-center gap-6">
+            <div className="flex items-center gap-6 flex-wrap justify-center md:justify-end">
               <a href="#" className="text-charcoal-400 hover:text-gold-600 text-sm transition-colors">
                 Privacy Policy
               </a>
@@ -145,6 +151,9 @@ export default function Footer() {
               </a>
               <a href="#" className="text-charcoal-400 hover:text-gold-600 text-sm transition-colors">
                 Cookie Policy
+              </a>
+              <a href="/legal-notice" className="text-charcoal-400 hover:text-gold-600 text-sm transition-colors">
+                Legal Notice
               </a>
             </div>
           </div>

@@ -143,7 +143,7 @@ export default function IbizaClient({ properties }: IbizaClientProps) {
               <div className="space-y-6">
                 {[
                   { icon: Shield, title: 'Verified Excellence', desc: 'Every villa personally inspected by our team' },
-                  { icon: Clock, title: '24/7 Concierge', desc: 'VIP access, yacht charters, private chefs' },
+                  { icon: Clock, title: 'Dedicated Concierge', desc: 'VIP access, yacht charters, private chefs' },
                   { icon: Heart, title: 'Curated Experiences', desc: 'Secret beaches, exclusive events, wellness retreats' },
                   { icon: Star, title: 'Best Price Guarantee', desc: 'Direct booking means no middleman markups' },
                 ].map((item) => (

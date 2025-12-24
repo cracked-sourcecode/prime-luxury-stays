@@ -149,7 +149,7 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
 
   const highlights = [
     { icon: Shield, title: 'Verified Excellence', desc: 'Personally inspected by our team' },
-    { icon: Clock, title: '24/7 Concierge', desc: 'We\'re always here for you' },
+    { icon: Clock, title: 'Dedicated Concierge', desc: 'Personal support throughout your stay' },
     { icon: Star, title: 'Best Price Direct', desc: 'No booking fees, ever' },
   ]
 
@@ -678,7 +678,7 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
                 <div className="space-y-4 mb-8">
                   {[
                     'Verified Luxury Property',
-                    '24/7 Concierge Support',
+                    'Dedicated Concierge Support',
                     'Flexible Booking Options',
                     'No Hidden Fees',
                   ].map((feature) => (

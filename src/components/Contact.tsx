@@ -107,7 +107,7 @@ export default function Contact() {
                 </div>
                 <div>
                   <div className="text-charcoal-400 text-xs font-medium uppercase tracking-wide">Phone</div>
-                  <div className="text-charcoal-900 font-semibold">+1 (888) LUXURY-0</div>
+                  <div className="text-charcoal-900 font-semibold">+49 89 899 300 46</div>
                 </div>
               </div>
 
@@ -117,7 +117,7 @@ export default function Contact() {
                 </div>
                 <div>
                   <div className="text-charcoal-400 text-xs font-medium uppercase tracking-wide">Email</div>
-                  <div className="text-charcoal-900 font-semibold">concierge@primeluxurystays.com</div>
+                  <div className="text-charcoal-900 font-semibold">info@primeluxurystays.com</div>
                 </div>
               </div>
 
@@ -127,7 +127,7 @@ export default function Contact() {
                 </div>
                 <div>
                   <div className="text-charcoal-400 text-xs font-medium uppercase tracking-wide">Headquarters</div>
-                  <div className="text-charcoal-900 font-semibold">Miami, Florida</div>
+                  <div className="text-charcoal-900 font-semibold">Munich, Germany</div>
                 </div>
               </div>
             </div>
@@ -136,7 +136,7 @@ export default function Contact() {
             <div className="glass-gold rounded-xl p-5">
               <div className="flex items-center gap-3 mb-2">
                 <div className="w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse" />
-                <span className="text-charcoal-900 font-semibold">Available 24/7</span>
+                <span className="text-charcoal-900 font-semibold">Quick Response</span>
               </div>
               <p className="text-charcoal-600 text-sm">
                 Our concierge team responds to all inquiries within 2 hours.

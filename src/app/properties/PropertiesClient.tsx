@@ -403,7 +403,7 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
                     <Clock className="w-6 h-6 text-gold-600" />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-charcoal-900 mb-1">24/7 Concierge</h4>
+                    <h4 className="font-semibold text-charcoal-900 mb-1">Dedicated Concierge</h4>
                     <p className="text-charcoal-500 text-sm">Round-the-clock support for anything you need</p>
                   </div>
                 </div>
