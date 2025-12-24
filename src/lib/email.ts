@@ -7,20 +7,6 @@ const resend = new Resend(process.env.RESEND_API_KEY)
 const FROM_EMAIL = 'Prime Luxury Stays <concierge@primeluxurystays.com>'
 const ADMIN_EMAIL = 'concierge@primeluxurystays.com'
 
-// Brand colors
-const COLORS = {
-  gold: '#B8954C',
-  goldLight: '#D4AF61',
-  goldDark: '#96783D',
-  cream: '#FAF8F4',
-  creamLight: '#FDFCFA',
-  charcoal: '#1A1A1A',
-  charcoalMedium: '#666666',
-  charcoalLight: '#A4A4A4',
-  white: '#FFFFFF',
-  border: '#E8D19E',
-}
-
 interface InquiryEmailData {
   fullName: string
   email: string
@@ -32,23 +18,6 @@ interface InquiryEmailData {
   guests?: number | null
   sourceUrl?: string | null
 }
-
-// Shared email styles
-const baseStyles = `
-  body {
-    margin: 0;
-    padding: 0;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    line-height: 1.6;
-    color: ${COLORS.charcoal};
-    background-color: ${COLORS.cream};
-  }
-  .container {
-    max-width: 600px;
-    margin: 0 auto;
-    background-color: ${COLORS.white};
-  }
-`
 
 // Admin notification email template
 function getAdminEmailTemplate(data: InquiryEmailData): string {
@@ -67,69 +36,64 @@ function getAdminEmailTemplate(data: InquiryEmailData): string {
 
   return `
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>New Inquiry</title>
 </head>
-<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: ${COLORS.charcoal}; background-color: ${COLORS.cream};">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: ${COLORS.cream}; padding: 40px 20px;">
+<body style="margin: 0; padding: 0; background-color: #FAF8F4; font-family: Arial, Helvetica, sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #FAF8F4;">
     <tr>
-      <td align="center">
-        <table width="600" cellpadding="0" cellspacing="0" style="background-color: ${COLORS.white}; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);">
+      <td align="center" style="padding: 40px 20px;">
+        <table width="600" cellpadding="0" cellspacing="0" border="0" style="background-color: #FFFFFF; border-radius: 8px; overflow: hidden;">
           
           <!-- Header -->
           <tr>
-            <td style="background: linear-gradient(135deg, ${COLORS.charcoal} 0%, #2D2D2D 100%); padding: 32px 40px; text-align: center;">
-              <table width="100%" cellpadding="0" cellspacing="0">
-                <tr>
-                  <td align="center">
-                    <h1 style="margin: 0; font-size: 24px; font-weight: 300; letter-spacing: 3px; color: ${COLORS.white};">PRIME LUXURY STAYS</h1>
-                    <div style="width: 60px; height: 2px; background: linear-gradient(90deg, ${COLORS.gold}, ${COLORS.goldLight}); margin: 16px auto 0;"></div>
-                  </td>
-                </tr>
+            <td align="center" style="background-color: #1A1A1A; padding: 30px 40px;">
+              <img src="https://storage.googleapis.com/primeluxurystays/logo-white.png" alt="Prime Luxury Stays" width="200" style="display: block;" />
+              <table width="60" cellpadding="0" cellspacing="0" border="0" style="margin-top: 15px;">
+                <tr><td style="height: 2px; background-color: #B8954C;"></td></tr>
               </table>
             </td>
           </tr>
 
-          <!-- Alert Banner -->
+          <!-- Gold Banner -->
           <tr>
-            <td style="background: linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldLight} 100%); padding: 20px 40px; text-align: center;">
-              <p style="margin: 0; color: ${COLORS.white}; font-size: 14px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase;">
-                ✨ New Lead Received
+            <td align="center" style="background-color: #B8954C; padding: 15px 40px;">
+              <p style="margin: 0; color: #FFFFFF; font-size: 13px; font-weight: bold; letter-spacing: 2px; text-transform: uppercase;">
+                ★ NEW LEAD RECEIVED ★
               </p>
             </td>
           </tr>
 
           <!-- Content -->
           <tr>
-            <td style="padding: 40px;">
+            <td style="padding: 35px 40px;">
               
-              <!-- Contact Card -->
-              <table width="100%" cellpadding="0" cellspacing="0" style="background-color: ${COLORS.creamLight}; border-radius: 12px; border: 1px solid ${COLORS.border}; margin-bottom: 24px;">
+              <!-- Contact Info -->
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #FAFAFA; border: 1px solid #E5E5E5; border-radius: 6px; margin-bottom: 25px;">
                 <tr>
-                  <td style="padding: 24px;">
-                    <h2 style="margin: 0 0 20px 0; font-size: 18px; color: ${COLORS.charcoal}; font-weight: 600;">Contact Information</h2>
+                  <td style="padding: 20px 25px;">
+                    <p style="margin: 0 0 15px 0; font-size: 16px; font-weight: bold; color: #1A1A1A;">Contact Information</p>
                     
-                    <table width="100%" cellpadding="0" cellspacing="0">
+                    <table width="100%" cellpadding="0" cellspacing="0" border="0">
                       <tr>
-                        <td style="padding: 12px 0; border-bottom: 1px solid ${COLORS.border};">
-                          <span style="color: ${COLORS.charcoalLight}; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Name</span><br>
-                          <span style="font-size: 16px; font-weight: 600; color: ${COLORS.charcoal};">${data.fullName}</span>
+                        <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">
+                          <span style="color: #999999; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Name</span><br/>
+                          <span style="font-size: 15px; font-weight: bold; color: #1A1A1A;">${data.fullName}</span>
                         </td>
                       </tr>
                       <tr>
-                        <td style="padding: 12px 0; border-bottom: 1px solid ${COLORS.border};">
-                          <span style="color: ${COLORS.charcoalLight}; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Email</span><br>
-                          <a href="mailto:${data.email}" style="font-size: 16px; color: ${COLORS.gold}; text-decoration: none; font-weight: 500;">${data.email}</a>
+                        <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">
+                          <span style="color: #999999; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Email</span><br/>
+                          <a href="mailto:${data.email}" style="font-size: 15px; color: #B8954C; text-decoration: none;">${data.email}</a>
                         </td>
                       </tr>
                       ${data.phone ? `
                       <tr>
-                        <td style="padding: 12px 0; border-bottom: 1px solid ${COLORS.border};">
-                          <span style="color: ${COLORS.charcoalLight}; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Phone</span><br>
-                          <a href="tel:${data.phone}" style="font-size: 16px; color: ${COLORS.gold}; text-decoration: none; font-weight: 500;">${data.phone}</a>
+                        <td style="padding: 8px 0;">
+                          <span style="color: #999999; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Phone</span><br/>
+                          <a href="tel:${data.phone}" style="font-size: 15px; color: #B8954C; text-decoration: none;">${data.phone}</a>
                         </td>
                       </tr>
                       ` : ''}
@@ -140,33 +104,33 @@ function getAdminEmailTemplate(data: InquiryEmailData): string {
 
               ${data.propertyName || (data.checkIn && data.checkOut) || data.guests ? `
               <!-- Booking Details -->
-              <table width="100%" cellpadding="0" cellspacing="0" style="background-color: ${COLORS.creamLight}; border-radius: 12px; border: 1px solid ${COLORS.border}; margin-bottom: 24px;">
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #FAFAFA; border: 1px solid #E5E5E5; border-radius: 6px; margin-bottom: 25px;">
                 <tr>
-                  <td style="padding: 24px;">
-                    <h2 style="margin: 0 0 20px 0; font-size: 18px; color: ${COLORS.charcoal}; font-weight: 600;">Booking Details</h2>
+                  <td style="padding: 20px 25px;">
+                    <p style="margin: 0 0 15px 0; font-size: 16px; font-weight: bold; color: #1A1A1A;">Booking Details</p>
                     
-                    <table width="100%" cellpadding="0" cellspacing="0">
+                    <table width="100%" cellpadding="0" cellspacing="0" border="0">
                       ${data.propertyName ? `
                       <tr>
-                        <td style="padding: 12px 0; border-bottom: 1px solid ${COLORS.border};">
-                          <span style="color: ${COLORS.charcoalLight}; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Property</span><br>
-                          <span style="font-size: 16px; font-weight: 600; color: ${COLORS.charcoal};">${data.propertyName}</span>
+                        <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">
+                          <span style="color: #999999; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Property</span><br/>
+                          <span style="font-size: 15px; font-weight: bold; color: #1A1A1A;">${data.propertyName}</span>
                         </td>
                       </tr>
                       ` : ''}
                       ${data.checkIn && data.checkOut ? `
                       <tr>
-                        <td style="padding: 12px 0; border-bottom: 1px solid ${COLORS.border};">
-                          <span style="color: ${COLORS.charcoalLight}; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Dates</span><br>
-                          <span style="font-size: 16px; color: ${COLORS.charcoal};">${formatDate(data.checkIn)} → ${formatDate(data.checkOut)}</span>
+                        <td style="padding: 8px 0; border-bottom: 1px solid #EEEEEE;">
+                          <span style="color: #999999; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Dates</span><br/>
+                          <span style="font-size: 15px; color: #1A1A1A;">${formatDate(data.checkIn)} → ${formatDate(data.checkOut)}</span>
                         </td>
                       </tr>
                       ` : ''}
                       ${data.guests ? `
                       <tr>
-                        <td style="padding: 12px 0;">
-                          <span style="color: ${COLORS.charcoalLight}; font-size: 12px; text-transform: uppercase; letter-spacing: 1px;">Guests</span><br>
-                          <span style="font-size: 16px; color: ${COLORS.charcoal};">${data.guests} ${data.guests === 1 ? 'Guest' : 'Guests'}</span>
+                        <td style="padding: 8px 0;">
+                          <span style="color: #999999; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">Guests</span><br/>
+                          <span style="font-size: 15px; color: #1A1A1A;">${data.guests} ${data.guests === 1 ? 'Guest' : 'Guests'}</span>
                         </td>
                       </tr>
                       ` : ''}
@@ -178,24 +142,28 @@ function getAdminEmailTemplate(data: InquiryEmailData): string {
 
               ${data.message ? `
               <!-- Message -->
-              <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 24px;">
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom: 25px;">
                 <tr>
                   <td>
-                    <h2 style="margin: 0 0 12px 0; font-size: 18px; color: ${COLORS.charcoal}; font-weight: 600;">Message</h2>
-                    <div style="background-color: ${COLORS.creamLight}; border-radius: 12px; border: 1px solid ${COLORS.border}; padding: 20px;">
-                      <p style="margin: 0; font-size: 15px; color: ${COLORS.charcoalMedium}; white-space: pre-wrap; line-height: 1.7;">${data.message}</p>
-                    </div>
+                    <p style="margin: 0 0 10px 0; font-size: 16px; font-weight: bold; color: #1A1A1A;">Message</p>
+                    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #FAFAFA; border: 1px solid #E5E5E5; border-radius: 6px;">
+                      <tr>
+                        <td style="padding: 18px 20px;">
+                          <p style="margin: 0; font-size: 14px; color: #444444; line-height: 1.6; white-space: pre-wrap;">${data.message}</p>
+                        </td>
+                      </tr>
+                    </table>
                   </td>
                 </tr>
               </table>
               ` : ''}
 
-              <!-- CTA Button -->
-              <table width="100%" cellpadding="0" cellspacing="0">
+              <!-- CTA -->
+              <table width="100%" cellpadding="0" cellspacing="0" border="0">
                 <tr>
-                  <td align="center" style="padding: 20px 0;">
+                  <td align="center" style="padding: 10px 0 20px 0;">
                     <a href="mailto:${data.email}?subject=Re: Your Prime Luxury Stays Inquiry" 
-                       style="display: inline-block; background: linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldLight} 100%); color: ${COLORS.white}; padding: 16px 40px; text-decoration: none; border-radius: 50px; font-weight: 600; font-size: 14px; letter-spacing: 0.5px; box-shadow: 0 4px 16px rgba(184, 149, 76, 0.4);">
+                       style="display: inline-block; background-color: #B8954C; color: #FFFFFF; padding: 14px 35px; text-decoration: none; border-radius: 30px; font-weight: bold; font-size: 14px;">
                       Reply to ${data.fullName.split(' ')[0]}
                     </a>
                   </td>
@@ -203,7 +171,7 @@ function getAdminEmailTemplate(data: InquiryEmailData): string {
               </table>
 
               ${data.sourceUrl ? `
-              <p style="margin: 24px 0 0 0; text-align: center; color: ${COLORS.charcoalLight}; font-size: 12px;">
+              <p style="margin: 15px 0 0 0; text-align: center; color: #AAAAAA; font-size: 11px;">
                 Source: ${data.sourceUrl}
               </p>
               ` : ''}
@@ -212,9 +180,9 @@ function getAdminEmailTemplate(data: InquiryEmailData): string {
 
           <!-- Footer -->
           <tr>
-            <td style="background-color: ${COLORS.charcoal}; padding: 24px 40px; text-align: center;">
-              <p style="margin: 0; color: ${COLORS.charcoalLight}; font-size: 12px;">
-                Prime Luxury Stays • Exclusive Villas & Estates
+            <td align="center" style="background-color: #1A1A1A; padding: 20px 40px;">
+              <p style="margin: 0; color: #888888; font-size: 12px;">
+                Prime Luxury Stays · Exclusive Villas &amp; Estates
               </p>
             </td>
           </tr>
@@ -234,80 +202,77 @@ function getCustomerEmailTemplate(data: InquiryEmailData): string {
   
   return `
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Thank You for Your Inquiry</title>
 </head>
-<body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: ${COLORS.charcoal}; background-color: ${COLORS.cream};">
-  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: ${COLORS.cream}; padding: 40px 20px;">
+<body style="margin: 0; padding: 0; background-color: #FAF8F4; font-family: Arial, Helvetica, sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #FAF8F4;">
     <tr>
-      <td align="center">
-        <table width="600" cellpadding="0" cellspacing="0" style="background-color: ${COLORS.white}; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);">
+      <td align="center" style="padding: 40px 20px;">
+        <table width="600" cellpadding="0" cellspacing="0" border="0" style="background-color: #FFFFFF; border-radius: 8px; overflow: hidden;">
           
-          <!-- Header with Logo -->
+          <!-- Header -->
           <tr>
-            <td style="background: linear-gradient(135deg, ${COLORS.charcoal} 0%, #2D2D2D 100%); padding: 48px 40px; text-align: center;">
-              <table width="100%" cellpadding="0" cellspacing="0">
+            <td align="center" style="background-color: #1A1A1A; padding: 40px;">
+              <table width="70" height="70" cellpadding="0" cellspacing="0" border="0" style="background-color: #B8954C; border-radius: 50%;">
                 <tr>
-                  <td align="center">
-                    <div style="width: 80px; height: 80px; background: linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldLight} 100%); border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center;">
-                      <span style="font-size: 32px;">✓</span>
-                    </div>
-                    <h1 style="margin: 0; font-size: 28px; font-weight: 300; letter-spacing: 3px; color: ${COLORS.white};">PRIME LUXURY STAYS</h1>
-                    <div style="width: 60px; height: 2px; background: linear-gradient(90deg, ${COLORS.gold}, ${COLORS.goldLight}); margin: 20px auto 0;"></div>
-                  </td>
+                  <td align="center" valign="middle" style="font-size: 28px; color: #FFFFFF;">✓</td>
                 </tr>
+              </table>
+              <p style="margin: 20px 0 0 0; font-size: 22px; font-weight: 300; letter-spacing: 3px; color: #FFFFFF;">PRIME LUXURY STAYS</p>
+              <table width="50" cellpadding="0" cellspacing="0" border="0" style="margin-top: 15px;">
+                <tr><td style="height: 2px; background-color: #B8954C;"></td></tr>
               </table>
             </td>
           </tr>
 
           <!-- Content -->
           <tr>
-            <td style="padding: 48px 40px;">
+            <td style="padding: 40px;">
               
-              <h2 style="margin: 0 0 24px 0; font-size: 28px; font-weight: 300; color: ${COLORS.charcoal}; text-align: center;">
+              <h1 style="margin: 0 0 20px 0; font-size: 28px; font-weight: 300; color: #1A1A1A; text-align: center;">
                 Thank you, ${firstName}
-              </h2>
+              </h1>
 
-              <p style="margin: 0 0 24px 0; font-size: 16px; color: ${COLORS.charcoalMedium}; text-align: center; line-height: 1.8;">
+              <p style="margin: 0 0 30px 0; font-size: 16px; color: #666666; text-align: center; line-height: 1.7;">
                 We've received your inquiry and are excited to help you discover your perfect luxury retreat.
               </p>
 
-              <!-- Response Time -->
-              <table width="100%" cellpadding="0" cellspacing="0" style="background: linear-gradient(135deg, ${COLORS.gold}15 0%, ${COLORS.goldLight}15 100%); border-radius: 12px; border: 1px solid ${COLORS.border}; margin: 32px 0;">
+              <!-- Response Time Box -->
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #FBF9F5; border: 2px solid #E8D9B5; border-radius: 8px; margin-bottom: 30px;">
                 <tr>
-                  <td style="padding: 24px; text-align: center;">
-                    <p style="margin: 0 0 8px 0; font-size: 14px; color: ${COLORS.charcoalLight}; text-transform: uppercase; letter-spacing: 1px;">Expected Response Time</p>
-                    <p style="margin: 0; font-size: 32px; font-weight: 600; color: ${COLORS.gold};">Within 2 Hours</p>
-                    <p style="margin: 8px 0 0 0; font-size: 14px; color: ${COLORS.charcoalMedium};">Our concierge team is reviewing your request</p>
+                  <td align="center" style="padding: 30px;">
+                    <p style="margin: 0 0 5px 0; font-size: 11px; color: #999999; text-transform: uppercase; letter-spacing: 2px;">Expected Response Time</p>
+                    <p style="margin: 0 0 8px 0; font-size: 36px; font-weight: bold; color: #B8954C;">Within 2 Hours</p>
+                    <p style="margin: 0; font-size: 14px; color: #666666;">Our concierge team is reviewing your request</p>
                   </td>
                 </tr>
               </table>
 
               ${data.propertyName ? `
-              <!-- Property Card -->
-              <table width="100%" cellpadding="0" cellspacing="0" style="background-color: ${COLORS.creamLight}; border-radius: 12px; border: 1px solid ${COLORS.border}; margin: 32px 0;">
+              <!-- Property Box -->
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #FAFAFA; border: 1px solid #E5E5E5; border-radius: 6px; margin-bottom: 30px;">
                 <tr>
-                  <td style="padding: 24px;">
-                    <p style="margin: 0 0 8px 0; font-size: 12px; color: ${COLORS.charcoalLight}; text-transform: uppercase; letter-spacing: 1px;">You inquired about</p>
-                    <p style="margin: 0; font-size: 20px; font-weight: 600; color: ${COLORS.charcoal};">${data.propertyName}</p>
+                  <td style="padding: 20px 25px;">
+                    <p style="margin: 0 0 5px 0; font-size: 11px; color: #999999; text-transform: uppercase; letter-spacing: 1px;">You inquired about</p>
+                    <p style="margin: 0; font-size: 18px; font-weight: bold; color: #1A1A1A;">${data.propertyName}</p>
                   </td>
                 </tr>
               </table>
               ` : ''}
 
-              <p style="margin: 32px 0; font-size: 15px; color: ${COLORS.charcoalMedium}; text-align: center; line-height: 1.8;">
+              <p style="margin: 0 0 30px 0; font-size: 15px; color: #666666; text-align: center; line-height: 1.7;">
                 In the meantime, feel free to explore more of our exclusive collection of luxury properties.
               </p>
 
-              <!-- CTA Button -->
-              <table width="100%" cellpadding="0" cellspacing="0">
+              <!-- CTA -->
+              <table width="100%" cellpadding="0" cellspacing="0" border="0">
                 <tr>
-                  <td align="center" style="padding: 16px 0;">
+                  <td align="center">
                     <a href="https://primeluxurystays.com/properties" 
-                       style="display: inline-block; background: linear-gradient(135deg, ${COLORS.gold} 0%, ${COLORS.goldLight} 100%); color: ${COLORS.white}; padding: 16px 40px; text-decoration: none; border-radius: 50px; font-weight: 600; font-size: 14px; letter-spacing: 0.5px; box-shadow: 0 4px 16px rgba(184, 149, 76, 0.4);">
+                       style="display: inline-block; background-color: #B8954C; color: #FFFFFF; padding: 16px 40px; text-decoration: none; border-radius: 30px; font-weight: bold; font-size: 14px;">
                       Browse Our Collection
                     </a>
                   </td>
@@ -317,64 +282,44 @@ function getCustomerEmailTemplate(data: InquiryEmailData): string {
             </td>
           </tr>
 
-          <!-- Divider -->
-          <tr>
-            <td style="padding: 0 40px;">
-              <div style="height: 1px; background: linear-gradient(90deg, transparent, ${COLORS.border}, transparent);"></div>
-            </td>
-          </tr>
-
           <!-- Contact Section -->
           <tr>
-            <td style="padding: 32px 40px;">
-              <table width="100%" cellpadding="0" cellspacing="0">
-                <tr>
-                  <td style="text-align: center;">
-                    <p style="margin: 0 0 16px 0; font-size: 14px; color: ${COLORS.charcoalLight}; text-transform: uppercase; letter-spacing: 1px;">Need immediate assistance?</p>
-                    <table cellpadding="0" cellspacing="0" style="margin: 0 auto;">
-                      <tr>
-                        <td style="padding: 8px 16px;">
-                          <a href="mailto:concierge@primeluxurystays.com" style="color: ${COLORS.gold}; text-decoration: none; font-size: 15px; font-weight: 500;">
-                            ✉️ concierge@primeluxurystays.com
-                          </a>
-                        </td>
-                      </tr>
-                    </table>
-                  </td>
-                </tr>
+            <td style="padding: 0 40px;">
+              <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr><td style="height: 1px; background-color: #EEEEEE;"></td></tr>
               </table>
+            </td>
+          </tr>
+          <tr>
+            <td align="center" style="padding: 25px 40px;">
+              <p style="margin: 0 0 8px 0; font-size: 12px; color: #999999; text-transform: uppercase; letter-spacing: 1px;">Need immediate assistance?</p>
+              <a href="mailto:concierge@primeluxurystays.com" style="color: #B8954C; text-decoration: none; font-size: 15px;">
+                concierge@primeluxurystays.com
+              </a>
             </td>
           </tr>
 
           <!-- Footer -->
           <tr>
-            <td style="background-color: ${COLORS.charcoal}; padding: 32px 40px; text-align: center;">
-              <p style="margin: 0 0 8px 0; font-size: 11px; letter-spacing: 2px; color: ${COLORS.charcoalLight}; text-transform: uppercase;">Exclusive Villas & Estates</p>
-              <p style="margin: 0; color: ${COLORS.charcoalLight}; font-size: 12px;">
+            <td align="center" style="background-color: #1A1A1A; padding: 25px 40px;">
+              <p style="margin: 0 0 5px 0; font-size: 10px; letter-spacing: 2px; color: #888888; text-transform: uppercase;">Exclusive Villas &amp; Estates</p>
+              <p style="margin: 0 0 15px 0; color: #666666; font-size: 12px;">
                 © ${new Date().getFullYear()} Prime Luxury Stays. All rights reserved.
               </p>
-              <table cellpadding="0" cellspacing="0" style="margin: 16px auto 0;">
-                <tr>
-                  <td style="padding: 0 8px;">
-                    <a href="https://primeluxurystays.com/mallorca" style="color: ${COLORS.gold}; text-decoration: none; font-size: 12px;">Mallorca</a>
-                  </td>
-                  <td style="color: ${COLORS.charcoalLight};">•</td>
-                  <td style="padding: 0 8px;">
-                    <a href="https://primeluxurystays.com/ibiza" style="color: ${COLORS.gold}; text-decoration: none; font-size: 12px;">Ibiza</a>
-                  </td>
-                  <td style="color: ${COLORS.charcoalLight};">•</td>
-                  <td style="padding: 0 8px;">
-                    <a href="https://primeluxurystays.com/properties" style="color: ${COLORS.gold}; text-decoration: none; font-size: 12px;">All Properties</a>
-                  </td>
-                </tr>
-              </table>
+              <p style="margin: 0;">
+                <a href="https://primeluxurystays.com/mallorca" style="color: #B8954C; text-decoration: none; font-size: 12px; margin: 0 8px;">Mallorca</a>
+                <span style="color: #444444;">·</span>
+                <a href="https://primeluxurystays.com/ibiza" style="color: #B8954C; text-decoration: none; font-size: 12px; margin: 0 8px;">Ibiza</a>
+                <span style="color: #444444;">·</span>
+                <a href="https://primeluxurystays.com/properties" style="color: #B8954C; text-decoration: none; font-size: 12px; margin: 0 8px;">All Properties</a>
+              </p>
             </td>
           </tr>
 
         </table>
 
         <!-- Unsubscribe -->
-        <p style="margin: 24px 0 0 0; text-align: center; color: ${COLORS.charcoalLight}; font-size: 11px;">
+        <p style="margin: 20px 0 0 0; text-align: center; color: #AAAAAA; font-size: 11px;">
           You received this email because you submitted an inquiry on primeluxurystays.com
         </p>
       </td>
@@ -396,7 +341,7 @@ export async function sendInquiryNotification(data: InquiryEmailData) {
     const { data: emailData, error } = await resend.emails.send({
       from: FROM_EMAIL,
       to: [ADMIN_EMAIL],
-      subject: `New Inquiry from ${data.fullName}${data.propertyName ? ` • ${data.propertyName}` : ''}`,
+      subject: `New Inquiry from ${data.fullName}${data.propertyName ? ` · ${data.propertyName}` : ''}`,
       html: getAdminEmailTemplate(data),
     })
 
@@ -425,7 +370,7 @@ export async function sendInquiryConfirmation(data: InquiryEmailData) {
       from: FROM_EMAIL,
       to: [data.email],
       replyTo: ADMIN_EMAIL,
-      subject: `Thank you for your inquiry${data.propertyName ? ` about ${data.propertyName}` : ''} • Prime Luxury Stays`,
+      subject: `Thank you for your inquiry${data.propertyName ? ` about ${data.propertyName}` : ''} · Prime Luxury Stays`,
       html: getCustomerEmailTemplate(data),
     })
 
