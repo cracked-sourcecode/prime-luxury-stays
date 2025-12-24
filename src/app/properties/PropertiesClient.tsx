@@ -120,6 +120,38 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
   // Featured properties for showcase
   const featuredProperties = properties.filter(p => p.is_featured).slice(0, 3)
 
+  // Group properties by region for organized display
+  const propertiesByRegion: Record<string, Property[]> = {}
+  sortedProperties.forEach(property => {
+    const region = property.region || 'Mallorca'
+    if (!propertiesByRegion[region]) {
+      propertiesByRegion[region] = []
+    }
+    propertiesByRegion[region].push(property)
+  })
+
+  // Define region display order and metadata
+  const regionInfo: Record<string, { name: string; slug: string; tagline: string }> = {
+    'Mallorca': { 
+      name: 'Mallorca', 
+      slug: '/mallorca', 
+      tagline: 'The Jewel of the Mediterranean' 
+    },
+    'Ibiza': { 
+      name: 'Ibiza', 
+      slug: '/ibiza', 
+      tagline: 'The White Isle' 
+    },
+    'South of France': { 
+      name: 'South of France', 
+      slug: '/south-of-france', 
+      tagline: 'The French Riviera' 
+    },
+  }
+
+  // Get ordered regions that have properties
+  const orderedRegions = ['Mallorca', 'Ibiza', 'South of France'].filter(r => propertiesByRegion[r]?.length > 0)
+
   return (
     <div className="overflow-hidden">
       {/* ========== HERO WITH SEARCH ========== */}
@@ -548,59 +580,101 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
 
           {/* Properties Grid or Map */}
           {viewMode === 'grid' ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {sortedProperties.map((property, index) => (
-                <motion.div
-                  key={property.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: index * 0.05 }}
-                >
-                  <Link href={`/properties/${property.slug}`} className="group block">
-                    <div className="relative aspect-[4/3] rounded-2xl overflow-hidden mb-4 shadow-lg">
-                      <PropertyImage
-                        src={property.featured_image || ''}
-                        alt={property.name}
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                      
-                      {property.is_featured && (
-                        <div className="absolute top-4 left-4 bg-gold-500 text-white px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1">
-                          <Star className="w-3 h-3 fill-white" /> Featured
+            <div className="space-y-16">
+              {orderedRegions.map((region, regionIndex) => {
+                const info = regionInfo[region]
+                const regionProperties = propertiesByRegion[region] || []
+                
+                return (
+                  <div key={region}>
+                    {/* Region Header */}
+                    <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
+                      <div>
+                        <div className="flex items-center gap-3 mb-2">
+                          <div className="w-2 h-2 rounded-full bg-gold-500" />
+                          <span className="text-gold-600 text-sm font-semibold tracking-wide uppercase">
+                            {info?.tagline || region}
+                          </span>
                         </div>
-                      )}
-                      <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-semibold">
-                        {property.house_type}
+                        <h3 className="font-merriweather text-2xl md:text-3xl text-charcoal-900">
+                          {info?.name || region} Collection
+                        </h3>
+                        <p className="text-charcoal-500 mt-1">
+                          {regionProperties.length} {regionProperties.length === 1 ? 'property' : 'properties'} available
+                        </p>
                       </div>
-                      <div className="absolute bottom-4 left-4 flex gap-2">
-                        {property.has_sea_view && (
-                          <div className="bg-white/90 backdrop-blur-sm p-2 rounded-full">
-                            <Waves className="w-4 h-4 text-blue-500" />
-                          </div>
-                        )}
-                        {property.has_pool && (
-                          <div className="bg-white/90 backdrop-blur-sm p-2 rounded-full text-xs">🏊</div>
-                        )}
-                      </div>
+                      <Link 
+                        href={info?.slug || '#'} 
+                        className="inline-flex items-center gap-2 text-gold-600 font-semibold hover:text-gold-700 transition-colors"
+                      >
+                        <span>Explore {info?.name || region}</span>
+                        <ArrowRight className="w-4 h-4" />
+                      </Link>
                     </div>
-                    <div className="flex items-center gap-1.5 text-charcoal-500 text-sm mb-1">
-                      <MapPin className="w-4 h-4 text-gold-500" />
-                      <span>{property.city}, {property.region}</span>
+
+                    {/* Region Properties Grid */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                      {regionProperties.map((property, index) => (
+                        <motion.div
+                          key={property.id}
+                          initial={{ opacity: 0, y: 20 }}
+                          whileInView={{ opacity: 1, y: 0 }}
+                          viewport={{ once: true }}
+                          transition={{ delay: index * 0.05 }}
+                        >
+                          <Link href={`/properties/${property.slug}`} className="group block">
+                            <div className="relative aspect-[4/3] rounded-2xl overflow-hidden mb-4 shadow-lg">
+                              <PropertyImage
+                                src={property.featured_image || ''}
+                                alt={property.name}
+                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                              />
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                              
+                              {property.is_featured && (
+                                <div className="absolute top-4 left-4 bg-gold-500 text-white px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1">
+                                  <Star className="w-3 h-3 fill-white" /> Featured
+                                </div>
+                              )}
+                              <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-semibold">
+                                {property.house_type}
+                              </div>
+                              <div className="absolute bottom-4 left-4 flex gap-2">
+                                {property.has_sea_view && (
+                                  <div className="bg-white/90 backdrop-blur-sm p-2 rounded-full">
+                                    <Waves className="w-4 h-4 text-blue-500" />
+                                  </div>
+                                )}
+                                {property.has_pool && (
+                                  <div className="bg-white/90 backdrop-blur-sm p-2 rounded-full text-xs">🏊</div>
+                                )}
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-1.5 text-charcoal-500 text-sm mb-1">
+                              <MapPin className="w-4 h-4 text-gold-500" />
+                              <span>{property.city}{property.city ? ', ' : ''}{property.region}</span>
+                            </div>
+                            <h3 className="font-merriweather text-xl text-charcoal-900 mb-2 group-hover:text-gold-600 transition-colors">
+                              {property.name}
+                            </h3>
+                            <p className="text-charcoal-500 text-sm mb-3 line-clamp-2">{property.short_description}</p>
+                            <div className="flex items-center gap-4 text-charcoal-600 text-sm">
+                              <span className="flex items-center gap-1"><Bed className="w-4 h-4" /> {property.bedrooms}</span>
+                              <span className="flex items-center gap-1"><Bath className="w-4 h-4" /> {property.bathrooms}</span>
+                              <span className="flex items-center gap-1"><Users className="w-4 h-4" /> {property.max_guests}</span>
+                            </div>
+                          </Link>
+                        </motion.div>
+                      ))}
                     </div>
-                    <h3 className="font-merriweather text-xl text-charcoal-900 mb-2 group-hover:text-gold-600 transition-colors">
-                      {property.name}
-                    </h3>
-                    <p className="text-charcoal-500 text-sm mb-3 line-clamp-2">{property.short_description}</p>
-                    <div className="flex items-center gap-4 text-charcoal-600 text-sm">
-                      <span className="flex items-center gap-1"><Bed className="w-4 h-4" /> {property.bedrooms}</span>
-                      <span className="flex items-center gap-1"><Bath className="w-4 h-4" /> {property.bathrooms}</span>
-                      <span className="flex items-center gap-1"><Users className="w-4 h-4" /> {property.max_guests}</span>
-                    </div>
-                  </Link>
-                </motion.div>
-              ))}
+
+                    {/* Divider between regions */}
+                    {regionIndex < orderedRegions.length - 1 && (
+                      <div className="mt-16 border-b border-gray-200" />
+                    )}
+                  </div>
+                )
+              })}
             </div>
           ) : (
             <div className="grid lg:grid-cols-2 gap-6 h-[600px]">
