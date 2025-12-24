@@ -25,7 +25,7 @@ interface InquiryEmailData {
   sourceUrl?: string | null
 }
 
-const LOGO_URL = 'https://storage.googleapis.com/primeluxurystays/PLS%20Blacked%20out%20logo'
+const LOGO_URL = 'https://storage.googleapis.com/primeluxurystays/Company%20Logo'
 
 // Admin notification email template
 function getAdminEmailTemplate(data: InquiryEmailData): string {
