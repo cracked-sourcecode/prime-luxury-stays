@@ -23,12 +23,49 @@ interface InquiryEmailData {
   sourceUrl?: string | null
 }
 
-// Brand colors from website
 const GOLD = '#B8954C'
 const CREAM = '#FAF8F4'
 const CHARCOAL = '#1A1A1A'
-
 const LOGO_URL = 'https://storage.googleapis.com/primeluxurystays/Company%20Logo'
+
+// Responsive styles for both desktop and mobile
+const responsiveStyles = `
+<style type="text/css">
+  /* Desktop styles */
+  .wrapper { width: 100%; background-color: ${CREAM}; }
+  .container { width: 600px; max-width: 600px; margin: 0 auto; background-color: #ffffff; }
+  .content { padding: 0 40px; }
+  .header { padding: 32px 40px 24px; }
+  .footer { padding: 24px 40px; }
+  .button { padding: 16px 32px; font-size: 16px; }
+  .heading { font-size: 32px; }
+  .subheading { font-size: 18px; }
+  .property-title { font-size: 22px; }
+  .property-details { font-size: 15px; }
+  .dates-box { padding: 24px; }
+  .date-label { font-size: 12px; }
+  .date-value { font-size: 18px; }
+  
+  /* Mobile styles */
+  @media only screen and (max-width: 620px) {
+    .container { width: 100% !important; max-width: 100% !important; }
+    .content { padding: 0 20px !important; }
+    .header { padding: 24px 20px 20px !important; }
+    .footer { padding: 20px !important; }
+    .button { padding: 14px 24px !important; font-size: 15px !important; display: block !important; text-align: center !important; }
+    .heading { font-size: 26px !important; }
+    .subheading { font-size: 16px !important; }
+    .property-title { font-size: 18px !important; }
+    .property-details { font-size: 14px !important; }
+    .dates-box { padding: 16px !important; }
+    .date-label { font-size: 11px !important; }
+    .date-value { font-size: 15px !important; }
+    .logo { width: 160px !important; }
+    .stack { display: block !important; width: 100% !important; }
+    .stack-spacer { height: 12px !important; }
+  }
+</style>
+`
 
 function getAdminEmailTemplate(data: InquiryEmailData): string {
   const formatDate = (dateStr: string) => {
@@ -47,55 +84,51 @@ function getAdminEmailTemplate(data: InquiryEmailData): string {
     } catch { return null }
   })()
 
-  return `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  return `<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title>New Inquiry</title>
+${responsiveStyles}
 </head>
-<body style="margin:0; padding:0; background-color:${CREAM}; font-family:Georgia, 'Times New Roman', serif;">
-<table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color:${CREAM};">
-<tr>
-<td align="center" style="padding:30px 15px;">
-<table border="0" cellpadding="0" cellspacing="0" width="600" style="background-color:#ffffff; border:1px solid #e5e5e5;">
+<body style="margin:0; padding:0; background-color:${CREAM}; font-family:Georgia, 'Times New Roman', serif; -webkit-font-smoothing:antialiased;">
 
-<!-- Logo -->
+<table class="wrapper" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:${CREAM};">
 <tr>
-<td align="center" style="padding:30px 30px 20px;">
-<img src="${LOGO_URL}" alt="Prime Luxury Stays" width="200" height="auto" style="display:block; border:0;" />
-</td>
-</tr>
+<td align="center" style="padding:24px 16px;">
 
-<!-- Gold Line -->
+<table class="container" cellpadding="0" cellspacing="0" border="0" style="width:600px; max-width:600px; background-color:#ffffff; border:1px solid #e0e0e0; border-radius:8px;">
+
+<!-- Header -->
 <tr>
-<td style="padding:0 30px;">
-<table border="0" cellpadding="0" cellspacing="0" width="100%">
-<tr><td style="border-top:2px solid ${GOLD};"></td></tr>
-</table>
+<td class="header" align="center" style="padding:32px 40px 24px;">
+<img class="logo" src="${LOGO_URL}" alt="Prime Luxury Stays" width="200" style="display:block; border:0; max-width:100%;">
+<div style="margin-top:20px; border-top:2px solid ${GOLD}; width:60px;"></div>
 </td>
 </tr>
 
 <!-- Heading -->
 <tr>
-<td style="padding:25px 30px 20px;">
-<h1 style="margin:0; font-size:26px; font-weight:normal; color:${CHARCOAL}; font-family:Georgia, 'Times New Roman', serif;">
+<td class="content" style="padding:0 40px;">
+<h1 class="heading" style="margin:0 0 24px; font-size:32px; font-weight:normal; color:${CHARCOAL}; line-height:1.2;">
 New inquiry from ${data.fullName}
 </h1>
 </td>
 </tr>
 
-<!-- Contact Details -->
+<!-- Contact Card -->
 <tr>
-<td style="padding:0 30px 25px;">
-<table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color:${CREAM}; border-radius:8px;">
+<td class="content" style="padding:0 40px 24px;">
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:${CREAM}; border-radius:8px;">
 <tr>
 <td style="padding:20px;">
-<p style="margin:0 0 5px; font-size:13px; color:#888; text-transform:uppercase; letter-spacing:1px;">Contact</p>
-<p style="margin:0 0 3px; font-size:18px; color:${CHARCOAL}; font-weight:bold;">${data.fullName}</p>
-<p style="margin:0; font-size:15px;">
-<a href="mailto:${data.email}" style="color:${GOLD}; text-decoration:none;">${data.email}</a>
-${data.phone ? ` · <a href="tel:${data.phone}" style="color:${GOLD}; text-decoration:none;">${data.phone}</a>` : ''}
+<p style="margin:0 0 4px; font-size:12px; color:#888; text-transform:uppercase; letter-spacing:1px;">Contact</p>
+<p style="margin:0 0 8px; font-size:20px; color:${CHARCOAL}; font-weight:bold;">${data.fullName}</p>
+<p style="margin:0; font-size:15px; line-height:1.6;">
+<a href="mailto:${data.email}" style="color:${GOLD}; text-decoration:none;">${data.email}</a><br>
+${data.phone ? `<a href="tel:${data.phone}" style="color:${GOLD}; text-decoration:none;">${data.phone}</a>` : ''}
 </p>
 </td>
 </tr>
@@ -106,8 +139,8 @@ ${data.phone ? ` · <a href="tel:${data.phone}" style="color:${GOLD}; text-decor
 ${data.message ? `
 <!-- Message -->
 <tr>
-<td style="padding:0 30px 25px;">
-<p style="margin:0 0 10px; font-size:13px; color:#888; text-transform:uppercase; letter-spacing:1px;">Message</p>
+<td class="content" style="padding:0 40px 24px;">
+<p style="margin:0 0 8px; font-size:12px; color:#888; text-transform:uppercase; letter-spacing:1px;">Message</p>
 <p style="margin:0; font-size:16px; color:${CHARCOAL}; line-height:1.6; white-space:pre-wrap;">${data.message}</p>
 </td>
 </tr>
@@ -115,11 +148,11 @@ ${data.message ? `
 
 <!-- Reply Button -->
 <tr>
-<td style="padding:0 30px 30px;">
-<table border="0" cellpadding="0" cellspacing="0">
+<td class="content" style="padding:0 40px 32px;">
+<table cellpadding="0" cellspacing="0" border="0">
 <tr>
 <td style="background-color:${GOLD}; border-radius:6px;">
-<a href="mailto:${data.email}?subject=Re: Your Prime Luxury Stays Inquiry" style="display:inline-block; padding:14px 28px; font-size:16px; color:#ffffff; text-decoration:none; font-family:Georgia, 'Times New Roman', serif;">
+<a class="button" href="mailto:${data.email}?subject=Re: Your Prime Luxury Stays Inquiry" style="display:inline-block; padding:16px 32px; font-size:16px; color:#ffffff; text-decoration:none; font-family:Georgia, serif;">
 Reply to ${data.fullName.split(' ')[0]}
 </a>
 </td>
@@ -131,22 +164,22 @@ Reply to ${data.fullName.split(' ')[0]}
 ${data.propertyName ? `
 <!-- Property -->
 <tr>
-<td style="padding:0 30px 25px;">
-<table border="0" cellpadding="0" cellspacing="0" width="100%" style="border:1px solid #e5e5e5; border-radius:8px; overflow:hidden;">
+<td class="content" style="padding:0 40px 24px;">
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #e0e0e0; border-radius:8px; overflow:hidden;">
 ${data.propertyImage ? `
 <tr>
 <td>
-<img src="${data.propertyImage}" alt="${data.propertyName}" width="538" height="300" style="display:block; width:100%; height:auto; object-fit:cover;" />
+<img src="${data.propertyImage}" alt="${data.propertyName}" width="600" style="display:block; width:100%; height:auto;">
 </td>
 </tr>
 ` : ''}
 <tr>
 <td style="padding:20px;">
-<p style="margin:0 0 5px; font-size:18px; color:${CHARCOAL}; font-weight:bold; font-family:Georgia, 'Times New Roman', serif;">${data.propertyName}</p>
-${data.propertyLocation ? `<p style="margin:0; font-size:14px; color:#666;">${data.propertyLocation}</p>` : ''}
+<p class="property-title" style="margin:0 0 6px; font-size:22px; color:${CHARCOAL}; font-weight:bold; font-family:Georgia, serif;">${data.propertyName}</p>
+${data.propertyLocation ? `<p class="property-details" style="margin:0 0 8px; font-size:15px; color:#666;">${data.propertyLocation}</p>` : ''}
 ${data.propertyBedrooms || data.propertyBathrooms ? `
-<p style="margin:8px 0 0; font-size:14px; color:#888;">
-${data.propertyBedrooms ? `${data.propertyBedrooms} beds` : ''}${data.propertyBathrooms ? ` · ${data.propertyBathrooms} baths` : ''}${data.propertyMaxGuests ? ` · ${data.propertyMaxGuests} guests max` : ''}
+<p class="property-details" style="margin:0; font-size:14px; color:#888;">
+${data.propertyBedrooms ? `${data.propertyBedrooms} beds` : ''}${data.propertyBathrooms ? ` · ${data.propertyBathrooms} baths` : ''}${data.propertyMaxGuests ? ` · ${data.propertyMaxGuests} guests` : ''}
 </p>
 ` : ''}
 </td>
@@ -159,34 +192,39 @@ ${data.propertyBedrooms ? `${data.propertyBedrooms} beds` : ''}${data.propertyBa
 ${data.checkIn ? `
 <!-- Dates -->
 <tr>
-<td style="padding:0 30px 30px;">
-<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<td class="content" style="padding:0 40px 24px;">
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:${CREAM}; border-radius:8px;">
 <tr>
-<td width="50%" style="padding:15px 20px; background-color:${CREAM}; border-radius:8px 0 0 8px;">
-<p style="margin:0 0 3px; font-size:12px; color:#888; text-transform:uppercase;">Check-in</p>
-<p style="margin:0; font-size:16px; color:${CHARCOAL}; font-weight:bold;">${formatDate(data.checkIn)}</p>
+<td class="dates-box" style="padding:24px;">
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td class="stack" width="48%" valign="top">
+<p class="date-label" style="margin:0 0 4px; font-size:12px; color:#888; text-transform:uppercase;">Check-in</p>
+<p class="date-value" style="margin:0; font-size:18px; color:${CHARCOAL}; font-weight:bold;">${formatDate(data.checkIn)}</p>
 </td>
-<td width="50%" style="padding:15px 20px; background-color:${CREAM}; border-radius:0 8px 8px 0;">
-<p style="margin:0 0 3px; font-size:12px; color:#888; text-transform:uppercase;">Check-out</p>
-<p style="margin:0; font-size:16px; color:${CHARCOAL}; font-weight:bold;">${data.checkOut ? formatDate(data.checkOut) : 'TBD'}</p>
+<td width="4%"></td>
+<td class="stack" width="48%" valign="top">
+<p class="date-label" style="margin:0 0 4px; font-size:12px; color:#888; text-transform:uppercase;">Check-out</p>
+<p class="date-value" style="margin:0; font-size:18px; color:${CHARCOAL}; font-weight:bold;">${data.checkOut ? formatDate(data.checkOut) : 'TBD'}</p>
 </td>
 </tr>
 </table>
 ${nights || data.guests ? `
-<table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-top:10px;">
-<tr>
-${nights ? `<td style="font-size:14px; color:${GOLD}; font-weight:bold;">${nights} nights</td>` : ''}
-${data.guests ? `<td align="right" style="font-size:14px; color:#666;">${data.guests} guests</td>` : ''}
+<p style="margin:16px 0 0; font-size:15px;">
+${nights ? `<strong style="color:${GOLD};">${nights} nights</strong>` : ''}
+${data.guests ? `<span style="color:#666; margin-left:16px;">${data.guests} guests</span>` : ''}
+</p>
+` : ''}
+</td>
 </tr>
 </table>
-` : ''}
 </td>
 </tr>
 ` : ''}
 
 <!-- Footer -->
 <tr>
-<td style="padding:20px 30px; border-top:1px solid #e5e5e5;">
+<td class="footer" style="padding:24px 40px; border-top:1px solid #e0e0e0;">
 <p style="margin:0; font-size:13px; color:#888;">
 Prime Luxury Stays · Exclusive Villas & Estates
 </p>
@@ -194,9 +232,11 @@ Prime Luxury Stays · Exclusive Villas & Estates
 </tr>
 
 </table>
+
 </td>
 </tr>
 </table>
+
 </body>
 </html>`
 }
@@ -220,48 +260,38 @@ function getCustomerEmailTemplate(data: InquiryEmailData): string {
     } catch { return null }
   })()
 
-  return `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  return `<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <title>Thank You</title>
+${responsiveStyles}
 </head>
-<body style="margin:0; padding:0; background-color:${CREAM}; font-family:Georgia, 'Times New Roman', serif;">
-<table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color:${CREAM};">
-<tr>
-<td align="center" style="padding:30px 15px;">
-<table border="0" cellpadding="0" cellspacing="0" width="600" style="background-color:#ffffff; border:1px solid #e5e5e5;">
+<body style="margin:0; padding:0; background-color:${CREAM}; font-family:Georgia, 'Times New Roman', serif; -webkit-font-smoothing:antialiased;">
 
-<!-- Logo -->
+<table class="wrapper" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:${CREAM};">
 <tr>
-<td align="center" style="padding:30px 30px 20px;">
-<img src="${LOGO_URL}" alt="Prime Luxury Stays" width="200" height="auto" style="display:block; border:0;" />
-</td>
-</tr>
+<td align="center" style="padding:24px 16px;">
 
-<!-- Gold Line -->
+<table class="container" cellpadding="0" cellspacing="0" border="0" style="width:600px; max-width:600px; background-color:#ffffff; border:1px solid #e0e0e0; border-radius:8px;">
+
+<!-- Header -->
 <tr>
-<td style="padding:0 30px;">
-<table border="0" cellpadding="0" cellspacing="0" width="100%">
-<tr><td style="border-top:2px solid ${GOLD};"></td></tr>
-</table>
+<td class="header" align="center" style="padding:32px 40px 24px;">
+<img class="logo" src="${LOGO_URL}" alt="Prime Luxury Stays" width="200" style="display:block; border:0; max-width:100%;">
+<div style="margin-top:20px; border-top:2px solid ${GOLD}; width:60px;"></div>
 </td>
 </tr>
 
 <!-- Heading -->
 <tr>
-<td style="padding:25px 30px 15px;">
-<h1 style="margin:0; font-size:28px; font-weight:normal; color:${CHARCOAL}; font-family:Georgia, 'Times New Roman', serif;">
+<td class="content" style="padding:0 40px;">
+<h1 class="heading" style="margin:0 0 16px; font-size:32px; font-weight:normal; color:${CHARCOAL}; line-height:1.2;">
 Thank you, ${firstName}
 </h1>
-</td>
-</tr>
-
-<!-- Subheading -->
-<tr>
-<td style="padding:0 30px 25px;">
-<p style="margin:0; font-size:17px; color:#666; line-height:1.5;">
+<p class="subheading" style="margin:0 0 32px; font-size:18px; color:#666; line-height:1.5;">
 We've received your inquiry and will respond within <strong style="color:${GOLD};">2 hours</strong> with availability and pricing.
 </p>
 </td>
@@ -270,26 +300,26 @@ We've received your inquiry and will respond within <strong style="color:${GOLD}
 ${data.propertyName ? `
 <!-- Property Card -->
 <tr>
-<td style="padding:0 30px 25px;">
-<table border="0" cellpadding="0" cellspacing="0" width="100%" style="border:1px solid #e5e5e5; border-radius:8px; overflow:hidden;">
+<td class="content" style="padding:0 40px 24px;">
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #e0e0e0; border-radius:8px; overflow:hidden;">
 ${data.propertyImage ? `
 <tr>
 <td>
 <a href="https://primeluxurystays.com/properties/${data.propertySlug || ''}" style="text-decoration:none;">
-<img src="${data.propertyImage}" alt="${data.propertyName}" width="538" height="300" style="display:block; width:100%; height:auto; object-fit:cover;" />
+<img src="${data.propertyImage}" alt="${data.propertyName}" width="600" style="display:block; width:100%; height:auto;">
 </a>
 </td>
 </tr>
 ` : ''}
 <tr>
 <td style="padding:20px;">
-<p style="margin:0 0 5px; font-size:12px; color:${GOLD}; text-transform:uppercase; letter-spacing:1px;">Your Selection</p>
-<p style="margin:0 0 5px; font-size:20px; color:${CHARCOAL}; font-weight:bold; font-family:Georgia, 'Times New Roman', serif;">
+<p style="margin:0 0 4px; font-size:11px; color:${GOLD}; text-transform:uppercase; letter-spacing:1px; font-weight:bold;">Your Selection</p>
+<p class="property-title" style="margin:0 0 6px; font-size:22px; color:${CHARCOAL}; font-weight:bold; font-family:Georgia, serif;">
 <a href="https://primeluxurystays.com/properties/${data.propertySlug || ''}" style="color:${CHARCOAL}; text-decoration:none;">${data.propertyName}</a>
 </p>
-${data.propertyLocation ? `<p style="margin:0; font-size:14px; color:#666;">${data.propertyLocation}</p>` : ''}
+${data.propertyLocation ? `<p class="property-details" style="margin:0 0 10px; font-size:15px; color:#666;">${data.propertyLocation}</p>` : ''}
 ${data.propertyBedrooms || data.propertyBathrooms ? `
-<p style="margin:10px 0 0; font-size:14px; color:#888;">
+<p class="property-details" style="margin:0; font-size:14px; color:#888;">
 ${data.propertyBedrooms ? `${data.propertyBedrooms} bedrooms` : ''}${data.propertyBathrooms ? ` · ${data.propertyBathrooms} baths` : ''}${data.propertyMaxGuests ? ` · Up to ${data.propertyMaxGuests} guests` : ''}
 </p>
 ` : ''}
@@ -303,31 +333,30 @@ ${data.propertyBedrooms ? `${data.propertyBedrooms} bedrooms` : ''}${data.proper
 ${data.checkIn ? `
 <!-- Booking Details -->
 <tr>
-<td style="padding:0 30px 25px;">
-<table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color:${CREAM}; border-radius:8px;">
+<td class="content" style="padding:0 40px 24px;">
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:${CREAM}; border-radius:8px;">
 <tr>
-<td style="padding:20px;">
-<p style="margin:0 0 15px; font-size:12px; color:#888; text-transform:uppercase; letter-spacing:1px;">Your Request</p>
-<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<td class="dates-box" style="padding:24px;">
+<p style="margin:0 0 16px; font-size:11px; color:#888; text-transform:uppercase; letter-spacing:1px; font-weight:bold;">Your Request</p>
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
 <tr>
-<td width="50%">
-<p style="margin:0 0 3px; font-size:12px; color:#888;">CHECK-IN</p>
-<p style="margin:0; font-size:16px; color:${CHARCOAL}; font-weight:bold;">${formatDate(data.checkIn)}</p>
+<td class="stack" width="48%" valign="top">
+<p class="date-label" style="margin:0 0 4px; font-size:12px; color:#888; text-transform:uppercase;">Check-in</p>
+<p class="date-value" style="margin:0; font-size:18px; color:${CHARCOAL}; font-weight:bold;">${formatDate(data.checkIn)}</p>
 </td>
-<td width="50%">
-<p style="margin:0 0 3px; font-size:12px; color:#888;">CHECK-OUT</p>
-<p style="margin:0; font-size:16px; color:${CHARCOAL}; font-weight:bold;">${data.checkOut ? formatDate(data.checkOut) : 'TBD'}</p>
-</td>
-</tr>
-${nights || data.guests ? `
-<tr>
-<td colspan="2" style="padding-top:15px;">
-${nights ? `<span style="font-size:15px; color:${GOLD}; font-weight:bold;">${nights} nights</span>` : ''}
-${data.guests ? `<span style="font-size:15px; color:#666; margin-left:15px;">${data.guests} guests</span>` : ''}
+<td width="4%"></td>
+<td class="stack" width="48%" valign="top">
+<p class="date-label" style="margin:0 0 4px; font-size:12px; color:#888; text-transform:uppercase;">Check-out</p>
+<p class="date-value" style="margin:0; font-size:18px; color:${CHARCOAL}; font-weight:bold;">${data.checkOut ? formatDate(data.checkOut) : 'TBD'}</p>
 </td>
 </tr>
-` : ''}
 </table>
+${nights || data.guests ? `
+<p style="margin:16px 0 0; font-size:15px;">
+${nights ? `<strong style="color:${GOLD};">${nights} nights</strong>` : ''}
+${data.guests ? `<span style="color:#666; margin-left:16px;">${data.guests} guests</span>` : ''}
+</p>
+` : ''}
 </td>
 </tr>
 </table>
@@ -337,11 +366,11 @@ ${data.guests ? `<span style="font-size:15px; color:#666; margin-left:15px;">${d
 
 <!-- CTA Button -->
 <tr>
-<td align="center" style="padding:0 30px 30px;">
-<table border="0" cellpadding="0" cellspacing="0">
+<td class="content" align="center" style="padding:0 40px 32px;">
+<table cellpadding="0" cellspacing="0" border="0">
 <tr>
 <td style="background-color:${GOLD}; border-radius:6px;">
-<a href="https://primeluxurystays.com/properties" style="display:inline-block; padding:14px 28px; font-size:16px; color:#ffffff; text-decoration:none; font-family:Georgia, 'Times New Roman', serif;">
+<a class="button" href="https://primeluxurystays.com/properties" style="display:inline-block; padding:16px 32px; font-size:16px; color:#ffffff; text-decoration:none; font-family:Georgia, serif;">
 Browse More Properties
 </a>
 </td>
@@ -352,13 +381,13 @@ Browse More Properties
 
 <!-- Contact -->
 <tr>
-<td style="padding:0 30px 25px; border-top:1px solid #e5e5e5;">
-<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<td class="content" style="padding:0 40px 24px; border-top:1px solid #e0e0e0;">
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
 <tr>
-<td style="padding-top:20px;">
-<p style="margin:0 0 5px; font-size:14px; color:${CHARCOAL}; font-weight:bold;">Need immediate assistance?</p>
-<p style="margin:0; font-size:14px; color:#666;">
-Email us at <a href="mailto:concierge@primeluxurystays.com" style="color:${GOLD}; text-decoration:none;">concierge@primeluxurystays.com</a>
+<td style="padding-top:24px;">
+<p style="margin:0 0 6px; font-size:15px; color:${CHARCOAL}; font-weight:bold;">Need immediate assistance?</p>
+<p style="margin:0; font-size:15px; color:#666;">
+Email <a href="mailto:concierge@primeluxurystays.com" style="color:${GOLD}; text-decoration:none;">concierge@primeluxurystays.com</a>
 </p>
 </td>
 </tr>
@@ -368,8 +397,8 @@ Email us at <a href="mailto:concierge@primeluxurystays.com" style="color:${GOLD}
 
 <!-- Footer -->
 <tr>
-<td style="padding:20px 30px; background-color:${CREAM};">
-<p style="margin:0 0 10px; font-size:13px; color:#888;">
+<td class="footer" style="padding:24px 40px; background-color:${CREAM}; border-radius:0 0 8px 8px;">
+<p style="margin:0 0 12px; font-size:13px; color:#888;">
 Prime Luxury Stays · Exclusive Villas & Estates
 </p>
 <p style="margin:0; font-size:13px;">
@@ -381,9 +410,11 @@ Prime Luxury Stays · Exclusive Villas & Estates
 </tr>
 
 </table>
+
 </td>
 </tr>
 </table>
+
 </body>
 </html>`
 }
