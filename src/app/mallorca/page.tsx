@@ -56,8 +56,16 @@ const mallorcaSchema = {
   touristType: ['Luxury Travelers', 'Beach Vacationers', 'Cultural Explorers'],
 }
 
+// Get Mallorca properties only
+async function getMallorcaProperties() {
+  const allProperties = await getActiveProperties()
+  return allProperties.filter(p => 
+    !p.region || p.region.toLowerCase() === 'mallorca'
+  )
+}
+
 export default async function MallorcaPage() {
-  const properties = await getActiveProperties()
+  const properties = await getMallorcaProperties()
 
   return (
     <>

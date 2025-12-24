@@ -62,7 +62,7 @@ async function getIbizaProperties() {
     const properties = await sql`
       SELECT * FROM properties 
       WHERE (is_active = true OR is_active IS NULL)
-      AND region = 'Ibiza'
+      AND LOWER(region) = 'ibiza'
       ORDER BY is_featured DESC, name ASC
     `
     return properties

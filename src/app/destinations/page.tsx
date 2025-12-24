@@ -72,20 +72,20 @@ const locationData: Record<string, {
   },
 }
 
-// Map location keys to database region values
+// Map location keys to database region values (lowercase for matching)
 const regionMapping: Record<string, string> = {
-  'mallorca': 'Mallorca',
-  'ibiza': 'Ibiza',
-  'south-of-france': 'South of France',
+  'mallorca': 'mallorca',
+  'ibiza': 'ibiza',
+  'south-of-france': 'south of france',
 }
 
 export default async function LocationsPage() {
   const properties = await getActiveProperties()
   
-  // Count properties by region dynamically
+  // Count properties by region dynamically (case-insensitive)
   const propertiesByRegion: Record<string, number> = {}
   properties.forEach(property => {
-    const region = property.region || 'Mallorca'
+    const region = (property.region || 'Mallorca').toLowerCase()
     propertiesByRegion[region] = (propertiesByRegion[region] || 0) + 1
   })
 
