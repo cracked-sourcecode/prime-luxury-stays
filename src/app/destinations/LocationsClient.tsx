@@ -63,7 +63,7 @@ export default function LocationsClient({ locations }: LocationsClientProps) {
                 transition={{ duration: 0.6, delay: index * 0.1 }}
               >
                 <Link 
-                  href={location.slug === 'mallorca' ? '/mallorca' : `/destinations/${location.slug}`}
+                  href={`/${location.slug}`}
                   className="group block bg-white rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500"
                 >
                   {/* Image */}
@@ -138,29 +138,41 @@ export default function LocationsClient({ locations }: LocationsClientProps) {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="relative bg-white rounded-2xl overflow-hidden shadow-md opacity-75"
               >
-                {/* Image */}
-                <div className="relative aspect-[16/9] overflow-hidden">
-                  <img
-                    src={location.image}
-                    alt={location.name}
-                    className="w-full h-full object-cover grayscale"
-                  />
-                  <div className="absolute inset-0 bg-charcoal-900/40" />
-                  
-                  {/* Coming Soon Badge */}
-                  <div className="absolute top-4 right-4">
-                    <div className="bg-charcoal-900 text-white px-3 py-1 rounded-full text-xs font-semibold">
-                      Coming Soon
+                <Link 
+                  href={`/${location.slug}`}
+                  className="relative bg-white rounded-2xl overflow-hidden shadow-md block hover:shadow-lg transition-shadow group"
+                >
+                  {/* Image */}
+                  <div className="relative aspect-[16/9] overflow-hidden">
+                    <img
+                      src={location.image}
+                      alt={location.name}
+                      className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500"
+                    />
+                    <div className="absolute inset-0 bg-charcoal-900/40 group-hover:bg-charcoal-900/20 transition-colors" />
+                    
+                    {/* Coming Soon Badge */}
+                    <div className="absolute top-4 right-4">
+                      <div className="bg-gold-500 text-charcoal-900 px-3 py-1 rounded-full text-xs font-semibold">
+                        Coming Soon
+                      </div>
+                    </div>
+                    
+                    <div className="absolute bottom-4 left-4">
+                      <p className="text-white/70 text-xs mb-1">{location.region}, {location.country}</p>
+                      <h3 className="font-merriweather text-xl text-white">{location.name}</h3>
                     </div>
                   </div>
                   
-                  <div className="absolute bottom-4 left-4">
-                    <p className="text-white/70 text-xs mb-1">{location.region}, {location.country}</p>
-                    <h3 className="font-merriweather text-xl text-white">{location.name}</h3>
+                  {/* Register Interest CTA */}
+                  <div className="p-4 text-center">
+                    <span className="text-gold-600 text-sm font-semibold flex items-center justify-center gap-2">
+                      Register Interest
+                      <ArrowRight className="w-4 h-4" />
+                    </span>
                   </div>
-                </div>
+                </Link>
               </motion.div>
             ))}
           </div>

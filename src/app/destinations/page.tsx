@@ -72,20 +72,36 @@ const locationData: Record<string, {
   },
 }
 
+// Map location keys to database region values
+const regionMapping: Record<string, string> = {
+  'mallorca': 'Mallorca',
+  'ibiza': 'Ibiza',
+  'south-of-france': 'South of France',
+}
+
 export default async function LocationsPage() {
   const properties = await getActiveProperties()
   
-  // For now, all properties are in Mallorca
-  // In the future, group by region field
-  const mallorcaPropertyCount = properties.length
+  // Count properties by region dynamically
+  const propertiesByRegion: Record<string, number> = {}
+  properties.forEach(property => {
+    const region = property.region || 'Mallorca'
+    propertiesByRegion[region] = (propertiesByRegion[region] || 0) + 1
+  })
 
   // Build locations array with property counts
-  const locations = Object.entries(locationData).map(([key, data]) => ({
-    slug: key,
-    ...data,
-    // Mallorca gets all properties, others get 0 for now
-    propertyCount: key === 'mallorca' ? mallorcaPropertyCount : 0,
-  }))
+  const locations = Object.entries(locationData).map(([key, data]) => {
+    const dbRegion = regionMapping[key]
+    const propertyCount = propertiesByRegion[dbRegion] || 0
+    
+    return {
+      slug: key,
+      ...data,
+      propertyCount,
+      // Mark as coming soon if no properties yet
+      comingSoon: propertyCount === 0,
+    }
+  })
 
   return (
     <>

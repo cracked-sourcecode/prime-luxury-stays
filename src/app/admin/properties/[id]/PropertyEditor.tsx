@@ -784,14 +784,16 @@ export default function PropertyEditor({ property, images: initialImages, availa
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-charcoal-700 mb-2">Region</label>
-                    <input
-                      type="text"
+                    <label className="block text-sm font-medium text-charcoal-700 mb-2">Region / Destination</label>
+                    <select
                       value={formData.region}
                       onChange={(e) => setFormData(prev => ({ ...prev, region: e.target.value }))}
                       className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
-                      placeholder="Mallorca"
-                    />
+                    >
+                      <option value="Mallorca">Mallorca, Spain</option>
+                      <option value="Ibiza">Ibiza, Spain</option>
+                      <option value="South of France">South of France</option>
+                    </select>
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-charcoal-700 mb-2">Latitude</label>
