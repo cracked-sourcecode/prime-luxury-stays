@@ -14,6 +14,7 @@ const featuredDestinations = [
 
 const availableDestinations = [
   { value: 'mallorca', label: 'Mallorca, Spain' },
+  { value: 'ibiza', label: 'Ibiza, Spain' },
 ]
 
 interface HeroProps {
@@ -101,13 +102,13 @@ export default function Hero({ heroProperty }: HeroProps) {
             >
               <div className="flex flex-col sm:flex-row sm:items-end gap-4">
                 {/* Destination Dropdown */}
-                <div className="flex-1">
+                <div className="flex-1 min-w-[140px]">
                   <label className="block text-[10px] font-bold text-charcoal-500 uppercase tracking-wider mb-2">Destination</label>
                   <div className="relative">
                     <select
                       value={destination}
                       onChange={(e) => setDestination(e.target.value)}
-                      className="w-full appearance-none bg-transparent border-b-2 border-gray-200 pb-2 text-charcoal-900 font-medium cursor-pointer focus:outline-none focus:border-gold-500 pr-6 text-sm"
+                      className="w-full appearance-none bg-transparent border-b-2 border-gray-200 pb-2 text-charcoal-900 font-medium cursor-pointer focus:outline-none focus:border-gold-500 pr-8 text-sm"
                     >
                       <option value="">All Destinations</option>
                       {availableDestinations.map(d => (
