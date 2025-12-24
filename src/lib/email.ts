@@ -23,14 +23,18 @@ interface InquiryEmailData {
   sourceUrl?: string | null
 }
 
+// Brand colors from website
+const GOLD = '#B8954C'
+const CREAM = '#FAF8F4'
+const CHARCOAL = '#1A1A1A'
+
 const LOGO_URL = 'https://storage.googleapis.com/primeluxurystays/Company%20Logo'
 
-// Admin email - Airbnb style
 function getAdminEmailTemplate(data: InquiryEmailData): string {
   const formatDate = (dateStr: string) => {
     try {
       return new Date(dateStr).toLocaleDateString('en-US', { 
-        weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' 
+        weekday: 'short', month: 'short', day: 'numeric' 
       })
     } catch { return dateStr }
   }
@@ -43,161 +47,167 @@ function getAdminEmailTemplate(data: InquiryEmailData): string {
     } catch { return null }
   })()
 
-  return `<!DOCTYPE html>
-<html>
+  return `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="x-apple-disable-message-reformatting">
-<meta name="format-detection" content="telephone=no, address=no, email=no, date=no, url=no">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>New Inquiry</title>
 </head>
-<body style="margin:0;padding:0;background:#ffffff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
-
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+<body style="margin:0; padding:0; background-color:${CREAM}; font-family:Georgia, 'Times New Roman', serif;">
+<table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color:${CREAM};">
 <tr>
-<td style="padding:20px 16px;">
+<td align="center" style="padding:30px 15px;">
+<table border="0" cellpadding="0" cellspacing="0" width="600" style="background-color:#ffffff; border:1px solid #e5e5e5;">
 
 <!-- Logo -->
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
 <tr>
-<td style="padding-bottom:24px;">
-<img src="${LOGO_URL}" alt="Prime Luxury Stays" width="140" style="display:block;border:0;">
+<td align="center" style="padding:30px 30px 20px;">
+<img src="${LOGO_URL}" alt="Prime Luxury Stays" width="200" height="auto" style="display:block; border:0;" />
+</td>
+</tr>
+
+<!-- Gold Line -->
+<tr>
+<td style="padding:0 30px;">
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr><td style="border-top:2px solid ${GOLD};"></td></tr>
+</table>
+</td>
+</tr>
+
+<!-- Heading -->
+<tr>
+<td style="padding:25px 30px 20px;">
+<h1 style="margin:0; font-size:26px; font-weight:normal; color:${CHARCOAL}; font-family:Georgia, 'Times New Roman', serif;">
+New inquiry from ${data.fullName}
+</h1>
+</td>
+</tr>
+
+<!-- Contact Details -->
+<tr>
+<td style="padding:0 30px 25px;">
+<table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color:${CREAM}; border-radius:8px;">
+<tr>
+<td style="padding:20px;">
+<p style="margin:0 0 5px; font-size:13px; color:#888; text-transform:uppercase; letter-spacing:1px;">Contact</p>
+<p style="margin:0 0 3px; font-size:18px; color:${CHARCOAL}; font-weight:bold;">${data.fullName}</p>
+<p style="margin:0; font-size:15px;">
+<a href="mailto:${data.email}" style="color:${GOLD}; text-decoration:none;">${data.email}</a>
+${data.phone ? ` · <a href="tel:${data.phone}" style="color:${GOLD}; text-decoration:none;">${data.phone}</a>` : ''}
+</p>
 </td>
 </tr>
 </table>
-
-<!-- Main Heading -->
-<h1 style="margin:0 0 24px;font-size:28px;font-weight:700;color:#222222;line-height:1.3;">
-Respond to ${data.fullName.split(' ')[0]}'s inquiry
-</h1>
-
-<!-- Contact Card -->
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:24px;">
-<tr>
-<td style="padding:20px;background:#f7f7f7;border-radius:12px;">
-
-<p style="margin:0 0 4px;font-size:18px;font-weight:600;color:#222222;">${data.fullName}</p>
-<p style="margin:0 0 16px;font-size:14px;color:#717171;">
-<a href="mailto:${data.email}" style="color:#B8954C;text-decoration:none;">${data.email}</a>
-${data.phone ? ` · <a href="tel:${data.phone}" style="color:#B8954C;text-decoration:none;">${data.phone}</a>` : ''}
-</p>
+</td>
+</tr>
 
 ${data.message ? `
-<p style="margin:0;font-size:15px;color:#222222;line-height:1.6;white-space:pre-wrap;">${data.message}</p>
-` : ''}
-
+<!-- Message -->
+<tr>
+<td style="padding:0 30px 25px;">
+<p style="margin:0 0 10px; font-size:13px; color:#888; text-transform:uppercase; letter-spacing:1px;">Message</p>
+<p style="margin:0; font-size:16px; color:${CHARCOAL}; line-height:1.6; white-space:pre-wrap;">${data.message}</p>
 </td>
 </tr>
-</table>
+` : ''}
 
 <!-- Reply Button -->
-<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:32px;">
 <tr>
-<td style="background:#B8954C;border-radius:8px;">
-<a href="mailto:${data.email}?subject=Re: Your Prime Luxury Stays Inquiry" style="display:inline-block;padding:14px 24px;font-size:16px;font-weight:600;color:#ffffff;text-decoration:none;">
-Reply to Inquiry
+<td style="padding:0 30px 30px;">
+<table border="0" cellpadding="0" cellspacing="0">
+<tr>
+<td style="background-color:${GOLD}; border-radius:6px;">
+<a href="mailto:${data.email}?subject=Re: Your Prime Luxury Stays Inquiry" style="display:inline-block; padding:14px 28px; font-size:16px; color:#ffffff; text-decoration:none; font-family:Georgia, 'Times New Roman', serif;">
+Reply to ${data.fullName.split(' ')[0]}
 </a>
 </td>
 </tr>
 </table>
+</td>
+</tr>
 
 ${data.propertyName ? `
-<!-- Property Section -->
+<!-- Property -->
+<tr>
+<td style="padding:0 30px 25px;">
+<table border="0" cellpadding="0" cellspacing="0" width="100%" style="border:1px solid #e5e5e5; border-radius:8px; overflow:hidden;">
 ${data.propertyImage ? `
-<img src="${data.propertyImage}" alt="${data.propertyName}" width="100%" style="display:block;border-radius:12px;margin-bottom:16px;">
-` : ''}
-
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:24px;">
 <tr>
 <td>
-<p style="margin:0 0 4px;font-size:20px;font-weight:600;color:#222222;">${data.propertyName}</p>
-${data.propertyLocation ? `<p style="margin:0 0 12px;font-size:14px;color:#717171;">${data.propertyLocation}</p>` : ''}
-
-${data.propertyBedrooms || data.propertyBathrooms || data.propertyMaxGuests ? `
-<p style="margin:0;font-size:14px;color:#717171;">
-${data.propertyBedrooms ? `${data.propertyBedrooms} bedrooms` : ''}${data.propertyBathrooms ? ` · ${data.propertyBathrooms} baths` : ''}${data.propertyMaxGuests ? ` · Up to ${data.propertyMaxGuests} guests` : ''}
+<img src="${data.propertyImage}" alt="${data.propertyName}" width="538" height="300" style="display:block; width:100%; height:auto; object-fit:cover;" />
+</td>
+</tr>
+` : ''}
+<tr>
+<td style="padding:20px;">
+<p style="margin:0 0 5px; font-size:18px; color:${CHARCOAL}; font-weight:bold; font-family:Georgia, 'Times New Roman', serif;">${data.propertyName}</p>
+${data.propertyLocation ? `<p style="margin:0; font-size:14px; color:#666;">${data.propertyLocation}</p>` : ''}
+${data.propertyBedrooms || data.propertyBathrooms ? `
+<p style="margin:8px 0 0; font-size:14px; color:#888;">
+${data.propertyBedrooms ? `${data.propertyBedrooms} beds` : ''}${data.propertyBathrooms ? ` · ${data.propertyBathrooms} baths` : ''}${data.propertyMaxGuests ? ` · ${data.propertyMaxGuests} guests max` : ''}
 </p>
 ` : ''}
 </td>
 </tr>
 </table>
+</td>
+</tr>
 ` : ''}
 
-${data.checkIn || data.guests ? `
-<!-- Booking Details -->
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-top:1px solid #dddddd;padding-top:20px;margin-bottom:24px;">
-<tr>
-<td>
-<p style="margin:0 0 12px;font-size:12px;font-weight:600;color:#717171;text-transform:uppercase;letter-spacing:0.5px;">Requested dates</p>
-
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-<tr>
 ${data.checkIn ? `
-<td width="50%" valign="top">
-<p style="margin:0 0 2px;font-size:12px;color:#717171;">CHECK-IN</p>
-<p style="margin:0;font-size:16px;font-weight:600;color:#222222;">${formatDate(data.checkIn)}</p>
-</td>
-` : ''}
-${data.checkOut ? `
-<td width="50%" valign="top">
-<p style="margin:0 0 2px;font-size:12px;color:#717171;">CHECK-OUT</p>
-<p style="margin:0;font-size:16px;font-weight:600;color:#222222;">${formatDate(data.checkOut)}</p>
-</td>
-` : ''}
-</tr>
-</table>
-
-${nights || data.guests ? `
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:16px;">
+<!-- Dates -->
 <tr>
-${nights ? `
-<td width="50%" valign="top">
-<p style="margin:0 0 2px;font-size:12px;color:#717171;">DURATION</p>
-<p style="margin:0;font-size:16px;font-weight:600;color:#222222;">${nights} night${nights > 1 ? 's' : ''}</p>
+<td style="padding:0 30px 30px;">
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td width="50%" style="padding:15px 20px; background-color:${CREAM}; border-radius:8px 0 0 8px;">
+<p style="margin:0 0 3px; font-size:12px; color:#888; text-transform:uppercase;">Check-in</p>
+<p style="margin:0; font-size:16px; color:${CHARCOAL}; font-weight:bold;">${formatDate(data.checkIn)}</p>
 </td>
-` : ''}
-${data.guests ? `
-<td width="50%" valign="top">
-<p style="margin:0 0 2px;font-size:12px;color:#717171;">GUESTS</p>
-<p style="margin:0;font-size:16px;font-weight:600;color:#222222;">${data.guests} guest${data.guests > 1 ? 's' : ''}</p>
-</td>
-` : ''}
-</tr>
-</table>
-` : ''}
-
+<td width="50%" style="padding:15px 20px; background-color:${CREAM}; border-radius:0 8px 8px 0;">
+<p style="margin:0 0 3px; font-size:12px; color:#888; text-transform:uppercase;">Check-out</p>
+<p style="margin:0; font-size:16px; color:${CHARCOAL}; font-weight:bold;">${data.checkOut ? formatDate(data.checkOut) : 'TBD'}</p>
 </td>
 </tr>
 </table>
+${nights || data.guests ? `
+<table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-top:10px;">
+<tr>
+${nights ? `<td style="font-size:14px; color:${GOLD}; font-weight:bold;">${nights} nights</td>` : ''}
+${data.guests ? `<td align="right" style="font-size:14px; color:#666;">${data.guests} guests</td>` : ''}
+</tr>
+</table>
+` : ''}
+</td>
+</tr>
 ` : ''}
 
 <!-- Footer -->
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-top:1px solid #dddddd;padding-top:20px;">
 <tr>
-<td>
-<p style="margin:0;font-size:12px;color:#717171;">
+<td style="padding:20px 30px; border-top:1px solid #e5e5e5;">
+<p style="margin:0; font-size:13px; color:#888;">
 Prime Luxury Stays · Exclusive Villas & Estates
 </p>
 </td>
 </tr>
-</table>
 
+</table>
 </td>
 </tr>
 </table>
-
 </body>
 </html>`
 }
 
-// Customer email - Airbnb style
 function getCustomerEmailTemplate(data: InquiryEmailData): string {
   const firstName = data.fullName.split(' ')[0]
 
   const formatDate = (dateStr: string) => {
     try {
       return new Date(dateStr).toLocaleDateString('en-US', { 
-        weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' 
+        weekday: 'short', month: 'short', day: 'numeric' 
       })
     } catch { return dateStr }
   }
@@ -210,151 +220,170 @@ function getCustomerEmailTemplate(data: InquiryEmailData): string {
     } catch { return null }
   })()
 
-  return `<!DOCTYPE html>
-<html>
+  return `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="x-apple-disable-message-reformatting">
-<meta name="format-detection" content="telephone=no, address=no, email=no, date=no, url=no">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Thank You</title>
 </head>
-<body style="margin:0;padding:0;background:#ffffff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
-
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+<body style="margin:0; padding:0; background-color:${CREAM}; font-family:Georgia, 'Times New Roman', serif;">
+<table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color:${CREAM};">
 <tr>
-<td style="padding:20px 16px;">
+<td align="center" style="padding:30px 15px;">
+<table border="0" cellpadding="0" cellspacing="0" width="600" style="background-color:#ffffff; border:1px solid #e5e5e5;">
 
 <!-- Logo -->
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
 <tr>
-<td style="padding-bottom:24px;">
-<img src="${LOGO_URL}" alt="Prime Luxury Stays" width="140" style="display:block;border:0;">
+<td align="center" style="padding:30px 30px 20px;">
+<img src="${LOGO_URL}" alt="Prime Luxury Stays" width="200" height="auto" style="display:block; border:0;" />
 </td>
 </tr>
+
+<!-- Gold Line -->
+<tr>
+<td style="padding:0 30px;">
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr><td style="border-top:2px solid ${GOLD};"></td></tr>
 </table>
+</td>
+</tr>
 
-<!-- Main Heading -->
-<h1 style="margin:0 0 12px;font-size:28px;font-weight:700;color:#222222;line-height:1.3;">
-Thanks for your inquiry, ${firstName}
+<!-- Heading -->
+<tr>
+<td style="padding:25px 30px 15px;">
+<h1 style="margin:0; font-size:28px; font-weight:normal; color:${CHARCOAL}; font-family:Georgia, 'Times New Roman', serif;">
+Thank you, ${firstName}
 </h1>
+</td>
+</tr>
 
-<p style="margin:0 0 24px;font-size:16px;color:#717171;line-height:1.5;">
-We'll get back to you within 2 hours with availability and pricing details.
+<!-- Subheading -->
+<tr>
+<td style="padding:0 30px 25px;">
+<p style="margin:0; font-size:17px; color:#666; line-height:1.5;">
+We've received your inquiry and will respond within <strong style="color:${GOLD};">2 hours</strong> with availability and pricing.
 </p>
+</td>
+</tr>
 
 ${data.propertyName ? `
-<!-- Property Image -->
+<!-- Property Card -->
+<tr>
+<td style="padding:0 30px 25px;">
+<table border="0" cellpadding="0" cellspacing="0" width="100%" style="border:1px solid #e5e5e5; border-radius:8px; overflow:hidden;">
 ${data.propertyImage ? `
-<a href="https://primeluxurystays.com/properties/${data.propertySlug || ''}" style="text-decoration:none;">
-<img src="${data.propertyImage}" alt="${data.propertyName}" width="100%" style="display:block;border-radius:12px;margin-bottom:16px;">
-</a>
-` : ''}
-
-<!-- Property Info -->
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:24px;">
 <tr>
 <td>
-<p style="margin:0 0 4px;font-size:20px;font-weight:600;color:#222222;">
-<a href="https://primeluxurystays.com/properties/${data.propertySlug || ''}" style="color:#222222;text-decoration:none;">${data.propertyName}</a>
+<a href="https://primeluxurystays.com/properties/${data.propertySlug || ''}" style="text-decoration:none;">
+<img src="${data.propertyImage}" alt="${data.propertyName}" width="538" height="300" style="display:block; width:100%; height:auto; object-fit:cover;" />
+</a>
+</td>
+</tr>
+` : ''}
+<tr>
+<td style="padding:20px;">
+<p style="margin:0 0 5px; font-size:12px; color:${GOLD}; text-transform:uppercase; letter-spacing:1px;">Your Selection</p>
+<p style="margin:0 0 5px; font-size:20px; color:${CHARCOAL}; font-weight:bold; font-family:Georgia, 'Times New Roman', serif;">
+<a href="https://primeluxurystays.com/properties/${data.propertySlug || ''}" style="color:${CHARCOAL}; text-decoration:none;">${data.propertyName}</a>
 </p>
-${data.propertyLocation ? `<p style="margin:0 0 8px;font-size:14px;color:#717171;">${data.propertyLocation}</p>` : ''}
-
-${data.propertyBedrooms || data.propertyBathrooms || data.propertyMaxGuests ? `
-<p style="margin:0;font-size:14px;color:#717171;">
+${data.propertyLocation ? `<p style="margin:0; font-size:14px; color:#666;">${data.propertyLocation}</p>` : ''}
+${data.propertyBedrooms || data.propertyBathrooms ? `
+<p style="margin:10px 0 0; font-size:14px; color:#888;">
 ${data.propertyBedrooms ? `${data.propertyBedrooms} bedrooms` : ''}${data.propertyBathrooms ? ` · ${data.propertyBathrooms} baths` : ''}${data.propertyMaxGuests ? ` · Up to ${data.propertyMaxGuests} guests` : ''}
 </p>
 ` : ''}
 </td>
 </tr>
 </table>
+</td>
+</tr>
 ` : ''}
 
-${data.checkIn || data.guests ? `
-<!-- Your Booking Request -->
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f7f7f7;border-radius:12px;padding:20px;margin-bottom:24px;">
+${data.checkIn ? `
+<!-- Booking Details -->
+<tr>
+<td style="padding:0 30px 25px;">
+<table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color:${CREAM}; border-radius:8px;">
 <tr>
 <td style="padding:20px;">
-<p style="margin:0 0 16px;font-size:12px;font-weight:600;color:#717171;text-transform:uppercase;letter-spacing:0.5px;">Your request</p>
-
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+<p style="margin:0 0 15px; font-size:12px; color:#888; text-transform:uppercase; letter-spacing:1px;">Your Request</p>
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
-${data.checkIn ? `
-<td width="50%" valign="top" style="padding-bottom:16px;">
-<p style="margin:0 0 2px;font-size:12px;color:#717171;">CHECK-IN</p>
-<p style="margin:0;font-size:15px;font-weight:600;color:#222222;">${formatDate(data.checkIn)}</p>
+<td width="50%">
+<p style="margin:0 0 3px; font-size:12px; color:#888;">CHECK-IN</p>
+<p style="margin:0; font-size:16px; color:${CHARCOAL}; font-weight:bold;">${formatDate(data.checkIn)}</p>
 </td>
-` : ''}
-${data.checkOut ? `
-<td width="50%" valign="top" style="padding-bottom:16px;">
-<p style="margin:0 0 2px;font-size:12px;color:#717171;">CHECK-OUT</p>
-<p style="margin:0;font-size:15px;font-weight:600;color:#222222;">${formatDate(data.checkOut)}</p>
+<td width="50%">
+<p style="margin:0 0 3px; font-size:12px; color:#888;">CHECK-OUT</p>
+<p style="margin:0; font-size:16px; color:${CHARCOAL}; font-weight:bold;">${data.checkOut ? formatDate(data.checkOut) : 'TBD'}</p>
 </td>
-` : ''}
 </tr>
+${nights || data.guests ? `
 <tr>
-${nights ? `
-<td width="50%" valign="top">
-<p style="margin:0 0 2px;font-size:12px;color:#717171;">DURATION</p>
-<p style="margin:0;font-size:15px;font-weight:600;color:#222222;">${nights} night${nights > 1 ? 's' : ''}</p>
+<td colspan="2" style="padding-top:15px;">
+${nights ? `<span style="font-size:15px; color:${GOLD}; font-weight:bold;">${nights} nights</span>` : ''}
+${data.guests ? `<span style="font-size:15px; color:#666; margin-left:15px;">${data.guests} guests</span>` : ''}
 </td>
-` : ''}
-${data.guests ? `
-<td width="50%" valign="top">
-<p style="margin:0 0 2px;font-size:12px;color:#717171;">GUESTS</p>
-<p style="margin:0;font-size:15px;font-weight:600;color:#222222;">${data.guests} guest${data.guests > 1 ? 's' : ''}</p>
-</td>
-` : ''}
 </tr>
+` : ''}
 </table>
-
 </td>
 </tr>
 </table>
+</td>
+</tr>
 ` : ''}
 
 <!-- CTA Button -->
-<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:32px;">
 <tr>
-<td style="background:#B8954C;border-radius:8px;">
-<a href="https://primeluxurystays.com/properties" style="display:inline-block;padding:14px 24px;font-size:16px;font-weight:600;color:#ffffff;text-decoration:none;">
-Browse more properties
+<td align="center" style="padding:0 30px 30px;">
+<table border="0" cellpadding="0" cellspacing="0">
+<tr>
+<td style="background-color:${GOLD}; border-radius:6px;">
+<a href="https://primeluxurystays.com/properties" style="display:inline-block; padding:14px 28px; font-size:16px; color:#ffffff; text-decoration:none; font-family:Georgia, 'Times New Roman', serif;">
+Browse More Properties
 </a>
 </td>
 </tr>
 </table>
+</td>
+</tr>
 
-<!-- Help Section -->
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-top:1px solid #dddddd;padding-top:20px;margin-bottom:24px;">
+<!-- Contact -->
 <tr>
-<td>
-<p style="margin:0 0 8px;font-size:14px;color:#222222;font-weight:600;">Need immediate assistance?</p>
-<p style="margin:0;font-size:14px;color:#717171;">
-Email us at <a href="mailto:concierge@primeluxurystays.com" style="color:#B8954C;text-decoration:none;">concierge@primeluxurystays.com</a>
+<td style="padding:0 30px 25px; border-top:1px solid #e5e5e5;">
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td style="padding-top:20px;">
+<p style="margin:0 0 5px; font-size:14px; color:${CHARCOAL}; font-weight:bold;">Need immediate assistance?</p>
+<p style="margin:0; font-size:14px; color:#666;">
+Email us at <a href="mailto:concierge@primeluxurystays.com" style="color:${GOLD}; text-decoration:none;">concierge@primeluxurystays.com</a>
 </p>
 </td>
 </tr>
 </table>
+</td>
+</tr>
 
 <!-- Footer -->
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-top:1px solid #dddddd;padding-top:20px;">
 <tr>
-<td>
-<p style="margin:0 0 8px;font-size:12px;color:#717171;">
+<td style="padding:20px 30px; background-color:${CREAM};">
+<p style="margin:0 0 10px; font-size:13px; color:#888;">
 Prime Luxury Stays · Exclusive Villas & Estates
 </p>
-<p style="margin:0;font-size:12px;color:#717171;">
-<a href="https://primeluxurystays.com/mallorca" style="color:#717171;text-decoration:none;">Mallorca</a> · 
-<a href="https://primeluxurystays.com/ibiza" style="color:#717171;text-decoration:none;">Ibiza</a> · 
-<a href="https://primeluxurystays.com/properties" style="color:#717171;text-decoration:none;">All Properties</a>
+<p style="margin:0; font-size:13px;">
+<a href="https://primeluxurystays.com/mallorca" style="color:${GOLD}; text-decoration:none;">Mallorca</a> · 
+<a href="https://primeluxurystays.com/ibiza" style="color:${GOLD}; text-decoration:none;">Ibiza</a> · 
+<a href="https://primeluxurystays.com/properties" style="color:${GOLD}; text-decoration:none;">All Properties</a>
 </p>
 </td>
 </tr>
-</table>
 
+</table>
 </td>
 </tr>
 </table>
-
 </body>
 </html>`
 }
@@ -369,7 +398,7 @@ export async function sendInquiryNotification(data: InquiryEmailData) {
     const { data: emailData, error } = await resend.emails.send({
       from: FROM_EMAIL,
       to: [ADMIN_EMAIL],
-      subject: `${data.fullName} sent you an inquiry${data.propertyName ? ` · ${data.propertyName}` : ''}`,
+      subject: `New inquiry from ${data.fullName}${data.propertyName ? ` · ${data.propertyName}` : ''}`,
       html: getAdminEmailTemplate(data),
     })
 
@@ -397,7 +426,7 @@ export async function sendInquiryConfirmation(data: InquiryEmailData) {
       from: FROM_EMAIL,
       to: [data.email],
       replyTo: ADMIN_EMAIL,
-      subject: `We received your inquiry${data.propertyName ? ` for ${data.propertyName}` : ''}`,
+      subject: `Thank you for your inquiry${data.propertyName ? ` · ${data.propertyName}` : ''}`,
       html: getCustomerEmailTemplate(data),
     })
 
