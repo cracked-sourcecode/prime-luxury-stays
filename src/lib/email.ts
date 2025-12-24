@@ -378,9 +378,9 @@ Browse More Properties
 
 <!-- Footer -->
 <tr>
-<td class="footer" style="padding:20px; background-color:#2a2a2a; text-align:center; border-radius:0 0 8px 8px;">
-<p style="margin:0 0 4px; font-size:13px; color:#fff;">Questions? <a href="mailto:concierge@primeluxurystays.com" style="color:${GOLD}; text-decoration:none;">concierge@primeluxurystays.com</a></p>
-<p style="margin:0; font-size:11px; color:#888;">Prime Luxury Stays · <a href="https://primeluxurystays.com/mallorca" style="color:${GOLD}; text-decoration:none;">Mallorca</a> · <a href="https://primeluxurystays.com/ibiza" style="color:${GOLD}; text-decoration:none;">Ibiza</a> · <a href="https://primeluxurystays.com/properties" style="color:${GOLD}; text-decoration:none;">All Properties</a></p>
+<td class="footer" style="padding:24px 20px; background-color:${CREAM}; text-align:center; border-top:1px solid #e0e0e0;">
+<p style="margin:0 0 8px; font-size:15px; color:${CHARCOAL};">Questions? <a href="mailto:concierge@primeluxurystays.com" style="color:${GOLD}; text-decoration:none; font-weight:bold;">concierge@primeluxurystays.com</a></p>
+<p style="margin:0; font-size:14px; color:#666;">Prime Luxury Stays · <a href="https://primeluxurystays.com/mallorca" style="color:${GOLD}; text-decoration:none;">Mallorca</a> · <a href="https://primeluxurystays.com/ibiza" style="color:${GOLD}; text-decoration:none;">Ibiza</a> · <a href="https://primeluxurystays.com/properties" style="color:${GOLD}; text-decoration:none;">All Properties</a></p>
 </td>
 </tr>
 
