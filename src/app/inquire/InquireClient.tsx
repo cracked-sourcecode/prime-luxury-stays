@@ -108,7 +108,7 @@ export default function InquireClient({
               </span>
             </Link>
             <a
-              href="tel:+498989930046"
+              href="tel:+12039797309"
               className="hidden sm:inline-flex items-center gap-2 bg-white/10 border border-white/15 text-white px-4 py-2 rounded-xl hover:bg-white/15 transition-colors"
             >
               <Phone className="w-4 h-4" />
@@ -179,7 +179,7 @@ export default function InquireClient({
                   </p>
                   <div className="mt-6 flex flex-col sm:flex-row gap-3">
                     <a
-                      href="tel:+498989930046"
+                      href="tel:+12039797309"
                       className="bg-charcoal-900 text-white px-6 py-3 rounded-2xl font-semibold inline-flex items-center justify-center gap-2"
                     >
                       <Phone className="w-4 h-4" />
@@ -322,8 +322,8 @@ export default function InquireClient({
                     </button>
                     <div className="text-sm text-charcoal-500">
                       Prefer to talk? Call{' '}
-                      <a className="text-gold-700 font-semibold" href="tel:+498989930046">
-                        +49 89 899 300 46
+                      <a className="text-gold-700 font-semibold" href="tel:+12039797309">
+                        +1 (203) 979-7309
                       </a>
                     </div>
                   </div>

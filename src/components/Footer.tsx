@@ -62,12 +62,19 @@ export default function Footer() {
                 Curating extraordinary experiences in the world's most 
                 exceptional private residences. Where luxury meets legacy.
               </p>
-              <div className="text-charcoal-500 text-sm mb-6 space-y-1">
-                <p><a href="tel:+498989930046" className="hover:text-gold-600 transition-colors">+49 89 899 300 46</a></p>
+              <div className="text-charcoal-500 text-sm mb-4 space-y-1">
+                <p>
+                  <span className="text-charcoal-400 text-xs">US:</span>{' '}
+                  <a href="tel:+12039797309" className="hover:text-gold-600 transition-colors">+1 (203) 979-7309</a>
+                </p>
+                <p>
+                  <span className="text-charcoal-400 text-xs">EU:</span>{' '}
+                  <a href="tel:+498989930046" className="hover:text-gold-600 transition-colors">+49 89 899 300 46</a>
+                </p>
                 <p><a href="mailto:info@primeluxurystays.com" className="hover:text-gold-600 transition-colors">info@primeluxurystays.com</a></p>
-                <p>Munich, Germany</p>
               </div>
-              <p className="text-xs text-charcoal-400 mb-6">EU Registered Business</p>
+              <p className="text-charcoal-500 text-sm mb-4">Miami, Florida / Munich, Germany</p>
+              <p className="text-xs text-charcoal-400 mb-6">EU & US Registered Business</p>
 
               {/* Social Links */}
               <div className="flex items-center gap-3">

@@ -107,7 +107,12 @@ export default function Contact() {
                 </div>
                 <div>
                   <div className="text-charcoal-400 text-xs font-medium uppercase tracking-wide">Phone</div>
-                  <div className="text-charcoal-900 font-semibold">+49 89 899 300 46</div>
+                  <div className="text-charcoal-900 font-semibold">
+                    <span className="text-charcoal-500 text-xs">US:</span> +1 (203) 979-7309
+                  </div>
+                  <div className="text-charcoal-900 font-semibold">
+                    <span className="text-charcoal-500 text-xs">EU:</span> +49 89 899 300 46
+                  </div>
                 </div>
               </div>
 
@@ -126,8 +131,8 @@ export default function Contact() {
                   <MapPin className="w-5 h-5 text-gold-600" />
                 </div>
                 <div>
-                  <div className="text-charcoal-400 text-xs font-medium uppercase tracking-wide">Headquarters</div>
-                  <div className="text-charcoal-900 font-semibold">Munich, Germany</div>
+                  <div className="text-charcoal-400 text-xs font-medium uppercase tracking-wide">Offices</div>
+                  <div className="text-charcoal-900 font-semibold">Miami, Florida / Munich, Germany</div>
                 </div>
               </div>
             </div>

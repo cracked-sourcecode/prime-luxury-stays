@@ -74,7 +74,13 @@ export default function LegalNoticePage() {
               <div className="bg-white rounded-2xl border border-cream-200 p-8">
                 <div className="space-y-3 text-charcoal-600">
                   <p>
-                    <span className="text-charcoal-400 text-sm uppercase tracking-wide">Phone:</span><br />
+                    <span className="text-charcoal-400 text-sm uppercase tracking-wide">Phone (US):</span><br />
+                    <a href="tel:+12039797309" className="text-gold-600 hover:text-gold-700 font-medium">
+                      +1 (203) 979-7309
+                    </a>
+                  </p>
+                  <p>
+                    <span className="text-charcoal-400 text-sm uppercase tracking-wide">Phone (EU):</span><br />
                     <a href="tel:+498989930046" className="text-gold-600 hover:text-gold-700 font-medium">
                       +49 89 899 300 46
                     </a>
