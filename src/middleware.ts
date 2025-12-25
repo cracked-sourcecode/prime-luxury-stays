@@ -30,13 +30,14 @@ export default function middleware(request: NextRequest) {
   const pathLocale = getLocaleFromPath(pathname)
   
   if (pathLocale) {
-    // Rewrite to the actual path without the locale prefix
-    // This allows /de/properties to serve /properties but keep /de/properties in the URL
-    const actualPath = pathname.replace(`/${pathLocale}`, '') || '/'
-    const url = request.nextUrl.clone()
-    url.pathname = actualPath
+    // Strip the locale prefix to get the actual page path
+    const strippedPath = pathname.replace(`/${pathLocale}`, '') || '/'
     
-    const response = NextResponse.rewrite(url)
+    // Create a new URL for the rewrite
+    const rewriteUrl = new URL(strippedPath, request.url)
+    
+    // Rewrite internally to the actual page, but keep the /de/ URL visible
+    const response = NextResponse.rewrite(rewriteUrl)
     response.cookies.set('locale', pathLocale, { path: '/' })
     return response
   }
