@@ -4,14 +4,14 @@ import { motion, useInView } from 'framer-motion'
 import { useRef } from 'react'
 import Link from 'next/link'
 import { 
-  Compass, 
   Shield, 
   Sparkles, 
   Car, 
   Plane,
   Utensils,
   Ship,
-  Navigation
+  Navigation,
+  Building
 } from 'lucide-react'
 
 const services = [
@@ -40,10 +40,10 @@ const services = [
     slug: 'luxury-transport',
   },
   {
-    icon: Compass,
-    title: 'Curated Experiences',
-    description: 'Exclusive access to events, reservations, and experiences unavailable elsewhere.',
-    slug: 'experiences',
+    icon: Building,
+    title: 'Travel Bookings',
+    description: 'Luxury hotel reservations and travel coordination beyond your villa stay.',
+    slug: 'travel-bookings',
   },
   {
     icon: Shield,

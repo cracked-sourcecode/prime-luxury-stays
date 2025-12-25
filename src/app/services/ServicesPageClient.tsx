@@ -4,11 +4,9 @@ import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { 
   ArrowRight, 
-  Sparkles, 
   Plane, 
   Utensils, 
   Car, 
-  Compass, 
   Shield, 
   Ship, 
   Navigation,
@@ -39,15 +37,9 @@ const serviceCategories = [
   },
   {
     title: 'Experiences',
-    subtitle: 'Curated Adventures',
-    description: 'Exclusive access to extraordinary moments.',
+    subtitle: 'Dining & Travel',
+    description: 'Exceptional dining and seamless travel arrangements.',
     services: [
-      {
-        icon: Compass,
-        title: 'Curated Experiences',
-        description: 'Exclusive access to events, reservations, and experiences unavailable elsewhere.',
-        slug: 'experiences',
-      },
       {
         icon: Utensils,
         title: 'Table Reservations',

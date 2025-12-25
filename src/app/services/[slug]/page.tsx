@@ -70,25 +70,6 @@ const servicesData: Record<string, {
       { title: 'Flexibility', description: 'Self-drive or chauffeur-driven options' },
     ],
   },
-  'experiences': {
-    title: 'Curated Experiences',
-    subtitle: 'Exclusive Access to the Extraordinary',
-    description: 'Discover experiences that money alone cannot buy. From private gallery viewings to exclusive restaurant takeovers, we open doors to the world\'s most coveted experiences.',
-    heroImage: 'https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?w=1920&q=80',
-    features: [
-      'Private museum and gallery tours',
-      'Exclusive restaurant experiences',
-      'VIP event and concert access',
-      'Behind-the-scenes cultural tours',
-      'Adventure and wellness retreats',
-      'Local artisan encounters',
-    ],
-    benefits: [
-      { title: 'Exclusive Access', description: 'Experiences unavailable to the public' },
-      { title: 'Local Connections', description: 'Meet the people behind the places' },
-      { title: 'Tailored Itineraries', description: 'Every experience matched to your interests' },
-    ],
-  },
   'privacy-security': {
     title: 'Privacy & Security',
     subtitle: 'Discreet Protection for Your Peace of Mind',
