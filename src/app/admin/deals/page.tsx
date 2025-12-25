@@ -19,6 +19,7 @@ import {
   X,
   Calendar,
   User,
+  UserPlus,
   Home,
   DollarSign,
   Check
@@ -55,8 +56,16 @@ const STAGES = [
   { id: 'lost', name: 'Deal Lost', color: '#ef4444', bgColor: 'bg-red-50', borderColor: 'border-red-200' },
 ]
 
+interface Contact {
+  id: number
+  name: string
+  email: string | null
+  phone: string | null
+}
+
 export default function DealsPage() {
   const [deals, setDeals] = useState<Deal[]>([])
+  const [contacts, setContacts] = useState<Contact[]>([])
   const [loading, setLoading] = useState(true)
   const [view, setView] = useState<'kanban' | 'table'>('kanban')
   const [showAddModal, setShowAddModal] = useState(false)
@@ -71,14 +80,20 @@ export default function DealsPage() {
     title: '',
     value: '',
     stage: 'lead',
+    customer_id: '' as string | number,
     customer_name: '',
     customer_email: '',
+    customer_phone: '',
     property_name: '',
     notes: ''
   })
+  const [contactMode, setContactMode] = useState<'existing' | 'new'>('existing')
+  const [contactSearch, setContactSearch] = useState('')
+  const [showContactDropdown, setShowContactDropdown] = useState(false)
 
   useEffect(() => {
     fetchDeals()
+    fetchContacts()
   }, [])
 
   async function fetchDeals() {
@@ -93,8 +108,49 @@ export default function DealsPage() {
     }
   }
 
+  async function fetchContacts() {
+    try {
+      const res = await fetch('/api/admin/customers')
+      const data = await res.json()
+      setContacts(data.customers || [])
+    } catch (error) {
+      console.error('Error fetching contacts:', error)
+    }
+  }
+
   async function createDeal() {
     try {
+      let customerId = newDeal.customer_id
+      let customerName = newDeal.customer_name
+      let customerEmail = newDeal.customer_email
+
+      // If creating new contact, add to CRM first
+      if (contactMode === 'new' && newDeal.customer_name) {
+        const contactRes = await fetch('/api/admin/customers', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: newDeal.customer_name,
+            email: newDeal.customer_email || null,
+            phone: newDeal.customer_phone || null,
+            source: 'deal'
+          })
+        })
+        const contactData = await contactRes.json()
+        if (contactData.id) {
+          customerId = contactData.id
+          // Refresh contacts list
+          fetchContacts()
+        }
+      } else if (contactMode === 'existing' && newDeal.customer_id) {
+        // Get contact details from selected contact
+        const selectedContact = contacts.find(c => c.id === Number(newDeal.customer_id))
+        if (selectedContact) {
+          customerName = selectedContact.name
+          customerEmail = selectedContact.email || ''
+        }
+      }
+
       const res = await fetch('/api/admin/deals', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -102,21 +158,30 @@ export default function DealsPage() {
           title: newDeal.title,
           value: newDeal.value ? parseFloat(newDeal.value) : null,
           stage: newDeal.stage,
-          customer_name: newDeal.customer_name || null,
-          customer_email: newDeal.customer_email || null,
+          customer_id: customerId || null,
+          customer_name: customerName || null,
+          customer_email: customerEmail || null,
           property_name: newDeal.property_name || null,
           notes: newDeal.notes || null
         })
       })
       if (res.ok) {
         setShowAddModal(false)
-        setNewDeal({ title: '', value: '', stage: 'lead', customer_name: '', customer_email: '', property_name: '', notes: '' })
+        setNewDeal({ title: '', value: '', stage: 'lead', customer_id: '', customer_name: '', customer_email: '', customer_phone: '', property_name: '', notes: '' })
+        setContactMode('existing')
+        setContactSearch('')
         fetchDeals()
       }
     } catch (error) {
       console.error('Error creating deal:', error)
     }
   }
+
+  // Filter contacts for dropdown
+  const filteredContacts = contacts.filter(c => 
+    c.name.toLowerCase().includes(contactSearch.toLowerCase()) ||
+    (c.email && c.email.toLowerCase().includes(contactSearch.toLowerCase()))
+  ).slice(0, 10)
 
   async function updateDealStage(dealId: number, newStage: string) {
     try {
@@ -598,26 +663,96 @@ export default function DealsPage() {
                 </div>
               </div>
 
+              {/* Contact Selection */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Contact Name</label>
-                <input
-                  type="text"
-                  value={newDeal.customer_name}
-                  onChange={(e) => setNewDeal({ ...newDeal, customer_name: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                  placeholder="Contact name"
-                />
-              </div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Contact</label>
+                <div className="flex gap-2 mb-3">
+                  <button
+                    type="button"
+                    onClick={() => { setContactMode('existing'); setNewDeal({ ...newDeal, customer_name: '', customer_email: '', customer_phone: '' }) }}
+                    className={`flex-1 px-3 py-2 text-sm rounded-md border transition-colors ${
+                      contactMode === 'existing' 
+                        ? 'border-blue-500 bg-blue-50 text-blue-700' 
+                        : 'border-gray-200 text-gray-600 hover:bg-gray-50'
+                    }`}
+                  >
+                    Select Existing
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setContactMode('new'); setNewDeal({ ...newDeal, customer_id: '' }) }}
+                    className={`flex-1 px-3 py-2 text-sm rounded-md border transition-colors ${
+                      contactMode === 'new' 
+                        ? 'border-blue-500 bg-blue-50 text-blue-700' 
+                        : 'border-gray-200 text-gray-600 hover:bg-gray-50'
+                    }`}
+                  >
+                    + New Contact
+                  </button>
+                </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Contact Email</label>
-                <input
-                  type="email"
-                  value={newDeal.customer_email}
-                  onChange={(e) => setNewDeal({ ...newDeal, customer_email: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                  placeholder="email@example.com"
-                />
+                {contactMode === 'existing' ? (
+                  <div className="relative">
+                    <input
+                      type="text"
+                      value={contactSearch}
+                      onChange={(e) => { setContactSearch(e.target.value); setShowContactDropdown(true) }}
+                      onFocus={() => setShowContactDropdown(true)}
+                      className="w-full px-3 py-2 border border-gray-200 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                      placeholder="Search contacts..."
+                    />
+                    {showContactDropdown && filteredContacts.length > 0 && (
+                      <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg max-h-48 overflow-y-auto">
+                        {filteredContacts.map(contact => (
+                          <button
+                            key={contact.id}
+                            type="button"
+                            onClick={() => {
+                              setNewDeal({ ...newDeal, customer_id: contact.id, customer_name: contact.name, customer_email: contact.email || '' })
+                              setContactSearch(contact.name)
+                              setShowContactDropdown(false)
+                            }}
+                            className="w-full px-3 py-2 text-left hover:bg-gray-50 flex items-center justify-between"
+                          >
+                            <div>
+                              <p className="text-sm font-medium text-gray-900">{contact.name}</p>
+                              {contact.email && <p className="text-xs text-gray-500">{contact.email}</p>}
+                            </div>
+                            {newDeal.customer_id === contact.id && <Check className="w-4 h-4 text-blue-600" />}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                    {newDeal.customer_id && (
+                      <p className="text-xs text-green-600 mt-1">✓ Selected: {contacts.find(c => c.id === Number(newDeal.customer_id))?.name}</p>
+                    )}
+                  </div>
+                ) : (
+                  <div className="space-y-3 p-3 bg-gray-50 rounded-md">
+                    <input
+                      type="text"
+                      value={newDeal.customer_name}
+                      onChange={(e) => setNewDeal({ ...newDeal, customer_name: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-200 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white"
+                      placeholder="Name *"
+                    />
+                    <input
+                      type="email"
+                      value={newDeal.customer_email}
+                      onChange={(e) => setNewDeal({ ...newDeal, customer_email: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-200 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white"
+                      placeholder="Email"
+                    />
+                    <input
+                      type="tel"
+                      value={newDeal.customer_phone}
+                      onChange={(e) => setNewDeal({ ...newDeal, customer_phone: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-200 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white"
+                      placeholder="Phone"
+                    />
+                    <p className="text-xs text-gray-500">This contact will be added to your CRM</p>
+                  </div>
+                )}
               </div>
 
               <div>
