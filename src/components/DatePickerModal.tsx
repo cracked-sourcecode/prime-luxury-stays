@@ -178,8 +178,8 @@ export default function DatePickerModal({
           className="bg-white rounded-3xl shadow-2xl max-w-3xl w-full overflow-hidden"
         >
           {/* Header */}
-          <div className="flex items-center justify-between px-6 py-4 border-b border-cream-200">
-            <h2 className="font-merriweather text-xl text-charcoal-900">{title}</h2>
+          <div className="flex items-center justify-between px-4 md:px-6 py-3 md:py-4 border-b border-cream-200">
+            <h2 className="font-merriweather text-lg md:text-xl text-charcoal-900">{title}</h2>
             <button
               onClick={onClose}
               className="p-2 hover:bg-cream-100 rounded-full transition-colors"
@@ -189,19 +189,19 @@ export default function DatePickerModal({
           </div>
 
           {/* Selected Dates Display */}
-          <div className="px-6 py-4 bg-cream-50 border-b border-cream-200">
-            <div className="flex items-center gap-4">
-              <div className={`flex-1 p-3 rounded-xl border-2 transition-colors ${selectingCheckOut ? 'border-cream-200 bg-white' : 'border-gold-500 bg-white'}`}>
-                <div className="text-xs text-charcoal-500 uppercase tracking-wide">Check-in</div>
-                <div className="font-semibold text-charcoal-900 mt-0.5">{formatDisplayDate(checkIn)}</div>
+          <div className="px-4 md:px-6 py-4 bg-cream-50 border-b border-cream-200">
+            <div className="flex items-center gap-2 md:gap-4">
+              <div className={`flex-1 p-2 md:p-3 rounded-xl border-2 transition-colors ${selectingCheckOut ? 'border-cream-200 bg-white' : 'border-gold-500 bg-white'}`}>
+                <div className="text-[10px] md:text-xs text-charcoal-500 uppercase tracking-wide">Check-in</div>
+                <div className="font-semibold text-charcoal-900 mt-0.5 text-sm md:text-base">{formatDisplayDate(checkIn)}</div>
               </div>
               <div className="text-charcoal-300">→</div>
-              <div className={`flex-1 p-3 rounded-xl border-2 transition-colors ${selectingCheckOut && checkIn ? 'border-gold-500 bg-white' : 'border-cream-200 bg-white'}`}>
-                <div className="text-xs text-charcoal-500 uppercase tracking-wide">Check-out</div>
-                <div className="font-semibold text-charcoal-900 mt-0.5">{formatDisplayDate(checkOut)}</div>
+              <div className={`flex-1 p-2 md:p-3 rounded-xl border-2 transition-colors ${selectingCheckOut && checkIn ? 'border-gold-500 bg-white' : 'border-cream-200 bg-white'}`}>
+                <div className="text-[10px] md:text-xs text-charcoal-500 uppercase tracking-wide">Check-out</div>
+                <div className="font-semibold text-charcoal-900 mt-0.5 text-sm md:text-base">{formatDisplayDate(checkOut)}</div>
               </div>
               {checkIn && checkOut && (
-                <div className="flex-1 p-3 rounded-xl bg-gold-50 border border-gold-200">
+                <div className="hidden md:block flex-1 p-3 rounded-xl bg-gold-50 border border-gold-200">
                   <div className="text-xs text-gold-600 uppercase tracking-wide">Duration</div>
                   <div className="font-semibold text-gold-800 mt-0.5">
                     {Math.ceil((checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24))} nights
@@ -209,12 +209,20 @@ export default function DatePickerModal({
                 </div>
               )}
             </div>
+            {/* Duration on mobile - show below */}
+            {checkIn && checkOut && (
+              <div className="md:hidden mt-3 p-2 rounded-xl bg-gold-50 border border-gold-200 text-center">
+                <span className="text-sm font-semibold text-gold-800">
+                  {Math.ceil((checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24))} nights selected
+                </span>
+              </div>
+            )}
           </div>
 
           {/* Calendar Grid */}
-          <div className="p-6">
-            {/* Month Navigation */}
-            <div className="flex items-center justify-between mb-6">
+          <div className="p-4 md:p-6">
+            {/* Month Navigation - Desktop (Two months) */}
+            <div className="hidden md:flex items-center justify-between mb-6">
               <button
                 onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1))}
                 className="p-2 hover:bg-cream-100 rounded-full transition-colors"
@@ -237,8 +245,41 @@ export default function DatePickerModal({
               </button>
             </div>
 
-            {/* Two Month View */}
-            <div className="grid md:grid-cols-2 gap-8">
+            {/* Month Navigation - Mobile (Single month) */}
+            <div className="flex md:hidden items-center justify-between mb-4">
+              <button
+                onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1))}
+                className="p-2 hover:bg-cream-100 rounded-full transition-colors"
+              >
+                <ChevronLeft className="w-5 h-5 text-charcoal-600" />
+              </button>
+              <span className="font-semibold text-charcoal-900 text-lg">
+                {monthNames[currentMonth.getMonth()]} {currentMonth.getFullYear()}
+              </span>
+              <button
+                onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1))}
+                className="p-2 hover:bg-cream-100 rounded-full transition-colors"
+              >
+                <ChevronRight className="w-5 h-5 text-charcoal-600" />
+              </button>
+            </div>
+
+            {/* Single Month View - Mobile */}
+            <div className="md:hidden">
+              <div className="grid grid-cols-7 gap-1 mb-2">
+                {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map((day) => (
+                  <div key={day} className="h-10 flex items-center justify-center text-xs font-medium text-charcoal-400">
+                    {day}
+                  </div>
+                ))}
+              </div>
+              <div className="grid grid-cols-7 gap-1">
+                {renderMonth(currentMonth)}
+              </div>
+            </div>
+
+            {/* Two Month View - Desktop */}
+            <div className="hidden md:grid md:grid-cols-2 gap-8">
               {/* First Month */}
               <div>
                 <div className="grid grid-cols-7 gap-1 mb-2">
@@ -270,19 +311,19 @@ export default function DatePickerModal({
           </div>
 
           {/* Footer */}
-          <div className="px-6 py-4 border-t border-cream-200 flex items-center justify-between bg-cream-50">
+          <div className="px-4 md:px-6 py-4 border-t border-cream-200 flex items-center justify-between bg-cream-50">
             <button
               onClick={handleClear}
-              className="text-charcoal-600 hover:text-charcoal-900 font-medium transition-colors"
+              className="text-charcoal-600 hover:text-charcoal-900 font-medium transition-colors text-sm md:text-base"
             >
-              Clear dates
+              Clear
             </button>
             <button
               onClick={handleConfirm}
               disabled={!checkIn || !checkOut}
-              className="bg-gold-500 hover:bg-gold-600 text-white px-6 py-3 rounded-xl font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="bg-gold-500 hover:bg-gold-600 text-white px-5 md:px-6 py-2.5 md:py-3 rounded-xl font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm md:text-base"
             >
-              Confirm dates
+              Confirm
             </button>
           </div>
         </motion.div>
