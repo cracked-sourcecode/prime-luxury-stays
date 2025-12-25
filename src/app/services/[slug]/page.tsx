@@ -13,25 +13,6 @@ const servicesData: Record<string, {
   features: string[]
   benefits: { title: string; description: string }[]
 }> = {
-  'concierge': {
-    title: 'Personal Concierge',
-    subtitle: 'Your Dedicated Luxury Lifestyle Manager',
-    description: 'Experience the ultimate in personalized service with our dedicated concierge team. Available around the clock, our luxury lifestyle managers anticipate your every need and transform the impossible into the effortless.',
-    heroImage: 'https://images.unsplash.com/photo-1551632436-cbf8dd35adfa?w=1920&q=80',
-    features: [
-      'Available 24/7 throughout your stay',
-      'Pre-arrival planning and preparation',
-      'Restaurant reservations at exclusive venues',
-      'Event tickets and VIP access',
-      'Personal shopping and gift sourcing',
-      'Travel arrangements and itinerary planning',
-    ],
-    benefits: [
-      { title: 'Dedicated Manager', description: 'One point of contact who knows your preferences' },
-      { title: 'Local Expertise', description: 'Insider knowledge of the best experiences' },
-      { title: 'Seamless Service', description: 'Everything arranged before you even ask' },
-    ],
-  },
   'private-aviation': {
     title: 'Private Aviation',
     subtitle: 'Seamless Private Jet Travel',

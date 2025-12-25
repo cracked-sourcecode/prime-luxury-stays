@@ -16,10 +16,10 @@ import {
 
 const services = [
   {
-    icon: Sparkles,
-    title: 'Personal Concierge',
-    description: 'Dedicated luxury lifestyle managers available around the clock to fulfill every request.',
-    slug: 'concierge',
+    icon: Utensils,
+    title: 'Table Reservations',
+    description: 'Priority bookings at the finest restaurants and exclusive dining venues.',
+    slug: 'table-reservations',
   },
   {
     icon: Plane,
@@ -28,7 +28,7 @@ const services = [
     slug: 'private-aviation',
   },
   {
-    icon: Utensils,
+    icon: Sparkles,
     title: 'Private Chef',
     description: 'World-class chefs creating bespoke culinary experiences in your residence.',
     slug: 'private-chef',

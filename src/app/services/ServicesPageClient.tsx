@@ -24,12 +24,6 @@ const serviceCategories = [
     description: 'Your dedicated team handling every detail of your stay.',
     services: [
       {
-        icon: Sparkles,
-        title: 'Personal Concierge',
-        description: 'Dedicated luxury lifestyle managers available around the clock to fulfill every request.',
-        slug: 'concierge',
-      },
-      {
         icon: Utensils,
         title: 'Private Chef',
         description: 'World-class chefs creating bespoke culinary experiences in your residence.',
