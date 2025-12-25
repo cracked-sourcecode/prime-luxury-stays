@@ -271,8 +271,8 @@ export default function Hero({ heroProperty }: HeroProps) {
               </div>
               <div className="w-px h-10 md:h-12 bg-gray-200" />
               <div className="text-center">
-                <div className="font-merriweather text-2xl md:text-3xl text-gold-600">98%</div>
-                <div className="text-xs text-charcoal-500 font-medium">Satisfaction</div>
+                <div className="font-merriweather text-2xl md:text-3xl text-gold-600">5★</div>
+                <div className="text-xs text-charcoal-500 font-medium">Service</div>
               </div>
             </motion.div>
           </motion.div>

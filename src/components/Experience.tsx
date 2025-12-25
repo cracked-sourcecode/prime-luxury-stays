@@ -5,9 +5,8 @@ import { useRef } from 'react'
 import { Check } from 'lucide-react'
 
 const stats = [
-  { value: '200+', label: 'Exclusive Properties' },
+  { value: '200+', label: 'Properties' },
   { value: '15+', label: 'Destinations' },
-  { value: '98%', label: 'Guest Satisfaction' },
   { value: '5★', label: 'Service Rating' },
 ]
 

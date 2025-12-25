@@ -497,9 +497,8 @@ export default function MallorcaClient({ properties }: MallorcaClientProps) {
       {/* ========== URGENCY / SOCIAL PROOF ========== */}
       <section className="py-20 bg-gold-500">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="grid md:grid-cols-4 gap-8 text-center">
+          <div className="grid md:grid-cols-3 gap-8 text-center">
             {[
-              { value: '98%', label: 'Guest Satisfaction' },
               { value: '500+', label: 'Happy Guests' },
               { value: '7', label: 'Exclusive Properties' },
               { value: '5★', label: 'Service Rating' },
