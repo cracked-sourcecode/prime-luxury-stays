@@ -59,21 +59,19 @@ export default function Navigation() {
             </a>
 
             {/* Desktop Navigation */}
-            <div className="hidden lg:flex items-center gap-10">
+            <div className="hidden lg:flex items-center gap-8">
               {navLinks.map((link) => (
                 <a
                   key={link.name}
                   href={link.href}
-                  className="link-underline text-charcoal-700 hover:text-gold-600 text-sm font-medium tracking-wide transition-colors duration-300"
+                  className="link-underline text-charcoal-700 hover:text-gold-600 text-sm font-medium tracking-wide transition-colors duration-300 py-2 relative z-10"
                 >
                   {link.name}
                 </a>
               ))}
-            </div>
-
-            {/* CTA Button */}
-            <div className="hidden lg:block">
-              <a href="/destinations" className="btn-gold">
+              
+              {/* CTA Button - inline with nav */}
+              <a href="/destinations" className="btn-gold ml-4 relative z-10">
                 View Destinations
               </a>
             </div>
