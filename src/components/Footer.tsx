@@ -187,11 +187,11 @@ export default function Footer() {
 
         {/* Bottom Bar */}
         <div className="py-4 md:py-6 border-t border-gray-100">
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-3 text-center md:text-left">
             <p className="text-charcoal-400 text-sm">
               © {currentYear} Prime Luxury Stays. All rights reserved.
             </p>
-            <div className="flex items-center gap-4 md:gap-6 flex-wrap">
+            <div className="flex items-center gap-4 md:gap-6 flex-wrap justify-center md:justify-end">
               <a href="#" className="text-charcoal-400 hover:text-gold-600 text-sm transition-colors">Privacy</a>
               <a href="#" className="text-charcoal-400 hover:text-gold-600 text-sm transition-colors">Terms</a>
               <a href="#" className="text-charcoal-400 hover:text-gold-600 text-sm transition-colors">Cookies</a>
