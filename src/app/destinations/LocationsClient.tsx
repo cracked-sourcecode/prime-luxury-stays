@@ -22,6 +22,13 @@ interface LocationsClientProps {
 
 export default function LocationsClient({ locations }: LocationsClientProps) {
   const { t } = useLocale()
+  
+  // Get translated description for a location
+  const getDescription = (slug: string) => {
+    const key = slug === 'south-of-france' ? 'southOfFrance' : slug
+    return t(`locationDescriptions.${key}`)
+  }
+  
   // Separate active and coming soon locations
   const activeLocations = locations.filter(l => !l.comingSoon && l.propertyCount > 0)
   const comingSoonLocations = locations.filter(l => l.comingSoon || l.propertyCount === 0)
@@ -97,7 +104,7 @@ export default function LocationsClient({ locations }: LocationsClientProps) {
                   {/* Content */}
                   <div className="p-6">
                     <p className="text-charcoal-500 text-sm leading-relaxed mb-4 line-clamp-2">
-                      {location.description}
+                      {getDescription(location.slug)}
                     </p>
                     
                     <div className="flex items-center text-gold-600 font-semibold group-hover:gap-3 gap-2 transition-all">

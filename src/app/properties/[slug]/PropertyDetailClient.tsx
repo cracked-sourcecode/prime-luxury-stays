@@ -284,19 +284,19 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
                 {property.bedrooms && (
                   <div className="flex items-center gap-3">
                     <Bed className="w-6 h-6" />
-                    <span className="text-lg">{property.bedrooms} Bedrooms</span>
+                    <span className="text-lg">{property.bedrooms} {t('pages.propertyDetail.bedrooms')}</span>
                   </div>
                 )}
                 {property.bathrooms && (
                   <div className="flex items-center gap-3">
                     <Bath className="w-6 h-6" />
-                    <span className="text-lg">{property.bathrooms} Bathrooms</span>
+                    <span className="text-lg">{property.bathrooms} {t('pages.propertyDetail.bathrooms')}</span>
                   </div>
                 )}
                 {property.max_guests && (
                   <div className="flex items-center gap-3">
                     <Users className="w-6 h-6" />
-                    <span className="text-lg">Up to {property.max_guests} Guests</span>
+                    <span className="text-lg">{property.max_guests} {t('pages.propertyDetail.guests')}</span>
                   </div>
                 )}
               </div>
@@ -307,7 +307,7 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
                 className="bg-white/20 backdrop-blur-md text-white px-6 py-3 rounded-xl font-medium hover:bg-white/30 transition-all flex items-center gap-3 border border-white/30"
               >
                 <Grid3X3 className="w-5 h-5" />
-                View All Photos
+                {t('pages.propertyDetail.viewAllPhotos')}
                 <span className="bg-white/20 px-2 py-1 rounded-md text-sm">{galleryImages.length}</span>
               </button>
             </motion.div>
@@ -372,7 +372,7 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
                 viewport={{ once: true }}
               >
                 <h2 className="font-merriweather text-2xl md:text-3xl text-charcoal-900 mb-4 md:mb-6">
-                  Photo Gallery
+                  {t('pages.propertyDetail.photoGallery')}
                 </h2>
                 {/* Photo Grid - show first 3 images: 1 large left, 2 stacked right */}
                 <div className="grid grid-cols-3 gap-3 h-[500px]">
@@ -504,7 +504,7 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
               className="bg-white rounded-3xl p-8 md:p-12 shadow-xl"
             >
               <h2 className="font-merriweather text-3xl text-charcoal-900 mb-8">
-                Villa Amenities
+                {t('pages.propertyDetail.amenities')}
               </h2>
               
               <div className="grid md:grid-cols-2 gap-6">
@@ -580,7 +580,7 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
               className="bg-white rounded-3xl p-8 md:p-12 shadow-xl"
             >
               <h2 className="font-merriweather text-3xl text-charcoal-900 mb-4">
-                Prime Location
+                {t('pages.propertyDetail.location')}
               </h2>
               <div className="flex items-center gap-2 text-charcoal-500 mb-8">
                 <MapPin className="w-5 h-5 text-gold-500" />

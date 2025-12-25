@@ -192,6 +192,11 @@
     "from": "From",
     "explore": "Explore"
   },
+  "locationDescriptions": {
+    "mallorca": "The jewel of the Mediterranean. Discover stunning villas, historic fincas, and exclusive beachfront properties on this beautiful island.",
+    "ibiza": "Where luxury meets vibrant energy. Experience world-class properties on the island of endless summer.",
+    "southOfFrance": "The French Riviera awaits. Discover stunning villas, coastal estates, and Provençal charm."
+  },
   "pages": {
     "properties": {
       "title": "Find Your Dream Villa",
@@ -392,15 +397,23 @@
       "estimatedTotal": "Estimated Total",
       "orCallUs": "Or call us",
       "aboutProperty": "About This Property",
-      "amenities": "Amenities",
-      "location": "Location",
+      "amenities": "Villa Amenities",
+      "location": "Prime Location",
       "houseRules": "House Rules",
       "dedicatedConcierge": "Dedicated Concierge",
       "dedicatedConciergeDesc": "Our team is available to assist with any request during your stay",
       "instantConfirmation": "Instant Confirmation",
       "instantConfirmationDesc": "Receive booking confirmation within 2 hours",
       "securePayment": "Secure Payment",
-      "securePaymentDesc": "Your payment details are protected with bank-level security"
+      "securePaymentDesc": "Your payment details are protected with bank-level security",
+      "viewAllPhotos": "View All Photos",
+      "photoGallery": "Photo Gallery",
+      "verifiedLuxury": "Verified Luxury Property",
+      "dedicatedSupport": "Dedicated Concierge Support",
+      "flexibleBooking": "Flexible Booking Options",
+      "bestPrice": "Best Price Guarantee",
+      "priceFrom": "From",
+      "peakSeason": "Up to €{price}/week in peak season"
     },
     "legal": {
       "title": "Legal Notice",

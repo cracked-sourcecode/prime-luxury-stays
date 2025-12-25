@@ -192,6 +192,11 @@
     "from": "Ab",
     "explore": "Erkunden"
   },
+  "locationDescriptions": {
+    "mallorca": "Das Juwel des Mittelmeers. Entdecken Sie atemberaubende Villen, historische Fincas und exklusive Strandimmobilien auf dieser wunderschönen Insel.",
+    "ibiza": "Wo Luxus auf lebendige Energie trifft. Erleben Sie erstklassige Immobilien auf der Insel des ewigen Sommers.",
+    "southOfFrance": "Die Französische Riviera erwartet Sie. Entdecken Sie atemberaubende Villen, Küstenanwesen und provenzalischen Charme."
+  },
   "pages": {
     "properties": {
       "title": "Finden Sie Ihre Traumvilla",
@@ -392,15 +397,23 @@
       "estimatedTotal": "Geschätzter Gesamtpreis",
       "orCallUs": "Oder rufen Sie uns an",
       "aboutProperty": "Über Diese Immobilie",
-      "amenities": "Ausstattung",
-      "location": "Lage",
+      "amenities": "Ausstattung der Villa",
+      "location": "Erstklassige Lage",
       "houseRules": "Hausordnung",
       "dedicatedConcierge": "Persönlicher Concierge",
       "dedicatedConciergeDesc": "Unser Team steht Ihnen während Ihres Aufenthalts für jede Anfrage zur Verfügung",
       "instantConfirmation": "Sofortige Bestätigung",
       "instantConfirmationDesc": "Erhalten Sie eine Buchungsbestätigung innerhalb von 2 Stunden",
       "securePayment": "Sichere Zahlung",
-      "securePaymentDesc": "Ihre Zahlungsdaten sind mit Bank-Level-Sicherheit geschützt"
+      "securePaymentDesc": "Ihre Zahlungsdaten sind mit Bank-Level-Sicherheit geschützt",
+      "viewAllPhotos": "Alle Fotos Ansehen",
+      "photoGallery": "Fotogalerie",
+      "verifiedLuxury": "Verifizierte Luxusimmobilie",
+      "dedicatedSupport": "Persönlicher Concierge-Service",
+      "flexibleBooking": "Flexible Buchungsoptionen",
+      "bestPrice": "Bestpreisgarantie",
+      "priceFrom": "Ab",
+      "peakSeason": "Bis zu €{price}/Woche in der Hochsaison"
     },
     "legal": {
       "title": "Impressum",
