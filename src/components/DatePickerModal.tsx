@@ -1,0 +1,293 @@
+'use client'
+
+import { useState, useEffect } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { ChevronLeft, ChevronRight, X } from 'lucide-react'
+
+interface DatePickerModalProps {
+  isOpen: boolean
+  onClose: () => void
+  onSelectDates: (checkIn: string, checkOut: string) => void
+  initialCheckIn?: string
+  initialCheckOut?: string
+  title?: string
+}
+
+export default function DatePickerModal({
+  isOpen,
+  onClose,
+  onSelectDates,
+  initialCheckIn,
+  initialCheckOut,
+  title = 'Select Dates'
+}: DatePickerModalProps) {
+  const [currentMonth, setCurrentMonth] = useState(new Date())
+  const [checkIn, setCheckIn] = useState<Date | null>(initialCheckIn ? new Date(initialCheckIn) : null)
+  const [checkOut, setCheckOut] = useState<Date | null>(initialCheckOut ? new Date(initialCheckOut) : null)
+  const [selectingCheckOut, setSelectingCheckOut] = useState(false)
+
+  useEffect(() => {
+    if (initialCheckIn) setCheckIn(new Date(initialCheckIn))
+    if (initialCheckOut) setCheckOut(new Date(initialCheckOut))
+  }, [initialCheckIn, initialCheckOut])
+
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+
+  const monthNames = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ]
+
+  const getDaysInMonth = (date: Date) => {
+    const year = date.getFullYear()
+    const month = date.getMonth()
+    const firstDay = new Date(year, month, 1)
+    const lastDay = new Date(year, month + 1, 0)
+    const daysInMonth = lastDay.getDate()
+    const startingDay = firstDay.getDay()
+    return { daysInMonth, startingDay, year, month }
+  }
+
+  const formatDate = (date: Date) => {
+    return date.toISOString().split('T')[0]
+  }
+
+  const formatDisplayDate = (date: Date | null) => {
+    if (!date) return '—'
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+  }
+
+  const handleDateClick = (day: number, month: number, year: number) => {
+    const clickedDate = new Date(year, month, day)
+    clickedDate.setHours(0, 0, 0, 0)
+
+    if (clickedDate < today) return
+
+    if (!selectingCheckOut || !checkIn) {
+      // Selecting check-in
+      setCheckIn(clickedDate)
+      setCheckOut(null)
+      setSelectingCheckOut(true)
+    } else {
+      // Selecting check-out
+      if (clickedDate <= checkIn) {
+        // If clicked date is before or same as check-in, reset
+        setCheckIn(clickedDate)
+        setCheckOut(null)
+      } else {
+        setCheckOut(clickedDate)
+        setSelectingCheckOut(false)
+      }
+    }
+  }
+
+  const isInRange = (day: number, month: number, year: number) => {
+    if (!checkIn || !checkOut) return false
+    const date = new Date(year, month, day)
+    return date > checkIn && date < checkOut
+  }
+
+  const isCheckIn = (day: number, month: number, year: number) => {
+    if (!checkIn) return false
+    const date = new Date(year, month, day)
+    return date.getTime() === checkIn.getTime()
+  }
+
+  const isCheckOut = (day: number, month: number, year: number) => {
+    if (!checkOut) return false
+    const date = new Date(year, month, day)
+    return date.getTime() === checkOut.getTime()
+  }
+
+  const isPast = (day: number, month: number, year: number) => {
+    const date = new Date(year, month, day)
+    date.setHours(0, 0, 0, 0)
+    return date < today
+  }
+
+  const handleConfirm = () => {
+    if (checkIn && checkOut) {
+      onSelectDates(formatDate(checkIn), formatDate(checkOut))
+      onClose()
+    }
+  }
+
+  const handleClear = () => {
+    setCheckIn(null)
+    setCheckOut(null)
+    setSelectingCheckOut(false)
+  }
+
+  const renderMonth = (date: Date) => {
+    const { daysInMonth, startingDay, year, month } = getDaysInMonth(date)
+    const days = []
+
+    // Empty cells for days before the first day of month
+    for (let i = 0; i < startingDay; i++) {
+      days.push(<div key={`empty-${i}`} className="h-10" />)
+    }
+
+    // Days of the month
+    for (let day = 1; day <= daysInMonth; day++) {
+      const past = isPast(day, month, year)
+      const isStart = isCheckIn(day, month, year)
+      const isEnd = isCheckOut(day, month, year)
+      const inRange = isInRange(day, month, year)
+
+      days.push(
+        <button
+          key={day}
+          onClick={() => handleDateClick(day, month, year)}
+          disabled={past}
+          className={`
+            h-10 w-10 rounded-full text-sm font-medium transition-all
+            ${past ? 'text-gray-300 cursor-not-allowed' : 'hover:bg-cream-100 cursor-pointer'}
+            ${isStart || isEnd ? 'bg-gold-500 text-white hover:bg-gold-600' : ''}
+            ${inRange ? 'bg-gold-100 text-gold-800' : ''}
+            ${!past && !isStart && !isEnd && !inRange ? 'text-charcoal-700' : ''}
+          `}
+        >
+          {day}
+        </button>
+      )
+    }
+
+    return days
+  }
+
+  const nextMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1)
+
+  if (!isOpen) return null
+
+  return (
+    <AnimatePresence>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4"
+        onClick={onClose}
+      >
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.95, y: 20 }}
+          transition={{ duration: 0.2 }}
+          onClick={(e) => e.stopPropagation()}
+          className="bg-white rounded-3xl shadow-2xl max-w-3xl w-full overflow-hidden"
+        >
+          {/* Header */}
+          <div className="flex items-center justify-between px-6 py-4 border-b border-cream-200">
+            <h2 className="font-merriweather text-xl text-charcoal-900">{title}</h2>
+            <button
+              onClick={onClose}
+              className="p-2 hover:bg-cream-100 rounded-full transition-colors"
+            >
+              <X className="w-5 h-5 text-charcoal-500" />
+            </button>
+          </div>
+
+          {/* Selected Dates Display */}
+          <div className="px-6 py-4 bg-cream-50 border-b border-cream-200">
+            <div className="flex items-center gap-4">
+              <div className={`flex-1 p-3 rounded-xl border-2 transition-colors ${selectingCheckOut ? 'border-cream-200 bg-white' : 'border-gold-500 bg-white'}`}>
+                <div className="text-xs text-charcoal-500 uppercase tracking-wide">Check-in</div>
+                <div className="font-semibold text-charcoal-900 mt-0.5">{formatDisplayDate(checkIn)}</div>
+              </div>
+              <div className="text-charcoal-300">→</div>
+              <div className={`flex-1 p-3 rounded-xl border-2 transition-colors ${selectingCheckOut && checkIn ? 'border-gold-500 bg-white' : 'border-cream-200 bg-white'}`}>
+                <div className="text-xs text-charcoal-500 uppercase tracking-wide">Check-out</div>
+                <div className="font-semibold text-charcoal-900 mt-0.5">{formatDisplayDate(checkOut)}</div>
+              </div>
+              {checkIn && checkOut && (
+                <div className="flex-1 p-3 rounded-xl bg-gold-50 border border-gold-200">
+                  <div className="text-xs text-gold-600 uppercase tracking-wide">Duration</div>
+                  <div className="font-semibold text-gold-800 mt-0.5">
+                    {Math.ceil((checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24))} nights
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Calendar Grid */}
+          <div className="p-6">
+            {/* Month Navigation */}
+            <div className="flex items-center justify-between mb-6">
+              <button
+                onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1))}
+                className="p-2 hover:bg-cream-100 rounded-full transition-colors"
+              >
+                <ChevronLeft className="w-5 h-5 text-charcoal-600" />
+              </button>
+              <div className="flex gap-8">
+                <span className="font-semibold text-charcoal-900">
+                  {monthNames[currentMonth.getMonth()]} {currentMonth.getFullYear()}
+                </span>
+                <span className="font-semibold text-charcoal-900">
+                  {monthNames[nextMonth.getMonth()]} {nextMonth.getFullYear()}
+                </span>
+              </div>
+              <button
+                onClick={() => setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1))}
+                className="p-2 hover:bg-cream-100 rounded-full transition-colors"
+              >
+                <ChevronRight className="w-5 h-5 text-charcoal-600" />
+              </button>
+            </div>
+
+            {/* Two Month View */}
+            <div className="grid md:grid-cols-2 gap-8">
+              {/* First Month */}
+              <div>
+                <div className="grid grid-cols-7 gap-1 mb-2">
+                  {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map((day) => (
+                    <div key={day} className="h-10 flex items-center justify-center text-xs font-medium text-charcoal-400">
+                      {day}
+                    </div>
+                  ))}
+                </div>
+                <div className="grid grid-cols-7 gap-1">
+                  {renderMonth(currentMonth)}
+                </div>
+              </div>
+
+              {/* Second Month */}
+              <div>
+                <div className="grid grid-cols-7 gap-1 mb-2">
+                  {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map((day) => (
+                    <div key={day} className="h-10 flex items-center justify-center text-xs font-medium text-charcoal-400">
+                      {day}
+                    </div>
+                  ))}
+                </div>
+                <div className="grid grid-cols-7 gap-1">
+                  {renderMonth(nextMonth)}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Footer */}
+          <div className="px-6 py-4 border-t border-cream-200 flex items-center justify-between bg-cream-50">
+            <button
+              onClick={handleClear}
+              className="text-charcoal-600 hover:text-charcoal-900 font-medium transition-colors"
+            >
+              Clear dates
+            </button>
+            <button
+              onClick={handleConfirm}
+              disabled={!checkIn || !checkOut}
+              className="bg-gold-500 hover:bg-gold-600 text-white px-6 py-3 rounded-xl font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Confirm dates
+            </button>
+          </div>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
+  )
+}
+

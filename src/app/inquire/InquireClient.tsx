@@ -17,6 +17,7 @@ import {
   Users,
 } from 'lucide-react'
 import type { Property } from '@/lib/properties'
+import DatePickerModal from '@/components/DatePickerModal'
 
 export default function InquireClient({
   property,
@@ -40,6 +41,13 @@ export default function InquireClient({
   const [submitting, setSubmitting] = useState(false)
   const [done, setDone] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [showDatePicker, setShowDatePicker] = useState(false)
+
+  const formatDisplayDate = (dateStr: string) => {
+    if (!dateStr) return 'Select date'
+    const date = new Date(dateStr)
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+  }
 
   const heroImage = useMemo(() => {
     return (
@@ -272,30 +280,32 @@ export default function InquireClient({
                       <label className="block text-sm font-semibold text-charcoal-800 mb-2">
                         Check-in
                       </label>
-                      <div className="relative">
+                      <button
+                        type="button"
+                        onClick={() => setShowDatePicker(true)}
+                        className="w-full pl-12 pr-4 py-3.5 rounded-2xl border border-cream-200 bg-white hover:border-gold-400 focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none text-left relative transition-colors"
+                      >
                         <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-charcoal-400" />
-                        <input
-                          value={checkIn}
-                          onChange={(e) => setCheckIn(e.target.value)}
-                          type="date"
-                          className="w-full pl-12 pr-4 py-3.5 rounded-2xl border border-cream-200 bg-white focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
-                        />
-                      </div>
+                        <span className={checkIn ? 'text-charcoal-900' : 'text-charcoal-400'}>
+                          {formatDisplayDate(checkIn)}
+                        </span>
+                      </button>
                     </div>
 
                     <div>
                       <label className="block text-sm font-semibold text-charcoal-800 mb-2">
                         Check-out
                       </label>
-                      <div className="relative">
+                      <button
+                        type="button"
+                        onClick={() => setShowDatePicker(true)}
+                        className="w-full pl-12 pr-4 py-3.5 rounded-2xl border border-cream-200 bg-white hover:border-gold-400 focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none text-left relative transition-colors"
+                      >
                         <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-charcoal-400" />
-                        <input
-                          value={checkOut}
-                          onChange={(e) => setCheckOut(e.target.value)}
-                          type="date"
-                          className="w-full pl-12 pr-4 py-3.5 rounded-2xl border border-cream-200 bg-white focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
-                        />
-                      </div>
+                        <span className={checkOut ? 'text-charcoal-900' : 'text-charcoal-400'}>
+                          {formatDisplayDate(checkOut)}
+                        </span>
+                      </button>
                     </div>
                   </div>
 
@@ -404,6 +414,19 @@ export default function InquireClient({
           </div>
         </div>
       </section>
+
+      {/* Date Picker Modal */}
+      <DatePickerModal
+        isOpen={showDatePicker}
+        onClose={() => setShowDatePicker(false)}
+        onSelectDates={(newCheckIn, newCheckOut) => {
+          setCheckIn(newCheckIn)
+          setCheckOut(newCheckOut)
+        }}
+        initialCheckIn={checkIn}
+        initialCheckOut={checkOut}
+        title="Select your dates"
+      />
     </div>
   )
 }
