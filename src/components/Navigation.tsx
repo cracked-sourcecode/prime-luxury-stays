@@ -33,26 +33,26 @@ export default function Navigation() {
         transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1] }}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
           isScrolled 
-            ? 'bg-white py-3 shadow-lg' 
-            : 'py-5 bg-white shadow-sm'
+            ? 'bg-white py-2 md:py-3 shadow-lg' 
+            : 'py-3 md:py-5 bg-white shadow-sm'
         }`}
       >
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             {/* Logo */}
-            <a href="/" className="flex items-center gap-3 group">
-              <div className="relative w-14 h-14 lg:w-16 lg:h-16">
+            <a href="/" className="flex items-center gap-2 md:gap-3 group">
+              <div className="relative w-10 h-10 md:w-14 md:h-14 lg:w-16 lg:h-16 flex-shrink-0">
                 <img
                   src={LOGO_URL}
                   alt="Prime Luxury Stays"
                   className="w-full h-full object-contain"
                 />
               </div>
-              <div className="hidden sm:block">
-                <h1 className="font-merriweather text-charcoal-900 text-lg lg:text-xl tracking-wide">
+              <div>
+                <h1 className="font-merriweather text-charcoal-900 text-sm md:text-lg lg:text-xl tracking-wide leading-tight">
                   Prime Luxury Stays
                 </h1>
-                <p className="font-merriweather text-[10px] tracking-[0.2em] text-gold-500 uppercase">
+                <p className="font-merriweather text-[8px] md:text-[10px] tracking-[0.15em] md:tracking-[0.2em] text-gold-500 uppercase">
                   Property Management
                 </p>
               </div>
@@ -99,41 +99,59 @@ export default function Navigation() {
             transition={{ duration: 0.3 }}
             className="fixed inset-0 z-40 lg:hidden"
           >
-            <div 
-              className="absolute inset-0 bg-white/90 backdrop-blur-xl"
-              onClick={() => setIsMobileMenuOpen(false)}
-            />
+            {/* Full screen white overlay */}
             <motion.div
-              initial={{ x: '100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '100%' }}
-              transition={{ duration: 0.4, ease: [0.4, 0, 0.2, 1] }}
-              className="absolute right-0 top-0 bottom-0 w-80 glass-heavy p-8 pt-24"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-white"
             >
-              <div className="flex flex-col gap-6">
-                {navLinks.map((link, index) => (
-                  <motion.a
-                    key={link.name}
-                    href={link.href}
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="font-merriweather text-2xl text-charcoal-900 hover:text-gold-600 transition-colors"
-                  >
-                    {link.name}
-                  </motion.a>
-                ))}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.5 }}
-                  className="mt-8"
+              {/* Header area with logo and close button */}
+              <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
+                <a href="/" className="flex items-center gap-2">
+                  <div className="w-10 h-10">
+                    <img
+                      src={LOGO_URL}
+                      alt="Prime Luxury Stays"
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                </a>
+                <button
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="p-2 text-charcoal-900 hover:text-gold-600 transition-colors"
                 >
-                  <a href="/destinations" className="btn-gold block text-center">
-                    View Destinations
-                  </a>
-                </motion.div>
+                  <X size={24} />
+                </button>
+              </div>
+              
+              {/* Menu content */}
+              <div className="px-6 py-8">
+                <div className="flex flex-col gap-6">
+                  {navLinks.map((link, index) => (
+                    <motion.a
+                      key={link.name}
+                      href={link.href}
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="font-merriweather text-2xl text-charcoal-900 hover:text-gold-600 transition-colors"
+                    >
+                      {link.name}
+                    </motion.a>
+                  ))}
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.5 }}
+                    className="mt-8"
+                  >
+                    <a href="/destinations" className="btn-gold block text-center">
+                      View Destinations
+                    </a>
+                  </motion.div>
+                </div>
               </div>
             </motion.div>
           </motion.div>
