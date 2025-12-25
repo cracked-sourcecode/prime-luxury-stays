@@ -1,11 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { 
-  Home, 
-  LogOut, 
   Plus, 
   Search, 
   Edit3, 
@@ -17,27 +14,27 @@ import {
   Star,
   Filter,
   Sparkles,
-  ShieldCheck
+  Users,
+  MessageSquare,
+  TrendingUp,
+  ArrowRight
 } from 'lucide-react'
 import type { AdminUser } from '@/lib/admin'
 import type { Property } from '@/lib/properties'
-import { AdminBrand } from '@/components/admin/AdminBrand'
+import AdminNav from '@/components/admin/AdminNav'
 
 interface AdminDashboardProps {
   user: AdminUser;
   properties: Property[];
+  stats?: {
+    totalCustomers: number;
+    recentInquiries: number;
+  };
 }
 
-export default function AdminDashboard({ user, properties }: AdminDashboardProps) {
+export default function AdminDashboard({ user, properties, stats }: AdminDashboardProps) {
   const [searchQuery, setSearchQuery] = useState('')
   const [filter, setFilter] = useState<'all' | 'active' | 'inactive'>('all')
-  const router = useRouter()
-
-  const handleLogout = async () => {
-    await fetch('/api/admin/logout', { method: 'POST' })
-    router.push('/admin/login')
-    router.refresh()
-  }
 
   const filteredProperties = properties.filter(p => {
     const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -48,7 +45,7 @@ export default function AdminDashboard({ user, properties }: AdminDashboardProps
     return matchesSearch && matchesFilter
   })
 
-  const stats = {
+  const propertyStats = {
     total: properties.length,
     active: properties.filter(p => p.is_active).length,
     featured: properties.filter(p => p.is_featured).length,
@@ -56,50 +53,25 @@ export default function AdminDashboard({ user, properties }: AdminDashboardProps
 
   return (
     <div className="min-h-screen bg-cream-50">
-      {/* Header */}
-      <header className="sticky top-0 z-50 border-b border-cream-200/70 bg-white/85 backdrop-blur-xl">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-6">
-            <AdminBrand subtitle="Admin" />
-            <div className="hidden md:flex items-center gap-3 text-xs">
-              <div className="inline-flex items-center gap-2 rounded-full bg-gold-50 border border-gold-100 px-3 py-1.5 text-gold-700">
-                <ShieldCheck className="w-4 h-4" />
-                Signed in as <span className="font-semibold">{user.name || user.email}</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <Link 
-              href="/" 
-              target="_blank"
-              className="px-3 py-2 rounded-xl text-charcoal-700 hover:text-gold-700 hover:bg-gold-50 transition-colors flex items-center gap-2"
-            >
-              <Home className="w-5 h-5" />
-              <span className="hidden sm:inline font-medium">View site</span>
-            </Link>
-            <button
-              onClick={handleLogout}
-              className="px-3 py-2 rounded-xl text-charcoal-700 hover:text-red-700 hover:bg-red-50 transition-colors flex items-center gap-2"
-            >
-              <LogOut className="w-5 h-5" />
-              <span className="hidden sm:inline font-medium">Logout</span>
-            </button>
-          </div>
-        </div>
-      </header>
+      <AdminNav userName={user.name} userEmail={user.email} />
 
       <main className="max-w-7xl mx-auto px-6 py-8">
+        {/* Welcome Section */}
+        <div className="mb-8">
+          <h1 className="font-merriweather text-3xl text-charcoal-900">Welcome back, {user.name || 'Admin'}</h1>
+          <p className="text-charcoal-500 mt-2">Here's what's happening with your properties and customers.</p>
+        </div>
+
         {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <div className="bg-white rounded-2xl p-6 shadow-sm border border-cream-200">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-charcoal-900 to-charcoal-700 flex items-center justify-center shadow-sm">
                 <Building2 className="w-6 h-6 text-white" />
               </div>
               <div>
-                <p className="text-3xl font-semibold text-charcoal-900">{stats.total}</p>
-                <p className="text-charcoal-500 text-sm">Total properties</p>
+                <p className="text-3xl font-semibold text-charcoal-900">{propertyStats.total}</p>
+                <p className="text-charcoal-500 text-sm">Properties</p>
               </div>
             </div>
           </div>
@@ -110,23 +82,68 @@ export default function AdminDashboard({ user, properties }: AdminDashboardProps
                 <Sparkles className="w-6 h-6 text-white" />
               </div>
               <div>
-                <p className="text-3xl font-semibold text-charcoal-900">{stats.active}</p>
-                <p className="text-charcoal-500 text-sm">Active listings</p>
+                <p className="text-3xl font-semibold text-charcoal-900">{propertyStats.active}</p>
+                <p className="text-charcoal-500 text-sm">Active Listings</p>
               </div>
             </div>
           </div>
           
           <div className="bg-white rounded-2xl p-6 shadow-sm border border-cream-200">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-gold-100 flex items-center justify-center">
-                <Star className="w-6 h-6 text-gold-700" />
+              <div className="w-12 h-12 rounded-2xl bg-blue-100 flex items-center justify-center">
+                <Users className="w-6 h-6 text-blue-700" />
               </div>
               <div>
-                <p className="text-3xl font-semibold text-charcoal-900">{stats.featured}</p>
-                <p className="text-charcoal-500 text-sm">Featured</p>
+                <p className="text-3xl font-semibold text-charcoal-900">{stats?.totalCustomers || 0}</p>
+                <p className="text-charcoal-500 text-sm">Contacts</p>
               </div>
             </div>
           </div>
+
+          <div className="bg-white rounded-2xl p-6 shadow-sm border border-cream-200">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-2xl bg-green-100 flex items-center justify-center">
+                <MessageSquare className="w-6 h-6 text-green-700" />
+              </div>
+              <div>
+                <p className="text-3xl font-semibold text-charcoal-900">{stats?.recentInquiries || 0}</p>
+                <p className="text-charcoal-500 text-sm">New Inquiries</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Quick Links */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <Link href="/admin/customers" className="bg-white rounded-2xl p-6 shadow-sm border border-cream-200 hover:border-gold-300 hover:shadow-md transition-all group">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="font-semibold text-charcoal-900 group-hover:text-gold-700 transition-colors">Sales CRM</h3>
+                <p className="text-charcoal-500 text-sm mt-1">Manage {stats?.totalCustomers?.toLocaleString() || 0} customer contacts</p>
+              </div>
+              <ArrowRight className="w-5 h-5 text-charcoal-400 group-hover:text-gold-600 group-hover:translate-x-1 transition-all" />
+            </div>
+          </Link>
+          
+          <Link href="/admin/inquiries" className="bg-white rounded-2xl p-6 shadow-sm border border-cream-200 hover:border-gold-300 hover:shadow-md transition-all group">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="font-semibold text-charcoal-900 group-hover:text-gold-700 transition-colors">Inquiries</h3>
+                <p className="text-charcoal-500 text-sm mt-1">View booking requests</p>
+              </div>
+              <ArrowRight className="w-5 h-5 text-charcoal-400 group-hover:text-gold-600 group-hover:translate-x-1 transition-all" />
+            </div>
+          </Link>
+          
+          <Link href="/admin/properties/new" className="bg-gradient-to-r from-gold-500 to-gold-400 rounded-2xl p-6 shadow-gold hover:from-gold-400 hover:to-gold-300 transition-all group">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="font-semibold text-white">Add Property</h3>
+                <p className="text-white/80 text-sm mt-1">Create a new listing</p>
+              </div>
+              <Plus className="w-5 h-5 text-white group-hover:rotate-90 transition-transform" />
+            </div>
+          </Link>
         </div>
 
         {/* Properties Section */}
