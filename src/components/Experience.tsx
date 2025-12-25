@@ -5,9 +5,10 @@ import { useRef } from 'react'
 import { Check } from 'lucide-react'
 
 const stats = [
-  { value: '200+', label: 'Properties' },
-  { value: '15+', label: 'Destinations' },
-  { value: '5★', label: 'Service Rating' },
+  { value: '800+', label: 'Happy Guests' },
+  { value: '14', label: 'Exclusive Villas' },
+  { value: 'Direct', label: 'Best Rate Guarantee' },
+  { value: 'EU & US', label: 'Operations' },
 ]
 
 const features = [

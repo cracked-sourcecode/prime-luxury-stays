@@ -261,18 +261,18 @@ export default function Hero({ heroProperty }: HeroProps) {
               className="hidden md:flex absolute -bottom-4 left-1/2 lg:left-auto lg:right-12 transform -translate-x-1/2 lg:translate-x-0 bg-white rounded-2xl shadow-xl p-4 md:p-6 items-center gap-4 md:gap-8"
             >
               <div className="text-center">
-                <div className="font-merriweather text-2xl md:text-3xl text-gold-600">200+</div>
-                <div className="text-xs text-charcoal-500 font-medium">Properties</div>
+                <div className="font-merriweather text-2xl md:text-3xl text-gold-600">800+</div>
+                <div className="text-xs text-charcoal-500 font-medium">Happy Guests</div>
               </div>
               <div className="w-px h-10 md:h-12 bg-gray-200" />
               <div className="text-center">
-                <div className="font-merriweather text-2xl md:text-3xl text-gold-600">15+</div>
-                <div className="text-xs text-charcoal-500 font-medium">Destinations</div>
+                <div className="font-merriweather text-2xl md:text-3xl text-gold-600">Direct</div>
+                <div className="text-xs text-charcoal-500 font-medium">Best Rates</div>
               </div>
               <div className="w-px h-10 md:h-12 bg-gray-200" />
               <div className="text-center">
-                <div className="font-merriweather text-2xl md:text-3xl text-gold-600">5★</div>
-                <div className="text-xs text-charcoal-500 font-medium">Service</div>
+                <div className="font-merriweather text-2xl md:text-3xl text-gold-600">EU & US</div>
+                <div className="text-xs text-charcoal-500 font-medium">Operations</div>
               </div>
             </motion.div>
           </motion.div>
