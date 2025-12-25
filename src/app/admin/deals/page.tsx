@@ -157,7 +157,14 @@ export default function DealsPage() {
     )
   }
 
-  const formatCurrency = (amount: number) => `€${amount.toLocaleString()}`
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('de-DE', {
+      style: 'currency',
+      currency: 'EUR',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(amount)
+  }
 
   // Pagination for table view
   const paginatedDeals = filteredDeals.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)

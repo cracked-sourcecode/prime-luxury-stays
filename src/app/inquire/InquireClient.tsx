@@ -65,8 +65,31 @@ export default function InquireClient({
     { icon: Star, title: 'Best value direct', desc: 'No booking platform fees.' },
   ]
 
+  const validateEmail = (email: string) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    return re.test(email)
+  }
+
+  const validatePhone = (phone: string) => {
+    const cleaned = phone.replace(/[\s\-\(\)]/g, '')
+    return cleaned.length >= 7 && /^[\+]?[0-9]+$/.test(cleaned)
+  }
+
   async function submit() {
     setError(null)
+
+    // Validate email
+    if (!validateEmail(email)) {
+      setError('Please enter a valid email address.')
+      return
+    }
+
+    // Validate phone
+    if (!phone || !validatePhone(phone)) {
+      setError('Please enter a valid phone number.')
+      return
+    }
+
     setSubmitting(true)
     try {
       const res = await fetch('/api/inquiries', {
@@ -79,7 +102,7 @@ export default function InquireClient({
           guests: guests ? Number(guests) : null,
           full_name: fullName,
           email,
-          phone: phone || null,
+          phone: phone,
           message: message || null,
           source_url: typeof window !== 'undefined' ? window.location.href : null,
           locale: locale,
@@ -249,15 +272,19 @@ export default function InquireClient({
 
                     <div>
                       <label className="block text-sm font-semibold text-charcoal-800 mb-2">
-                        Phone (optional)
+                        Phone *
                       </label>
                       <div className="relative">
                         <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-charcoal-400" />
                         <input
+                          type="tel"
+                          required
                           value={phone}
                           onChange={(e) => setPhone(e.target.value)}
                           className="w-full pl-12 pr-4 py-3.5 rounded-2xl border border-cream-200 bg-white focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
                           placeholder="+1 (555) 000-0000"
+                          pattern="[\+]?[0-9\s\-\(\)]{7,20}"
+                          title="Please enter a valid phone number"
                         />
                       </div>
                     </div>

@@ -19,10 +19,34 @@ export default function Contact() {
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState('')
 
+  const validateEmail = (email: string) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    return re.test(email)
+  }
+
+  const validatePhone = (phone: string) => {
+    const cleaned = phone.replace(/[\s\-\(\)]/g, '')
+    return cleaned.length >= 7 && /^[\+]?[0-9]+$/.test(cleaned)
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setSubmitting(true)
     setError('')
+
+    // Validate email
+    if (!validateEmail(formState.email)) {
+      setError('Please enter a valid email address.')
+      setSubmitting(false)
+      return
+    }
+
+    // Validate phone
+    if (!formState.phone || !validatePhone(formState.phone)) {
+      setError('Please enter a valid phone number.')
+      setSubmitting(false)
+      return
+    }
 
     try {
       const res = await fetch('/api/inquiries', {
@@ -31,7 +55,7 @@ export default function Contact() {
         body: JSON.stringify({
           full_name: formState.name,
           email: formState.email,
-          phone: formState.phone || null,
+          phone: formState.phone,
           message: formState.message || null,
           source_url: typeof window !== 'undefined' ? window.location.href : null,
           locale: locale,
@@ -188,14 +212,17 @@ export default function Contact() {
 
               <div className="mb-6">
                 <label className="block text-charcoal-700 text-sm font-semibold mb-2">
-                  {t('contact.form.phone')}
+                  {t('contact.form.phone')} *
                 </label>
                 <input
                   type="tel"
+                  required
                   value={formState.phone}
                   onChange={(e) => setFormState({ ...formState, phone: e.target.value })}
                   className="input-luxury w-full"
                   placeholder="+1 (555) 000-0000"
+                  pattern="[\+]?[0-9\s\-\(\)]{7,20}"
+                  title="Please enter a valid phone number"
                 />
               </div>
 
