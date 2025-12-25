@@ -301,11 +301,10 @@ export default function BookingCalendar({
                             aspect-square rounded-lg text-sm font-medium transition-all relative
                             ${isCheckIn || isCheckOut ? 'bg-gold-500 text-white' : ''}
                             ${inRange && !isCheckIn && !isCheckOut ? 'bg-gold-100 text-gold-700' : ''}
-                            ${status === 'available' && !isCheckIn && !isCheckOut && !inRange ? 'bg-green-50 text-charcoal-700 hover:bg-green-100' : ''}
-                            ${status === 'booked' ? 'bg-red-50 text-red-300 cursor-not-allowed line-through' : ''}
-                            ${status === 'blocked' ? 'bg-gray-100 text-gray-300 cursor-not-allowed' : ''}
-                            ${status === 'past' ? 'text-gray-300 cursor-not-allowed' : ''}
-                            ${status === 'none' && !isDisabled ? 'text-charcoal-400 hover:bg-cream-50' : ''}
+                            ${status === 'available' && !isCheckIn && !isCheckOut && !inRange ? 'text-charcoal-900 hover:bg-cream-100' : ''}
+                            ${status === 'booked' || status === 'blocked' ? 'text-charcoal-300 cursor-not-allowed line-through' : ''}
+                            ${status === 'past' ? 'text-charcoal-300 cursor-not-allowed' : ''}
+                            ${status === 'none' && !isDisabled ? 'text-charcoal-700 hover:bg-cream-50' : ''}
                           `}
                         >
                           {date.getDate()}
@@ -358,11 +357,10 @@ export default function BookingCalendar({
                             aspect-square rounded-lg text-sm font-medium transition-all relative
                             ${isCheckIn || isCheckOut ? 'bg-gold-500 text-white' : ''}
                             ${inRange && !isCheckIn && !isCheckOut ? 'bg-gold-100 text-gold-700' : ''}
-                            ${status === 'available' && !isCheckIn && !isCheckOut && !inRange ? 'bg-green-50 text-charcoal-700 hover:bg-green-100' : ''}
-                            ${status === 'booked' ? 'bg-red-50 text-red-300 cursor-not-allowed line-through' : ''}
-                            ${status === 'blocked' ? 'bg-gray-100 text-gray-300 cursor-not-allowed' : ''}
-                            ${status === 'past' ? 'text-gray-300 cursor-not-allowed' : ''}
-                            ${status === 'none' && !isDisabled ? 'text-charcoal-400 hover:bg-cream-50' : ''}
+                            ${status === 'available' && !isCheckIn && !isCheckOut && !inRange ? 'text-charcoal-900 hover:bg-cream-100' : ''}
+                            ${status === 'booked' || status === 'blocked' ? 'text-charcoal-300 cursor-not-allowed line-through' : ''}
+                            ${status === 'past' ? 'text-charcoal-300 cursor-not-allowed' : ''}
+                            ${status === 'none' && !isDisabled ? 'text-charcoal-700 hover:bg-cream-50' : ''}
                           `}
                         >
                           {date.getDate()}
@@ -375,22 +373,18 @@ export default function BookingCalendar({
             )}
           </div>
 
-          {/* Legend */}
+          {/* Legend - simplified */}
           <div className="px-6 py-3 bg-cream-50 border-t border-cream-100 flex items-center gap-6 text-xs">
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded bg-green-50 border border-green-200" />
+              <span className="text-charcoal-900 font-medium">15</span>
               <span className="text-charcoal-600">Available</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded bg-red-50 border border-red-200" />
-              <span className="text-charcoal-600">Booked</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded bg-gray-100 border border-gray-200" />
+              <span className="text-charcoal-300 line-through">15</span>
               <span className="text-charcoal-600">Unavailable</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded bg-gold-500" />
+              <div className="w-5 h-5 rounded bg-gold-500 flex items-center justify-center text-white text-xs">15</div>
               <span className="text-charcoal-600">Selected</span>
             </div>
           </div>
