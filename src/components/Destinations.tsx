@@ -41,6 +41,22 @@ const mallorcaRegions = [
   },
 ]
 
+// Ibiza highlights
+const ibizaHighlights = [
+  {
+    name: 'San José',
+    subtitle: 'Bohemian Luxury',
+    image: 'https://images.unsplash.com/photo-1539037116277-4db20889f2d4?w=800&q=80',
+    description: 'Stunning sunset villas with panoramic sea views',
+  },
+  {
+    name: 'Santa Eulalia',
+    subtitle: 'Family Paradise',
+    image: 'https://images.unsplash.com/photo-1602343168117-bb8ffe3e2e9f?w=800&q=80',
+    description: 'Elegant estates near pristine beaches',
+  },
+]
+
 export default function Destinations() {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: '-100px' })
@@ -128,7 +144,7 @@ export default function Destinations() {
           ))}
         </div>
 
-        {/* CTA Banner */}
+        {/* Mallorca CTA Banner */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
@@ -146,6 +162,94 @@ export default function Destinations() {
             Explore Mallorca
             <ArrowRight className="w-5 h-5" />
           </Link>
+        </motion.div>
+
+        {/* ========== IBIZA SECTION ========== */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8, delay: 0.6 }}
+          className="mt-24"
+        >
+          {/* Ibiza Header */}
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12">
+            <div>
+              <div className="flex items-center gap-2 mb-3">
+                <MapPin className="w-5 h-5 text-gold-500" />
+                <p className="text-gold-600 text-sm font-semibold tracking-[0.2em] uppercase">
+                  Ibiza, Spain
+                </p>
+              </div>
+              <h2 className="font-merriweather text-3xl md:text-4xl lg:text-5xl text-charcoal-900">
+                The White Isle
+              </h2>
+              <p className="text-charcoal-500 mt-3 max-w-xl">
+                Experience the magic of Ibiza with our exclusive collection of luxury villas 
+                featuring stunning views and world-class amenities.
+              </p>
+            </div>
+            <Link 
+              href="/ibiza" 
+              className="inline-flex items-center gap-2 text-gold-600 hover:text-gold-700 font-medium transition-colors group"
+            >
+              View Ibiza properties
+              <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+            </Link>
+          </div>
+
+          {/* Ibiza Grid - 2 column featured layout */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {ibizaHighlights.map((area, index) => (
+              <motion.div
+                key={area.name}
+                initial={{ opacity: 0, y: 30 }}
+                animate={isInView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.6, delay: 0.7 + index * 0.1 }}
+              >
+                <Link href="/ibiza" className="group block">
+                  <div className="relative aspect-[16/10] rounded-2xl overflow-hidden shadow-lg">
+                    <img
+                      src={area.image}
+                      alt={area.name}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+                    <div className="absolute bottom-0 left-0 right-0 p-6">
+                      <p className="text-white/80 text-sm font-medium mb-1">
+                        {area.subtitle}
+                      </p>
+                      <h3 className="font-merriweather text-2xl md:text-3xl text-white mb-2">
+                        {area.name}
+                      </h3>
+                      <p className="text-white/70 text-sm">
+                        {area.description}
+                      </p>
+                    </div>
+                  </div>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Ibiza CTA */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.8, delay: 0.9 }}
+            className="mt-12 bg-charcoal-900 rounded-3xl p-8 md:p-12 text-center"
+          >
+            <h3 className="font-merriweather text-2xl md:text-3xl text-white mb-4">
+              Discover Ibiza's Finest
+            </h3>
+            <p className="text-white/70 mb-8 max-w-2xl mx-auto">
+              From bohemian-chic retreats to ultra-modern estates, find your perfect 
+              Ibiza escape with our curated collection.
+            </p>
+            <Link href="/ibiza" className="inline-flex items-center gap-2 bg-gold-500 text-white px-8 py-4 rounded-xl font-semibold hover:bg-gold-600 transition-colors">
+              Explore Ibiza
+              <ArrowRight className="w-5 h-5" />
+            </Link>
+          </motion.div>
         </motion.div>
       </div>
     </section>
