@@ -394,9 +394,22 @@ export default function MallorcaClient({ properties }: MallorcaClientProps) {
                     {property.name}
                   </h3>
 
-                  <p className="text-charcoal-500 leading-relaxed">
+                  <p className="text-charcoal-500 leading-relaxed mb-3">
                     {property.short_description}
                   </p>
+
+                  {/* Price */}
+                  {(property as any).price_per_week && (
+                    <div className="inline-flex items-baseline gap-1 bg-cream-100 border border-cream-200 rounded-lg px-3 py-1.5">
+                      <span className="text-gold-700 font-semibold">
+                        €{Number((property as any).price_per_week).toLocaleString()}
+                        {(property as any).price_per_week_high && (
+                          <span> - €{Number((property as any).price_per_week_high).toLocaleString()}</span>
+                        )}
+                      </span>
+                      <span className="text-charcoal-500 text-sm">/week</span>
+                    </div>
+                  )}
                 </Link>
               </div>
             ))}
