@@ -1,0 +1,184 @@
+{
+  "nav": {
+    "about": "Über Uns",
+    "contact": "Kontakt",
+    "destinations": "Reiseziele",
+    "properties": "Immobilien",
+    "services": "Dienstleistungen",
+    "viewDestinations": "Reiseziele Entdecken"
+  },
+  "hero": {
+    "badge": "Exklusive Immobilien",
+    "title": "Erleben Sie Luxus",
+    "titleHighlight": "Wie Nie Zuvor",
+    "subtitle": "Entdecken Sie unsere handverlesene Sammlung der außergewöhnlichsten privaten Residenzen der Welt. Ihre Reise zu unvergleichlichem Luxus beginnt hier.",
+    "searchProperties": "Immobilien Suchen",
+    "exploreDestinations": "Reiseziele Erkunden",
+    "stats": {
+      "happyGuests": "Zufriedene Gäste",
+      "directRates": "Beste Preise",
+      "operations": "Standorte"
+    }
+  },
+  "destinations": {
+    "mallorca": {
+      "location": "Mallorca, Spanien",
+      "title": "Die Insel Erkunden",
+      "description": "Entdecken Sie unsere handverlesene Sammlung von Luxusimmobilien an Mallorcas prestigeträchtigsten Orten.",
+      "viewAll": "Alle Immobilien ansehen",
+      "cta": {
+        "title": "Bereit, Mallorca zu entdecken?",
+        "description": "Erkunden Sie unsere komplette Sammlung von Luxusvillen und Fincas auf der ganzen Insel. Jede Immobilie wird persönlich geprüft, um ein außergewöhnliches Erlebnis zu gewährleisten.",
+        "button": "Mallorca Erkunden"
+      }
+    },
+    "ibiza": {
+      "location": "Ibiza, Spanien",
+      "title": "Die Weiße Insel",
+      "description": "Erleben Sie die Magie Ibizas mit unserer exklusiven Sammlung von Luxusvillen mit atemberaubender Aussicht und erstklassigen Annehmlichkeiten.",
+      "viewAll": "Ibiza-Immobilien ansehen",
+      "cta": {
+        "title": "Entdecken Sie Ibizas Finest",
+        "description": "Von böhmisch-schicken Rückzugsorten bis hin zu ultramodernen Anwesen – finden Sie Ihren perfekten Ibiza-Urlaub mit unserer kuratierten Sammlung.",
+        "button": "Ibiza Erkunden"
+      }
+    }
+  },
+  "experience": {
+    "subtitle": "Das Erlebnis",
+    "title": "Luxuriöses Wohnen",
+    "titleHighlight": "Neu Definiert",
+    "description1": "Bei Prime Luxury Stays kuratieren wir mehr als nur Unterkünfte – wir gestalten unvergessliche Erlebnisse. Jede Immobilie in unserem Portfolio wird handverlesen nach ihrem außergewöhnlichen Charakter, Premium-Ausstattung und unvergleichlicher Lage.",
+    "description2": "Unser engagiertes Concierge-Team sorgt dafür, dass jeder Aspekt Ihres Aufenthalts Ihre Erwartungen übertrifft, von privaten Kochvereinbarungen bis hin zu exklusiven lokalen Erlebnissen, die man normalerweise nicht kaufen kann.",
+    "features": {
+      "vetted": "Persönlich geprüfte Luxusimmobilien",
+      "concierge": "Erstklassiger Concierge-Service",
+      "experiences": "Maßgeschneiderte Reiseerlebnisse",
+      "privacy": "Vollständige Privatsphäre garantiert"
+    },
+    "stats": {
+      "happyGuests": "Zufriedene Gäste",
+      "exclusiveVillas": "Exklusive Villen",
+      "directBooking": "Bestpreisgarantie",
+      "operations": "Standorte"
+    },
+    "quote": "Exzellenz ist kein Ziel, sondern eine kontinuierliche Reise.",
+    "quoteAuthor": "— Unsere Philosophie",
+    "trusted": "Vertraut von",
+    "trustedSub": "Elite-Reisenden Weltweit"
+  },
+  "services": {
+    "subtitle": "Maßgeschneiderte Dienstleistungen",
+    "title": "Mehr als nur Unterkunft",
+    "description": "Jedes Detail sorgfältig orchestriert, um ein Erlebnis zu schaffen, das alle Erwartungen übertrifft.",
+    "items": {
+      "tableReservations": {
+        "title": "Tischreservierungen",
+        "description": "Prioritätsbuchungen in den besten Restaurants und exklusiven Speiselokalen."
+      },
+      "privateAviation": {
+        "title": "Privatflüge",
+        "description": "Nahtlose Privatjet-Arrangements zu und von Ihrem Reiseziel."
+      },
+      "privateChef": {
+        "title": "Privatkoch",
+        "description": "Weltklasse-Köche kreieren maßgeschneiderte kulinarische Erlebnisse in Ihrer Residenz."
+      },
+      "luxuryTransport": {
+        "title": "Luxus-Transport",
+        "description": "Premium-Fahrzeugflotte einschließlich Supersportwagen und Chauffeur-Services."
+      },
+      "travelBookings": {
+        "title": "Reisebuchungen",
+        "description": "Luxushotel-Reservierungen und Reisekoordination über Ihren Villenaufenthalt hinaus."
+      },
+      "privacySecurity": {
+        "title": "Privatsphäre & Sicherheit",
+        "description": "Diskrete Sicherheitsvorkehrungen und vollständige Vertraulichkeit garantiert."
+      },
+      "yachtCharter": {
+        "title": "Yachtcharter",
+        "description": "Luxus-Yachterlebnisse von intimen Tagesfahrten bis zu mehrtägigen Mittelmeerreisen."
+      },
+      "helicopter": {
+        "title": "Helikopter-Transport",
+        "description": "Schnelle Helikopter-Transfers und malerische Touren über die Inseln."
+      }
+    }
+  },
+  "about": {
+    "subtitle": "Unsere Geschichte",
+    "title": "Ein Vermächtnis der",
+    "titleHighlight": "Exzellenz",
+    "description": "Gegründet auf dem Prinzip, dass wahrer Luxus persönlich ist, ist Prime Luxury Stays zur vertrauenswürdigen Wahl für anspruchsvolle Reisende geworden, die außergewöhnliche private Residenzen suchen.",
+    "commitment": "Unser Engagement für Exzellenz geht über schöne Immobilien hinaus. Wir glauben daran, dauerhafte Beziehungen aufzubauen und zu verstehen, dass die Reise jedes Gastes einzigartig ist.",
+    "values": {
+      "curated": {
+        "title": "Kuratierte Exzellenz",
+        "description": "Jede Immobilie persönlich inspiziert und genehmigt"
+      },
+      "service": {
+        "title": "Unübertroffener Service",
+        "description": "Engagiertes Concierge-Team während Ihres gesamten Aufenthalts verfügbar"
+      },
+      "privacy": {
+        "title": "Vollständige Privatsphäre",
+        "description": "Diskretion und Vertraulichkeit sind oberstes Gebot"
+      }
+    }
+  },
+  "contact": {
+    "subtitle": "Kontaktieren Sie Uns",
+    "title": "Lassen Sie uns Ihren",
+    "titleHighlight": "Perfekten Aufenthalt Planen",
+    "description": "Unser Concierge-Team steht bereit, um Ihnen bei der Suche nach der idealen Immobilie zu helfen und ein unvergessliches Erlebnis zu schaffen.",
+    "form": {
+      "name": "Vollständiger Name",
+      "email": "E-Mail-Adresse",
+      "phone": "Telefonnummer",
+      "destination": "Bevorzugtes Reiseziel",
+      "selectDestination": "Reiseziel auswählen",
+      "dates": "Bevorzugte Daten",
+      "guests": "Anzahl der Gäste",
+      "message": "Erzählen Sie uns von Ihrem idealen Aufenthalt...",
+      "submit": "Anfrage Senden",
+      "submitting": "Wird gesendet...",
+      "success": "Vielen Dank für Ihre Anfrage! Unser Team wird Sie innerhalb von 24 Stunden kontaktieren.",
+      "error": "Etwas ist schief gelaufen. Bitte versuchen Sie es erneut oder kontaktieren Sie uns direkt."
+    },
+    "info": {
+      "phone": "Telefon",
+      "email": "E-Mail",
+      "headquarters": "Hauptsitz",
+      "response": "Schnelle Antwort",
+      "responseTime": "Unser Concierge-Team antwortet innerhalb von 2 Stunden"
+    }
+  },
+  "footer": {
+    "tagline": "Wir kuratieren außergewöhnliche Erlebnisse in den exklusivsten privaten Residenzen der Welt. Wo Luxus auf Vermächtnis trifft.",
+    "destinations": "Reiseziele",
+    "services": "Dienstleistungen",
+    "company": "Unternehmen",
+    "copyright": "© {year} Prime Luxury Stays. Alle Rechte vorbehalten.",
+    "privacy": "Datenschutz",
+    "terms": "AGB",
+    "cookies": "Cookies",
+    "legal": "Impressum",
+    "registered": "EU & US Registriertes Unternehmen"
+  },
+  "common": {
+    "learnMore": "Mehr Erfahren",
+    "viewProperties": "Immobilien Ansehen",
+    "bookNow": "Jetzt Buchen",
+    "checkAvailability": "Verfügbarkeit Prüfen",
+    "requestToBook": "Buchung Anfragen",
+    "perWeek": "/Woche",
+    "perNight": "/Nacht",
+    "bedrooms": "Schlafzimmer",
+    "bathrooms": "Badezimmer",
+    "guests": "Gäste",
+    "from": "Ab",
+    "explore": "Erkunden"
+  }
+}
+

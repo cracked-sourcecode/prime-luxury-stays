@@ -1,0 +1,184 @@
+{
+  "nav": {
+    "about": "About",
+    "contact": "Contact",
+    "destinations": "Destinations",
+    "properties": "Properties",
+    "services": "Services",
+    "viewDestinations": "View Destinations"
+  },
+  "hero": {
+    "badge": "Exclusive Properties",
+    "title": "Experience Luxury",
+    "titleHighlight": "Like Never Before",
+    "subtitle": "Discover our handpicked collection of the world's most extraordinary private residences. Your journey to unparalleled luxury begins here.",
+    "searchProperties": "Search Properties",
+    "exploreDestinations": "Explore Destinations",
+    "stats": {
+      "happyGuests": "Happy Guests",
+      "directRates": "Best Rates",
+      "operations": "Operations"
+    }
+  },
+  "destinations": {
+    "mallorca": {
+      "location": "Mallorca, Spain",
+      "title": "Explore the Island",
+      "description": "Discover our handpicked collection of luxury properties across Mallorca's most prestigious locations.",
+      "viewAll": "View all properties",
+      "cta": {
+        "title": "Ready to Discover Mallorca?",
+        "description": "Explore our complete collection of luxury villas and fincas across the island. Each property is personally vetted to ensure an exceptional experience.",
+        "button": "Explore Mallorca"
+      }
+    },
+    "ibiza": {
+      "location": "Ibiza, Spain",
+      "title": "The White Isle",
+      "description": "Experience the magic of Ibiza with our exclusive collection of luxury villas featuring stunning views and world-class amenities.",
+      "viewAll": "View Ibiza properties",
+      "cta": {
+        "title": "Discover Ibiza's Finest",
+        "description": "From bohemian-chic retreats to ultra-modern estates, find your perfect Ibiza escape with our curated collection.",
+        "button": "Explore Ibiza"
+      }
+    }
+  },
+  "experience": {
+    "subtitle": "The Experience",
+    "title": "Redefining",
+    "titleHighlight": "Luxury Living",
+    "description1": "At Prime Luxury Stays, we curate more than accommodations—we craft unforgettable experiences. Each property in our portfolio is handpicked for its exceptional character, premium amenities, and unparalleled locations.",
+    "description2": "Our dedicated concierge team ensures every aspect of your stay exceeds expectations, from private chef arrangements to exclusive local experiences that money can't normally buy.",
+    "features": {
+      "vetted": "Personally vetted luxury properties",
+      "concierge": "White-glove concierge service",
+      "experiences": "Bespoke travel experiences",
+      "privacy": "Complete privacy guaranteed"
+    },
+    "stats": {
+      "happyGuests": "Happy Guests",
+      "exclusiveVillas": "Exclusive Villas",
+      "directBooking": "Best Rate Guarantee",
+      "operations": "Operations"
+    },
+    "quote": "\"Excellence is not a destination but a continuous journey.\"",
+    "quoteAuthor": "— Our Philosophy",
+    "trusted": "Trusted by",
+    "trustedSub": "Elite Travelers Worldwide"
+  },
+  "services": {
+    "subtitle": "Bespoke Services",
+    "title": "Beyond Accommodation",
+    "description": "Every detail meticulously orchestrated to create an experience that transcends expectations.",
+    "items": {
+      "tableReservations": {
+        "title": "Table Reservations",
+        "description": "Priority bookings at the finest restaurants and exclusive dining venues."
+      },
+      "privateAviation": {
+        "title": "Private Aviation",
+        "description": "Seamless private jet arrangements to and from your destination."
+      },
+      "privateChef": {
+        "title": "Private Chef",
+        "description": "World-class chefs creating bespoke culinary experiences in your residence."
+      },
+      "luxuryTransport": {
+        "title": "Luxury Transport",
+        "description": "Premium vehicle fleet including supercars and chauffeur services."
+      },
+      "travelBookings": {
+        "title": "Travel Bookings",
+        "description": "Luxury hotel reservations and travel coordination beyond your villa stay."
+      },
+      "privacySecurity": {
+        "title": "Privacy & Security",
+        "description": "Discreet security arrangements and complete confidentiality guaranteed."
+      },
+      "yachtCharter": {
+        "title": "Yacht Charter",
+        "description": "Luxury yacht experiences from intimate day sails to multi-day Mediterranean voyages."
+      },
+      "helicopter": {
+        "title": "Helicopter Transport",
+        "description": "Swift helicopter transfers and scenic tours across the islands."
+      }
+    }
+  },
+  "about": {
+    "subtitle": "Our Story",
+    "title": "A Legacy of",
+    "titleHighlight": "Excellence",
+    "description": "Founded on the principle that true luxury is personal, Prime Luxury Stays has become the trusted choice for discerning travelers seeking extraordinary private residences.",
+    "commitment": "Our commitment to excellence extends beyond beautiful properties. We believe in creating lasting relationships, understanding that each guest's journey is unique.",
+    "values": {
+      "curated": {
+        "title": "Curated Excellence",
+        "description": "Every property personally inspected and approved"
+      },
+      "service": {
+        "title": "Unmatched Service",
+        "description": "Dedicated concierge team available throughout your stay"
+      },
+      "privacy": {
+        "title": "Complete Privacy",
+        "description": "Discretion and confidentiality are paramount"
+      }
+    }
+  },
+  "contact": {
+    "subtitle": "Get in Touch",
+    "title": "Let's Plan Your",
+    "titleHighlight": "Perfect Stay",
+    "description": "Our concierge team is ready to help you discover the ideal property and create an unforgettable experience.",
+    "form": {
+      "name": "Full Name",
+      "email": "Email Address",
+      "phone": "Phone Number",
+      "destination": "Preferred Destination",
+      "selectDestination": "Select a destination",
+      "dates": "Preferred Dates",
+      "guests": "Number of Guests",
+      "message": "Tell us about your ideal stay...",
+      "submit": "Send Inquiry",
+      "submitting": "Sending...",
+      "success": "Thank you for your inquiry! Our team will contact you within 24 hours.",
+      "error": "Something went wrong. Please try again or contact us directly."
+    },
+    "info": {
+      "phone": "Phone",
+      "email": "Email",
+      "headquarters": "Headquarters",
+      "response": "Quick Response",
+      "responseTime": "Our concierge team responds within 2 hours"
+    }
+  },
+  "footer": {
+    "tagline": "Curating extraordinary experiences in the world's most exceptional private residences. Where luxury meets legacy.",
+    "destinations": "Destinations",
+    "services": "Services",
+    "company": "Company",
+    "copyright": "© {year} Prime Luxury Stays. All rights reserved.",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "cookies": "Cookies",
+    "legal": "Legal",
+    "registered": "EU & US Registered Business"
+  },
+  "common": {
+    "learnMore": "Learn More",
+    "viewProperties": "View Properties",
+    "bookNow": "Book Now",
+    "checkAvailability": "Check Availability",
+    "requestToBook": "Request to Book",
+    "perWeek": "/week",
+    "perNight": "/night",
+    "bedrooms": "Bedrooms",
+    "bathrooms": "Bathrooms",
+    "guests": "Guests",
+    "from": "From",
+    "explore": "Explore"
+  }
+}
+

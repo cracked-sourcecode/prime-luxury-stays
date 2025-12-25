@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import Script from 'next/script'
+import { LocaleProvider } from '@/i18n/LocaleProvider'
 
 export const dynamic = 'force-dynamic'
 import './globals.css'
@@ -146,7 +147,9 @@ export default function RootLayout({
         />
       </head>
       <body className="antialiased">
-        {children}
+        <LocaleProvider>
+          {children}
+        </LocaleProvider>
       </body>
     </html>
   )

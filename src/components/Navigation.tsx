@@ -2,13 +2,16 @@
 
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Menu, X, Search } from 'lucide-react'
+import { Menu, X, Search, Globe } from 'lucide-react'
+import { useLocale } from '@/i18n/LocaleProvider'
 
 const LOGO_URL = 'https://storage.googleapis.com/primeluxurystays/Logo%20no%20text%20(global%20header).png'
 
 export default function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [showLangMenu, setShowLangMenu] = useState(false)
+  const { locale, setLocale, t } = useLocale()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -71,9 +74,46 @@ export default function Navigation() {
                 </a>
               ))}
               
+              {/* Language Switcher */}
+              <div className="relative">
+                <button
+                  onClick={() => setShowLangMenu(!showLangMenu)}
+                  className="flex items-center gap-1.5 text-charcoal-700 hover:text-gold-600 transition-colors py-2 px-2"
+                >
+                  <Globe size={18} />
+                  <span className="text-sm font-medium uppercase">{locale}</span>
+                </button>
+                
+                <AnimatePresence>
+                  {showLangMenu && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="absolute top-full right-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-100 overflow-hidden min-w-[120px]"
+                    >
+                      <button
+                        onClick={() => { setLocale('en'); setShowLangMenu(false) }}
+                        className={`w-full px-4 py-2.5 text-left text-sm flex items-center gap-2 hover:bg-cream-50 transition-colors ${locale === 'en' ? 'text-gold-600 font-medium' : 'text-charcoal-700'}`}
+                      >
+                        <span className="text-lg">🇬🇧</span>
+                        English
+                      </button>
+                      <button
+                        onClick={() => { setLocale('de'); setShowLangMenu(false) }}
+                        className={`w-full px-4 py-2.5 text-left text-sm flex items-center gap-2 hover:bg-cream-50 transition-colors ${locale === 'de' ? 'text-gold-600 font-medium' : 'text-charcoal-700'}`}
+                      >
+                        <span className="text-lg">🇩🇪</span>
+                        Deutsch
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+              
               {/* CTA Button - inline with nav */}
               <a href="/destinations" className="btn-gold ml-4 relative z-10">
-                View Destinations
+                {t('nav.viewDestinations')}
               </a>
             </div>
 
@@ -144,6 +184,37 @@ export default function Navigation() {
                       {link.name}
                     </motion.a>
                   ))}
+                  {/* Language Switcher for Mobile */}
+                  <motion.div
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.4 }}
+                    className="flex gap-4 mt-4"
+                  >
+                    <button
+                      onClick={() => setLocale('en')}
+                      className={`flex items-center gap-2 px-4 py-2 rounded-full border transition-colors ${
+                        locale === 'en' 
+                          ? 'border-gold-500 bg-gold-50 text-gold-700' 
+                          : 'border-gray-200 text-charcoal-600 hover:border-gold-300'
+                      }`}
+                    >
+                      <span className="text-lg">🇬🇧</span>
+                      <span className="text-sm font-medium">EN</span>
+                    </button>
+                    <button
+                      onClick={() => setLocale('de')}
+                      className={`flex items-center gap-2 px-4 py-2 rounded-full border transition-colors ${
+                        locale === 'de' 
+                          ? 'border-gold-500 bg-gold-50 text-gold-700' 
+                          : 'border-gray-200 text-charcoal-600 hover:border-gold-300'
+                      }`}
+                    >
+                      <span className="text-lg">🇩🇪</span>
+                      <span className="text-sm font-medium">DE</span>
+                    </button>
+                  </motion.div>
+                  
                   <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -151,7 +222,7 @@ export default function Navigation() {
                     className="mt-8"
                   >
                     <a href="/destinations" className="btn-gold block text-center">
-                      View Destinations
+                      {t('nav.viewDestinations')}
                     </a>
                   </motion.div>
                 </div>
