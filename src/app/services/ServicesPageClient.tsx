@@ -72,6 +72,12 @@ const serviceCategories = [
         description: 'Swift helicopter transfers and scenic tours across the islands.',
         slug: 'helicopter',
       },
+      {
+        icon: Car,
+        title: 'Luxury Transport',
+        description: 'Premium vehicle fleet including supercars and chauffeur services.',
+        slug: 'luxury-transport',
+      },
     ],
   },
   {
@@ -84,12 +90,6 @@ const serviceCategories = [
         title: 'Yacht Charter',
         description: 'Luxury yacht experiences from intimate day sails to multi-day Mediterranean voyages.',
         slug: 'yacht-charter',
-      },
-      {
-        icon: Car,
-        title: 'Luxury Transport',
-        description: 'Premium vehicle fleet including supercars and chauffeur services.',
-        slug: 'luxury-transport',
       },
     ],
   },
