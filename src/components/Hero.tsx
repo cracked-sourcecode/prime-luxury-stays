@@ -287,9 +287,9 @@ export default function Hero({ heroProperty }: HeroProps) {
       <DatePickerModal
         isOpen={showDatePicker}
         onClose={() => setShowDatePicker(false)}
-        checkIn={checkIn}
-        checkOut={checkOut}
-        onDateSelect={(start, end) => {
+        initialCheckIn={checkIn}
+        initialCheckOut={checkOut}
+        onSelectDates={(start, end) => {
           setCheckIn(start)
           setCheckOut(end)
         }}
