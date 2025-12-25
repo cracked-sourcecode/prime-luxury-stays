@@ -191,6 +191,76 @@
     "guests": "Guests",
     "from": "From",
     "explore": "Explore"
+  },
+  "pages": {
+    "properties": {
+      "title": "Find Your Dream Villa",
+      "subtitle": "Browse our exclusive collection of handpicked luxury properties across the Mediterranean.",
+      "searchTitle": "Available Properties",
+      "destination": "Destination",
+      "dates": "Dates",
+      "guestsLabel": "Guests",
+      "bedroomsLabel": "Bedrooms",
+      "search": "Search",
+      "any": "Any",
+      "noProperties": "No properties match your criteria.",
+      "tryAdjusting": "Try adjusting your filters to find available properties."
+    },
+    "destinations": {
+      "title": "Our Destinations",
+      "subtitle": "Explore our exclusive collection of luxury properties across the world's most desirable locations.",
+      "comingSoon": "Coming Soon",
+      "properties": "properties",
+      "viewCollection": "View Collection"
+    },
+    "services": {
+      "title": "Bespoke Services",
+      "subtitle": "Experience unparalleled luxury with our comprehensive range of personalized services.",
+      "exploreService": "Explore Service",
+      "contactUs": "Contact Us",
+      "contactDescription": "Ready to experience our bespoke services?",
+      "getInTouch": "Get in Touch"
+    },
+    "mallorca": {
+      "heroTitle": "Discover",
+      "heroHighlight": "Mallorca",
+      "heroSubtitle": "Experience the jewel of the Mediterranean through our exclusive collection of handpicked luxury estates, fincas, and waterfront villas.",
+      "stats": {
+        "happyGuests": "Happy Guests",
+        "properties": "Properties",
+        "rating": "Service Rating"
+      },
+      "experienceTitle": "The Mallorca",
+      "experienceHighlight": "Experience",
+      "uniqueTitle": "What Makes Mallorca",
+      "uniqueHighlight": "Unique",
+      "propertiesTitle": "Featured",
+      "propertiesHighlight": "Properties",
+      "viewProperty": "View Property",
+      "exploreAll": "Explore All Properties",
+      "noProperties": "Coming Soon",
+      "noPropertiesDesc": "We're currently curating exceptional properties in Mallorca."
+    },
+    "ibiza": {
+      "heroTitle": "Discover",
+      "heroHighlight": "Ibiza",
+      "heroSubtitle": "The legendary White Isle awaits with our exclusive collection of luxury villas, from bohemian chic retreats to ultra-modern clifftop estates.",
+      "stats": {
+        "happyGuests": "Happy Guests",
+        "properties": "Properties",
+        "rating": "Service Rating"
+      },
+      "experienceTitle": "The Ibiza",
+      "experienceHighlight": "Experience",
+      "uniqueTitle": "What Makes Ibiza",
+      "uniqueHighlight": "Unique",
+      "propertiesTitle": "Featured",
+      "propertiesHighlight": "Properties",
+      "viewProperty": "View Property",
+      "exploreAll": "Explore All Properties",
+      "noProperties": "Coming Soon",
+      "noPropertiesDesc": "We're currently curating exceptional properties in Ibiza."
+    }
   }
 }
 

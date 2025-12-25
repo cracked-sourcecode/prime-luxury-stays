@@ -14,6 +14,7 @@ import {
   Mail,
   Building
 } from 'lucide-react'
+import { useLocale } from '@/i18n/LocaleProvider'
 
 const serviceCategories = [
   {
@@ -95,6 +96,8 @@ const serviceCategories = [
 ]
 
 export default function ServicesPageClient() {
+  const { t } = useLocale()
+  
   return (
     <div>
       {/* Hero Section */}
@@ -116,13 +119,13 @@ export default function ServicesPageClient() {
             className="max-w-4xl"
           >
             <p className="text-gold-400 text-sm font-semibold tracking-[0.2em] uppercase mb-4">
-              Beyond Accommodation
+              {t('services.title')}
             </p>
             <h1 className="font-merriweather text-4xl md:text-5xl lg:text-6xl text-white mb-6">
-              Bespoke Services
+              {t('pages.services.title')}
             </h1>
             <p className="text-white/80 text-lg md:text-xl max-w-2xl mx-auto">
-              Every detail meticulously orchestrated to create an experience that transcends expectations.
+              {t('pages.services.subtitle')}
             </p>
           </motion.div>
         </div>

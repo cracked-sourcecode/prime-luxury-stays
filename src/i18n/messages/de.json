@@ -191,6 +191,76 @@
     "guests": "Gäste",
     "from": "Ab",
     "explore": "Erkunden"
+  },
+  "pages": {
+    "properties": {
+      "title": "Finden Sie Ihre Traumvilla",
+      "subtitle": "Durchstöbern Sie unsere exklusive Sammlung handverlesener Luxusimmobilien im Mittelmeerraum.",
+      "searchTitle": "Verfügbare Immobilien",
+      "destination": "Reiseziel",
+      "dates": "Daten",
+      "guestsLabel": "Gäste",
+      "bedroomsLabel": "Schlafzimmer",
+      "search": "Suchen",
+      "any": "Beliebig",
+      "noProperties": "Keine Immobilien entsprechen Ihren Kriterien.",
+      "tryAdjusting": "Passen Sie Ihre Filter an, um verfügbare Immobilien zu finden."
+    },
+    "destinations": {
+      "title": "Unsere Reiseziele",
+      "subtitle": "Erkunden Sie unsere exklusive Sammlung von Luxusimmobilien an den begehrtesten Orten der Welt.",
+      "comingSoon": "Demnächst",
+      "properties": "Immobilien",
+      "viewCollection": "Sammlung Ansehen"
+    },
+    "services": {
+      "title": "Maßgeschneiderte Dienstleistungen",
+      "subtitle": "Erleben Sie unvergleichlichen Luxus mit unserem umfassenden Angebot an personalisierten Dienstleistungen.",
+      "exploreService": "Service Erkunden",
+      "contactUs": "Kontaktieren Sie Uns",
+      "contactDescription": "Bereit, unsere maßgeschneiderten Dienstleistungen zu erleben?",
+      "getInTouch": "Kontakt Aufnehmen"
+    },
+    "mallorca": {
+      "heroTitle": "Entdecken Sie",
+      "heroHighlight": "Mallorca",
+      "heroSubtitle": "Erleben Sie das Juwel des Mittelmeers durch unsere exklusive Sammlung handverlesener Luxusanwesen, Fincas und Villen am Wasser.",
+      "stats": {
+        "happyGuests": "Zufriedene Gäste",
+        "properties": "Immobilien",
+        "rating": "Service-Bewertung"
+      },
+      "experienceTitle": "Das Mallorca",
+      "experienceHighlight": "Erlebnis",
+      "uniqueTitle": "Was Mallorca",
+      "uniqueHighlight": "Einzigartig Macht",
+      "propertiesTitle": "Ausgewählte",
+      "propertiesHighlight": "Immobilien",
+      "viewProperty": "Immobilie Ansehen",
+      "exploreAll": "Alle Immobilien Erkunden",
+      "noProperties": "Demnächst",
+      "noPropertiesDesc": "Wir kuratieren derzeit außergewöhnliche Immobilien auf Mallorca."
+    },
+    "ibiza": {
+      "heroTitle": "Entdecken Sie",
+      "heroHighlight": "Ibiza",
+      "heroSubtitle": "Die legendäre Weiße Insel erwartet Sie mit unserer exklusiven Sammlung von Luxusvillen, von böhmisch-schicken Refugien bis zu ultramodernen Klippenanwesen.",
+      "stats": {
+        "happyGuests": "Zufriedene Gäste",
+        "properties": "Immobilien",
+        "rating": "Service-Bewertung"
+      },
+      "experienceTitle": "Das Ibiza",
+      "experienceHighlight": "Erlebnis",
+      "uniqueTitle": "Was Ibiza",
+      "uniqueHighlight": "Einzigartig Macht",
+      "propertiesTitle": "Ausgewählte",
+      "propertiesHighlight": "Immobilien",
+      "viewProperty": "Immobilie Ansehen",
+      "exploreAll": "Alle Immobilien Erkunden",
+      "noProperties": "Demnächst",
+      "noPropertiesDesc": "Wir kuratieren derzeit außergewöhnliche Immobilien auf Ibiza."
+    }
   }
 }
 

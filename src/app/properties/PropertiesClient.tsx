@@ -197,15 +197,15 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
               className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md text-white px-5 py-2.5 rounded-full mb-6 border border-white/20"
             >
               <Sparkles className="w-4 h-4 text-gold-400" />
-              <span className="text-sm font-medium">{properties.length} Exclusive Properties</span>
+              <span className="text-sm font-medium">{properties.length} {t('pages.properties.searchTitle')}</span>
             </motion.div>
             
             <h1 className="font-merriweather text-4xl md:text-5xl lg:text-6xl text-white mb-6">
-              Find Your Dream Villa
+              {t('pages.properties.title')}
             </h1>
             
             <p className="text-white/80 text-lg md:text-xl max-w-2xl mx-auto mb-10">
-              Search our collection of handpicked luxury properties
+              {t('pages.properties.subtitle')}
             </p>
 
             {/* Guest-Focused Search Bar */}
@@ -215,14 +215,14 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
                 {/* Destination */}
                 <div className="p-4 border-r border-gray-100">
                   <label className="block text-left text-[11px] font-semibold text-charcoal-400 uppercase tracking-wider mb-1">
-                    Destination
+                    {t('pages.properties.destination')}
                   </label>
                   <select
                     value={filters.destination}
                     onChange={(e) => setFilters(f => ({ ...f, destination: e.target.value }))}
                     className="w-full bg-transparent text-charcoal-900 font-medium focus:outline-none cursor-pointer text-base text-left"
                   >
-                    <option value="all">All Destinations</option>
+                    <option value="all">{t('hero.all')} {t('nav.destinations')}</option>
                     {availableDestinations.map(d => (
                       <option key={d} value={d.toLowerCase().replace(/ /g, '-')}>{d}</option>
                     ))}
@@ -235,7 +235,7 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
                   onClick={() => setShowDatePicker(true)}
                 >
                   <label className="block text-left text-[11px] font-semibold text-charcoal-400 uppercase tracking-wider mb-1">
-                    Dates
+                    {t('pages.properties.dates')}
                   </label>
                   <div className="text-left text-charcoal-900 font-medium text-base">
                     {filters.checkIn && filters.checkOut ? (
@@ -249,7 +249,7 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
                 {/* Guests */}
                 <div className="p-4 border-r border-gray-100">
                   <label className="block text-left text-[11px] font-semibold text-charcoal-400 uppercase tracking-wider mb-1">
-                    Guests
+                    {t('pages.properties.guestsLabel')}
                   </label>
                   <select
                     value={filters.guests}
@@ -268,7 +268,7 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
                 {/* Bedrooms */}
                 <div className="p-4 border-r border-gray-100">
                   <label className="block text-left text-[11px] font-semibold text-charcoal-400 uppercase tracking-wider mb-1">
-                    Bedrooms
+                    {t('pages.properties.bedroomsLabel')}
                   </label>
                   <select
                     value={filters.bedrooms}
@@ -289,7 +289,7 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
                   className="flex items-center justify-center gap-2 bg-gold-500 text-white font-semibold hover:bg-gold-600 transition-colors m-3 rounded-xl"
                 >
                   <Search className="w-5 h-5" />
-                  <span>Search</span>
+                  <span>{t('pages.properties.search')}</span>
                 </a>
               </div>
 
@@ -317,13 +317,13 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
                     onClick={() => setShowDatePicker(true)}
                   >
                     <label className="block text-left text-[11px] font-semibold text-charcoal-400 uppercase tracking-wider mb-1">
-                      Dates
+                      {t('pages.properties.dates')}
                     </label>
                     <div className="bg-gray-50 text-charcoal-900 font-medium text-sm text-left px-3 py-2.5 rounded-lg border border-gray-200">
                       {filters.checkIn && filters.checkOut ? (
                         <span>{formatDisplayDate(filters.checkIn)} – {formatDisplayDate(filters.checkOut)}</span>
                       ) : (
-                        <span className="text-charcoal-400">Select</span>
+                        <span className="text-charcoal-400">{t('hero.all')}</span>
                       )}
                     </div>
                   </div>
@@ -333,14 +333,14 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label className="block text-left text-[11px] font-semibold text-charcoal-400 uppercase tracking-wider mb-1">
-                      Guests
+                      {t('pages.properties.guestsLabel')}
                     </label>
                     <select
                       value={filters.guests}
                       onChange={(e) => setFilters(f => ({ ...f, guests: e.target.value }))}
                       className="w-full bg-gray-50 text-charcoal-900 font-medium focus:outline-none cursor-pointer text-sm text-left px-3 py-2.5 rounded-lg border border-gray-200"
                     >
-                      <option value="any">Any</option>
+                      <option value="any">{t('pages.properties.any')}</option>
                       <option value="2">2+</option>
                       <option value="4">4+</option>
                       <option value="6">6+</option>
@@ -350,14 +350,14 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
                   </div>
                   <div>
                     <label className="block text-left text-[11px] font-semibold text-charcoal-400 uppercase tracking-wider mb-1">
-                      Bedrooms
+                      {t('pages.properties.bedroomsLabel')}
                     </label>
                     <select
                       value={filters.bedrooms}
                       onChange={(e) => setFilters(f => ({ ...f, bedrooms: e.target.value }))}
                       className="w-full bg-gray-50 text-charcoal-900 font-medium focus:outline-none cursor-pointer text-sm text-left px-3 py-2.5 rounded-lg border border-gray-200"
                     >
-                      <option value="any">Any</option>
+                      <option value="any">{t('pages.properties.any')}</option>
                       <option value="2">2+</option>
                       <option value="3">3+</option>
                       <option value="4">4+</option>
@@ -372,7 +372,7 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
                   className="flex items-center justify-center gap-2 bg-gold-500 text-white font-semibold hover:bg-gold-600 transition-colors py-3 rounded-xl w-full"
                 >
                   <Search className="w-5 h-5" />
-                  <span>Search Properties</span>
+                  <span>{t('pages.properties.search')}</span>
                 </a>
               </div>
             </div>

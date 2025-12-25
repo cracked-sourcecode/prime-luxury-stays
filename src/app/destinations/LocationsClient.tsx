@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { MapPin, Home, ArrowRight, Clock } from 'lucide-react'
+import { useLocale } from '@/i18n/LocaleProvider'
 
 interface Location {
   slug: string
@@ -20,6 +21,7 @@ interface LocationsClientProps {
 }
 
 export default function LocationsClient({ locations }: LocationsClientProps) {
+  const { t } = useLocale()
   // Separate active and coming soon locations
   const activeLocations = locations.filter(l => !l.comingSoon && l.propertyCount > 0)
   const comingSoonLocations = locations.filter(l => l.comingSoon || l.propertyCount === 0)
@@ -36,17 +38,15 @@ export default function LocationsClient({ locations }: LocationsClientProps) {
         >
           <div className="inline-flex items-center gap-2 bg-gold-100 text-gold-700 px-4 py-2 rounded-full mb-6">
             <MapPin className="w-4 h-4" />
-            <span className="text-sm font-semibold">Where We Operate</span>
+            <span className="text-sm font-semibold">{t('nav.destinations')}</span>
           </div>
           
           <h1 className="font-merriweather text-4xl md:text-5xl lg:text-6xl text-charcoal-900 mb-6">
-            Explore Our
-            <span className="text-gold-600"> Destinations</span>
+            {t('pages.destinations.title')}
           </h1>
           
           <p className="text-charcoal-500 text-lg md:text-xl leading-relaxed">
-            Discover handpicked luxury properties in the world's most extraordinary destinations. 
-            Each location offers a unique experience tailored to the discerning traveler.
+            {t('pages.destinations.subtitle')}
           </p>
         </motion.div>
       </section>
@@ -80,7 +80,7 @@ export default function LocationsClient({ locations }: LocationsClientProps) {
                       <div className="bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-full flex items-center gap-2">
                         <Home className="w-4 h-4 text-gold-600" />
                         <span className="text-sm font-semibold text-charcoal-900">
-                          {location.propertyCount} {location.propertyCount === 1 ? 'Property' : 'Properties'}
+                          {location.propertyCount} {t('pages.destinations.properties')}
                         </span>
                       </div>
                     </div>
@@ -101,7 +101,7 @@ export default function LocationsClient({ locations }: LocationsClientProps) {
                     </p>
                     
                     <div className="flex items-center text-gold-600 font-semibold group-hover:gap-3 gap-2 transition-all">
-                      <span>Explore Properties</span>
+                      <span>{t('pages.destinations.viewCollection')}</span>
                       <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                     </div>
                   </div>
@@ -123,7 +123,7 @@ export default function LocationsClient({ locations }: LocationsClientProps) {
           >
             <div className="inline-flex items-center gap-2 bg-charcoal-100 text-charcoal-600 px-4 py-2 rounded-full mb-4">
               <Clock className="w-4 h-4" />
-              <span className="text-sm font-semibold">Coming Soon</span>
+              <span className="text-sm font-semibold">{t('pages.destinations.comingSoon')}</span>
             </div>
             <h2 className="font-merriweather text-2xl md:text-3xl text-charcoal-900">
               More Destinations Arriving
@@ -155,7 +155,7 @@ export default function LocationsClient({ locations }: LocationsClientProps) {
                     {/* Coming Soon Badge */}
                     <div className="absolute top-4 right-4">
                       <div className="bg-gold-500 text-charcoal-900 px-3 py-1 rounded-full text-xs font-semibold">
-                        Coming Soon
+                        {t('pages.destinations.comingSoon')}
                       </div>
                     </div>
                     

@@ -262,7 +262,7 @@ export default function Hero({ heroProperty }: HeroProps) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.8 }}
-              className="hidden md:flex absolute -bottom-4 left-1/2 lg:left-auto lg:right-12 transform -translate-x-1/2 lg:translate-x-0 bg-white rounded-2xl shadow-xl p-4 md:p-6 items-center gap-4 md:gap-8"
+              className="hidden md:flex absolute -bottom-4 left-1/2 lg:left-auto lg:right-4 transform -translate-x-1/2 lg:translate-x-0 bg-white rounded-2xl shadow-xl p-4 md:p-6 items-center gap-4 md:gap-8"
             >
               <div className="text-center">
                 <div className="font-merriweather text-2xl md:text-3xl text-gold-600">800+</div>
