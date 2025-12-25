@@ -208,9 +208,10 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
 
             {/* Guest-Focused Search Bar */}
             <div className="bg-white rounded-2xl shadow-2xl max-w-5xl mx-auto overflow-hidden">
-              <div className="grid grid-cols-2 lg:grid-cols-5">
+              {/* Desktop Layout */}
+              <div className="hidden md:grid md:grid-cols-5">
                 {/* Destination */}
-                <div className="p-4 border-b lg:border-b-0 lg:border-r border-gray-100">
+                <div className="p-4 border-r border-gray-100">
                   <label className="block text-left text-[11px] font-semibold text-charcoal-400 uppercase tracking-wider mb-1">
                     Destination
                   </label>
@@ -228,7 +229,7 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
 
                 {/* Dates */}
                 <div 
-                  className="p-4 border-b lg:border-b-0 lg:border-r border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors"
+                  className="p-4 border-r border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors"
                   onClick={() => setShowDatePicker(true)}
                 >
                   <label className="block text-left text-[11px] font-semibold text-charcoal-400 uppercase tracking-wider mb-1">
@@ -263,7 +264,7 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
                 </div>
 
                 {/* Bedrooms */}
-                <div className="p-4 lg:border-r border-gray-100">
+                <div className="p-4 border-r border-gray-100">
                   <label className="block text-left text-[11px] font-semibold text-charcoal-400 uppercase tracking-wider mb-1">
                     Bedrooms
                   </label>
@@ -283,10 +284,93 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
                 {/* Search Button */}
                 <a
                   href="#properties"
-                  className="flex items-center justify-center gap-2 bg-gold-500 text-white font-semibold hover:bg-gold-600 transition-colors m-2 lg:m-3 rounded-xl"
+                  className="flex items-center justify-center gap-2 bg-gold-500 text-white font-semibold hover:bg-gold-600 transition-colors m-3 rounded-xl"
                 >
                   <Search className="w-5 h-5" />
                   <span>Search</span>
+                </a>
+              </div>
+
+              {/* Mobile Layout */}
+              <div className="md:hidden p-4 space-y-4">
+                {/* Row 1: Destination & Dates */}
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-left text-[11px] font-semibold text-charcoal-400 uppercase tracking-wider mb-1">
+                      Destination
+                    </label>
+                    <select
+                      value={filters.destination}
+                      onChange={(e) => setFilters(f => ({ ...f, destination: e.target.value }))}
+                      className="w-full bg-gray-50 text-charcoal-900 font-medium focus:outline-none cursor-pointer text-sm text-left px-3 py-2.5 rounded-lg border border-gray-200"
+                    >
+                      <option value="all">All</option>
+                      {availableDestinations.map(d => (
+                        <option key={d} value={d.toLowerCase().replace(/ /g, '-')}>{d}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div 
+                    className="cursor-pointer"
+                    onClick={() => setShowDatePicker(true)}
+                  >
+                    <label className="block text-left text-[11px] font-semibold text-charcoal-400 uppercase tracking-wider mb-1">
+                      Dates
+                    </label>
+                    <div className="bg-gray-50 text-charcoal-900 font-medium text-sm text-left px-3 py-2.5 rounded-lg border border-gray-200">
+                      {filters.checkIn && filters.checkOut ? (
+                        <span>{formatDisplayDate(filters.checkIn)} – {formatDisplayDate(filters.checkOut)}</span>
+                      ) : (
+                        <span className="text-charcoal-400">Select</span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Row 2: Guests & Bedrooms */}
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-left text-[11px] font-semibold text-charcoal-400 uppercase tracking-wider mb-1">
+                      Guests
+                    </label>
+                    <select
+                      value={filters.guests}
+                      onChange={(e) => setFilters(f => ({ ...f, guests: e.target.value }))}
+                      className="w-full bg-gray-50 text-charcoal-900 font-medium focus:outline-none cursor-pointer text-sm text-left px-3 py-2.5 rounded-lg border border-gray-200"
+                    >
+                      <option value="any">Any</option>
+                      <option value="2">2+</option>
+                      <option value="4">4+</option>
+                      <option value="6">6+</option>
+                      <option value="8">8+</option>
+                      <option value="10">10+</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-left text-[11px] font-semibold text-charcoal-400 uppercase tracking-wider mb-1">
+                      Bedrooms
+                    </label>
+                    <select
+                      value={filters.bedrooms}
+                      onChange={(e) => setFilters(f => ({ ...f, bedrooms: e.target.value }))}
+                      className="w-full bg-gray-50 text-charcoal-900 font-medium focus:outline-none cursor-pointer text-sm text-left px-3 py-2.5 rounded-lg border border-gray-200"
+                    >
+                      <option value="any">Any</option>
+                      <option value="2">2+</option>
+                      <option value="3">3+</option>
+                      <option value="4">4+</option>
+                      <option value="5">5+</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Search Button - Full Width */}
+                <a
+                  href="#properties"
+                  className="flex items-center justify-center gap-2 bg-gold-500 text-white font-semibold hover:bg-gold-600 transition-colors py-3 rounded-xl w-full"
+                >
+                  <Search className="w-5 h-5" />
+                  <span>Search Properties</span>
                 </a>
               </div>
             </div>
