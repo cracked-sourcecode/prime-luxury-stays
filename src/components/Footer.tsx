@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion'
 import { Instagram, Linkedin, Facebook, ArrowUp } from 'lucide-react'
+import { useLocale } from '@/i18n/LocaleProvider'
 
 const LOGO_URL = 'https://storage.googleapis.com/primeluxurystays/Logo%20no%20text%20(global%20header).png'
 
@@ -24,6 +25,7 @@ const footerLinks = {
 }
 
 export default function Footer() {
+  const { t } = useLocale()
   const currentYear = new Date().getFullYear()
 
   const scrollToTop = () => {

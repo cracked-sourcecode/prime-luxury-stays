@@ -6,6 +6,7 @@ import { Search, MapPin, Calendar, Users, Star, Shield, Clock, Crown, ChevronDow
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import type { Property } from '@/lib/properties'
+import { useLocale } from '@/i18n/LocaleProvider'
 
 const featuredDestinations = [
   { name: 'Mallorca', href: '/mallorca', image: 'https://storage.googleapis.com/primeluxurystays/Mallorca%20Global%20Hero%20Section%20Image' },
@@ -23,6 +24,7 @@ interface HeroProps {
 
 export default function Hero({ heroProperty }: HeroProps) {
   const router = useRouter()
+  const { t, locale } = useLocale()
   const [destination, setDestination] = useState('')
   const [checkIn, setCheckIn] = useState('')
   const [checkOut, setCheckOut] = useState('')
@@ -67,7 +69,7 @@ export default function Hero({ heroProperty }: HeroProps) {
               className="inline-flex items-center gap-2 bg-gold-100 text-gold-700 px-4 py-2 rounded-full mb-6"
             >
               <Star className="w-4 h-4 fill-gold-500 text-gold-500" />
-              <span className="text-sm font-semibold">Exclusive Collection</span>
+              <span className="text-sm font-semibold">{t('hero.badge')}</span>
             </motion.div>
 
             {/* Heading */}
@@ -77,9 +79,9 @@ export default function Hero({ heroProperty }: HeroProps) {
               transition={{ duration: 0.8, delay: 0.3 }}
               className="font-merriweather text-4xl sm:text-5xl lg:text-6xl xl:text-7xl text-charcoal-900 leading-[1.1] mb-6"
             >
-              Find your next
+              {t('hero.title')}
               <br />
-              <span className="text-gold-600">luxury escape</span>
+              <span className="text-gold-600">{t('hero.titleHighlight')}</span>
             </motion.h1>
 
             {/* Subtitle */}
@@ -89,8 +91,7 @@ export default function Hero({ heroProperty }: HeroProps) {
               transition={{ duration: 0.8, delay: 0.4 }}
               className="text-charcoal-500 text-lg lg:text-xl max-w-lg mb-10 leading-relaxed"
             >
-              Discover handpicked villas and estates in the world's most 
-              extraordinary destinations. Your private paradise awaits.
+              {t('hero.subtitle')}
             </motion.p>
 
             {/* Search Box - Simple CTA */}
@@ -103,14 +104,14 @@ export default function Hero({ heroProperty }: HeroProps) {
               <div className="flex flex-col sm:flex-row sm:items-end gap-3">
                 {/* Destination Dropdown */}
                 <div className="sm:w-36">
-                  <label className="block text-[10px] font-bold text-charcoal-500 uppercase tracking-wider mb-2">Destination</label>
+                  <label className="block text-[10px] font-bold text-charcoal-500 uppercase tracking-wider mb-2">{t('hero.destination')}</label>
                   <div className="relative">
                     <select
                       value={destination}
                       onChange={(e) => setDestination(e.target.value)}
                       className="w-full appearance-none bg-transparent border-b-2 border-gray-200 pb-2 text-charcoal-900 font-medium cursor-pointer focus:outline-none focus:border-gold-500 pr-6 text-sm"
                     >
-                      <option value="">All</option>
+                      <option value="">{t('hero.all')}</option>
                       {availableDestinations.map(d => (
                         <option key={d.value} value={d.value}>{d.label}</option>
                       ))}
@@ -121,7 +122,7 @@ export default function Hero({ heroProperty }: HeroProps) {
 
                 {/* Check-in Date */}
                 <div className="sm:w-28">
-                  <label className="block text-[10px] font-bold text-charcoal-500 uppercase tracking-wider mb-2">Check In</label>
+                  <label className="block text-[10px] font-bold text-charcoal-500 uppercase tracking-wider mb-2">{t('hero.checkIn')}</label>
                   <input
                     type="date"
                     value={checkIn}
@@ -133,7 +134,7 @@ export default function Hero({ heroProperty }: HeroProps) {
 
                 {/* Check-out Date */}
                 <div className="sm:w-28">
-                  <label className="block text-[10px] font-bold text-charcoal-500 uppercase tracking-wider mb-2">Check Out</label>
+                  <label className="block text-[10px] font-bold text-charcoal-500 uppercase tracking-wider mb-2">{t('hero.checkOut')}</label>
                   <input
                     type="date"
                     value={checkOut}
@@ -150,7 +151,7 @@ export default function Hero({ heroProperty }: HeroProps) {
                     className="w-full sm:w-auto btn-gold flex items-center justify-center gap-2 !rounded-lg !py-2.5 !px-5"
                   >
                     <Search className="w-4 h-4" />
-                    <span>Search</span>
+                    <span>{t('hero.searchProperties')}</span>
                   </button>
                 </div>
               </div>
@@ -165,15 +166,15 @@ export default function Hero({ heroProperty }: HeroProps) {
             >
               <div className="flex items-center gap-2 text-charcoal-600">
                 <Shield className="w-4 h-4 md:w-5 md:h-5 text-gold-500" />
-                <span className="text-xs md:text-sm font-medium">Verified Properties</span>
+                <span className="text-xs md:text-sm font-medium">{t('hero.verifiedProperties')}</span>
               </div>
               <div className="flex items-center gap-2 text-charcoal-600">
                 <Clock className="w-4 h-4 md:w-5 md:h-5 text-gold-500" />
-                <span className="text-xs md:text-sm font-medium">Dedicated Concierge</span>
+                <span className="text-xs md:text-sm font-medium">{t('hero.dedicatedConcierge')}</span>
               </div>
               <div className="flex items-center gap-2 text-charcoal-600">
                 <Star className="w-4 h-4 md:w-5 md:h-5 text-gold-500" />
-                <span className="text-xs md:text-sm font-medium">5-Star Service</span>
+                <span className="text-xs md:text-sm font-medium">{t('hero.fiveStarService')}</span>
               </div>
             </motion.div>
           </motion.div>
@@ -206,7 +207,7 @@ export default function Hero({ heroProperty }: HeroProps) {
                     <div className="absolute top-3 left-3 md:top-4 md:left-4">
                       <div className="flex items-center gap-1 md:gap-1.5 bg-gold-500 text-white px-2 py-1 md:px-3 md:py-1.5 rounded-full shadow-lg">
                         <Crown className="w-3 h-3 md:w-4 md:h-4" />
-                        <span className="text-xs md:text-sm font-semibold">Featured</span>
+                        <span className="text-xs md:text-sm font-semibold">{t('hero.featured')}</span>
                       </div>
                     </div>
                     
@@ -223,7 +224,7 @@ export default function Hero({ heroProperty }: HeroProps) {
                   </Link>
                 ) : (
                   <div className="w-full h-full bg-gradient-to-br from-gold-100 to-cream-200 flex items-center justify-center">
-                    <p className="text-charcoal-400 text-sm md:text-base">Set a Hero Featured property in admin</p>
+                    <p className="text-charcoal-400 text-sm md:text-base">{t('hero.setHeroProperty')}</p>
                   </div>
                 )}
               </motion.div>
@@ -246,7 +247,7 @@ export default function Hero({ heroProperty }: HeroProps) {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                     <div className="absolute bottom-3 left-3 md:bottom-4 md:left-4">
                       <p className="text-white font-semibold text-sm md:text-lg">{dest.name}</p>
-                      <p className="text-white/80 text-xs md:text-sm">Explore →</p>
+                      <p className="text-white/80 text-xs md:text-sm">{t('hero.explore')} →</p>
                     </div>
                   </Link>
                 </motion.div>
@@ -262,17 +263,17 @@ export default function Hero({ heroProperty }: HeroProps) {
             >
               <div className="text-center">
                 <div className="font-merriweather text-2xl md:text-3xl text-gold-600">800+</div>
-                <div className="text-xs text-charcoal-500 font-medium">Happy Guests</div>
+                <div className="text-xs text-charcoal-500 font-medium">{t('hero.stats.happyGuests')}</div>
               </div>
               <div className="w-px h-10 md:h-12 bg-gray-200" />
               <div className="text-center">
                 <div className="font-merriweather text-2xl md:text-3xl text-gold-600">Direct</div>
-                <div className="text-xs text-charcoal-500 font-medium">Best Rates</div>
+                <div className="text-xs text-charcoal-500 font-medium">{t('hero.stats.directRates')}</div>
               </div>
               <div className="w-px h-10 md:h-12 bg-gray-200" />
               <div className="text-center">
                 <div className="font-merriweather text-2xl md:text-3xl text-gold-600">EU & US</div>
-                <div className="text-xs text-charcoal-500 font-medium">Operations</div>
+                <div className="text-xs text-charcoal-500 font-medium">{t('hero.stats.operations')}</div>
               </div>
             </motion.div>
           </motion.div>
