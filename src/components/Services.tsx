@@ -2,15 +2,16 @@
 
 import { motion, useInView } from 'framer-motion'
 import { useRef } from 'react'
+import Link from 'next/link'
 import { 
   Compass, 
   Shield, 
   Sparkles, 
-  Clock, 
   Car, 
   Plane,
   Utensils,
-  HeartHandshake
+  Ship,
+  Navigation
 } from 'lucide-react'
 
 const services = [
@@ -18,41 +19,49 @@ const services = [
     icon: Sparkles,
     title: 'Personal Concierge',
     description: 'Dedicated luxury lifestyle managers available around the clock to fulfill every request.',
+    slug: 'concierge',
   },
   {
     icon: Plane,
     title: 'Private Aviation',
-    description: 'Seamless private jet and helicopter arrangements to and from your destination.',
+    description: 'Seamless private jet arrangements to and from your destination.',
+    slug: 'private-aviation',
   },
   {
     icon: Utensils,
     title: 'Private Chef',
     description: 'World-class chefs creating bespoke culinary experiences in your residence.',
+    slug: 'private-chef',
   },
   {
     icon: Car,
     title: 'Luxury Transport',
-    description: 'Premium vehicle fleet including supercars, yachts, and chauffeur services.',
+    description: 'Premium vehicle fleet including supercars and chauffeur services.',
+    slug: 'luxury-transport',
   },
   {
     icon: Compass,
     title: 'Curated Experiences',
     description: 'Exclusive access to events, reservations, and experiences unavailable elsewhere.',
+    slug: 'experiences',
   },
   {
     icon: Shield,
     title: 'Privacy & Security',
     description: 'Discreet security arrangements and complete confidentiality guaranteed.',
+    slug: 'privacy-security',
   },
   {
-    icon: Clock,
-    title: 'Priority Support',
-    description: 'Dedicated assistance ensuring a seamless, worry-free experience.',
+    icon: Ship,
+    title: 'Yacht Charter',
+    description: 'Luxury yacht experiences from intimate day sails to multi-day Mediterranean voyages.',
+    slug: 'yacht-charter',
   },
   {
-    icon: HeartHandshake,
-    title: 'Family Services',
-    description: 'Childcare, tutoring, and family-focused amenities for multigenerational stays.',
+    icon: Navigation,
+    title: 'Helicopter Transport',
+    description: 'Swift helicopter transfers and scenic tours across the islands.',
+    slug: 'helicopter',
   },
 ]
 
@@ -91,25 +100,29 @@ export default function Services() {
               initial={{ opacity: 0, y: 30 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6, delay: index * 0.1 }}
-              className="group relative p-8 rounded-airbnb-lg glass-card float-card service-glow cursor-pointer"
             >
-              {/* Icon */}
-              <div className="mb-6">
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-gold-100 to-gold-50 flex items-center justify-center group-hover:from-gold-200 group-hover:to-gold-100 transition-all duration-500 shadow-sm">
-                  <service.icon className="w-7 h-7 text-gold-600" />
+              <Link 
+                href={`/services/${service.slug}`}
+                className="group relative block p-8 rounded-airbnb-lg glass-card float-card service-glow cursor-pointer h-full"
+              >
+                {/* Icon */}
+                <div className="mb-6">
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-gold-100 to-gold-50 flex items-center justify-center group-hover:from-gold-200 group-hover:to-gold-100 transition-all duration-500 shadow-sm">
+                    <service.icon className="w-7 h-7 text-gold-600" />
+                  </div>
                 </div>
-              </div>
 
-              {/* Content */}
-              <h3 className="font-merriweather text-xl text-charcoal-900 mb-3 group-hover:text-gold-700 transition-colors duration-300">
-                {service.title}
-              </h3>
-              <p className="text-charcoal-500 text-sm leading-relaxed">
-                {service.description}
-              </p>
+                {/* Content */}
+                <h3 className="font-merriweather text-xl text-charcoal-900 mb-3 group-hover:text-gold-700 transition-colors duration-300">
+                  {service.title}
+                </h3>
+                <p className="text-charcoal-500 text-sm leading-relaxed">
+                  {service.description}
+                </p>
 
-              {/* Hover accent */}
-              <div className="absolute bottom-0 left-4 right-4 h-1 bg-gradient-to-r from-gold-400 to-gold-300 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                {/* Hover accent */}
+                <div className="absolute bottom-0 left-4 right-4 h-1 bg-gradient-to-r from-gold-400 to-gold-300 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              </Link>
             </motion.div>
           ))}
         </div>
