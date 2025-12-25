@@ -25,6 +25,7 @@ import {
   Map
 } from 'lucide-react'
 import PropertyMap from '@/components/PropertyMap'
+import DatePickerModal from '@/components/DatePickerModal'
 import type { Property } from '@/lib/properties'
 
 interface PropertiesClientProps {
@@ -63,6 +64,14 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
   const [viewMode, setViewMode] = useState<'grid' | 'map'>('grid')
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null)
   const [showFilters, setShowFilters] = useState(false)
+  const [showDatePicker, setShowDatePicker] = useState(false)
+  
+  // Format date for display
+  const formatDisplayDate = (dateStr: string) => {
+    if (!dateStr) return 'Select'
+    const date = new Date(dateStr)
+    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+  }
   
   // Guest-focused search filters - initialized from URL params
   const [filters, setFilters] = useState({
@@ -93,17 +102,21 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
   const heroY = useTransform(scrollYProgress, [0, 1], ['0%', '30%'])
   const heroOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0])
 
-  // Get unique destinations
-  const destinations = [...new Set(properties.map(p => p.city).filter(Boolean))]
+  // Use regions as destinations (not cities)
+  const availableDestinations = ['Mallorca', 'Ibiza', 'South of France']
 
   // Filter properties based on guest-focused criteria
   const filteredProperties = properties.filter(property => {
-    if (filters.destination !== 'all' && property.city?.toLowerCase() !== filters.destination.toLowerCase()) return false
+    // Filter by region (destination)
+    if (filters.destination !== 'all') {
+      const propertyRegion = property.region?.toLowerCase() || 'mallorca'
+      const filterRegion = filters.destination.toLowerCase().replace(/-/g, ' ')
+      if (propertyRegion !== filterRegion) return false
+    }
     if (filters.guests !== 'any' && (property.max_guests || 0) < parseInt(filters.guests)) return false
     if (filters.bedrooms !== 'any' && (property.bedrooms || 0) < parseInt(filters.bedrooms)) return false
     if (filters.seaView && !property.has_sea_view) return false
     if (filters.pool && !property.has_pool) return false
-    // Note: Date and price filtering would require availability data - placeholder for now
     return true
   })
 
@@ -195,7 +208,7 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
 
             {/* Guest-Focused Search Bar */}
             <div className="bg-white rounded-2xl p-4 shadow-2xl max-w-5xl mx-auto">
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
                 {/* Destination */}
                 <div className="col-span-1 bg-gray-50 rounded-xl p-3 text-left">
                   <label className="block text-[10px] font-bold text-charcoal-400 uppercase tracking-wider mb-1">
@@ -206,9 +219,9 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
                     onChange={(e) => setFilters(f => ({ ...f, destination: e.target.value }))}
                     className="w-full bg-transparent text-charcoal-900 font-medium focus:outline-none cursor-pointer text-sm text-left"
                   >
-                    <option value="all">All</option>
-                    {destinations.map(d => (
-                      <option key={d} value={d?.toLowerCase()}>{d}</option>
+                    <option value="all">All Destinations</option>
+                    {availableDestinations.map(d => (
+                      <option key={d} value={d.toLowerCase().replace(/ /g, '-')}>{d}</option>
                     ))}
                   </select>
                 </div>
@@ -231,32 +244,21 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
                   </select>
                 </div>
 
-                {/* Check-in */}
-                <div className="col-span-1 bg-gray-50 rounded-xl p-3 text-left">
+                {/* Dates - Combined */}
+                <div 
+                  className="col-span-2 bg-gray-50 rounded-xl p-3 text-left cursor-pointer hover:bg-gray-100 transition-colors"
+                  onClick={() => setShowDatePicker(true)}
+                >
                   <label className="block text-[10px] font-bold text-charcoal-400 uppercase tracking-wider mb-1">
-                    Check In
+                    Dates
                   </label>
-                  <input
-                    type="date"
-                    value={filters.checkIn}
-                    onChange={(e) => setFilters(f => ({ ...f, checkIn: e.target.value }))}
-                    min={new Date().toISOString().split('T')[0]}
-                    className="w-full bg-transparent text-charcoal-900 font-medium focus:outline-none cursor-pointer text-sm text-left"
-                  />
-                </div>
-
-                {/* Check-out */}
-                <div className="col-span-1 bg-gray-50 rounded-xl p-3 text-left">
-                  <label className="block text-[10px] font-bold text-charcoal-400 uppercase tracking-wider mb-1">
-                    Check Out
-                  </label>
-                  <input
-                    type="date"
-                    value={filters.checkOut}
-                    onChange={(e) => setFilters(f => ({ ...f, checkOut: e.target.value }))}
-                    min={filters.checkIn || new Date().toISOString().split('T')[0]}
-                    className="w-full bg-transparent text-charcoal-900 font-medium focus:outline-none cursor-pointer text-sm text-left"
-                  />
+                  <div className="text-charcoal-900 font-medium text-sm">
+                    {filters.checkIn && filters.checkOut ? (
+                      <span>{formatDisplayDate(filters.checkIn)} → {formatDisplayDate(filters.checkOut)}</span>
+                    ) : (
+                      <span className="text-charcoal-400">Select dates</span>
+                    )}
+                  </div>
                 </div>
 
                 {/* Bedrooms */}
@@ -757,6 +759,18 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
           </Link>
         </div>
       </section>
+
+      {/* Date Picker Modal */}
+      <DatePickerModal
+        isOpen={showDatePicker}
+        onClose={() => setShowDatePicker(false)}
+        onSelectDates={(checkIn, checkOut) => {
+          setFilters(f => ({ ...f, checkIn, checkOut }))
+        }}
+        initialCheckIn={filters.checkIn}
+        initialCheckOut={filters.checkOut}
+        title="Select your travel dates"
+      />
     </div>
   )
 }
