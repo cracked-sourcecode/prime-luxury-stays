@@ -1,300 +1,278 @@
 'use client'
 
-import { useState } from 'react'
 import Link from 'next/link'
 import { 
-  Plus, 
-  Search, 
-  Edit3, 
-  Eye, 
-  MapPin,
-  Bed,
-  Image,
-  Building2,
-  Star,
-  Filter,
-  Sparkles,
-  Users,
-  MessageSquare,
+  Building2, 
+  Users, 
+  MessageSquare, 
+  Briefcase,
   TrendingUp,
-  ArrowRight,
-  Briefcase
+  ArrowUpRight,
+  ArrowDownRight,
+  Clock,
+  CheckCircle2,
+  AlertCircle,
+  DollarSign,
+  Activity,
+  Mail,
+  Phone,
+  Calendar
 } from 'lucide-react'
-import type { AdminUser } from '@/lib/admin'
-import type { Property } from '@/lib/properties'
-import AdminNav from '@/components/admin/AdminNav'
+
+interface DashboardStats {
+  totalCustomers: number
+  totalProperties: number
+  activeProperties: number
+  totalInquiries: number
+  recentInquiries: number
+  pendingInquiries: number
+  totalDeals: number
+  dealsByStage: { stage: string; count: number }[]
+  totalDealValue: number
+  recentActivity: any[]
+}
 
 interface AdminDashboardProps {
-  user: AdminUser;
-  properties: Property[];
-  stats?: {
-    totalCustomers: number;
-    recentInquiries: number;
-  };
+  user: { email: string }
+  properties: any[]
+  stats: DashboardStats
+}
+
+const formatCurrency = (amount: number) => {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'EUR',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(amount)
+}
+
+const formatDate = (date: string) => {
+  return new Date(date).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  })
+}
+
+const stageColors: Record<string, string> = {
+  'lead': 'bg-gray-100 text-gray-700',
+  'qualified': 'bg-blue-100 text-blue-700',
+  'proposal': 'bg-purple-100 text-purple-700',
+  'negotiation': 'bg-amber-100 text-amber-700',
+  'won': 'bg-green-100 text-green-700',
+  'lost': 'bg-red-100 text-red-700',
 }
 
 export default function AdminDashboard({ user, properties, stats }: AdminDashboardProps) {
-  const [searchQuery, setSearchQuery] = useState('')
-  const [filter, setFilter] = useState<'all' | 'active' | 'inactive'>('all')
-
-  const filteredProperties = properties.filter(p => {
-    const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          p.city?.toLowerCase().includes(searchQuery.toLowerCase())
-    const matchesFilter = filter === 'all' || 
-                          (filter === 'active' && p.is_active) ||
-                          (filter === 'inactive' && !p.is_active)
-    return matchesSearch && matchesFilter
-  })
-
-  const propertyStats = {
-    total: properties.length,
-    active: properties.filter(p => p.is_active).length,
-    featured: properties.filter(p => p.is_featured).length,
+  const getGreeting = () => {
+    const hour = new Date().getHours()
+    if (hour < 12) return 'Good morning'
+    if (hour < 18) return 'Good afternoon'
+    return 'Good evening'
   }
 
   return (
-    <div className="min-h-screen bg-cream-50">
-      <AdminNav userName={user.name} userEmail={user.email} />
+    <div className="p-6 lg:p-8 max-w-7xl mx-auto">
+      {/* Header */}
+      <div className="mb-8">
+        <h1 className="text-2xl lg:text-3xl font-semibold text-charcoal-900">
+          {getGreeting()}, {user.email.split('@')[0]}
+        </h1>
+        <p className="text-charcoal-500 mt-1">Here's what's happening with your business today.</p>
+      </div>
 
-      <main className="max-w-7xl mx-auto px-6 py-8">
-        {/* Welcome Section */}
-        <div className="mb-8">
-          <h1 className="font-merriweather text-3xl text-charcoal-900">Welcome back, {user.name || 'Admin'}</h1>
-          <p className="text-charcoal-500 mt-2">Here's what's happening with your properties and customers.</p>
+      {/* Stats Grid */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-8">
+        {/* Total Customers */}
+        <div className="bg-white rounded-xl p-5 border border-gray-100 shadow-sm">
+          <div className="flex items-center justify-between mb-3">
+            <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center">
+              <Users className="w-5 h-5 text-blue-600" />
+            </div>
+            <span className="text-xs font-medium text-green-600 bg-green-50 px-2 py-1 rounded-full flex items-center gap-1">
+              <ArrowUpRight className="w-3 h-3" />
+              Active
+            </span>
+          </div>
+          <p className="text-2xl lg:text-3xl font-bold text-charcoal-900">{stats.totalCustomers.toLocaleString()}</p>
+          <p className="text-sm text-charcoal-500">Total Contacts</p>
         </div>
 
-        {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white rounded-2xl p-6 shadow-sm border border-cream-200">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-charcoal-900 to-charcoal-700 flex items-center justify-center shadow-sm">
-                <Building2 className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <p className="text-3xl font-semibold text-charcoal-900">{propertyStats.total}</p>
-                <p className="text-charcoal-500 text-sm">Properties</p>
-              </div>
+        {/* Properties */}
+        <div className="bg-white rounded-xl p-5 border border-gray-100 shadow-sm">
+          <div className="flex items-center justify-between mb-3">
+            <div className="w-10 h-10 rounded-lg bg-gold-50 flex items-center justify-center">
+              <Building2 className="w-5 h-5 text-gold-600" />
             </div>
+            <span className="text-xs font-medium text-charcoal-600 bg-gray-100 px-2 py-1 rounded-full">
+              {stats.activeProperties} active
+            </span>
           </div>
-          
-          <div className="bg-white rounded-2xl p-6 shadow-sm border border-cream-200">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-gold-500 to-gold-400 flex items-center justify-center shadow-gold">
-                <Sparkles className="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <p className="text-3xl font-semibold text-charcoal-900">{propertyStats.active}</p>
-                <p className="text-charcoal-500 text-sm">Active Listings</p>
-              </div>
-            </div>
-          </div>
-          
-          <div className="bg-white rounded-2xl p-6 shadow-sm border border-cream-200">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-blue-100 flex items-center justify-center">
-                <Users className="w-6 h-6 text-blue-700" />
-              </div>
-              <div>
-                <p className="text-3xl font-semibold text-charcoal-900">{stats?.totalCustomers || 0}</p>
-                <p className="text-charcoal-500 text-sm">Contacts</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-2xl p-6 shadow-sm border border-cream-200">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-green-100 flex items-center justify-center">
-                <MessageSquare className="w-6 h-6 text-green-700" />
-              </div>
-              <div>
-                <p className="text-3xl font-semibold text-charcoal-900">{stats?.recentInquiries || 0}</p>
-                <p className="text-charcoal-500 text-sm">New Inquiries</p>
-              </div>
-            </div>
-          </div>
+          <p className="text-2xl lg:text-3xl font-bold text-charcoal-900">{stats.totalProperties}</p>
+          <p className="text-sm text-charcoal-500">Properties</p>
         </div>
 
-        {/* Quick Links */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Link href="/admin/deals" className="bg-white rounded-2xl p-6 shadow-sm border border-cream-200 hover:border-gold-300 hover:shadow-md transition-all group">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="font-semibold text-charcoal-900 group-hover:text-gold-700 transition-colors">Deals Pipeline</h3>
-                <p className="text-charcoal-500 text-sm mt-1">Kanban & table view</p>
-              </div>
-              <Briefcase className="w-5 h-5 text-charcoal-400 group-hover:text-gold-600 transition-all" />
+        {/* Inquiries */}
+        <div className="bg-white rounded-xl p-5 border border-gray-100 shadow-sm">
+          <div className="flex items-center justify-between mb-3">
+            <div className="w-10 h-10 rounded-lg bg-purple-50 flex items-center justify-center">
+              <MessageSquare className="w-5 h-5 text-purple-600" />
             </div>
-          </Link>
-          
-          <Link href="/admin/customers" className="bg-white rounded-2xl p-6 shadow-sm border border-cream-200 hover:border-gold-300 hover:shadow-md transition-all group">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="font-semibold text-charcoal-900 group-hover:text-gold-700 transition-colors">Contacts</h3>
-                <p className="text-charcoal-500 text-sm mt-1">{stats?.totalCustomers?.toLocaleString() || 0} contacts</p>
-              </div>
-              <Users className="w-5 h-5 text-charcoal-400 group-hover:text-gold-600 transition-all" />
-            </div>
-          </Link>
-          
-          <Link href="/admin/inquiries" className="bg-white rounded-2xl p-6 shadow-sm border border-cream-200 hover:border-gold-300 hover:shadow-md transition-all group">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="font-semibold text-charcoal-900 group-hover:text-gold-700 transition-colors">Inquiries</h3>
-                <p className="text-charcoal-500 text-sm mt-1">Booking requests</p>
-              </div>
-              <MessageSquare className="w-5 h-5 text-charcoal-400 group-hover:text-gold-600 transition-all" />
-            </div>
-          </Link>
-          
-          <Link href="/admin/properties/new" className="bg-gradient-to-r from-gold-500 to-gold-400 rounded-2xl p-6 shadow-gold hover:from-gold-400 hover:to-gold-300 transition-all group">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="font-semibold text-white">Add Property</h3>
-                <p className="text-white/80 text-sm mt-1">Create listing</p>
-              </div>
-              <Plus className="w-5 h-5 text-white group-hover:rotate-90 transition-transform" />
-            </div>
-          </Link>
+            {stats.pendingInquiries > 0 && (
+              <span className="text-xs font-medium text-amber-600 bg-amber-50 px-2 py-1 rounded-full flex items-center gap-1">
+                <AlertCircle className="w-3 h-3" />
+                {stats.pendingInquiries} new
+              </span>
+            )}
+          </div>
+          <p className="text-2xl lg:text-3xl font-bold text-charcoal-900">{stats.totalInquiries}</p>
+          <p className="text-sm text-charcoal-500">Total Inquiries</p>
         </div>
 
-        {/* Properties Section */}
-        <div className="bg-white rounded-2xl shadow-sm border border-cream-200 overflow-hidden">
-          {/* Toolbar */}
-          <div className="p-6 border-b border-cream-200 bg-cream-50/60">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <div>
-                <h2 className="font-merriweather text-2xl text-charcoal-900">Properties</h2>
-                <p className="text-sm text-charcoal-500 mt-1">
-                  Manage listings, featured images, and availability.
-                </p>
-              </div>
-              
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-                {/* Search */}
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-charcoal-400" />
-                  <input
-                    type="text"
-                    placeholder="Search properties..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10 pr-4 py-2.5 border border-cream-200 rounded-xl w-full sm:w-64 focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none bg-white"
-                  />
-                </div>
-
-                {/* Filter */}
-                <div className="flex items-center gap-2">
-                  <Filter className="w-5 h-5 text-charcoal-400" />
-                  <select
-                    value={filter}
-                    onChange={(e) => setFilter(e.target.value as any)}
-                    className="border border-cream-200 rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none bg-white"
-                  >
-                    <option value="all">All</option>
-                    <option value="active">Active</option>
-                    <option value="inactive">Inactive</option>
-                  </select>
-                </div>
-
-                {/* Add New */}
-                <Link
-                  href="/admin/properties/new"
-                  className="bg-gradient-to-r from-gold-500 to-gold-400 text-white px-4 py-2.5 rounded-xl font-semibold hover:from-gold-400 hover:to-gold-300 transition-all flex items-center justify-center gap-2 shadow-gold"
-                >
-                  <Plus className="w-5 h-5" />
-                  Add Property
-                </Link>
-              </div>
+        {/* Deal Value */}
+        <div className="bg-white rounded-xl p-5 border border-gray-100 shadow-sm">
+          <div className="flex items-center justify-between mb-3">
+            <div className="w-10 h-10 rounded-lg bg-green-50 flex items-center justify-center">
+              <DollarSign className="w-5 h-5 text-green-600" />
             </div>
+            <span className="text-xs font-medium text-charcoal-600 bg-gray-100 px-2 py-1 rounded-full">
+              {stats.totalDeals} deals
+            </span>
           </div>
+          <p className="text-2xl lg:text-3xl font-bold text-charcoal-900">{formatCurrency(stats.totalDealValue)}</p>
+          <p className="text-sm text-charcoal-500">Pipeline Value</p>
+        </div>
+      </div>
 
-          {/* Properties List */}
-          <div className="divide-y divide-cream-200">
-            {filteredProperties.length === 0 ? (
-              <div className="p-12 text-center">
-                <Building2 className="w-12 h-12 text-charcoal-300 mx-auto mb-4" />
-                <p className="text-charcoal-500">No properties found</p>
+      {/* Two Column Layout */}
+      <div className="grid lg:grid-cols-3 gap-6 mb-8">
+        {/* Recent Activity */}
+        <div className="lg:col-span-2 bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+          <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+            <h2 className="font-semibold text-charcoal-900 flex items-center gap-2">
+              <Activity className="w-5 h-5 text-gold-600" />
+              Recent Inquiries
+            </h2>
+            <Link href="/admin/inquiries" className="text-sm text-gold-600 hover:text-gold-700 font-medium">
+              View all →
+            </Link>
+          </div>
+          <div className="divide-y divide-gray-50">
+            {stats.recentActivity.length === 0 ? (
+              <div className="px-6 py-12 text-center text-charcoal-400">
+                <MessageSquare className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                <p>No recent inquiries</p>
               </div>
             ) : (
-              filteredProperties.map((property) => (
-                <div key={property.id} className="p-6 hover:bg-cream-50/70 transition-colors">
-                  <div className="flex flex-col lg:flex-row lg:items-center gap-5">
-                    {/* Image */}
-                    <div className="w-full lg:w-28 h-40 lg:h-20 rounded-xl overflow-hidden bg-cream-100 flex-shrink-0">
-                      {property.featured_image ? (
-                        <img 
-                          src={property.featured_image} 
-                          alt={property.name}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <Image className="w-8 h-8 text-charcoal-300" />
-                        </div>
-                      )}
+              stats.recentActivity.slice(0, 5).map((item, i) => (
+                <div key={i} className="px-6 py-4 hover:bg-gray-50 transition-colors flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gold-100 to-gold-200 flex items-center justify-center text-gold-700 font-semibold text-sm">
+                      {item.name?.charAt(0)?.toUpperCase() || '?'}
                     </div>
-
-                    {/* Info */}
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-3 mb-1">
-                        <h3 className="font-semibold text-charcoal-900 truncate text-lg">
-                          {property.name}
-                        </h3>
-                        {property.is_featured && (
-                          <span className="bg-gold-100 text-gold-700 text-xs px-2.5 py-1 rounded-full font-semibold">
-                            Featured
-                          </span>
-                        )}
-                        {!property.is_active && (
-                          <span className="bg-cream-100 text-charcoal-600 text-xs px-2.5 py-1 rounded-full font-semibold">
-                            Inactive
-                          </span>
-                        )}
-                      </div>
-                      
-                      <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-charcoal-500">
-                        <span className="flex items-center gap-1.5">
-                          <MapPin className="w-4 h-4" />
-                          {property.city}, {property.region}
-                        </span>
-                        {property.bedrooms && (
-                          <span className="flex items-center gap-1.5">
-                            <Bed className="w-4 h-4" />
-                            {property.bedrooms} beds
-                          </span>
-                        )}
-                        <span className="text-charcoal-400">
-                          {property.house_type}
-                        </span>
-                      </div>
+                    <div>
+                      <p className="font-medium text-charcoal-900">{item.name || 'Unknown'}</p>
+                      <p className="text-sm text-charcoal-500">{item.email}</p>
                     </div>
-
-                    {/* Actions */}
-                    <div className="flex items-center gap-2 justify-end">
-                      <Link
-                        href={`/admin/properties/${property.id}`}
-                        className="bg-charcoal-900 text-white px-4 py-2.5 rounded-xl font-semibold hover:bg-charcoal-800 transition-colors flex items-center gap-2"
-                      >
-                        <Edit3 className="w-4 h-4" />
-                        Edit
-                      </Link>
-                      <Link
-                        href={`/properties/${property.slug}`}
-                        target="_blank"
-                        className="border border-cream-200 text-charcoal-700 px-4 py-2.5 rounded-xl hover:bg-cream-50 transition-colors flex items-center gap-2 font-semibold"
-                      >
-                        <Eye className="w-4 h-4" />
-                        View
-                      </Link>
-                    </div>
+                  </div>
+                  <div className="text-right">
+                    <span className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${
+                      item.status === 'new' || !item.status
+                        ? 'bg-amber-50 text-amber-700'
+                        : item.status === 'responded'
+                        ? 'bg-green-50 text-green-700'
+                        : 'bg-gray-100 text-gray-700'
+                    }`}>
+                      {item.status || 'new'}
+                    </span>
+                    <p className="text-xs text-charcoal-400 mt-1">{formatDate(item.created_at)}</p>
                   </div>
                 </div>
               ))
             )}
           </div>
         </div>
-      </main>
+
+        {/* Deal Pipeline Summary */}
+        <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+          <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+            <h2 className="font-semibold text-charcoal-900 flex items-center gap-2">
+              <Briefcase className="w-5 h-5 text-gold-600" />
+              Deal Pipeline
+            </h2>
+            <Link href="/admin/deals" className="text-sm text-gold-600 hover:text-gold-700 font-medium">
+              View →
+            </Link>
+          </div>
+          <div className="p-6">
+            {stats.dealsByStage.length === 0 ? (
+              <div className="text-center text-charcoal-400 py-8">
+                <Briefcase className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                <p>No deals yet</p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {['lead', 'qualified', 'proposal', 'negotiation', 'won', 'lost'].map(stage => {
+                  const stageData = stats.dealsByStage.find(s => s.stage === stage)
+                  const count = Number(stageData?.count || 0)
+                  return (
+                    <div key={stage} className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className={`w-2 h-2 rounded-full ${
+                          stage === 'lead' ? 'bg-gray-400' :
+                          stage === 'qualified' ? 'bg-blue-500' :
+                          stage === 'proposal' ? 'bg-purple-500' :
+                          stage === 'negotiation' ? 'bg-amber-500' :
+                          stage === 'won' ? 'bg-green-500' : 'bg-red-500'
+                        }`} />
+                        <span className="text-sm text-charcoal-700 capitalize">{stage}</span>
+                      </div>
+                      <span className="text-sm font-medium text-charcoal-900">{count}</span>
+                    </div>
+                  )
+                })}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Quick Actions */}
+      <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
+        <h2 className="font-semibold text-charcoal-900 mb-4">Quick Actions</h2>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <Link 
+            href="/admin/properties/new"
+            className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-dashed border-gray-200 hover:border-gold-300 hover:bg-gold-50 transition-colors text-center"
+          >
+            <Building2 className="w-6 h-6 text-gold-600" />
+            <span className="text-sm font-medium text-charcoal-700">Add Property</span>
+          </Link>
+          <Link 
+            href="/admin/customers"
+            className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-dashed border-gray-200 hover:border-gold-300 hover:bg-gold-50 transition-colors text-center"
+          >
+            <Users className="w-6 h-6 text-gold-600" />
+            <span className="text-sm font-medium text-charcoal-700">View Contacts</span>
+          </Link>
+          <Link 
+            href="/admin/deals"
+            className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-dashed border-gray-200 hover:border-gold-300 hover:bg-gold-50 transition-colors text-center"
+          >
+            <Briefcase className="w-6 h-6 text-gold-600" />
+            <span className="text-sm font-medium text-charcoal-700">Deal Pipeline</span>
+          </Link>
+          <Link 
+            href="/admin/inquiries"
+            className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-dashed border-gray-200 hover:border-gold-300 hover:bg-gold-50 transition-colors text-center"
+          >
+            <MessageSquare className="w-6 h-6 text-gold-600" />
+            <span className="text-sm font-medium text-charcoal-700">Inquiries</span>
+          </Link>
+        </div>
+      </div>
     </div>
   )
 }
-

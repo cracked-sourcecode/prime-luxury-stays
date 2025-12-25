@@ -1,9 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import Link from 'next/link'
 import { 
-  LayoutDashboard, 
   Plus, 
   Table, 
   Kanban, 
@@ -160,77 +158,68 @@ export default function DealsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="p-6 lg:p-8 flex items-center justify-center min-h-[50vh]">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gold-600"></div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="p-6 lg:p-8">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200">
-        <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Link href="/admin" className="text-gray-400 hover:text-gray-600">
-                <LayoutDashboard className="w-5 h-5" />
-              </Link>
-              <div>
-                <h1 className="text-xl font-bold text-gray-900">Deals Pipeline</h1>
-                <p className="text-gray-500 text-sm">{deals.length} deals • €{totalPipelineValue.toLocaleString()} in pipeline • €{wonValue.toLocaleString()} won</p>
-              </div>
-            </div>
-            
-            <div className="flex items-center gap-3">
-              {/* Search */}
-              <div className="relative hidden sm:block">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="Search deals..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-9 pr-4 py-2 border border-gray-200 rounded-lg w-64 text-sm focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
-                />
-              </div>
-
-              {/* View Toggle */}
-              <div className="flex items-center bg-gray-100 rounded-lg p-1">
-                <button
-                  onClick={() => setView('kanban')}
-                  className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors flex items-center gap-1.5 ${
-                    view === 'kanban' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-600 hover:text-gray-900'
-                  }`}
-                >
-                  <Kanban className="w-4 h-4" />
-                  Board
-                </button>
-                <button
-                  onClick={() => setView('table')}
-                  className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors flex items-center gap-1.5 ${
-                    view === 'table' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-600 hover:text-gray-900'
-                  }`}
-                >
-                  <Table className="w-4 h-4" />
-                  Table
-                </button>
-              </div>
-
-              <button
-                onClick={() => setShowAddModal(true)}
-                className="bg-gold-500 hover:bg-gold-600 text-white px-4 py-2 rounded-lg font-medium text-sm flex items-center gap-2 transition-colors"
-              >
-                <Plus className="w-4 h-4" />
-                Add Deal
-              </button>
-            </div>
-          </div>
+      <div className="mb-6 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-semibold text-charcoal-900">Deals Pipeline</h1>
+          <p className="text-charcoal-500">{deals.length} deals • €{totalPipelineValue.toLocaleString()} in pipeline • €{wonValue.toLocaleString()} won</p>
         </div>
-      </header>
+        
+        <div className="flex items-center gap-3 flex-wrap">
+          {/* Search */}
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Search deals..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-9 pr-4 py-2 border border-gray-200 rounded-lg w-48 lg:w-64 text-sm focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
+            />
+          </div>
+
+          {/* View Toggle */}
+          <div className="flex items-center bg-gray-100 rounded-lg p-1">
+            <button
+              onClick={() => setView('kanban')}
+              className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors flex items-center gap-1.5 ${
+                view === 'kanban' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              <Kanban className="w-4 h-4" />
+              Board
+            </button>
+            <button
+              onClick={() => setView('table')}
+              className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors flex items-center gap-1.5 ${
+                view === 'table' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              <Table className="w-4 h-4" />
+              Table
+            </button>
+          </div>
+
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="bg-gold-500 hover:bg-gold-600 text-white px-4 py-2 rounded-lg font-medium text-sm flex items-center gap-2 transition-colors"
+          >
+            <Plus className="w-4 h-4" />
+            Add Deal
+          </button>
+        </div>
+      </div>
 
       {/* Content */}
-      <div className="p-4 sm:p-6">
+      <div>
         {view === 'kanban' ? (
           /* Kanban View */
           <div className="flex gap-4 overflow-x-auto pb-4">

@@ -11,12 +11,10 @@ import {
   Bed,
   Image,
   Building2,
-  Filter,
-  LayoutDashboard
+  Filter
 } from 'lucide-react'
 import type { AdminUser } from '@/lib/admin'
 import type { Property } from '@/lib/properties'
-import AdminNav from '@/components/admin/AdminNav'
 
 interface PropertiesListClientProps {
   user: AdminUser
@@ -37,20 +35,12 @@ export default function PropertiesListClient({ user, properties }: PropertiesLis
   })
 
   return (
-    <div className="min-h-screen bg-cream-50">
-      <AdminNav userName={user.name} userEmail={user.email} />
-
-      <main className="max-w-7xl mx-auto px-6 py-8">
-        {/* Header */}
-        <div className="flex items-center gap-4 mb-6">
-          <Link href="/admin" className="text-charcoal-400 hover:text-charcoal-600">
-            <LayoutDashboard className="w-5 h-5" />
-          </Link>
-          <div>
-            <h1 className="font-merriweather text-2xl text-charcoal-900">Properties</h1>
-            <p className="text-charcoal-500 text-sm">{properties.length} total listings</p>
-          </div>
-        </div>
+    <div className="p-6 lg:p-8">
+      {/* Header */}
+      <div className="mb-6">
+        <h1 className="text-2xl font-semibold text-charcoal-900">Properties</h1>
+        <p className="text-charcoal-500">{properties.length} total listings</p>
+      </div>
 
         {/* Properties Section */}
         <div className="bg-white rounded-2xl shadow-sm border border-cream-200 overflow-hidden">
@@ -186,8 +176,7 @@ export default function PropertiesListClient({ user, properties }: PropertiesLis
             )}
           </div>
         </div>
-      </main>
-    </div>
+      </div>
   )
 }
 
