@@ -207,19 +207,19 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
             </p>
 
             {/* Guest-Focused Search Bar */}
-            <div className="bg-white rounded-2xl p-5 shadow-2xl max-w-4xl mx-auto">
-              <div className="flex flex-wrap lg:flex-nowrap items-end gap-4">
+            <div className="bg-white rounded-2xl shadow-2xl max-w-5xl mx-auto overflow-hidden">
+              <div className="grid grid-cols-2 lg:grid-cols-5">
                 {/* Destination */}
-                <div className="flex-1 min-w-[140px]">
-                  <label className="block text-[10px] font-bold text-charcoal-400 uppercase tracking-wider mb-2">
+                <div className="p-4 border-b lg:border-b-0 lg:border-r border-gray-100">
+                  <label className="block text-left text-[11px] font-semibold text-charcoal-400 uppercase tracking-wider mb-1">
                     Destination
                   </label>
                   <select
                     value={filters.destination}
                     onChange={(e) => setFilters(f => ({ ...f, destination: e.target.value }))}
-                    className="w-full bg-gray-50 text-charcoal-900 font-medium focus:outline-none cursor-pointer text-sm rounded-xl px-4 py-3 border border-gray-100"
+                    className="w-full bg-transparent text-charcoal-900 font-medium focus:outline-none cursor-pointer text-base text-left"
                   >
-                    <option value="all">All</option>
+                    <option value="all">All Destinations</option>
                     {availableDestinations.map(d => (
                       <option key={d} value={d.toLowerCase().replace(/ /g, '-')}>{d}</option>
                     ))}
@@ -228,15 +228,15 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
 
                 {/* Dates */}
                 <div 
-                  className="flex-1 min-w-[180px] cursor-pointer"
+                  className="p-4 border-b lg:border-b-0 lg:border-r border-gray-100 cursor-pointer hover:bg-gray-50 transition-colors"
                   onClick={() => setShowDatePicker(true)}
                 >
-                  <label className="block text-[10px] font-bold text-charcoal-400 uppercase tracking-wider mb-2">
+                  <label className="block text-left text-[11px] font-semibold text-charcoal-400 uppercase tracking-wider mb-1">
                     Dates
                   </label>
-                  <div className="bg-gray-50 text-charcoal-900 font-medium text-sm rounded-xl px-4 py-3 border border-gray-100 hover:border-gold-300 transition-colors">
+                  <div className="text-left text-charcoal-900 font-medium text-base">
                     {filters.checkIn && filters.checkOut ? (
-                      <span>{formatDisplayDate(filters.checkIn)} → {formatDisplayDate(filters.checkOut)}</span>
+                      <span>{formatDisplayDate(filters.checkIn)} – {formatDisplayDate(filters.checkOut)}</span>
                     ) : (
                       <span className="text-charcoal-400">Select dates</span>
                     )}
@@ -244,14 +244,14 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
                 </div>
 
                 {/* Guests */}
-                <div className="w-24">
-                  <label className="block text-[10px] font-bold text-charcoal-400 uppercase tracking-wider mb-2">
+                <div className="p-4 border-r border-gray-100">
+                  <label className="block text-left text-[11px] font-semibold text-charcoal-400 uppercase tracking-wider mb-1">
                     Guests
                   </label>
                   <select
                     value={filters.guests}
                     onChange={(e) => setFilters(f => ({ ...f, guests: e.target.value }))}
-                    className="w-full bg-gray-50 text-charcoal-900 font-medium focus:outline-none cursor-pointer text-sm rounded-xl px-4 py-3 border border-gray-100"
+                    className="w-full bg-transparent text-charcoal-900 font-medium focus:outline-none cursor-pointer text-base text-left"
                   >
                     <option value="any">Any</option>
                     <option value="2">2+</option>
@@ -263,14 +263,14 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
                 </div>
 
                 {/* Bedrooms */}
-                <div className="w-28">
-                  <label className="block text-[10px] font-bold text-charcoal-400 uppercase tracking-wider mb-2">
+                <div className="p-4 lg:border-r border-gray-100">
+                  <label className="block text-left text-[11px] font-semibold text-charcoal-400 uppercase tracking-wider mb-1">
                     Bedrooms
                   </label>
                   <select
                     value={filters.bedrooms}
                     onChange={(e) => setFilters(f => ({ ...f, bedrooms: e.target.value }))}
-                    className="w-full bg-gray-50 text-charcoal-900 font-medium focus:outline-none cursor-pointer text-sm rounded-xl px-4 py-3 border border-gray-100"
+                    className="w-full bg-transparent text-charcoal-900 font-medium focus:outline-none cursor-pointer text-base text-left"
                   >
                     <option value="any">Any</option>
                     <option value="2">2+</option>
@@ -283,10 +283,10 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
                 {/* Search Button */}
                 <a
                   href="#properties"
-                  className="flex items-center justify-center gap-2 bg-gold-500 text-white px-8 py-3 rounded-xl font-semibold hover:bg-gold-600 transition-colors shadow-lg"
+                  className="flex items-center justify-center gap-2 bg-gold-500 text-white font-semibold hover:bg-gold-600 transition-colors m-2 lg:m-3 rounded-xl"
                 >
                   <Search className="w-5 h-5" />
-                  Search
+                  <span>Search</span>
                 </a>
               </div>
             </div>
