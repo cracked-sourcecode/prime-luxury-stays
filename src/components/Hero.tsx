@@ -98,19 +98,19 @@ export default function Hero({ heroProperty }: HeroProps) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.5 }}
-              className="bg-white rounded-2xl p-4 shadow-xl border border-gray-100 max-w-2xl text-left"
+              className="bg-white rounded-2xl p-4 shadow-xl border border-gray-100 w-full max-w-xl text-left"
             >
-              <div className="flex flex-col sm:flex-row sm:items-end gap-4">
+              <div className="flex flex-col sm:flex-row sm:items-end gap-3">
                 {/* Destination Dropdown */}
-                <div className="flex-1 min-w-[140px]">
+                <div className="sm:w-36">
                   <label className="block text-[10px] font-bold text-charcoal-500 uppercase tracking-wider mb-2">Destination</label>
                   <div className="relative">
                     <select
                       value={destination}
                       onChange={(e) => setDestination(e.target.value)}
-                      className="w-full appearance-none bg-transparent border-b-2 border-gray-200 pb-2 text-charcoal-900 font-medium cursor-pointer focus:outline-none focus:border-gold-500 pr-8 text-sm"
+                      className="w-full appearance-none bg-transparent border-b-2 border-gray-200 pb-2 text-charcoal-900 font-medium cursor-pointer focus:outline-none focus:border-gold-500 pr-6 text-sm"
                     >
-                      <option value="">All Destinations</option>
+                      <option value="">All</option>
                       {availableDestinations.map(d => (
                         <option key={d.value} value={d.value}>{d.label}</option>
                       ))}
@@ -120,7 +120,7 @@ export default function Hero({ heroProperty }: HeroProps) {
                 </div>
 
                 {/* Check-in Date */}
-                <div className="flex-1">
+                <div className="sm:w-28">
                   <label className="block text-[10px] font-bold text-charcoal-500 uppercase tracking-wider mb-2">Check In</label>
                   <input
                     type="date"
@@ -132,7 +132,7 @@ export default function Hero({ heroProperty }: HeroProps) {
                 </div>
 
                 {/* Check-out Date */}
-                <div className="flex-1">
+                <div className="sm:w-28">
                   <label className="block text-[10px] font-bold text-charcoal-500 uppercase tracking-wider mb-2">Check Out</label>
                   <input
                     type="date"
@@ -144,10 +144,10 @@ export default function Hero({ heroProperty }: HeroProps) {
                 </div>
 
                 {/* Search Button */}
-                <div className="flex-shrink-0">
+                <div className="flex-shrink-0 sm:ml-auto">
                   <button
                     onClick={handleSearch}
-                    className="w-full sm:w-auto btn-gold flex items-center justify-center gap-2 !rounded-lg !py-2.5 !px-6"
+                    className="w-full sm:w-auto btn-gold flex items-center justify-center gap-2 !rounded-lg !py-2.5 !px-5"
                   >
                     <Search className="w-4 h-4" />
                     <span>Search</span>
