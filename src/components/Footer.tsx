@@ -46,11 +46,11 @@ export default function Footer() {
               </div>
               <div>
                 <h3 className="font-merriweather text-charcoal-900 text-base">Prime Luxury Stays</h3>
-                <p className="font-merriweather text-[9px] tracking-[0.15em] text-gold-600 uppercase">Property Management</p>
+                <p className="font-merriweather text-[9px] tracking-[0.15em] text-gold-600 uppercase">{t('nav.tagline')}</p>
               </div>
             </div>
             <p className="text-charcoal-500 text-sm leading-relaxed mb-4">
-              Curating extraordinary experiences in the world's most exceptional private residences.
+              {t('footer.tagline')}
             </p>
             <div className="text-sm text-charcoal-500 space-y-1 mb-4">
               <p>
@@ -63,7 +63,7 @@ export default function Footer() {
               </p>
               <p><a href="mailto:info@primeluxurystays.com" className="hover:text-gold-600">info@primeluxurystays.com</a></p>
               <p className="text-charcoal-400">Miami, Florida / Munich, Germany</p>
-              <p className="text-charcoal-400">EU & US Registered Business</p>
+              <p className="text-charcoal-400">{t('footer.registered')}</p>
             </div>
             <div className="flex items-center gap-3 mb-8">
               {[Instagram, Linkedin, Facebook].map((Icon, index) => (
@@ -124,7 +124,7 @@ export default function Footer() {
                 </div>
                 <div>
                   <h3 className="font-merriweather text-charcoal-900 text-xl">Prime Luxury Stays</h3>
-                  <p className="font-merriweather text-xs tracking-[0.2em] text-gold-600 uppercase">Property Management</p>
+                  <p className="font-merriweather text-xs tracking-[0.2em] text-gold-600 uppercase">{t('nav.tagline')}</p>
                 </div>
               </div>
               <p className="text-charcoal-500 leading-relaxed mb-4 max-w-sm">
