@@ -7,10 +7,9 @@ const LOGO_URL = 'https://storage.googleapis.com/primeluxurystays/Logo%20no%20te
 
 const footerLinks = {
   destinations: [
-    { name: 'Mediterranean', href: '#' },
-    { name: 'Alpine', href: '#' },
-    { name: 'Caribbean', href: '#' },
-    { name: 'African Safari', href: '#' },
+    { name: 'Mallorca', href: '/mallorca' },
+    { name: 'Ibiza', href: '/ibiza' },
+    { name: 'South of France', href: '/south-of-france' },
   ],
   services: [
     { name: 'Concierge', href: '#' },
@@ -19,10 +18,8 @@ const footerLinks = {
     { name: 'Experiences', href: '#' },
   ],
   company: [
-    { name: 'About Us', href: '#about' },
-    { name: 'Contact', href: '#contact' },
-    { name: 'Careers', href: '#' },
-    { name: 'Press', href: '#' },
+    { name: 'About Us', href: '/#about' },
+    { name: 'Contact', href: '/#contact' },
   ],
 }
 
