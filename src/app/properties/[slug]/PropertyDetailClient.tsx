@@ -42,6 +42,7 @@ import {
   ImageOff
 } from 'lucide-react'
 import type { Property } from '@/lib/properties'
+import BookingCalendar from '@/components/BookingCalendar'
 
 // Simple image component with loading state and error handling
 function OptimizedImage({ 
@@ -119,6 +120,8 @@ interface PropertyDetailClientProps {
 export default function PropertyDetailClient({ property, galleryImages: dbImages }: PropertyDetailClientProps) {
   const [isLiked, setIsLiked] = useState(false)
   const [showGallery, setShowGallery] = useState(false)
+  const [showCalendar, setShowCalendar] = useState(false)
+  const [selectedDates, setSelectedDates] = useState<{ checkIn: string; checkOut: string; price: number | null } | null>(null)
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [isScrolled, setIsScrolled] = useState(false)
   
@@ -656,12 +659,63 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
             >
               {/* Main Booking Card */}
               <div className="bg-white rounded-3xl p-8 shadow-2xl border border-gray-100">
-                <div className="text-center mb-8">
-                  <p className="text-charcoal-500 mb-2">Inquire About</p>
-                  <h3 className="font-merriweather text-2xl text-charcoal-900">
-                    {property.name}
-                  </h3>
-                </div>
+                {/* Price Display */}
+                {property.price_per_week && (
+                  <div className="text-center mb-6 pb-6 border-b border-gray-100">
+                    <p className="text-charcoal-500 text-sm mb-1">From</p>
+                    <div className="flex items-baseline justify-center gap-1">
+                      <span className="font-merriweather text-3xl text-charcoal-900">
+                        €{Number(property.price_per_week).toLocaleString()}
+                      </span>
+                      <span className="text-charcoal-500">/week</span>
+                    </div>
+                    {property.price_per_week_high && (
+                      <p className="text-charcoal-400 text-sm mt-1">
+                        Up to €{Number(property.price_per_week_high).toLocaleString()}/week in peak season
+                      </p>
+                    )}
+                  </div>
+                )}
+
+                {/* Selected Dates Display */}
+                {selectedDates && (
+                  <div className="bg-gold-50 border border-gold-200 rounded-xl p-4 mb-6">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-charcoal-600 text-sm">Check-in</span>
+                      <span className="font-semibold text-charcoal-900">
+                        {new Date(selectedDates.checkIn).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-charcoal-600 text-sm">Check-out</span>
+                      <span className="font-semibold text-charcoal-900">
+                        {new Date(selectedDates.checkOut).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                      </span>
+                    </div>
+                    {selectedDates.price && (
+                      <div className="flex items-center justify-between pt-2 border-t border-gold-200">
+                        <span className="font-semibold text-gold-700">Estimated Total</span>
+                        <span className="font-bold text-gold-700 text-lg">€{selectedDates.price.toLocaleString()}</span>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Calendar Button */}
+                <button
+                  onClick={() => setShowCalendar(true)}
+                  className="w-full bg-cream-100 border-2 border-cream-200 rounded-xl p-4 mb-4 hover:border-gold-300 transition-colors text-left"
+                >
+                  <div className="flex items-center gap-3">
+                    <Calendar className="w-5 h-5 text-gold-600" />
+                    <div>
+                      <p className="font-medium text-charcoal-900">
+                        {selectedDates ? 'Change Dates' : 'Select Dates'}
+                      </p>
+                      <p className="text-charcoal-500 text-sm">Check availability calendar</p>
+                    </div>
+                  </div>
+                </button>
 
                 {/* Min Stay */}
                 {property.min_stay_nights && property.min_stay_nights > 7 && (
@@ -693,11 +747,11 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
 
                 {/* CTA */}
                 <Link
-                  href={`/inquire?property=${property.slug}`}
+                  href={`/inquire?property=${property.slug}${selectedDates ? `&checkIn=${selectedDates.checkIn}&checkOut=${selectedDates.checkOut}` : ''}`}
                   className="btn-gold w-full flex items-center justify-center gap-3 text-lg py-5 mb-4"
                 >
                   <Calendar className="w-5 h-5" />
-                  Check Availability
+                  {selectedDates ? 'Request to Book' : 'Check Availability'}
                 </Link>
 
                 <p className="text-center text-charcoal-400 text-sm mb-6">
@@ -705,13 +759,13 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
                 </p>
 
                 <div className="border-t border-gray-100 pt-6 space-y-3">
-                  <a href="tel:+34600000000" className="flex items-center gap-3 text-charcoal-600 hover:text-gold-600 transition-colors">
+                  <a href="tel:+12039797309" className="flex items-center gap-3 text-charcoal-600 hover:text-gold-600 transition-colors">
                     <Phone className="w-5 h-5" />
-                    <span>+34 600 000 000</span>
+                    <span>+1 (203) 979-7309</span>
                   </a>
-                  <a href="mailto:hello@primeluxurystays.com" className="flex items-center gap-3 text-charcoal-600 hover:text-gold-600 transition-colors">
+                  <a href="mailto:info@primeluxurystays.com" className="flex items-center gap-3 text-charcoal-600 hover:text-gold-600 transition-colors">
                     <Mail className="w-5 h-5" />
-                    <span>hello@primeluxurystays.com</span>
+                    <span>info@primeluxurystays.com</span>
                   </a>
                 </div>
               </div>
@@ -831,6 +885,19 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
 
       {/* Spacer for mobile sticky bar */}
       <div className="h-20 lg:hidden" />
+
+      {/* Booking Calendar Modal */}
+      <BookingCalendar
+        propertySlug={property.slug}
+        propertyName={property.name}
+        isOpen={showCalendar}
+        onClose={() => setShowCalendar(false)}
+        onSelect={(checkIn, checkOut, price) => {
+          setSelectedDates({ checkIn, checkOut, price })
+        }}
+        initialCheckIn={selectedDates?.checkIn}
+        initialCheckOut={selectedDates?.checkOut}
+      />
     </div>
   )
 }
