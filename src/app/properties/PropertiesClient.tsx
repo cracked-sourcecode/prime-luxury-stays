@@ -27,6 +27,7 @@ import {
 import PropertyMap from '@/components/PropertyMap'
 import DatePickerModal from '@/components/DatePickerModal'
 import type { Property } from '@/lib/properties'
+import { useLocale } from '@/i18n/LocaleProvider'
 
 interface PropertiesClientProps {
   properties: Property[];
@@ -61,6 +62,7 @@ function PropertyImage({ src, alt, className }: { src: string; alt: string; clas
 
 export default function PropertiesClient({ properties }: PropertiesClientProps) {
   const searchParams = useSearchParams()
+  const { t } = useLocale()
   const [viewMode, setViewMode] = useState<'grid' | 'map'>('grid')
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null)
   const [showFilters, setShowFilters] = useState(false)
