@@ -36,77 +36,79 @@ export default function Footer() {
         {/* Main Footer */}
         <div className="py-8 md:py-16 lg:py-20">
           
-          {/* Mobile: Links first in horizontal grid */}
-          <div className="md:hidden grid grid-cols-3 gap-4 mb-8 pb-6 border-b border-gray-100">
-            <div>
-              <h4 className="font-semibold text-charcoal-900 text-xs mb-2">Destinations</h4>
-              <ul className="space-y-1">
-                {footerLinks.destinations.map((link) => (
-                  <li key={link.name}>
-                    <a href={link.href} className="text-charcoal-500 hover:text-gold-600 transition-colors text-xs">
-                      {link.name}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold text-charcoal-900 text-xs mb-2">Services</h4>
-              <ul className="space-y-1">
-                {footerLinks.services.map((link) => (
-                  <li key={link.name}>
-                    <a href={link.href} className="text-charcoal-500 hover:text-gold-600 transition-colors text-xs">
-                      {link.name}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold text-charcoal-900 text-xs mb-2">Company</h4>
-              <ul className="space-y-1">
-                {footerLinks.company.map((link) => (
-                  <li key={link.name}>
-                    <a href={link.href} className="text-charcoal-500 hover:text-gold-600 transition-colors text-xs">
-                      {link.name}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-
-          {/* Mobile: Brand & Contact compact */}
-          <div className="md:hidden text-center mb-6">
-            <div className="flex items-center justify-center gap-2 mb-3">
-              <div className="w-10 h-10">
+          {/* Mobile: Brand & Contact first, left-aligned */}
+          <div className="md:hidden mb-8">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12">
                 <img src={LOGO_URL} alt="Prime Luxury Stays" className="w-full h-full object-contain" />
               </div>
-              <div className="text-left">
-                <h3 className="font-merriweather text-charcoal-900 text-sm">Prime Luxury Stays</h3>
-                <p className="font-merriweather text-[8px] tracking-[0.15em] text-gold-600 uppercase">Property Management</p>
+              <div>
+                <h3 className="font-merriweather text-charcoal-900 text-base">Prime Luxury Stays</h3>
+                <p className="font-merriweather text-[9px] tracking-[0.15em] text-gold-600 uppercase">Property Management</p>
               </div>
             </div>
-            <p className="text-charcoal-500 text-xs leading-relaxed mb-3 max-w-xs mx-auto">
+            <p className="text-charcoal-500 text-sm leading-relaxed mb-4">
               Curating extraordinary experiences in the world's most exceptional private residences.
             </p>
-            <div className="text-xs text-charcoal-500 space-y-0.5 mb-3">
+            <div className="text-sm text-charcoal-500 space-y-1 mb-4">
               <p>
                 <span className="text-charcoal-400">US:</span>{' '}
                 <a href="tel:+12039797309" className="hover:text-gold-600">+1 (203) 979-7309</a>
-                {' · '}
+              </p>
+              <p>
                 <span className="text-charcoal-400">EU:</span>{' '}
                 <a href="tel:+498989930046" className="hover:text-gold-600">+49 89 899 300 46</a>
               </p>
               <p><a href="mailto:info@primeluxurystays.com" className="hover:text-gold-600">info@primeluxurystays.com</a></p>
-              <p className="text-charcoal-400">Miami, Florida / Munich, Germany · EU & US Registered</p>
+              <p className="text-charcoal-400">Miami, Florida / Munich, Germany</p>
+              <p className="text-charcoal-400">EU & US Registered Business</p>
             </div>
-            <div className="flex items-center justify-center gap-2">
+            <div className="flex items-center gap-3 mb-8">
               {[Instagram, Linkedin, Facebook].map((Icon, index) => (
-                <a key={index} href="#" className="w-8 h-8 rounded-lg bg-cream-100 flex items-center justify-center text-charcoal-600 hover:bg-gold-100 hover:text-gold-700 transition-all">
-                  <Icon className="w-4 h-4" />
+                <a key={index} href="#" className="w-10 h-10 rounded-lg bg-cream-100 flex items-center justify-center text-charcoal-600 hover:bg-gold-100 hover:text-gold-700 transition-all">
+                  <Icon className="w-5 h-5" />
                 </a>
               ))}
+            </div>
+
+            {/* Mobile: Links below in horizontal grid */}
+            <div className="grid grid-cols-3 gap-4 pt-6 border-t border-gray-100">
+              <div>
+                <h4 className="font-semibold text-charcoal-900 text-sm mb-3">Destinations</h4>
+                <ul className="space-y-2">
+                  {footerLinks.destinations.map((link) => (
+                    <li key={link.name}>
+                      <a href={link.href} className="text-charcoal-500 hover:text-gold-600 transition-colors text-sm">
+                        {link.name}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-semibold text-charcoal-900 text-sm mb-3">Services</h4>
+                <ul className="space-y-2">
+                  {footerLinks.services.map((link) => (
+                    <li key={link.name}>
+                      <a href={link.href} className="text-charcoal-500 hover:text-gold-600 transition-colors text-sm">
+                        {link.name}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-semibold text-charcoal-900 text-sm mb-3">Company</h4>
+                <ul className="space-y-2">
+                  {footerLinks.company.map((link) => (
+                    <li key={link.name}>
+                      <a href={link.href} className="text-charcoal-500 hover:text-gold-600 transition-colors text-sm">
+                        {link.name}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
           </div>
 
@@ -185,15 +187,15 @@ export default function Footer() {
 
         {/* Bottom Bar */}
         <div className="py-4 md:py-6 border-t border-gray-100">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-3">
-            <p className="text-charcoal-400 text-xs md:text-sm text-center md:text-left">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
+            <p className="text-charcoal-400 text-sm">
               © {currentYear} Prime Luxury Stays. All rights reserved.
             </p>
-            <div className="flex items-center gap-3 md:gap-6 flex-wrap justify-center">
-              <a href="#" className="text-charcoal-400 hover:text-gold-600 text-xs md:text-sm transition-colors">Privacy</a>
-              <a href="#" className="text-charcoal-400 hover:text-gold-600 text-xs md:text-sm transition-colors">Terms</a>
-              <a href="#" className="text-charcoal-400 hover:text-gold-600 text-xs md:text-sm transition-colors">Cookies</a>
-              <a href="/legal-notice" className="text-charcoal-400 hover:text-gold-600 text-xs md:text-sm transition-colors">Legal</a>
+            <div className="flex items-center gap-4 md:gap-6 flex-wrap">
+              <a href="#" className="text-charcoal-400 hover:text-gold-600 text-sm transition-colors">Privacy</a>
+              <a href="#" className="text-charcoal-400 hover:text-gold-600 text-sm transition-colors">Terms</a>
+              <a href="#" className="text-charcoal-400 hover:text-gold-600 text-sm transition-colors">Cookies</a>
+              <a href="/legal-notice" className="text-charcoal-400 hover:text-gold-600 text-sm transition-colors">Legal</a>
             </div>
           </div>
         </div>
