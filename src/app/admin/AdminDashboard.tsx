@@ -17,7 +17,8 @@ import {
   Users,
   MessageSquare,
   TrendingUp,
-  ArrowRight
+  ArrowRight,
+  Briefcase
 } from 'lucide-react'
 import type { AdminUser } from '@/lib/admin'
 import type { Property } from '@/lib/properties'
@@ -114,14 +115,24 @@ export default function AdminDashboard({ user, properties, stats }: AdminDashboa
         </div>
 
         {/* Quick Links */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          <Link href="/admin/deals" className="bg-white rounded-2xl p-6 shadow-sm border border-cream-200 hover:border-gold-300 hover:shadow-md transition-all group">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="font-semibold text-charcoal-900 group-hover:text-gold-700 transition-colors">Deals Pipeline</h3>
+                <p className="text-charcoal-500 text-sm mt-1">Kanban & table view</p>
+              </div>
+              <Briefcase className="w-5 h-5 text-charcoal-400 group-hover:text-gold-600 transition-all" />
+            </div>
+          </Link>
+          
           <Link href="/admin/customers" className="bg-white rounded-2xl p-6 shadow-sm border border-cream-200 hover:border-gold-300 hover:shadow-md transition-all group">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="font-semibold text-charcoal-900 group-hover:text-gold-700 transition-colors">Sales CRM</h3>
-                <p className="text-charcoal-500 text-sm mt-1">Manage {stats?.totalCustomers?.toLocaleString() || 0} customer contacts</p>
+                <h3 className="font-semibold text-charcoal-900 group-hover:text-gold-700 transition-colors">Contacts</h3>
+                <p className="text-charcoal-500 text-sm mt-1">{stats?.totalCustomers?.toLocaleString() || 0} contacts</p>
               </div>
-              <ArrowRight className="w-5 h-5 text-charcoal-400 group-hover:text-gold-600 group-hover:translate-x-1 transition-all" />
+              <Users className="w-5 h-5 text-charcoal-400 group-hover:text-gold-600 transition-all" />
             </div>
           </Link>
           
@@ -129,9 +140,9 @@ export default function AdminDashboard({ user, properties, stats }: AdminDashboa
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="font-semibold text-charcoal-900 group-hover:text-gold-700 transition-colors">Inquiries</h3>
-                <p className="text-charcoal-500 text-sm mt-1">View booking requests</p>
+                <p className="text-charcoal-500 text-sm mt-1">Booking requests</p>
               </div>
-              <ArrowRight className="w-5 h-5 text-charcoal-400 group-hover:text-gold-600 group-hover:translate-x-1 transition-all" />
+              <MessageSquare className="w-5 h-5 text-charcoal-400 group-hover:text-gold-600 transition-all" />
             </div>
           </Link>
           
@@ -139,7 +150,7 @@ export default function AdminDashboard({ user, properties, stats }: AdminDashboa
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="font-semibold text-white">Add Property</h3>
-                <p className="text-white/80 text-sm mt-1">Create a new listing</p>
+                <p className="text-white/80 text-sm mt-1">Create listing</p>
               </div>
               <Plus className="w-5 h-5 text-white group-hover:rotate-90 transition-transform" />
             </div>

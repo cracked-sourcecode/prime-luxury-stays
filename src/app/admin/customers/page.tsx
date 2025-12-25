@@ -17,7 +17,12 @@ import {
   Trash2,
   X,
   Check,
-  LayoutDashboard
+  LayoutDashboard,
+  Tag,
+  ListFilter,
+  FileSpreadsheet,
+  UserPlus,
+  Sparkles
 } from 'lucide-react'
 
 interface Customer {

@@ -9,7 +9,8 @@ import {
   MessageSquare, 
   LogOut,
   Home,
-  ShieldCheck
+  ShieldCheck,
+  Briefcase
 } from 'lucide-react'
 import { AdminBrand } from './AdminBrand'
 
@@ -21,7 +22,8 @@ interface AdminNavProps {
 const navItems = [
   { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
   { name: 'Properties', href: '/admin/properties', icon: Building2 },
-  { name: 'CRM', href: '/admin/customers', icon: Users },
+  { name: 'Deals', href: '/admin/deals', icon: Briefcase },
+  { name: 'Contacts', href: '/admin/customers', icon: Users },
   { name: 'Inquiries', href: '/admin/inquiries', icon: MessageSquare },
 ]
 
