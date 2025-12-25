@@ -97,7 +97,7 @@ export default function PropertyCard({ property, index = 0 }: PropertyCardProps)
           </p>
 
           {/* Stats */}
-          <div className="flex items-center gap-4 text-charcoal-600 text-sm">
+          <div className="flex items-center gap-4 text-charcoal-600 text-sm mb-3">
             {property.bedrooms && (
               <div className="flex items-center gap-1">
                 <Bed className="w-4 h-4" />
@@ -117,6 +117,19 @@ export default function PropertyCard({ property, index = 0 }: PropertyCardProps)
               </div>
             )}
           </div>
+
+          {/* Price */}
+          {property.price_per_week && (
+            <div className="inline-flex items-baseline gap-1 bg-cream-100 border border-cream-200 rounded-lg px-3 py-1.5">
+              <span className="text-gold-700 font-semibold">
+                €{Number(property.price_per_week).toLocaleString()}
+                {property.price_per_week_high && (
+                  <span> - €{Number(property.price_per_week_high).toLocaleString()}</span>
+                )}
+              </span>
+              <span className="text-charcoal-500 text-sm">/week</span>
+            </div>
+          )}
         </div>
       </Link>
     </motion.div>

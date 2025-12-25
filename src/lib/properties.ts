@@ -21,6 +21,8 @@ export interface Property {
   featured_image: string | null;
   images: string[] | null;
   website_url: string | null;
+  price_per_week: number | null;
+  price_per_week_high: number | null;
   has_pool: boolean;
   has_sea_view: boolean;
   has_ac: boolean;

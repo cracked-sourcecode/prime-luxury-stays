@@ -51,6 +51,8 @@ export async function PUT(request: NextRequest, { params }: Props) {
         short_description = ${data.short_description || null},
         featured_image = ${data.featured_image || null},
         website_url = ${data.website_url || null},
+        price_per_week = ${data.price_per_week || null},
+        price_per_week_high = ${data.price_per_week_high || null},
         has_pool = ${data.has_pool || false},
         has_sea_view = ${data.has_sea_view || false},
         has_ac = ${data.has_ac || false},

@@ -38,7 +38,8 @@ export async function POST(request: NextRequest) {
         name, slug, house_type, license_number, registry_number,
         address, city, region, country, latitude, longitude,
         bedrooms, bathrooms, max_guests, description, short_description,
-        featured_image, website_url, has_pool, has_sea_view, has_ac,
+        featured_image, website_url, price_per_week, price_per_week_high,
+        has_pool, has_sea_view, has_ac,
         has_heating, has_wifi, is_beachfront, is_active, is_featured, min_stay_nights
       ) VALUES (
         ${data.name}, ${data.slug}, ${data.house_type || 'Villa'}, ${data.license_number || null}, ${data.registry_number || null},
@@ -47,6 +48,7 @@ export async function POST(request: NextRequest) {
         ${data.bedrooms || null}, ${data.bathrooms || null}, ${data.max_guests || null},
         ${data.description || null}, ${data.short_description || null},
         ${data.featured_image || null}, ${data.website_url || null},
+        ${data.price_per_week || null}, ${data.price_per_week_high || null},
         ${data.has_pool || false}, ${data.has_sea_view || false}, ${data.has_ac || false},
         ${data.has_heating || false}, ${data.has_wifi || false}, ${data.is_beachfront || false},
         ${data.is_active ?? true}, ${data.is_featured || false}, ${data.min_stay_nights || 7}

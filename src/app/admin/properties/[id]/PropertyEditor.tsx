@@ -114,6 +114,8 @@ export default function PropertyEditor({ property, images: initialImages, availa
     short_description: property?.short_description || '',
     featured_image: property?.featured_image || '',
     website_url: property?.website_url || '',
+    price_per_week: (property as any)?.price_per_week?.toString() || '',
+    price_per_week_high: (property as any)?.price_per_week_high?.toString() || '',
     has_pool: property?.has_pool || false,
     has_sea_view: property?.has_sea_view || false,
     has_ac: property?.has_ac || false,
@@ -180,6 +182,8 @@ export default function PropertyEditor({ property, images: initialImages, availa
         bathrooms: formData.bathrooms ? parseInt(formData.bathrooms) : null,
         max_guests: formData.max_guests ? parseInt(formData.max_guests) : null,
         min_stay_nights: parseInt(formData.min_stay_nights) || 7,
+        price_per_week: formData.price_per_week ? parseFloat(formData.price_per_week) : null,
+        price_per_week_high: formData.price_per_week_high ? parseFloat(formData.price_per_week_high) : null,
       }
 
       const res = await fetch(`/api/admin/properties${isNew ? '' : `/${property?.id}`}`, {
@@ -860,6 +864,38 @@ export default function PropertyEditor({ property, images: initialImages, availa
                       onChange={(e) => setFormData(prev => ({ ...prev, min_stay_nights: e.target.value }))}
                       className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
                       min="1"
+                    />
+                  </div>
+                </div>
+              </section>
+
+              {/* Pricing */}
+              <section>
+                <h3 className="font-semibold text-charcoal-900 mb-4">Pricing (Display)</h3>
+                <p className="text-sm text-charcoal-500 mb-4">Set the weekly price range to display on property cards. Use low/high for seasonal variation.</p>
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-charcoal-700 mb-2">Price Per Week (Low) €</label>
+                    <input
+                      type="number"
+                      value={formData.price_per_week}
+                      onChange={(e) => setFormData(prev => ({ ...prev, price_per_week: e.target.value }))}
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
+                      placeholder="e.g. 4200"
+                      min="0"
+                      step="100"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-charcoal-700 mb-2">Price Per Week (High) €</label>
+                    <input
+                      type="number"
+                      value={formData.price_per_week_high}
+                      onChange={(e) => setFormData(prev => ({ ...prev, price_per_week_high: e.target.value }))}
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
+                      placeholder="e.g. 10675"
+                      min="0"
+                      step="100"
                     />
                   </div>
                 </div>
