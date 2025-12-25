@@ -133,7 +133,7 @@ export default function Experience() {
               initial={{ opacity: 0, y: 20 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.8, delay: 0.6 }}
-              className="absolute -bottom-6 -left-6 glass-gold rounded-2xl p-6 hidden lg:block"
+              className="absolute -bottom-16 -left-6 glass-gold rounded-2xl p-6 hidden lg:block"
             >
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-full bg-gold-500 flex items-center justify-center">
