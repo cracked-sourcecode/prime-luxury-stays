@@ -3,10 +3,12 @@
 import { motion, useInView } from 'framer-motion'
 import { useRef, useState } from 'react'
 import { Send, Phone, Mail, MapPin, Check, Loader2 } from 'lucide-react'
+import { useLocale } from '@/i18n/LocaleProvider'
 
 export default function Contact() {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: '-100px' })
+  const { t } = useLocale()
   const [formState, setFormState] = useState({
     name: '',
     email: '',
@@ -68,15 +70,14 @@ export default function Contact() {
           className="text-center mb-16"
         >
           <p className="text-gold-600 text-sm font-semibold tracking-[0.2em] uppercase mb-3">
-            Begin Your Journey
+            {t('contact.subtitle')}
           </p>
           <h2 className="font-merriweather text-3xl md:text-4xl lg:text-5xl text-charcoal-900 mb-6">
-            Private Inquiry
+            {t('contact.title')}
           </h2>
           <div className="h-1 w-16 bg-gradient-to-r from-gold-500 to-gold-300 rounded-full mx-auto mb-6" />
           <p className="text-charcoal-500 text-lg max-w-2xl mx-auto">
-            Our portfolio is available exclusively to qualified clients. 
-            Submit your inquiry for a personal consultation.
+            {t('contact.description')}
           </p>
         </motion.div>
 
@@ -90,12 +91,10 @@ export default function Contact() {
           >
             <div>
               <h3 className="font-merriweather text-2xl text-charcoal-900 mb-4">
-                Connect With Us
+                {t('contact.connectTitle')}
               </h3>
               <p className="text-charcoal-500 leading-relaxed">
-                Whether you're seeking a Mediterranean villa, an alpine retreat, 
-                or a beachfront estate, our team is ready to curate your 
-                perfect experience.
+                {t('contact.connectDescription')}
               </p>
             </div>
 
@@ -106,7 +105,7 @@ export default function Contact() {
                   <Phone className="w-5 h-5 text-gold-600" />
                 </div>
                 <div>
-                  <div className="text-charcoal-400 text-xs font-medium uppercase tracking-wide">Phone</div>
+                  <div className="text-charcoal-400 text-xs font-medium uppercase tracking-wide">{t('contact.info.phone')}</div>
                   <div className="text-charcoal-900 font-semibold">
                     <span className="text-charcoal-500 text-xs">US:</span> +1 (203) 979-7309
                   </div>
@@ -121,7 +120,7 @@ export default function Contact() {
                   <Mail className="w-5 h-5 text-gold-600" />
                 </div>
                 <div>
-                  <div className="text-charcoal-400 text-xs font-medium uppercase tracking-wide">Email</div>
+                  <div className="text-charcoal-400 text-xs font-medium uppercase tracking-wide">{t('contact.info.email')}</div>
                   <div className="text-charcoal-900 font-semibold">info@primeluxurystays.com</div>
                 </div>
               </div>
@@ -131,7 +130,7 @@ export default function Contact() {
                   <MapPin className="w-5 h-5 text-gold-600" />
                 </div>
                 <div>
-                  <div className="text-charcoal-400 text-xs font-medium uppercase tracking-wide">Offices</div>
+                  <div className="text-charcoal-400 text-xs font-medium uppercase tracking-wide">{t('contact.info.offices')}</div>
                   <div className="text-charcoal-900 font-semibold">Miami, Florida / Munich, Germany</div>
                 </div>
               </div>
@@ -141,10 +140,10 @@ export default function Contact() {
             <div className="glass-gold rounded-xl p-5">
               <div className="flex items-center gap-3 mb-2">
                 <div className="w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse" />
-                <span className="text-charcoal-900 font-semibold">Quick Response</span>
+                <span className="text-charcoal-900 font-semibold">{t('contact.info.response')}</span>
               </div>
               <p className="text-charcoal-600 text-sm">
-                Our concierge team responds to all inquiries within 2 hours.
+                {t('contact.info.responseTime')}
               </p>
             </div>
           </motion.div>
@@ -160,7 +159,7 @@ export default function Contact() {
               <div className="grid sm:grid-cols-2 gap-6 mb-6">
                 <div>
                   <label className="block text-charcoal-700 text-sm font-semibold mb-2">
-                    Full Name *
+                    {t('contact.form.name')} *
                   </label>
                   <input
                     type="text"
@@ -168,12 +167,12 @@ export default function Contact() {
                     value={formState.name}
                     onChange={(e) => setFormState({ ...formState, name: e.target.value })}
                     className="input-luxury w-full"
-                    placeholder="Your name"
+                    placeholder={t('contact.form.namePlaceholder')}
                   />
                 </div>
                 <div>
                   <label className="block text-charcoal-700 text-sm font-semibold mb-2">
-                    Email Address *
+                    {t('contact.form.email')} *
                   </label>
                   <input
                     type="email"
@@ -181,14 +180,14 @@ export default function Contact() {
                     value={formState.email}
                     onChange={(e) => setFormState({ ...formState, email: e.target.value })}
                     className="input-luxury w-full"
-                    placeholder="your@email.com"
+                    placeholder={t('contact.form.emailPlaceholder')}
                   />
                 </div>
               </div>
 
               <div className="mb-6">
                 <label className="block text-charcoal-700 text-sm font-semibold mb-2">
-                  Phone Number
+                  {t('contact.form.phone')}
                 </label>
                 <input
                   type="tel"
@@ -201,14 +200,14 @@ export default function Contact() {
 
               <div className="mb-8">
                 <label className="block text-charcoal-700 text-sm font-semibold mb-2">
-                  Tell Us About Your Ideal Stay
+                  {t('contact.form.messageLabel')}
                 </label>
                 <textarea
                   rows={5}
                   value={formState.message}
                   onChange={(e) => setFormState({ ...formState, message: e.target.value })}
                   className="input-luxury w-full resize-none"
-                  placeholder="Destination preferences, dates, group size, special requirements..."
+                  placeholder={t('contact.form.message')}
                 />
               </div>
 
@@ -223,8 +222,8 @@ export default function Contact() {
                   <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                     <Check className="w-8 h-8 text-green-600" />
                   </div>
-                  <h4 className="font-merriweather text-xl text-charcoal-900 mb-2">Thank You!</h4>
-                  <p className="text-charcoal-500">We've received your inquiry and will be in touch within 2 hours.</p>
+                  <h4 className="font-merriweather text-xl text-charcoal-900 mb-2">{t('contact.form.thankYou')}</h4>
+                  <p className="text-charcoal-500">{t('contact.form.success')}</p>
                 </div>
               ) : (
                 <button 
@@ -235,11 +234,11 @@ export default function Contact() {
                   {submitting ? (
                     <>
                       <Loader2 className="w-4 h-4 animate-spin" />
-                      <span>Sending...</span>
+                      <span>{t('contact.form.submitting')}</span>
                     </>
                   ) : (
                     <>
-                      <span>Submit Inquiry</span>
+                      <span>{t('contact.form.submit')}</span>
                       <Send className="w-4 h-4" />
                     </>
                   )}
@@ -247,8 +246,7 @@ export default function Contact() {
               )}
 
               <p className="text-charcoal-400 text-xs text-center mt-6">
-                By submitting this form, you agree to our privacy policy. 
-                Your information will be kept strictly confidential.
+                {t('contact.form.privacyNote')}
               </p>
             </form>
           </motion.div>

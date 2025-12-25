@@ -117,51 +117,52 @@
     }
   },
   "about": {
-    "subtitle": "Our Story",
+    "subtitle": "About Us",
     "title": "A Legacy of",
     "titleHighlight": "Excellence",
-    "description": "Founded on the principle that true luxury is personal, Prime Luxury Stays has become the trusted choice for discerning travelers seeking extraordinary private residences.",
-    "commitment": "Our commitment to excellence extends beyond beautiful properties. We believe in creating lasting relationships, understanding that each guest's journey is unique.",
-    "values": {
-      "curated": {
-        "title": "Curated Excellence",
-        "description": "Every property personally inspected and approved"
-      },
-      "service": {
-        "title": "Unmatched Service",
-        "description": "Dedicated concierge team available throughout your stay"
-      },
-      "privacy": {
-        "title": "Complete Privacy",
-        "description": "Discretion and confidentiality are paramount"
-      }
+    "description": "Prime Luxury Stays represents the next evolution in luxury property management. We've assembled a team of industry veterans who share a singular vision: to deliver experiences that redefine what it means to travel in luxury.",
+    "description2": "Our portfolio is carefully curated to include only the most exceptional properties—estates that offer not just accommodation, but transformation. Each residence tells its own story of architectural brilliance, breathtaking locations, and uncompromising attention to detail.",
+    "established": "Est. 2024",
+    "newEra": "New Era of Luxury",
+    "floatingCard": "Building on decades of industry expertise under a new vision.",
+    "highlights": {
+      "excellence": "Excellence",
+      "excellenceValue": "Award-Winning Service",
+      "team": "Team",
+      "teamValue": "Expert Curators",
+      "reach": "Reach",
+      "reachValue": "Global Presence",
+      "care": "Care",
+      "careValue": "Personal Touch"
     }
   },
   "contact": {
-    "subtitle": "Get in Touch",
-    "title": "Let's Plan Your",
-    "titleHighlight": "Perfect Stay",
-    "description": "Our concierge team is ready to help you discover the ideal property and create an unforgettable experience.",
+    "subtitle": "Begin Your Journey",
+    "title": "Private Inquiry",
+    "description": "Our portfolio is available exclusively to qualified clients. Submit your inquiry for a personal consultation.",
+    "connectTitle": "Connect With Us",
+    "connectDescription": "Whether you're seeking a Mediterranean villa, an alpine retreat, or a beachfront estate, our team is ready to curate your perfect experience.",
     "form": {
       "name": "Full Name",
+      "namePlaceholder": "Your name",
       "email": "Email Address",
+      "emailPlaceholder": "your@email.com",
       "phone": "Phone Number",
-      "destination": "Preferred Destination",
-      "selectDestination": "Select a destination",
-      "dates": "Preferred Dates",
-      "guests": "Number of Guests",
-      "message": "Tell us about your ideal stay...",
-      "submit": "Send Inquiry",
+      "messageLabel": "Tell Us About Your Ideal Stay",
+      "message": "Destination preferences, dates, group size, special requirements...",
+      "submit": "Submit Inquiry",
       "submitting": "Sending...",
-      "success": "Thank you for your inquiry! Our team will contact you within 24 hours.",
-      "error": "Something went wrong. Please try again or contact us directly."
+      "thankYou": "Thank You!",
+      "success": "We've received your inquiry and will be in touch within 2 hours.",
+      "error": "Something went wrong. Please try again or contact us directly.",
+      "privacyNote": "By submitting this form, you agree to our privacy policy. Your information will be kept strictly confidential."
     },
     "info": {
       "phone": "Phone",
       "email": "Email",
-      "headquarters": "Headquarters",
+      "offices": "Offices",
       "response": "Quick Response",
-      "responseTime": "Our concierge team responds within 2 hours"
+      "responseTime": "Our concierge team responds to all inquiries within 2 hours."
     }
   },
   "footer": {

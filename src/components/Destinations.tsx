@@ -4,6 +4,7 @@ import { motion, useInView } from 'framer-motion'
 import { useRef } from 'react'
 import { ArrowRight, MapPin, Star, Home } from 'lucide-react'
 import Link from 'next/link'
+import { useLocale } from '@/i18n/LocaleProvider'
 
 // Mallorca regions with our properties
 const mallorcaRegions = [
@@ -60,6 +61,7 @@ const ibizaHighlights = [
 export default function Destinations() {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: '-100px' })
+  const { t } = useLocale()
 
   return (
     <section id="destinations" ref={ref} className="py-16 lg:py-20 pattern-bg">
@@ -76,22 +78,21 @@ export default function Destinations() {
               <div className="flex items-center gap-2 mb-3">
                 <MapPin className="w-5 h-5 text-gold-500" />
                 <p className="text-gold-600 text-sm font-semibold tracking-[0.2em] uppercase">
-                  Mallorca, Spain
+                  {t('destinations.mallorca.location')}
                 </p>
               </div>
               <h2 className="font-merriweather text-3xl md:text-4xl lg:text-5xl text-charcoal-900">
-                Explore the Island
+                {t('destinations.mallorca.title')}
               </h2>
               <p className="text-charcoal-500 mt-3 max-w-xl">
-                Discover our handpicked collection of luxury properties across Mallorca's 
-                most prestigious locations.
+                {t('destinations.mallorca.description')}
               </p>
             </div>
             <Link 
               href="/mallorca" 
               className="inline-flex items-center gap-2 text-gold-600 hover:text-gold-700 font-medium transition-colors group"
             >
-              View all properties
+              {t('destinations.mallorca.viewAll')}
               <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
             </Link>
           </div>
@@ -152,14 +153,13 @@ export default function Destinations() {
           className="mt-16 bg-gradient-to-r from-gold-500 to-gold-600 rounded-3xl p-8 md:p-12 text-center"
         >
           <h3 className="font-merriweather text-2xl md:text-3xl text-white mb-4">
-            Ready to Discover Mallorca?
+            {t('destinations.mallorca.cta.title')}
           </h3>
           <p className="text-white/90 mb-8 max-w-2xl mx-auto">
-            Explore our complete collection of luxury villas and fincas across the island. 
-            Each property is personally vetted to ensure an exceptional experience.
+            {t('destinations.mallorca.cta.description')}
           </p>
           <Link href="/mallorca" className="inline-flex items-center gap-2 bg-white text-gold-600 px-8 py-4 rounded-xl font-semibold hover:bg-cream-50 transition-colors">
-            Explore Mallorca
+            {t('destinations.mallorca.cta.button')}
             <ArrowRight className="w-5 h-5" />
           </Link>
         </motion.div>
@@ -177,22 +177,21 @@ export default function Destinations() {
               <div className="flex items-center gap-2 mb-3">
                 <MapPin className="w-5 h-5 text-gold-500" />
                 <p className="text-gold-600 text-sm font-semibold tracking-[0.2em] uppercase">
-                  Ibiza, Spain
+                  {t('destinations.ibiza.location')}
                 </p>
               </div>
               <h2 className="font-merriweather text-3xl md:text-4xl lg:text-5xl text-charcoal-900">
-                The White Isle
+                {t('destinations.ibiza.title')}
               </h2>
               <p className="text-charcoal-500 mt-3 max-w-xl">
-                Experience the magic of Ibiza with our exclusive collection of luxury villas 
-                featuring stunning views and world-class amenities.
+                {t('destinations.ibiza.description')}
               </p>
             </div>
             <Link 
               href="/ibiza" 
               className="inline-flex items-center gap-2 text-gold-600 hover:text-gold-700 font-medium transition-colors group"
             >
-              View Ibiza properties
+              {t('destinations.ibiza.viewAll')}
               <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
             </Link>
           </div>
@@ -239,14 +238,13 @@ export default function Destinations() {
             className="mt-12 bg-charcoal-900 rounded-3xl p-8 md:p-12 text-center"
           >
             <h3 className="font-merriweather text-2xl md:text-3xl text-white mb-4">
-              Discover Ibiza's Finest
+              {t('destinations.ibiza.cta.title')}
             </h3>
             <p className="text-white/70 mb-8 max-w-2xl mx-auto">
-              From bohemian-chic retreats to ultra-modern estates, find your perfect 
-              Ibiza escape with our curated collection.
+              {t('destinations.ibiza.cta.description')}
             </p>
             <Link href="/ibiza" className="inline-flex items-center gap-2 bg-gold-500 text-white px-8 py-4 rounded-xl font-semibold hover:bg-gold-600 transition-colors">
-              Explore Ibiza
+              {t('destinations.ibiza.cta.button')}
               <ArrowRight className="w-5 h-5" />
             </Link>
           </motion.div>

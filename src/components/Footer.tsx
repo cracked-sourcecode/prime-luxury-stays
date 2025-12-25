@@ -76,7 +76,7 @@ export default function Footer() {
             {/* Mobile: Links below in horizontal grid */}
             <div className="grid grid-cols-3 gap-4 pt-6 border-t border-gray-100">
               <div>
-                <h4 className="font-semibold text-charcoal-900 text-sm mb-3">Destinations</h4>
+                <h4 className="font-semibold text-charcoal-900 text-sm mb-3">{t('footer.destinations')}</h4>
                 <ul className="space-y-2">
                   {footerLinks.destinations.map((link) => (
                     <li key={link.name}>
@@ -88,7 +88,7 @@ export default function Footer() {
                 </ul>
               </div>
               <div>
-                <h4 className="font-semibold text-charcoal-900 text-sm mb-3">Services</h4>
+                <h4 className="font-semibold text-charcoal-900 text-sm mb-3">{t('footer.services')}</h4>
                 <ul className="space-y-2">
                   {footerLinks.services.map((link) => (
                     <li key={link.name}>
@@ -100,7 +100,7 @@ export default function Footer() {
                 </ul>
               </div>
               <div>
-                <h4 className="font-semibold text-charcoal-900 text-sm mb-3">Company</h4>
+                <h4 className="font-semibold text-charcoal-900 text-sm mb-3">{t('footer.company')}</h4>
                 <ul className="space-y-2">
                   {footerLinks.company.map((link) => (
                     <li key={link.name}>
@@ -128,7 +128,7 @@ export default function Footer() {
                 </div>
               </div>
               <p className="text-charcoal-500 leading-relaxed mb-4 max-w-sm">
-                Curating extraordinary experiences in the world's most exceptional private residences. Where luxury meets legacy.
+                {t('footer.tagline')}
               </p>
               <div className="text-charcoal-500 text-sm mb-4 space-y-1">
                 <p>
@@ -142,7 +142,7 @@ export default function Footer() {
                 <p><a href="mailto:info@primeluxurystays.com" className="hover:text-gold-600 transition-colors">info@primeluxurystays.com</a></p>
               </div>
               <p className="text-charcoal-500 text-sm mb-4">Miami, Florida / Munich, Germany</p>
-              <p className="text-xs text-charcoal-400 mb-6">EU & US Registered Business</p>
+              <p className="text-xs text-charcoal-400 mb-6">{t('footer.registered')}</p>
               <div className="flex items-center gap-3">
                 {[Instagram, Linkedin, Facebook].map((Icon, index) => (
                   <motion.a key={index} href="#" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
@@ -155,7 +155,7 @@ export default function Footer() {
 
             {/* Links Columns */}
             <div>
-              <h4 className="font-semibold text-charcoal-900 mb-5">Destinations</h4>
+              <h4 className="font-semibold text-charcoal-900 mb-5">{t('footer.destinations')}</h4>
               <ul className="space-y-3">
                 {footerLinks.destinations.map((link) => (
                   <li key={link.name}>
@@ -165,7 +165,7 @@ export default function Footer() {
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold text-charcoal-900 mb-5">Services</h4>
+              <h4 className="font-semibold text-charcoal-900 mb-5">{t('footer.services')}</h4>
               <ul className="space-y-3">
                 {footerLinks.services.map((link) => (
                   <li key={link.name}>
@@ -175,7 +175,7 @@ export default function Footer() {
               </ul>
             </div>
             <div>
-              <h4 className="font-semibold text-charcoal-900 mb-5">Company</h4>
+              <h4 className="font-semibold text-charcoal-900 mb-5">{t('footer.company')}</h4>
               <ul className="space-y-3">
                 {footerLinks.company.map((link) => (
                   <li key={link.name}>
@@ -191,13 +191,13 @@ export default function Footer() {
         <div className="py-4 md:py-6 border-t border-gray-100">
           <div className="flex flex-col md:flex-row items-center justify-between gap-3 text-center md:text-left">
             <p className="text-charcoal-400 text-sm">
-              © {currentYear} Prime Luxury Stays. All rights reserved.
+              {t('footer.copyright').replace('{year}', currentYear.toString())}
             </p>
             <div className="flex items-center gap-4 md:gap-6 flex-wrap justify-center md:justify-end">
-              <a href="#" className="text-charcoal-400 hover:text-gold-600 text-sm transition-colors">Privacy</a>
-              <a href="#" className="text-charcoal-400 hover:text-gold-600 text-sm transition-colors">Terms</a>
-              <a href="#" className="text-charcoal-400 hover:text-gold-600 text-sm transition-colors">Cookies</a>
-              <a href="/legal-notice" className="text-charcoal-400 hover:text-gold-600 text-sm transition-colors">Legal</a>
+              <a href="#" className="text-charcoal-400 hover:text-gold-600 text-sm transition-colors">{t('footer.privacy')}</a>
+              <a href="#" className="text-charcoal-400 hover:text-gold-600 text-sm transition-colors">{t('footer.terms')}</a>
+              <a href="#" className="text-charcoal-400 hover:text-gold-600 text-sm transition-colors">{t('footer.cookies')}</a>
+              <a href="/legal-notice" className="text-charcoal-400 hover:text-gold-600 text-sm transition-colors">{t('footer.legal')}</a>
             </div>
           </div>
         </div>

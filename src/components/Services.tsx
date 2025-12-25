@@ -13,61 +13,63 @@ import {
   Navigation,
   Building
 } from 'lucide-react'
-
-const services = [
-  {
-    icon: Utensils,
-    title: 'Table Reservations',
-    description: 'Priority bookings at the finest restaurants and exclusive dining venues.',
-    slug: 'table-reservations',
-  },
-  {
-    icon: Plane,
-    title: 'Private Aviation',
-    description: 'Seamless private jet arrangements to and from your destination.',
-    slug: 'private-aviation',
-  },
-  {
-    icon: Sparkles,
-    title: 'Private Chef',
-    description: 'World-class chefs creating bespoke culinary experiences in your residence.',
-    slug: 'private-chef',
-  },
-  {
-    icon: Car,
-    title: 'Luxury Transport',
-    description: 'Premium vehicle fleet including supercars and chauffeur services.',
-    slug: 'luxury-transport',
-  },
-  {
-    icon: Building,
-    title: 'Travel Bookings',
-    description: 'Luxury hotel reservations and travel coordination beyond your villa stay.',
-    slug: 'travel-bookings',
-  },
-  {
-    icon: Shield,
-    title: 'Privacy & Security',
-    description: 'Discreet security arrangements and complete confidentiality guaranteed.',
-    slug: 'privacy-security',
-  },
-  {
-    icon: Ship,
-    title: 'Yacht Charter',
-    description: 'Luxury yacht experiences from intimate day sails to multi-day Mediterranean voyages.',
-    slug: 'yacht-charter',
-  },
-  {
-    icon: Navigation,
-    title: 'Helicopter Transport',
-    description: 'Swift helicopter transfers and scenic tours across the islands.',
-    slug: 'helicopter',
-  },
-]
+import { useLocale } from '@/i18n/LocaleProvider'
 
 export default function Services() {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: '-100px' })
+  const { t } = useLocale()
+
+  const services = [
+    {
+      icon: Utensils,
+      title: t('services.items.tableReservations.title'),
+      description: t('services.items.tableReservations.description'),
+      slug: 'table-reservations',
+    },
+    {
+      icon: Plane,
+      title: t('services.items.privateAviation.title'),
+      description: t('services.items.privateAviation.description'),
+      slug: 'private-aviation',
+    },
+    {
+      icon: Sparkles,
+      title: t('services.items.privateChef.title'),
+      description: t('services.items.privateChef.description'),
+      slug: 'private-chef',
+    },
+    {
+      icon: Car,
+      title: t('services.items.luxuryTransport.title'),
+      description: t('services.items.luxuryTransport.description'),
+      slug: 'luxury-transport',
+    },
+    {
+      icon: Building,
+      title: t('services.items.travelBookings.title'),
+      description: t('services.items.travelBookings.description'),
+      slug: 'travel-bookings',
+    },
+    {
+      icon: Shield,
+      title: t('services.items.privacySecurity.title'),
+      description: t('services.items.privacySecurity.description'),
+      slug: 'privacy-security',
+    },
+    {
+      icon: Ship,
+      title: t('services.items.yachtCharter.title'),
+      description: t('services.items.yachtCharter.description'),
+      slug: 'yacht-charter',
+    },
+    {
+      icon: Navigation,
+      title: t('services.items.helicopter.title'),
+      description: t('services.items.helicopter.description'),
+      slug: 'helicopter',
+    },
+  ]
 
   return (
     <section id="services" ref={ref} className="py-16 lg:py-20 bg-white">
@@ -80,15 +82,14 @@ export default function Services() {
           className="text-center mb-16"
         >
           <p className="text-gold-600 text-sm font-semibold tracking-[0.2em] uppercase mb-3">
-            Bespoke Services
+            {t('services.subtitle')}
           </p>
           <h2 className="font-merriweather text-3xl md:text-4xl lg:text-5xl text-charcoal-900 mb-6">
-            Beyond Accommodation
+            {t('services.title')}
           </h2>
           <div className="h-1 w-16 bg-gradient-to-r from-gold-500 to-gold-300 rounded-full mx-auto mb-6" />
           <p className="text-charcoal-500 text-lg max-w-2xl mx-auto">
-            Every detail meticulously orchestrated to create an experience 
-            that transcends expectations.
+            {t('services.description')}
           </p>
         </motion.div>
 

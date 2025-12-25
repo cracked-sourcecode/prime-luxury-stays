@@ -117,51 +117,52 @@
     }
   },
   "about": {
-    "subtitle": "Unsere Geschichte",
+    "subtitle": "Über Uns",
     "title": "Ein Vermächtnis der",
     "titleHighlight": "Exzellenz",
-    "description": "Gegründet auf dem Prinzip, dass wahrer Luxus persönlich ist, ist Prime Luxury Stays zur vertrauenswürdigen Wahl für anspruchsvolle Reisende geworden, die außergewöhnliche private Residenzen suchen.",
-    "commitment": "Unser Engagement für Exzellenz geht über schöne Immobilien hinaus. Wir glauben daran, dauerhafte Beziehungen aufzubauen und zu verstehen, dass die Reise jedes Gastes einzigartig ist.",
-    "values": {
-      "curated": {
-        "title": "Kuratierte Exzellenz",
-        "description": "Jede Immobilie persönlich inspiziert und genehmigt"
-      },
-      "service": {
-        "title": "Unübertroffener Service",
-        "description": "Engagiertes Concierge-Team während Ihres gesamten Aufenthalts verfügbar"
-      },
-      "privacy": {
-        "title": "Vollständige Privatsphäre",
-        "description": "Diskretion und Vertraulichkeit sind oberstes Gebot"
-      }
+    "description": "Prime Luxury Stays repräsentiert die nächste Evolution im Luxus-Immobilienmanagement. Wir haben ein Team von Branchenveteranen zusammengestellt, die eine einzige Vision teilen: Erlebnisse zu liefern, die neu definieren, was es bedeutet, in Luxus zu reisen.",
+    "description2": "Unser Portfolio ist sorgfältig kuratiert und umfasst nur die außergewöhnlichsten Immobilien – Anwesen, die nicht nur Unterkunft, sondern Transformation bieten. Jede Residenz erzählt ihre eigene Geschichte von architektonischer Brillanz, atemberaubenden Lagen und kompromissloser Liebe zum Detail.",
+    "established": "Gegr. 2024",
+    "newEra": "Neue Ära des Luxus",
+    "floatingCard": "Aufbauend auf jahrzehntelanger Branchenexpertise unter einer neuen Vision.",
+    "highlights": {
+      "excellence": "Exzellenz",
+      "excellenceValue": "Preisgekrönter Service",
+      "team": "Team",
+      "teamValue": "Experten-Kuratoren",
+      "reach": "Reichweite",
+      "reachValue": "Globale Präsenz",
+      "care": "Fürsorge",
+      "careValue": "Persönliche Note"
     }
   },
   "contact": {
-    "subtitle": "Kontaktieren Sie Uns",
-    "title": "Lassen Sie uns Ihren",
-    "titleHighlight": "Perfekten Aufenthalt Planen",
-    "description": "Unser Concierge-Team steht bereit, um Ihnen bei der Suche nach der idealen Immobilie zu helfen und ein unvergessliches Erlebnis zu schaffen.",
+    "subtitle": "Beginnen Sie Ihre Reise",
+    "title": "Private Anfrage",
+    "description": "Unser Portfolio ist exklusiv für qualifizierte Kunden verfügbar. Senden Sie Ihre Anfrage für eine persönliche Beratung.",
+    "connectTitle": "Kontaktieren Sie Uns",
+    "connectDescription": "Ob Sie eine mediterrane Villa, ein alpines Refugium oder ein Anwesen am Strand suchen – unser Team ist bereit, Ihr perfektes Erlebnis zu kuratieren.",
     "form": {
       "name": "Vollständiger Name",
+      "namePlaceholder": "Ihr Name",
       "email": "E-Mail-Adresse",
+      "emailPlaceholder": "ihre@email.de",
       "phone": "Telefonnummer",
-      "destination": "Bevorzugtes Reiseziel",
-      "selectDestination": "Reiseziel auswählen",
-      "dates": "Bevorzugte Daten",
-      "guests": "Anzahl der Gäste",
-      "message": "Erzählen Sie uns von Ihrem idealen Aufenthalt...",
-      "submit": "Anfrage Senden",
+      "messageLabel": "Erzählen Sie uns von Ihrem idealen Aufenthalt",
+      "message": "Reiseziel-Präferenzen, Daten, Gruppengröße, besondere Anforderungen...",
+      "submit": "Anfrage Absenden",
       "submitting": "Wird gesendet...",
-      "success": "Vielen Dank für Ihre Anfrage! Unser Team wird Sie innerhalb von 24 Stunden kontaktieren.",
-      "error": "Etwas ist schief gelaufen. Bitte versuchen Sie es erneut oder kontaktieren Sie uns direkt."
+      "thankYou": "Vielen Dank!",
+      "success": "Wir haben Ihre Anfrage erhalten und werden uns innerhalb von 2 Stunden bei Ihnen melden.",
+      "error": "Etwas ist schief gelaufen. Bitte versuchen Sie es erneut oder kontaktieren Sie uns direkt.",
+      "privacyNote": "Mit dem Absenden dieses Formulars stimmen Sie unserer Datenschutzrichtlinie zu. Ihre Informationen werden streng vertraulich behandelt."
     },
     "info": {
       "phone": "Telefon",
       "email": "E-Mail",
-      "headquarters": "Hauptsitz",
+      "offices": "Büros",
       "response": "Schnelle Antwort",
-      "responseTime": "Unser Concierge-Team antwortet innerhalb von 2 Stunden"
+      "responseTime": "Unser Concierge-Team antwortet auf alle Anfragen innerhalb von 2 Stunden."
     }
   },
   "footer": {

@@ -3,24 +3,26 @@
 import { motion, useInView, useScroll, useTransform } from 'framer-motion'
 import { useRef } from 'react'
 import { Check } from 'lucide-react'
-
-const stats = [
-  { value: '800+', label: 'Happy Guests' },
-  { value: '14', label: 'Exclusive Villas' },
-  { value: 'Direct', label: 'Best Rate Guarantee' },
-  { value: 'EU & US', label: 'Operations' },
-]
-
-const features = [
-  'Personally vetted luxury properties',
-  'White-glove concierge service',
-  'Bespoke travel experiences',
-  'Complete privacy guaranteed',
-]
+import { useLocale } from '@/i18n/LocaleProvider'
 
 export default function Experience() {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: '-100px' })
+  const { t } = useLocale()
+
+  const stats = [
+    { value: '800+', label: t('experience.stats.happyGuests') },
+    { value: '14', label: t('experience.stats.exclusiveVillas') },
+    { value: 'Direct', label: t('experience.stats.directBooking') },
+    { value: 'EU & US', label: t('experience.stats.operations') },
+  ]
+
+  const features = [
+    t('experience.features.vetted'),
+    t('experience.features.concierge'),
+    t('experience.features.experiences'),
+    t('experience.features.privacy'),
+  ]
   
   const containerRef = useRef(null)
   const { scrollYProgress } = useScroll({
@@ -48,24 +50,19 @@ export default function Experience() {
             transition={{ duration: 0.8 }}
           >
             <p className="text-gold-600 text-sm font-semibold tracking-[0.2em] uppercase mb-4">
-              The Experience
+              {t('experience.subtitle')}
             </p>
             <h2 className="font-merriweather text-3xl md:text-4xl lg:text-5xl text-charcoal-900 mb-6 leading-tight">
-              Redefining
+              {t('experience.title')}
               <br />
-              <span className="text-gold-gradient">Luxury Living</span>
+              <span className="text-gold-gradient">{t('experience.titleHighlight')}</span>
             </h2>
             <div className="h-1 w-16 bg-gradient-to-r from-gold-500 to-gold-300 rounded-full mb-8" />
             <p className="text-charcoal-600 text-lg leading-relaxed mb-6">
-              At Prime Luxury Stays, we curate more than accommodations—we craft 
-              unforgettable experiences. Each property in our portfolio is 
-              handpicked for its exceptional character, premium amenities, and 
-              unparalleled locations.
+              {t('experience.description1')}
             </p>
             <p className="text-charcoal-500 leading-relaxed mb-10">
-              Our dedicated concierge team ensures every aspect of your stay 
-              exceeds expectations, from private chef arrangements to exclusive 
-              local experiences that money can't normally buy.
+              {t('experience.description2')}
             </p>
 
             {/* Features List */}
@@ -120,10 +117,10 @@ export default function Experience() {
               {/* Quote */}
               <div className="text-center">
                 <p className="font-merriweather text-xl text-charcoal-700 italic mb-4">
-                  "Excellence is not a destination but a continuous journey."
+                  {t('experience.quote')}
                 </p>
                 <p className="text-gold-600 text-sm font-semibold tracking-wide">
-                  — Our Philosophy
+                  {t('experience.quoteAuthor')}
                 </p>
               </div>
             </div>
@@ -140,8 +137,8 @@ export default function Experience() {
                   <span className="text-white font-merriweather text-xl">P</span>
                 </div>
                 <div>
-                  <div className="text-charcoal-900 font-semibold">Trusted by</div>
-                  <div className="text-gold-700 text-sm">Elite Travelers Worldwide</div>
+                  <div className="text-charcoal-900 font-semibold">{t('experience.trusted')}</div>
+                  <div className="text-gold-700 text-sm">{t('experience.trustedSub')}</div>
                 </div>
               </div>
             </motion.div>

@@ -3,19 +3,21 @@
 import { motion, useInView } from 'framer-motion'
 import { useRef } from 'react'
 import { Award, Users, Globe, Heart } from 'lucide-react'
+import { useLocale } from '@/i18n/LocaleProvider'
 
 const LOGO_URL = 'https://storage.googleapis.com/primeluxurystays/Logo%20no%20text%20(global%20header).png'
-
-const highlights = [
-  { icon: Award, label: 'Excellence', value: 'Award-Winning Service' },
-  { icon: Users, label: 'Team', value: 'Expert Curators' },
-  { icon: Globe, label: 'Reach', value: 'Global Presence' },
-  { icon: Heart, label: 'Care', value: 'Personal Touch' },
-]
 
 export default function About() {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: '-100px' })
+  const { t } = useLocale()
+  
+  const highlights = [
+    { icon: Award, label: t('about.highlights.excellence'), value: t('about.highlights.excellenceValue') },
+    { icon: Users, label: t('about.highlights.team'), value: t('about.highlights.teamValue') },
+    { icon: Globe, label: t('about.highlights.reach'), value: t('about.highlights.reachValue') },
+    { icon: Heart, label: t('about.highlights.care'), value: t('about.highlights.careValue') },
+  ]
 
   return (
     <section id="about" ref={ref} className="py-16 lg:py-20 relative overflow-hidden">
@@ -62,12 +64,12 @@ export default function About() {
                     />
                   </div>
                   <div>
-                    <div className="text-charcoal-900 font-semibold">Est. 2024</div>
-                    <div className="text-gold-600 text-sm">New Era of Luxury</div>
+                    <div className="text-charcoal-900 font-semibold">{t('about.established')}</div>
+                    <div className="text-gold-600 text-sm">{t('about.newEra')}</div>
                   </div>
                 </div>
                 <p className="text-charcoal-500 text-sm">
-                  Building on decades of industry expertise under a new vision.
+                  {t('about.floatingCard')}
                 </p>
               </motion.div>
             </div>
@@ -81,28 +83,21 @@ export default function About() {
             className="order-1 lg:order-2"
           >
             <p className="text-gold-600 text-sm font-semibold tracking-[0.2em] uppercase mb-4">
-              About Us
+              {t('about.subtitle')}
             </p>
             <h2 className="font-merriweather text-3xl md:text-4xl lg:text-5xl text-charcoal-900 mb-6" style={{ lineHeight: '1.3' }}>
-              A Legacy of
+              {t('about.title')}
               <br />
-              <span className="text-gold-gradient">Excellence</span>
+              <span className="text-gold-gradient">{t('about.titleHighlight')}</span>
             </h2>
             <div className="h-1 w-16 bg-gradient-to-r from-gold-500 to-gold-300 rounded-full mb-8" />
 
             <div className="space-y-5 text-charcoal-600 leading-relaxed">
               <p>
-                Prime Luxury Stays represents the next evolution in luxury 
-                property management. We've assembled a team of industry veterans 
-                who share a singular vision: to deliver experiences that redefine 
-                what it means to travel in luxury.
+                {t('about.description')}
               </p>
               <p>
-                Our portfolio is carefully curated to include only the most 
-                exceptional properties—estates that offer not just accommodation, 
-                but transformation. Each residence tells its own story of 
-                architectural brilliance, breathtaking locations, and uncompromising 
-                attention to detail.
+                {t('about.description2')}
               </p>
             </div>
 
