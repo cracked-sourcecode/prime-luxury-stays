@@ -166,10 +166,10 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
   const orderedRegions = ['Mallorca', 'Ibiza', 'South of France'].filter(r => propertiesByRegion[r]?.length > 0)
 
   return (
-    <div className="overflow-hidden">
+    <div>
       {/* ========== HERO WITH SEARCH ========== */}
-      <section ref={heroRef} className="relative h-[70vh] min-h-[500px]">
-        <motion.div style={{ y: heroY }} className="absolute inset-0">
+      <section ref={heroRef} className="relative h-[70vh] min-h-[500px] overflow-hidden">
+        <motion.div style={{ y: heroY }} className="absolute inset-0 -z-10">
           <img
             src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1920&q=80"
             alt="Luxury Properties"
@@ -397,7 +397,7 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
 
       {/* ========== FEATURED PROPERTIES SHOWCASE ========== */}
       {featuredProperties.length > 0 && (
-        <section className="py-20 bg-white">
+        <section className="py-20 bg-white relative z-10">
           <div className="max-w-7xl mx-auto px-6 lg:px-8">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -456,7 +456,7 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
       )}
 
       {/* ========== WHY BOOK WITH US ========== */}
-      <section className="py-20 bg-cream-50">
+      <section className="py-20 bg-cream-50 relative z-10">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <motion.div
@@ -538,7 +538,7 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
       </section>
 
       {/* ========== ALL PROPERTIES ========== */}
-      <section id="properties" className="py-20 bg-white">
+      <section id="properties" className="py-20 bg-white relative z-10">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           {/* Section Header */}
           <motion.div
@@ -830,7 +830,7 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
       </section>
 
       {/* ========== CTA ========== */}
-      <section className="py-20 bg-charcoal-900">
+      <section className="py-20 bg-charcoal-900 relative z-10">
         <div className="max-w-4xl mx-auto px-6 text-center">
           <h2 className="font-merriweather text-3xl md:text-4xl text-white mb-6">
             Can't Find What You're Looking For?
