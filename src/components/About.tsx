@@ -83,7 +83,7 @@ export default function About() {
             <p className="text-gold-600 text-sm font-semibold tracking-[0.2em] uppercase mb-4">
               About Us
             </p>
-            <h2 className="font-merriweather text-3xl md:text-4xl lg:text-5xl text-charcoal-900 mb-6 leading-snug">
+            <h2 className="font-merriweather text-3xl md:text-4xl lg:text-5xl text-charcoal-900 mb-6" style={{ lineHeight: '1.3' }}>
               A Legacy of
               <br />
               <span className="text-gold-gradient">Excellence</span>
