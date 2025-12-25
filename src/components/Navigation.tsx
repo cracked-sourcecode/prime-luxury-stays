@@ -12,6 +12,18 @@ export default function Navigation() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [showLangMenu, setShowLangMenu] = useState(false)
   const { locale, setLocale, t } = useLocale()
+  
+  // Helper to create locale-aware links
+  const localizeHref = (href: string) => {
+    if (locale === 'de' && !href.startsWith('/de')) {
+      // Add /de prefix for German locale
+      if (href.startsWith('/#')) {
+        return `/de${href}` // /de/#about
+      }
+      return `/de${href}`
+    }
+    return href
+  }
 
   useEffect(() => {
     const handleScroll = () => {
@@ -22,11 +34,11 @@ export default function Navigation() {
   }, [])
 
   const navLinks = [
-    { name: t('nav.about'), href: '/#about' },
-    { name: t('nav.contact'), href: '/#contact' },
-    { name: t('nav.destinations'), href: '/destinations' },
-    { name: t('nav.properties'), href: '/properties' },
-    { name: t('nav.services'), href: '/services' },
+    { name: t('nav.about'), href: localizeHref('/#about') },
+    { name: t('nav.contact'), href: localizeHref('/#contact') },
+    { name: t('nav.destinations'), href: localizeHref('/destinations') },
+    { name: t('nav.properties'), href: localizeHref('/properties') },
+    { name: t('nav.services'), href: localizeHref('/services') },
   ]
 
   return (
@@ -44,7 +56,7 @@ export default function Navigation() {
         <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
           <div className="flex items-center justify-between">
             {/* Logo */}
-            <a href="/" className="flex items-center gap-2.5 md:gap-3 group">
+            <a href={localizeHref('/')} className="flex items-center gap-2.5 md:gap-3 group">
               <div className="relative w-11 h-11 md:w-14 md:h-14 lg:w-16 lg:h-16 flex-shrink-0">
                 <img
                   src={LOGO_URL}
@@ -112,7 +124,7 @@ export default function Navigation() {
               </div>
               
               {/* CTA Button - inline with nav */}
-              <a href="/destinations" className="btn-gold ml-4 relative z-10">
+              <a href={localizeHref('/destinations')} className="btn-gold ml-4 relative z-10">
                 {t('nav.viewDestinations')}
               </a>
             </div>
@@ -147,7 +159,7 @@ export default function Navigation() {
             >
               {/* Header area with logo and close button */}
               <div className="flex items-center justify-between px-4 py-3.5 border-b border-gray-100">
-                <a href="/" className="flex items-center gap-2.5">
+                <a href={localizeHref('/')} className="flex items-center gap-2.5">
                   <div className="w-11 h-11">
                     <img
                       src={LOGO_URL}
@@ -221,7 +233,7 @@ export default function Navigation() {
                     transition={{ delay: 0.5 }}
                     className="mt-8"
                   >
-                    <a href="/destinations" className="btn-gold block text-center">
+                    <a href={localizeHref('/destinations')} className="btn-gold block text-center">
                       {t('nav.viewDestinations')}
                     </a>
                   </motion.div>
