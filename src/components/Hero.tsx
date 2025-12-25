@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import type { Property } from '@/lib/properties'
 import { useLocale } from '@/i18n/LocaleProvider'
+import DatePickerModal from '@/components/DatePickerModal'
 
 const featuredDestinations = [
   { name: 'Mallorca', href: '/mallorca', image: 'https://storage.googleapis.com/primeluxurystays/Mallorca%20Global%20Hero%20Section%20Image' },
@@ -28,6 +29,14 @@ export default function Hero({ heroProperty }: HeroProps) {
   const [destination, setDestination] = useState('')
   const [checkIn, setCheckIn] = useState('')
   const [checkOut, setCheckOut] = useState('')
+  const [showDatePicker, setShowDatePicker] = useState(false)
+  
+  // Format date for display
+  const formatDisplayDate = (dateStr: string) => {
+    if (!dateStr) return locale === 'de' ? 'Wählen' : 'Select'
+    const date = new Date(dateStr)
+    return date.toLocaleDateString(locale === 'de' ? 'de-DE' : 'en-US', { month: 'short', day: 'numeric' })
+  }
 
   const handleSearch = () => {
     const params = new URLSearchParams()
@@ -120,28 +129,22 @@ export default function Hero({ heroProperty }: HeroProps) {
                   </div>
                 </div>
 
-                {/* Check-in Date */}
-                <div className="sm:w-28">
-                  <label className="block text-[10px] font-bold text-charcoal-500 uppercase tracking-wider mb-2">{t('hero.checkIn')}</label>
-                  <input
-                    type="date"
-                    value={checkIn}
-                    onChange={(e) => setCheckIn(e.target.value)}
-                    min={new Date().toISOString().split('T')[0]}
-                    className="w-full bg-transparent border-b-2 border-gray-200 pb-2 text-charcoal-900 font-medium focus:outline-none focus:border-gold-500 cursor-pointer text-sm"
-                  />
-                </div>
-
-                {/* Check-out Date */}
-                <div className="sm:w-28">
-                  <label className="block text-[10px] font-bold text-charcoal-500 uppercase tracking-wider mb-2">{t('hero.checkOut')}</label>
-                  <input
-                    type="date"
-                    value={checkOut}
-                    onChange={(e) => setCheckOut(e.target.value)}
-                    min={checkIn || new Date().toISOString().split('T')[0]}
-                    className="w-full bg-transparent border-b-2 border-gray-200 pb-2 text-charcoal-900 font-medium focus:outline-none focus:border-gold-500 cursor-pointer text-sm"
-                  />
+                {/* Dates - Click to open modal */}
+                <div className="sm:flex-1">
+                  <label className="block text-[10px] font-bold text-charcoal-500 uppercase tracking-wider mb-2">{t('hero.checkIn')} - {t('hero.checkOut')}</label>
+                  <button
+                    type="button"
+                    onClick={() => setShowDatePicker(true)}
+                    className="w-full flex items-center gap-2 bg-transparent border-b-2 border-gray-200 pb-2 text-left focus:outline-none focus:border-gold-500 cursor-pointer"
+                  >
+                    <Calendar className="w-4 h-4 text-gold-500" />
+                    <span className={`text-sm font-medium ${checkIn && checkOut ? 'text-charcoal-900' : 'text-charcoal-400'}`}>
+                      {checkIn && checkOut 
+                        ? `${formatDisplayDate(checkIn)} - ${formatDisplayDate(checkOut)}`
+                        : locale === 'de' ? 'Daten wählen' : 'Select dates'
+                      }
+                    </span>
+                  </button>
                 </div>
 
                 {/* Search Button */}
@@ -279,6 +282,18 @@ export default function Hero({ heroProperty }: HeroProps) {
           </motion.div>
         </div>
       </div>
+      
+      {/* Date Picker Modal */}
+      <DatePickerModal
+        isOpen={showDatePicker}
+        onClose={() => setShowDatePicker(false)}
+        checkIn={checkIn}
+        checkOut={checkOut}
+        onDateSelect={(start, end) => {
+          setCheckIn(start)
+          setCheckOut(end)
+        }}
+      />
     </section>
   )
 }
