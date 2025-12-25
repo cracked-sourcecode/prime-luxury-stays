@@ -19,11 +19,11 @@ export default function Navigation() {
   }, [])
 
   const navLinks = [
+    { name: 'About', href: '/#about' },
+    { name: 'Contact', href: '/#contact' },
     { name: 'Destinations', href: '/destinations' },
     { name: 'Properties', href: '/properties' },
     { name: 'Services', href: '/services' },
-    { name: 'About', href: '/#about' },
-    { name: 'Contact', href: '/#contact' },
   ]
 
   return (

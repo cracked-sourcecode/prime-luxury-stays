@@ -165,6 +165,44 @@ const servicesData: Record<string, {
       { title: 'Exclusive Access', description: 'Reach remote locations with ease' },
     ],
   },
+  'table-reservations': {
+    title: 'Table Reservations',
+    subtitle: 'Priority Access to the Finest Dining',
+    description: 'Secure tables at the most sought-after restaurants and exclusive dining venues. Our relationships with top establishments ensure priority bookings, even at fully-booked locations.',
+    heroImage: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1920&q=80',
+    features: [
+      'Priority bookings at Michelin-starred restaurants',
+      'Exclusive chef\'s table experiences',
+      'Private dining room arrangements',
+      'Special occasion celebrations',
+      'Dietary requirements coordinated in advance',
+      'Last-minute reservation assistance',
+    ],
+    benefits: [
+      { title: 'VIP Access', description: 'Tables at fully-booked restaurants' },
+      { title: 'Local Connections', description: 'Insider relationships with top venues' },
+      { title: 'Seamless Planning', description: 'All details handled for you' },
+    ],
+  },
+  'travel-bookings': {
+    title: 'Travel Bookings',
+    subtitle: 'Luxury Accommodations Beyond Your Villa',
+    description: 'Extend your journey with seamless hotel and travel arrangements. Whether you\'re island hopping or exploring the mainland, we coordinate luxury accommodations and travel logistics worldwide.',
+    heroImage: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1920&q=80',
+    features: [
+      'Luxury hotel reservations worldwide',
+      'Multi-destination itinerary planning',
+      'Boutique and five-star properties',
+      'Suite upgrades and VIP amenities',
+      'Travel insurance coordination',
+      'Complete trip logistics management',
+    ],
+    benefits: [
+      { title: 'Global Network', description: 'Access to the world\'s finest hotels' },
+      { title: 'Preferred Rates', description: 'Exclusive pricing and upgrades' },
+      { title: 'End-to-End Service', description: 'Your entire journey coordinated' },
+    ],
+  },
 }
 
 export async function generateStaticParams() {

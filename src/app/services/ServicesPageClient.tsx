@@ -13,7 +13,8 @@ import {
   Ship, 
   Navigation,
   Phone,
-  Mail
+  Mail,
+  Building
 } from 'lucide-react'
 
 const serviceCategories = [
@@ -53,6 +54,18 @@ const serviceCategories = [
         description: 'Exclusive access to events, reservations, and experiences unavailable elsewhere.',
         slug: 'experiences',
       },
+      {
+        icon: Utensils,
+        title: 'Table Reservations',
+        description: 'Priority bookings at the finest restaurants and exclusive dining venues.',
+        slug: 'table-reservations',
+      },
+      {
+        icon: Building,
+        title: 'Travel Bookings',
+        description: 'Luxury hotel arrangements and travel coordination beyond your villa stay.',
+        slug: 'travel-bookings',
+      },
     ],
   },
   {
@@ -72,19 +85,19 @@ const serviceCategories = [
         description: 'Swift helicopter transfers and scenic tours across the islands.',
         slug: 'helicopter',
       },
+    ],
+  },
+  {
+    title: 'Transportation',
+    subtitle: 'Ground & Sea',
+    description: 'Premium travel by land and water.',
+    services: [
       {
         icon: Car,
         title: 'Luxury Transport',
         description: 'Premium vehicle fleet including supercars and chauffeur services.',
         slug: 'luxury-transport',
       },
-    ],
-  },
-  {
-    title: 'Yacht Charter',
-    subtitle: 'Mediterranean Voyages',
-    description: 'Explore the sea in ultimate luxury.',
-    services: [
       {
         icon: Ship,
         title: 'Yacht Charter',
