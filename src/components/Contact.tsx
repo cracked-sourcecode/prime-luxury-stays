@@ -8,7 +8,7 @@ import { useLocale } from '@/i18n/LocaleProvider'
 export default function Contact() {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: '-100px' })
-  const { t } = useLocale()
+  const { t, locale } = useLocale()
   const [formState, setFormState] = useState({
     name: '',
     email: '',
@@ -34,6 +34,7 @@ export default function Contact() {
           phone: formState.phone || null,
           message: formState.message || null,
           source_url: typeof window !== 'undefined' ? window.location.href : null,
+          locale: locale,
         }),
       })
 

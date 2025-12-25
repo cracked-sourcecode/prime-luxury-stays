@@ -21,6 +21,69 @@ interface InquiryEmailData {
   checkOut?: string | null
   guests?: number | null
   sourceUrl?: string | null
+  locale?: string
+}
+
+// Translation strings for emails
+const emailTranslations = {
+  en: {
+    newInquiry: 'New Inquiry',
+    inquiryFrom: 'from',
+    property: 'Property',
+    checkIn: 'Check-in',
+    checkOut: 'Check-out',
+    nights: 'nights',
+    guests: 'Guests',
+    bedrooms: 'Bedrooms',
+    bathrooms: 'Bathrooms',
+    contactDetails: 'Contact Details',
+    name: 'Name',
+    email: 'Email',
+    phone: 'Phone',
+    message: 'Message',
+    viewInquiry: 'View in Admin',
+    thankYou: 'Thank You for Your Inquiry',
+    confirmationIntro: 'We have received your inquiry and our team will be in touch within 2 hours.',
+    yourInquiry: 'Your Inquiry',
+    yourDetails: 'Your Details',
+    whatNext: 'What Happens Next?',
+    step1: 'Our team is reviewing your inquiry',
+    step2: 'We\'ll confirm availability within 2 hours',
+    step3: 'Personalized booking confirmation',
+    questions: 'Questions?',
+    footer: 'Prime Luxury Stays · Mallorca · Ibiza · All Properties',
+  },
+  de: {
+    newInquiry: 'Neue Anfrage',
+    inquiryFrom: 'von',
+    property: 'Immobilie',
+    checkIn: 'Anreise',
+    checkOut: 'Abreise',
+    nights: 'Nächte',
+    guests: 'Gäste',
+    bedrooms: 'Schlafzimmer',
+    bathrooms: 'Badezimmer',
+    contactDetails: 'Kontaktdaten',
+    name: 'Name',
+    email: 'E-Mail',
+    phone: 'Telefon',
+    message: 'Nachricht',
+    viewInquiry: 'Im Admin Ansehen',
+    thankYou: 'Vielen Dank für Ihre Anfrage',
+    confirmationIntro: 'Wir haben Ihre Anfrage erhalten und unser Team wird sich innerhalb von 2 Stunden bei Ihnen melden.',
+    yourInquiry: 'Ihre Anfrage',
+    yourDetails: 'Ihre Daten',
+    whatNext: 'Wie geht es weiter?',
+    step1: 'Unser Team prüft Ihre Anfrage',
+    step2: 'Wir bestätigen die Verfügbarkeit innerhalb von 2 Stunden',
+    step3: 'Personalisierte Buchungsbestätigung',
+    questions: 'Fragen?',
+    footer: 'Prime Luxury Stays · Mallorca · Ibiza · Alle Immobilien',
+  }
+}
+
+const getT = (locale: string = 'en') => {
+  return emailTranslations[locale as keyof typeof emailTranslations] || emailTranslations.en
 }
 
 const GOLD = '#B8954C'
@@ -240,10 +303,12 @@ Prime Luxury Stays · Exclusive Villas & Estates
 
 function getCustomerEmailTemplate(data: InquiryEmailData): string {
   const firstName = data.fullName.split(' ')[0]
+  const t = getT(data.locale)
+  const isGerman = data.locale === 'de'
 
   const formatDate = (dateStr: string) => {
     try {
-      return new Date(dateStr).toLocaleDateString('en-US', { 
+      return new Date(dateStr).toLocaleDateString(isGerman ? 'de-DE' : 'en-US', { 
         weekday: 'short', month: 'short', day: 'numeric' 
       })
     } catch { return dateStr }
@@ -286,10 +351,10 @@ ${responsiveStyles}
 <tr>
 <td class="content" style="padding:0 40px;">
 <h1 class="heading" style="margin:0 0 16px; font-size:32px; font-weight:normal; color:${CHARCOAL}; line-height:1.2;">
-Thank you, ${firstName}
+${isGerman ? `Vielen Dank, ${firstName}` : `Thank you, ${firstName}`}
 </h1>
 <p class="subheading" style="margin:0 0 32px; font-size:18px; color:#666; line-height:1.5;">
-We've received your inquiry and will respond within <strong style="color:${GOLD};">2 hours</strong> with availability and pricing.
+${t.confirmationIntro}
 </p>
 </td>
 </tr>
@@ -310,14 +375,14 @@ ${data.propertyImage ? `
 ` : ''}
 <tr>
 <td style="padding:20px;">
-<p style="margin:0 0 4px; font-size:11px; color:${GOLD}; text-transform:uppercase; letter-spacing:1px; font-weight:bold;">Your Selection</p>
+<p style="margin:0 0 4px; font-size:11px; color:${GOLD}; text-transform:uppercase; letter-spacing:1px; font-weight:bold;">${isGerman ? 'Ihre Auswahl' : 'Your Selection'}</p>
 <p class="property-title" style="margin:0 0 6px; font-size:20px; color:${CHARCOAL}; font-weight:bold; font-family:Georgia, serif;">
 <a href="https://primeluxurystays.com/properties/${data.propertySlug || ''}" style="color:${CHARCOAL}; text-decoration:none;">${data.propertyName}</a>
 </p>
 ${data.propertyLocation ? `<p class="property-details" style="margin:0 0 8px; font-size:14px; color:#666;">${data.propertyLocation}</p>` : ''}
 ${data.propertyBedrooms || data.propertyBathrooms ? `
 <p class="property-details" style="margin:0; font-size:13px; color:#888;">
-${data.propertyBedrooms ? `${data.propertyBedrooms} bedrooms` : ''}${data.propertyBathrooms ? ` · ${data.propertyBathrooms} baths` : ''}${data.propertyMaxGuests ? ` · Up to ${data.propertyMaxGuests} guests` : ''}
+${data.propertyBedrooms ? `${data.propertyBedrooms} ${t.bedrooms}` : ''}${data.propertyBathrooms ? ` · ${data.propertyBathrooms} ${t.bathrooms}` : ''}${data.propertyMaxGuests ? ` · ${data.propertyMaxGuests} ${t.guests}` : ''}
 </p>
 ` : ''}
 </td>
@@ -334,24 +399,24 @@ ${data.checkIn ? `
 <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:${CREAM}; border-radius:8px;">
 <tr>
 <td style="padding:20px;">
-<p style="margin:0 0 14px; font-size:11px; color:#888; text-transform:uppercase; letter-spacing:1px; font-weight:bold;">Your Request</p>
+<p style="margin:0 0 14px; font-size:11px; color:#888; text-transform:uppercase; letter-spacing:1px; font-weight:bold;">${t.yourInquiry}</p>
 <table width="100%" cellpadding="0" cellspacing="0" border="0">
 <tr>
 <td width="48%" valign="top">
-<p class="date-label" style="margin:0 0 4px; font-size:11px; color:#888; text-transform:uppercase;">Check-in</p>
+<p class="date-label" style="margin:0 0 4px; font-size:11px; color:#888; text-transform:uppercase;">${t.checkIn}</p>
 <p class="date-value" style="margin:0; font-size:16px; color:${CHARCOAL}; font-weight:bold;">${formatDate(data.checkIn)}</p>
 </td>
 <td width="4%"></td>
 <td width="48%" valign="top">
-<p class="date-label" style="margin:0 0 4px; font-size:11px; color:#888; text-transform:uppercase;">Check-out</p>
+<p class="date-label" style="margin:0 0 4px; font-size:11px; color:#888; text-transform:uppercase;">${t.checkOut}</p>
 <p class="date-value" style="margin:0; font-size:16px; color:${CHARCOAL}; font-weight:bold;">${data.checkOut ? formatDate(data.checkOut) : 'TBD'}</p>
 </td>
 </tr>
 </table>
 ${nights || data.guests ? `
 <p style="margin:14px 0 0; font-size:14px;">
-${nights ? `<strong style="color:${GOLD};">${nights} nights</strong>` : ''}
-${data.guests ? `<span style="color:#666; margin-left:14px;">${data.guests} guests</span>` : ''}
+${nights ? `<strong style="color:${GOLD};">${nights} ${t.nights}</strong>` : ''}
+${data.guests ? `<span style="color:#666; margin-left:14px;">${data.guests} ${t.guests}</span>` : ''}
 </p>
 ` : ''}
 </td>
@@ -379,8 +444,8 @@ Browse More Properties
 <!-- Footer -->
 <tr>
 <td class="footer" style="padding:24px 20px; background-color:${CREAM}; text-align:center; border-top:1px solid #e0e0e0;">
-<p style="margin:0 0 8px; font-size:15px; color:${CHARCOAL};">Questions? <a href="mailto:info@primeluxurystays.com" style="color:${GOLD}; text-decoration:none; font-weight:bold;">info@primeluxurystays.com</a></p>
-<p style="margin:0; font-size:14px; color:#666;">Prime Luxury Stays · <a href="https://primeluxurystays.com/mallorca" style="color:${GOLD}; text-decoration:none;">Mallorca</a> · <a href="https://primeluxurystays.com/ibiza" style="color:${GOLD}; text-decoration:none;">Ibiza</a> · <a href="https://primeluxurystays.com/properties" style="color:${GOLD}; text-decoration:none;">All Properties</a></p>
+<p style="margin:0 0 8px; font-size:15px; color:${CHARCOAL};">${t.questions} <a href="mailto:info@primeluxurystays.com" style="color:${GOLD}; text-decoration:none; font-weight:bold;">info@primeluxurystays.com</a></p>
+<p style="margin:0; font-size:14px; color:#666;">Prime Luxury Stays · <a href="https://primeluxurystays.com/mallorca" style="color:${GOLD}; text-decoration:none;">Mallorca</a> · <a href="https://primeluxurystays.com/ibiza" style="color:${GOLD}; text-decoration:none;">Ibiza</a> · <a href="https://primeluxurystays.com/properties" style="color:${GOLD}; text-decoration:none;">${isGerman ? 'Alle Immobilien' : 'All Properties'}</a></p>
 </td>
 </tr>
 

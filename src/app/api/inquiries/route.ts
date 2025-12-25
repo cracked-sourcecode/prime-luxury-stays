@@ -16,6 +16,7 @@ export async function POST(req: NextRequest) {
       phone,
       message,
       source_url,
+      locale,
     } = body ?? {}
 
     if (!full_name || !email) {
@@ -73,6 +74,7 @@ export async function POST(req: NextRequest) {
       checkOut: check_out ?? null,
       guests: typeof guests === 'number' ? guests : null,
       sourceUrl: source_url ?? null,
+      locale: locale ?? 'en',
     }
 
     // Fire and forget - emails should never break the form

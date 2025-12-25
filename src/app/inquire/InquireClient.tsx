@@ -32,7 +32,7 @@ export default function InquireClient({
     guests: number | null
   }
 }) {
-  const { t } = useLocale()
+  const { t, locale } = useLocale()
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
   const [phone, setPhone] = useState('')
@@ -82,6 +82,7 @@ export default function InquireClient({
           phone: phone || null,
           message: message || null,
           source_url: typeof window !== 'undefined' ? window.location.href : null,
+          locale: locale,
         }),
       })
       const data = await res.json()
