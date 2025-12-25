@@ -21,8 +21,8 @@ export default function Navigation() {
   const navLinks = [
     { name: 'Destinations', href: '/destinations' },
     { name: 'Properties', href: '/properties' },
-    { name: 'About', href: '#about' },
-    { name: 'Contact', href: '#contact' },
+    { name: 'About', href: '/#about' },
+    { name: 'Contact', href: '/#contact' },
   ]
 
   return (
