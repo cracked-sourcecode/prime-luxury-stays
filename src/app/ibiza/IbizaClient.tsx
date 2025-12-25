@@ -23,12 +23,14 @@ import {
   Heart
 } from 'lucide-react'
 import type { Property } from '@/lib/properties'
+import { useLocale } from '@/i18n/LocaleProvider'
 
 interface IbizaClientProps {
   properties: Property[];
 }
 
 export default function IbizaClient({ properties }: IbizaClientProps) {
+  const { t } = useLocale()
   const heroRef = useRef(null)
   const { scrollYProgress } = useScroll({
     target: heroRef,
@@ -72,7 +74,7 @@ export default function IbizaClient({ properties }: IbizaClientProps) {
               className="inline-flex items-center gap-2 bg-gold-500/20 backdrop-blur-md text-gold-300 px-6 py-3 rounded-full mb-8 border border-gold-400/30"
             >
               <Sparkles className="w-4 h-4" />
-              <span className="text-sm font-medium tracking-wide">The White Isle</span>
+              <span className="text-sm font-medium tracking-wide">{t('pages.ibiza.badge')}</span>
             </motion.div>
             
             <h1 className="font-merriweather text-5xl md:text-7xl lg:text-8xl text-white mb-8 leading-[0.95]">
@@ -80,24 +82,23 @@ export default function IbizaClient({ properties }: IbizaClientProps) {
             </h1>
             
             <p className="text-white/80 text-xl md:text-2xl max-w-3xl mx-auto mb-12 leading-relaxed font-light">
-              Where bohemian spirit meets ultimate luxury. Where legendary sunsets 
-              paint the sky. Where your most memorable moments await.
+              {t('pages.ibiza.heroSubtitle')}
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-5">
               {hasProperties ? (
                 <a href="#villas" className="btn-gold text-base px-10 py-5 flex items-center gap-2">
-                  <span>Explore Our Villas</span>
+                  <span>{t('pages.ibiza.exploreVillas')}</span>
                   <ArrowRight className="w-5 h-5" />
                 </a>
               ) : (
                 <Link href="/#contact" className="btn-gold text-base px-10 py-5 flex items-center gap-2">
-                  <span>Register Interest</span>
+                  <span>{t('pages.ibiza.registerInterest')}</span>
                   <ArrowRight className="w-5 h-5" />
                 </Link>
               )}
               <Link href="/#contact" className="bg-white/10 backdrop-blur-md text-white px-10 py-5 rounded-xl font-semibold hover:bg-white/20 transition-colors border border-white/20">
-                Request Information
+                {t('pages.ibiza.requestInfo')}
               </Link>
             </div>
           </motion.div>
@@ -114,7 +115,7 @@ export default function IbizaClient({ properties }: IbizaClientProps) {
               transition={{ duration: 2, repeat: Infinity }}
               className="flex flex-col items-center gap-3 text-white/60"
             >
-              <span className="text-xs tracking-[0.3em] uppercase">Discover More</span>
+              <span className="text-xs tracking-[0.3em] uppercase">{t('pages.ibiza.discoverMore')}</span>
               <ChevronDown className="w-6 h-6" />
             </motion.div>
           </motion.div>
@@ -127,16 +128,15 @@ export default function IbizaClient({ properties }: IbizaClientProps) {
           <div className="grid lg:grid-cols-2 gap-20 items-center">
             <div>
               <p className="text-gold-600 text-sm font-semibold tracking-[0.3em] uppercase mb-5">
-                The Prime Luxury Stays Experience
+                {t('pages.ibiza.difference')}
               </p>
               <h2 className="font-merriweather text-3xl md:text-4xl lg:text-5xl text-charcoal-900 mb-8 leading-tight">
-                Ibiza, Redefined.
+                {t('pages.ibiza.diffTitle1')}
                 <br />
-                <span className="text-gold-600">Luxury Without Limits.</span>
+                <span className="text-gold-600">{t('pages.ibiza.diffTitle2')}</span>
               </h2>
               <p className="text-charcoal-500 text-xl mb-10 leading-relaxed">
-                Beyond the clubs and the parties lies another Ibiza—one of hidden coves, 
-                ancient villages, and exclusive estates that the world's most discerning 
+                {t('pages.ibiza.diffDesc')} 
                 travelers call their private paradise.
               </p>
 

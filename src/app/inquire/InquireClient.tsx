@@ -18,6 +18,7 @@ import {
 } from 'lucide-react'
 import type { Property } from '@/lib/properties'
 import DatePickerModal from '@/components/DatePickerModal'
+import { useLocale } from '@/i18n/LocaleProvider'
 
 export default function InquireClient({
   property,
@@ -31,6 +32,7 @@ export default function InquireClient({
     guests: number | null
   }
 }) {
+  const { t } = useLocale()
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
   const [phone, setPhone] = useState('')

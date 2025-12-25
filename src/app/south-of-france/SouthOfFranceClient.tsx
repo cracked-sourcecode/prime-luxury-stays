@@ -23,12 +23,14 @@ import {
   Grape
 } from 'lucide-react'
 import type { Property } from '@/lib/properties'
+import { useLocale } from '@/i18n/LocaleProvider'
 
 interface SouthOfFranceClientProps {
   properties: Property[];
 }
 
 export default function SouthOfFranceClient({ properties }: SouthOfFranceClientProps) {
+  const { t } = useLocale()
   const heroRef = useRef(null)
   const { scrollYProgress } = useScroll({
     target: heroRef,
@@ -72,7 +74,7 @@ export default function SouthOfFranceClient({ properties }: SouthOfFranceClientP
               className="inline-flex items-center gap-2 bg-gold-500/20 backdrop-blur-md text-gold-300 px-6 py-3 rounded-full mb-8 border border-gold-400/30"
             >
               <Sparkles className="w-4 h-4" />
-              <span className="text-sm font-medium tracking-wide">The French Riviera</span>
+              <span className="text-sm font-medium tracking-wide">{t('pages.southOfFrance.badge')}</span>
             </motion.div>
             
             <h1 className="font-merriweather text-5xl md:text-7xl lg:text-8xl text-white mb-8 leading-[0.95]">
@@ -80,24 +82,23 @@ export default function SouthOfFranceClient({ properties }: SouthOfFranceClientP
             </h1>
             
             <p className="text-white/80 text-xl md:text-2xl max-w-3xl mx-auto mb-12 leading-relaxed font-light">
-              Where lavender fields meet azure waters. Where Provençal charm 
-              embraces Riviera glamour. Where timeless elegance awaits.
+              {t('pages.southOfFrance.heroSubtitle')}
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-5">
               {hasProperties ? (
                 <a href="#villas" className="btn-gold text-base px-10 py-5 flex items-center gap-2">
-                  <span>Explore Our Villas</span>
+                  <span>{t('pages.southOfFrance.exploreVillas')}</span>
                   <ArrowRight className="w-5 h-5" />
                 </a>
               ) : (
                 <Link href="/#contact" className="btn-gold text-base px-10 py-5 flex items-center gap-2">
-                  <span>Register Interest</span>
+                  <span>{t('pages.southOfFrance.registerInterest')}</span>
                   <ArrowRight className="w-5 h-5" />
                 </Link>
               )}
               <Link href="/#contact" className="bg-white/10 backdrop-blur-md text-white px-10 py-5 rounded-xl font-semibold hover:bg-white/20 transition-colors border border-white/20">
-                Request Information
+                {t('pages.southOfFrance.requestInfo')}
               </Link>
             </div>
           </motion.div>

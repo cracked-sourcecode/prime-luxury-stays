@@ -25,12 +25,14 @@ import {
 } from 'lucide-react'
 import PropertyMap from '@/components/PropertyMap'
 import type { Property } from '@/lib/properties'
+import { useLocale } from '@/i18n/LocaleProvider'
 
 interface MallorcaClientProps {
   properties: Property[];
 }
 
 export default function MallorcaClient({ properties }: MallorcaClientProps) {
+  const { t } = useLocale()
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null)
   const heroCandidates = [
     'https://storage.googleapis.com/primeluxurystays/Mallorca%20page%20Hero%20Section.png',
@@ -96,7 +98,7 @@ export default function MallorcaClient({ properties }: MallorcaClientProps) {
               className="inline-flex items-center gap-2 bg-gold-500/20 backdrop-blur-md text-gold-300 px-6 py-3 rounded-full mb-8 border border-gold-400/30"
             >
               <Sparkles className="w-4 h-4" />
-              <span className="text-sm font-medium tracking-wide">The Mediterranean's Best Kept Secret</span>
+              <span className="text-sm font-medium tracking-wide">{t('pages.mallorca.badge')}</span>
             </motion.div>
             
             <h1 className="font-merriweather text-5xl md:text-7xl lg:text-8xl text-white mb-8 leading-[0.95]">
@@ -104,17 +106,16 @@ export default function MallorcaClient({ properties }: MallorcaClientProps) {
             </h1>
             
             <p className="text-white/80 text-xl md:text-2xl max-w-3xl mx-auto mb-12 leading-relaxed font-light">
-              Where turquoise waters meet ancient mountains. Where every sunset 
-              feels like the first. Where your private paradise awaits.
+              {t('pages.mallorca.heroSubtitle')}
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-5">
               <a href="#villas" className="btn-gold text-base px-10 py-5 flex items-center gap-2">
-                <span>Explore Our Villas</span>
+                <span>{t('pages.mallorca.exploreVillas')}</span>
                 <ArrowRight className="w-5 h-5" />
               </a>
               <Link href="/#contact" className="bg-white/10 backdrop-blur-md text-white px-10 py-5 rounded-xl font-semibold hover:bg-white/20 transition-colors border border-white/20">
-                Request Information
+                {t('pages.mallorca.requestInfo')}
               </Link>
             </div>
           </motion.div>
@@ -131,7 +132,7 @@ export default function MallorcaClient({ properties }: MallorcaClientProps) {
               transition={{ duration: 2, repeat: Infinity }}
               className="flex flex-col items-center gap-3 text-white/60"
             >
-              <span className="text-xs tracking-[0.3em] uppercase">Discover More</span>
+              <span className="text-xs tracking-[0.3em] uppercase">{t('pages.mallorca.discoverMore')}</span>
               <ChevronDown className="w-6 h-6" />
             </motion.div>
           </motion.div>
@@ -144,16 +145,15 @@ export default function MallorcaClient({ properties }: MallorcaClientProps) {
           <div className="grid lg:grid-cols-2 gap-20 items-center">
             <div>
               <p className="text-gold-600 text-sm font-semibold tracking-[0.3em] uppercase mb-5">
-                The Prime Luxury Stays Difference
+                {t('pages.mallorca.difference')}
               </p>
               <h2 className="font-merriweather text-3xl md:text-4xl lg:text-5xl text-charcoal-900 mb-8 leading-tight">
-                Not Just a Stay.
+                {t('pages.mallorca.diffTitle1')}
                 <br />
-                <span className="text-gold-600">An Experience.</span>
+                <span className="text-gold-600">{t('pages.mallorca.diffTitle2')}</span>
               </h2>
               <p className="text-charcoal-500 text-xl mb-10 leading-relaxed">
-                Every property in our collection has been personally inspected and 
-                approved. We don't just rent houses—we craft memories that last a lifetime.
+                {t('pages.mallorca.diffDesc')}
               </p>
 
               <div className="space-y-6">

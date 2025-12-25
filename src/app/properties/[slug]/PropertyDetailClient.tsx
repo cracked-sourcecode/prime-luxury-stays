@@ -43,6 +43,7 @@ import {
 } from 'lucide-react'
 import type { Property } from '@/lib/properties'
 import BookingCalendar from '@/components/BookingCalendar'
+import { useLocale } from '@/i18n/LocaleProvider'
 
 // Simple image component with loading state and error handling
 function OptimizedImage({ 
@@ -118,6 +119,7 @@ interface PropertyDetailClientProps {
 }
 
 export default function PropertyDetailClient({ property, galleryImages: dbImages }: PropertyDetailClientProps) {
+  const { t } = useLocale()
   const [isLiked, setIsLiked] = useState(false)
   const [showGallery, setShowGallery] = useState(false)
   const [showCalendar, setShowCalendar] = useState(false)
@@ -751,7 +753,7 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
                   className="btn-gold w-full flex items-center justify-center gap-3 text-lg py-5 mb-4"
                 >
                   <Calendar className="w-5 h-5" />
-                  {selectedDates ? 'Request to Book' : 'Check Availability'}
+                  {selectedDates ? t('pages.propertyDetail.requestToBook') : t('pages.propertyDetail.checkAvailability')}
                 </Link>
 
                 <p className="text-center text-charcoal-400 text-sm mb-6">
