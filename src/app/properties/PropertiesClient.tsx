@@ -168,8 +168,8 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
   return (
     <div>
       {/* ========== HERO WITH SEARCH ========== */}
-      <section ref={heroRef} className="relative h-[70vh] min-h-[500px] overflow-hidden">
-        <motion.div style={{ y: heroY }} className="absolute inset-0 -z-10">
+      <section ref={heroRef} className="relative h-[70vh] min-h-[500px] overflow-hidden z-0">
+        <motion.div style={{ y: heroY }} className="absolute inset-0">
           <img
             src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1920&q=80"
             alt="Luxury Properties"
