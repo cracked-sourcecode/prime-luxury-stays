@@ -22,11 +22,11 @@ export default function Navigation() {
   }, [])
 
   const navLinks = [
-    { name: 'About', href: '/#about' },
-    { name: 'Contact', href: '/#contact' },
-    { name: 'Destinations', href: '/destinations' },
-    { name: 'Properties', href: '/properties' },
-    { name: 'Services', href: '/services' },
+    { name: t('nav.about'), href: '/#about' },
+    { name: t('nav.contact'), href: '/#contact' },
+    { name: t('nav.destinations'), href: '/destinations' },
+    { name: t('nav.properties'), href: '/properties' },
+    { name: t('nav.services'), href: '/services' },
   ]
 
   return (
