@@ -1,7 +1,12 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Instagram, Linkedin, Facebook, ArrowUp } from 'lucide-react'
+import { Instagram, Facebook, ArrowUp } from 'lucide-react'
+
+const socialLinks = [
+  { Icon: Instagram, href: 'https://www.instagram.com/primeluxurystays/', label: 'Instagram' },
+  { Icon: Facebook, href: 'https://www.facebook.com/primeluxurystays', label: 'Facebook' },
+]
 import { useLocale } from '@/i18n/LocaleProvider'
 
 const LOGO_URL = 'https://storage.googleapis.com/primeluxurystays/Logo%20no%20text%20(global%20header).png'
@@ -66,9 +71,16 @@ export default function Footer() {
               <p className="text-charcoal-400">{t('footer.registered')}</p>
             </div>
             <div className="flex items-center gap-3 mb-8">
-              {[Instagram, Linkedin, Facebook].map((Icon, index) => (
-                <a key={index} href="#" className="w-10 h-10 rounded-lg bg-cream-100 flex items-center justify-center text-charcoal-600 hover:bg-gold-100 hover:text-gold-700 transition-all">
-                  <Icon className="w-5 h-5" />
+              {socialLinks.map((social) => (
+                <a 
+                  key={social.label} 
+                  href={social.href} 
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={social.label}
+                  className="w-10 h-10 rounded-lg bg-cream-100 flex items-center justify-center text-charcoal-600 hover:bg-gold-100 hover:text-gold-700 transition-all"
+                >
+                  <social.Icon className="w-5 h-5" />
                 </a>
               ))}
             </div>
@@ -144,10 +156,18 @@ export default function Footer() {
               <p className="text-charcoal-500 text-sm mb-4">Miami, Florida / Munich, Germany</p>
               <p className="text-xs text-charcoal-400 mb-6">{t('footer.registered')}</p>
               <div className="flex items-center gap-3">
-                {[Instagram, Linkedin, Facebook].map((Icon, index) => (
-                  <motion.a key={index} href="#" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
-                    className="w-11 h-11 rounded-xl bg-cream-100 flex items-center justify-center text-charcoal-600 hover:bg-gold-100 hover:text-gold-700 transition-all">
-                    <Icon className="w-5 h-5" />
+                {socialLinks.map((social) => (
+                  <motion.a 
+                    key={social.label} 
+                    href={social.href} 
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={social.label}
+                    whileHover={{ scale: 1.05 }} 
+                    whileTap={{ scale: 0.95 }}
+                    className="w-11 h-11 rounded-xl bg-cream-100 flex items-center justify-center text-charcoal-600 hover:bg-gold-100 hover:text-gold-700 transition-all"
+                  >
+                    <social.Icon className="w-5 h-5" />
                   </motion.a>
                 ))}
               </div>
