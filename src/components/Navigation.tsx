@@ -57,7 +57,7 @@ export default function Navigation() {
                   Prime Luxury Stays
                 </h1>
                 <p className="font-merriweather text-[9px] md:text-[10px] tracking-[0.12em] md:tracking-[0.2em] text-gold-500 uppercase">
-                  Property Management
+                  {t('nav.tagline')}
                 </p>
               </div>
             </a>
@@ -157,7 +157,7 @@ export default function Navigation() {
                   </div>
                   <div>
                     <h3 className="font-merriweather text-charcoal-900 text-[15px] leading-tight">Prime Luxury Stays</h3>
-                    <p className="font-merriweather text-[9px] tracking-[0.12em] text-gold-500 uppercase">Property Management</p>
+                    <p className="font-merriweather text-[9px] tracking-[0.12em] text-gold-500 uppercase">{t('nav.tagline')}</p>
                   </div>
                 </a>
                 <button
