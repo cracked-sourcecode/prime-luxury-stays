@@ -1,74 +1,34 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 const locales = ['en', 'de']
-const defaultLocale = 'en'
-
-function getLocaleFromPath(pathname: string): string | null {
-  const segments = pathname.split('/')
-  const potentialLocale = segments[1]
-  if (locales.includes(potentialLocale)) {
-    return potentialLocale
-  }
-  return null
-}
 
 export default function middleware(request: NextRequest) {
-  const pathname = request.nextUrl.pathname
   const hostname = request.headers.get('host') || ''
+  const { searchParams } = request.nextUrl
   
-  // Skip admin, API, static files
-  if (
-    pathname.startsWith('/admin') ||
-    pathname.startsWith('/api') ||
-    pathname.startsWith('/_next') ||
-    pathname.includes('.')
-  ) {
-    return NextResponse.next()
+  // Get lang from query param
+  const langParam = searchParams.get('lang')
+  
+  // Determine locale: query param > cookie > domain > default
+  let locale = 'en'
+  
+  if (langParam && locales.includes(langParam)) {
+    locale = langParam
+  } else {
+    const cookieLocale = request.cookies.get('locale')?.value
+    if (cookieLocale && locales.includes(cookieLocale)) {
+      locale = cookieLocale
+    } else if (hostname.includes('primeluxurystays.de')) {
+      locale = 'de'
+    }
   }
   
-  // Check if locale is already in the path
-  const pathLocale = getLocaleFromPath(pathname)
-  
-  if (pathLocale) {
-    // Strip the locale prefix to get the actual page path
-    const strippedPath = pathname.replace(`/${pathLocale}`, '') || '/'
-    
-    // Create a new URL for the rewrite
-    const rewriteUrl = new URL(strippedPath, request.url)
-    
-    // Rewrite internally to the actual page, but keep the /de/ URL visible
-    const response = NextResponse.rewrite(rewriteUrl)
-    response.cookies.set('locale', pathLocale, { path: '/' })
-    return response
-  }
-  
-  // No locale in path - determine which one to use
-  let locale = defaultLocale
-  
-  // Check cookie first
-  const cookieLocale = request.cookies.get('locale')?.value
-  if (cookieLocale && locales.includes(cookieLocale)) {
-    locale = cookieLocale
-  }
-  
-  // .de domain defaults to German
-  if (hostname.includes('primeluxurystays.de')) {
-    locale = 'de'
-  }
-  
-  // Redirect to localized URL only for German (keep English URLs clean)
-  if (locale === 'de') {
-    const url = request.nextUrl.clone()
-    url.pathname = `/de${pathname}`
-    return NextResponse.redirect(url)
-  }
-  
-  // English locale - set cookie and continue without redirect
+  // Set cookie for locale persistence
   const response = NextResponse.next()
-  response.cookies.set('locale', 'en', { path: '/' })
+  response.cookies.set('locale', locale, { path: '/', maxAge: 60 * 60 * 24 * 365 })
   return response
 }
 
 export const config = {
-  matcher: ['/((?!api|_next|_vercel|admin|.*\\..*).*)']
+  matcher: ['/((?!api|_next|_vercel|.*\\..*).*)']
 }

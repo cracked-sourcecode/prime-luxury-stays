@@ -11,19 +11,7 @@ export default function Navigation() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [showLangMenu, setShowLangMenu] = useState(false)
-  const { locale, setLocale, t } = useLocale()
-  
-  // Helper to create locale-aware links
-  const localizeHref = (href: string) => {
-    if (locale === 'de' && !href.startsWith('/de')) {
-      // Add /de prefix for German locale
-      if (href.startsWith('/#')) {
-        return `/de${href}` // /de/#about
-      }
-      return `/de${href}`
-    }
-    return href
-  }
+  const { locale, setLocale, t, localizeHref } = useLocale()
 
   useEffect(() => {
     const handleScroll = () => {

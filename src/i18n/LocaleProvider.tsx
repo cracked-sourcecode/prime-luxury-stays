@@ -29,14 +29,24 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     setMounted(true)
     
-    // Detect locale from URL path first (e.g., /de/properties)
-    const pathname = window.location.pathname
-    const pathSegments = pathname.split('/')
-    const pathLocale = pathSegments[1]
+    // Priority: URL param > cookie > domain > localStorage > default
+    const urlParams = new URLSearchParams(window.location.search)
+    const langParam = urlParams.get('lang') as Locale
     
-    if (pathLocale && locales.includes(pathLocale as Locale)) {
-      setLocaleState(pathLocale as Locale)
-      localStorage.setItem('locale', pathLocale)
+    if (langParam && locales.includes(langParam)) {
+      setLocaleState(langParam)
+      localStorage.setItem('locale', langParam)
+      return
+    }
+    
+    // Check cookie (set by middleware)
+    const cookieLocale = document.cookie
+      .split('; ')
+      .find(row => row.startsWith('locale='))
+      ?.split('=')[1] as Locale
+    
+    if (cookieLocale && locales.includes(cookieLocale)) {
+      setLocaleState(cookieLocale)
       return
     }
     
@@ -58,24 +68,10 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
     setLocaleState(newLocale)
     localStorage.setItem('locale', newLocale)
     
-    // Navigate to the new locale URL
-    const pathname = window.location.pathname
-    const pathSegments = pathname.split('/')
-    const currentLocale = locales.includes(pathSegments[1] as Locale) ? pathSegments[1] : null
-    
-    if (currentLocale) {
-      // Replace the locale in path
-      pathSegments[1] = newLocale
-      window.location.href = pathSegments.join('/')
-    } else {
-      // Add locale to path (for switching to non-default)
-      if (newLocale === 'de') {
-        window.location.href = `/de${pathname}`
-      } else {
-        // Remove /de if going back to English
-        window.location.href = pathname.startsWith('/de') ? pathname.replace('/de', '') || '/' : pathname
-      }
-    }
+    // Update URL with lang parameter
+    const url = new URL(window.location.href)
+    url.searchParams.set('lang', newLocale)
+    window.location.href = url.toString()
   }
 
   // Translation function with dot notation support
@@ -103,13 +99,18 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
     return typeof result === 'string' ? result : key
   }
 
-  // Helper to create locale-aware links
+  // Helper to create locale-aware links with ?lang= parameter
   const localizeHref = (href: string): string => {
-    if (locale === 'de' && !href.startsWith('/de')) {
-      if (href.startsWith('/#')) {
-        return `/de${href}`
+    if (locale === 'de') {
+      // Add lang=de parameter to preserve language across navigation
+      if (href.includes('?')) {
+        return `${href}&lang=de`
+      } else if (href.includes('#')) {
+        // Handle anchor links like /#about
+        const [path, hash] = href.split('#')
+        return `${path}?lang=de#${hash}`
       }
-      return `/de${href}`
+      return `${href}?lang=de`
     }
     return href
   }
