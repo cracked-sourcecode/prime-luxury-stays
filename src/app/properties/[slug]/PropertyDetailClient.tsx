@@ -584,7 +584,7 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
               </h2>
               <div className="flex items-center gap-2 text-charcoal-500 mb-8">
                 <MapPin className="w-5 h-5 text-gold-500" />
-                <span>{property.address || `${property.city}, Mallorca`}</span>
+                <span>{property.city}{property.region ? `, ${property.region}` : ', Mallorca'}</span>
               </div>
               
               {property.latitude && property.longitude ? (
@@ -757,7 +757,7 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
                 </Link>
 
                 <p className="text-center text-charcoal-400 text-sm mb-6">
-                  Our team responds within 2 hours
+                  Our team will respond shortly
                 </p>
 
                 <div className="border-t border-gray-100 pt-6 space-y-3">

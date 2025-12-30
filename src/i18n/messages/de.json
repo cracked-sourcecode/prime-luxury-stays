@@ -154,16 +154,14 @@
       "submit": "Anfrage Absenden",
       "submitting": "Wird gesendet...",
       "thankYou": "Vielen Dank!",
-      "success": "Wir haben Ihre Anfrage erhalten und werden uns innerhalb von 2 Stunden bei Ihnen melden.",
+      "success": "Wir haben Ihre Anfrage erhalten und werden uns in Kürze bei Ihnen melden.",
       "error": "Etwas ist schief gelaufen. Bitte versuchen Sie es erneut oder kontaktieren Sie uns direkt.",
       "privacyNote": "Mit dem Absenden dieses Formulars stimmen Sie unserer Datenschutzrichtlinie zu. Ihre Informationen werden streng vertraulich behandelt."
     },
     "info": {
       "phone": "Telefon",
       "email": "E-Mail",
-      "offices": "Büros",
-      "response": "Schnelle Antwort",
-      "responseTime": "Unser Concierge-Team antwortet auf alle Anfragen innerhalb von 2 Stunden."
+      "offices": "Büros"
     }
   },
   "footer": {
@@ -366,7 +364,7 @@
     },
     "inquire": {
       "title": "Buchen Sie Ihren Aufenthalt",
-      "subtitle": "Vervollständigen Sie Ihre Anfrage und unser Concierge-Team wird innerhalb von 2 Stunden antworten.",
+      "subtitle": "Vervollständigen Sie Ihre Anfrage und unser Concierge-Team wird sich in Kürze bei Ihnen melden.",
       "yourDetails": "Ihre Daten",
       "stayDetails": "Aufenthaltsdetails",
       "selectDates": "Daten Auswählen",
@@ -403,7 +401,7 @@
       "dedicatedConcierge": "Persönlicher Concierge",
       "dedicatedConciergeDesc": "Unser Team steht Ihnen während Ihres Aufenthalts für jede Anfrage zur Verfügung",
       "instantConfirmation": "Sofortige Bestätigung",
-      "instantConfirmationDesc": "Erhalten Sie eine Buchungsbestätigung innerhalb von 2 Stunden",
+      "instantConfirmationDesc": "Erhalten Sie zeitnah eine Buchungsbestätigung",
       "securePayment": "Sichere Zahlung",
       "securePaymentDesc": "Ihre Zahlungsdaten sind mit Bank-Level-Sicherheit geschützt",
       "viewAllPhotos": "Alle Fotos Ansehen",

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
+import { revalidatePath } from 'next/cache';
 import { validateSession } from '@/lib/admin';
 import { sql } from '@/lib/db';
 
@@ -66,6 +67,14 @@ export async function PUT(request: NextRequest, { params }: Props) {
       WHERE id = ${propertyId}
     `;
 
+    // Revalidate all affected pages
+    revalidatePath('/');
+    revalidatePath('/properties');
+    revalidatePath(`/properties/${data.slug}`);
+    revalidatePath('/mallorca');
+    revalidatePath('/ibiza');
+    revalidatePath('/south-of-france');
+
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Update property error:', error);
@@ -88,6 +97,14 @@ export async function DELETE(request: NextRequest, { params }: Props) {
 
   try {
     await sql`DELETE FROM properties WHERE id = ${propertyId}`;
+    
+    // Revalidate all affected pages
+    revalidatePath('/');
+    revalidatePath('/properties');
+    revalidatePath('/mallorca');
+    revalidatePath('/ibiza');
+    revalidatePath('/south-of-france');
+    
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Delete property error:', error);

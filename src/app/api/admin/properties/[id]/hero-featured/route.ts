@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
+import { revalidatePath } from 'next/cache';
 import { validateSession } from '@/lib/admin';
 import { sql } from '@/lib/db';
 
@@ -33,6 +34,9 @@ export async function POST(request: NextRequest, { params }: Props) {
     
     // Then set this one as hero featured
     await sql`UPDATE properties SET is_hero_featured = true WHERE id = ${propertyId}`;
+
+    // Revalidate homepage to show new hero property
+    revalidatePath('/');
 
     return NextResponse.json({ success: true });
   } catch (error) {

@@ -135,6 +135,8 @@ export default function PropertyEditor({ property, images: initialImages, availa
   const [uploadProgress, setUploadProgress] = useState('')
   const [selectedImages, setSelectedImages] = useState<Set<number>>(new Set())
   const [deletingBulk, setDeletingBulk] = useState(false)
+  const [draggedImageId, setDraggedImageId] = useState<number | null>(null)
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null)
 
   // Video state
   const [videoUrl, setVideoUrl] = useState(property?.video_url || '')
@@ -493,6 +495,72 @@ export default function PropertyEditor({ property, images: initialImages, availa
           images: reorderedImages.map(img => ({ id: img.id, display_order: img.display_order }))
         }),
       })
+    } catch (err) {
+      setError('Failed to reorder images')
+    }
+  }
+
+  // Drag and drop handlers
+  const handleDragStart = (e: React.DragEvent, imageId: number) => {
+    setDraggedImageId(imageId)
+    e.dataTransfer.effectAllowed = 'move'
+    // Add some visual feedback
+    if (e.currentTarget instanceof HTMLElement) {
+      e.currentTarget.style.opacity = '0.5'
+    }
+  }
+
+  const handleDragEnd = (e: React.DragEvent) => {
+    setDraggedImageId(null)
+    setDragOverIndex(null)
+    if (e.currentTarget instanceof HTMLElement) {
+      e.currentTarget.style.opacity = '1'
+    }
+  }
+
+  const handleDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault()
+    e.dataTransfer.dropEffect = 'move'
+    setDragOverIndex(index)
+  }
+
+  const handleDragLeave = () => {
+    setDragOverIndex(null)
+  }
+
+  const handleDrop = async (e: React.DragEvent, targetIndex: number) => {
+    e.preventDefault()
+    setDragOverIndex(null)
+    
+    if (draggedImageId === null) return
+    
+    const draggedIndex = images.findIndex(img => img.id === draggedImageId)
+    if (draggedIndex === -1 || draggedIndex === targetIndex) return
+    
+    // Reorder images
+    const newImages = [...images]
+    const [draggedImage] = newImages.splice(draggedIndex, 1)
+    newImages.splice(targetIndex, 0, draggedImage)
+    
+    // Update display_order
+    const reorderedImages = newImages.map((img, idx) => ({
+      ...img,
+      display_order: idx + 1
+    }))
+    
+    setImages(reorderedImages)
+    setDraggedImageId(null)
+    
+    // Save to server
+    try {
+      await fetch(`/api/admin/properties/${property?.id}/images/reorder`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          images: reorderedImages.map(img => ({ id: img.id, display_order: img.display_order }))
+        }),
+      })
+      setSuccess('Images reordered successfully!')
     } catch (err) {
       setError('Failed to reorder images')
     }
@@ -1147,7 +1215,7 @@ export default function PropertyEditor({ property, images: initialImages, availa
                     </button>
                   )}
                 </div>
-                <p className="text-sm text-charcoal-400">Drag or use arrows to reorder. First image shows on property cards.</p>
+                <p className="text-sm text-charcoal-400">Drag images to reorder, or use arrows. First image shows on property cards.</p>
               </div>
 
               {/* Bulk action bar */}
@@ -1194,18 +1262,32 @@ export default function PropertyEditor({ property, images: initialImages, availa
                   {images.map((image, index) => (
                     <div 
                       key={image.id} 
-                      className={`flex items-center gap-4 rounded-xl p-3 group transition-colors ${
+                      draggable
+                      onDragStart={(e) => handleDragStart(e, image.id)}
+                      onDragEnd={handleDragEnd}
+                      onDragOver={(e) => handleDragOver(e, index)}
+                      onDragLeave={handleDragLeave}
+                      onDrop={(e) => handleDrop(e, index)}
+                      className={`flex items-center gap-4 rounded-xl p-3 group transition-all cursor-grab active:cursor-grabbing ${
                         selectedImages.has(image.id) 
                           ? 'bg-gold-50 border-2 border-gold-300' 
-                          : 'bg-gray-50 hover:bg-gray-100 border-2 border-transparent'
+                          : dragOverIndex === index
+                            ? 'bg-blue-50 border-2 border-blue-400'
+                            : draggedImageId === image.id
+                              ? 'bg-gray-100 border-2 border-gold-400 opacity-50'
+                              : 'bg-gray-50 hover:bg-gray-100 border-2 border-transparent'
                       }`}
                     >
-                      {/* Checkbox */}
-                      <div className="flex-shrink-0">
+                      {/* Drag handle & Checkbox */}
+                      <div className="flex items-center gap-2 flex-shrink-0">
+                        <div className="text-charcoal-400 cursor-grab active:cursor-grabbing">
+                          <GripVertical className="w-5 h-5" />
+                        </div>
                         <input
                           type="checkbox"
                           checked={selectedImages.has(image.id)}
                           onChange={() => toggleImageSelection(image.id)}
+                          onClick={(e) => e.stopPropagation()}
                           className="w-5 h-5 rounded border-gray-300 text-gold-500 focus:ring-gold-500 cursor-pointer"
                         />
                       </div>

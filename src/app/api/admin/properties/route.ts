@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
+import { revalidatePath } from 'next/cache';
 import { validateSession, createProperty } from '@/lib/admin';
 import { sql } from '@/lib/db';
 
@@ -55,6 +56,13 @@ export async function POST(request: NextRequest) {
       )
       RETURNING id
     `;
+
+    // Revalidate all affected pages
+    revalidatePath('/');
+    revalidatePath('/properties');
+    revalidatePath('/mallorca');
+    revalidatePath('/ibiza');
+    revalidatePath('/south-of-france');
 
     return NextResponse.json({ success: true, id: result[0]?.id });
   } catch (error) {

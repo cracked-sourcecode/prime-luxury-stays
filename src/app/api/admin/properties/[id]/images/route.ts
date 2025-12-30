@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
+import { revalidatePath } from 'next/cache';
 import { validateSession } from '@/lib/admin';
 import { sql } from '@/lib/db';
 
@@ -69,6 +70,18 @@ export async function POST(request: NextRequest, { params }: Props) {
     if (is_featured || displayOrder === 1) {
       await sql`UPDATE properties SET featured_image = ${image_url} WHERE id = ${propertyId}`;
     }
+
+    // Get property slug for revalidation
+    const propertyData = await sql`SELECT slug FROM properties WHERE id = ${propertyId}`;
+    const slug = propertyData[0]?.slug;
+    
+    // Revalidate affected pages
+    revalidatePath('/');
+    revalidatePath('/properties');
+    if (slug) revalidatePath(`/properties/${slug}`);
+    revalidatePath('/mallorca');
+    revalidatePath('/ibiza');
+    revalidatePath('/south-of-france');
 
     return NextResponse.json({ success: true, id: result[0]?.id });
   } catch (error) {

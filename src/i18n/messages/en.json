@@ -154,16 +154,14 @@
       "submit": "Submit Inquiry",
       "submitting": "Sending...",
       "thankYou": "Thank You!",
-      "success": "We've received your inquiry and will be in touch within 2 hours.",
+      "success": "We've received your inquiry and will be in touch shortly.",
       "error": "Something went wrong. Please try again or contact us directly.",
       "privacyNote": "By submitting this form, you agree to our privacy policy. Your information will be kept strictly confidential."
     },
     "info": {
       "phone": "Phone",
       "email": "Email",
-      "offices": "Offices",
-      "response": "Quick Response",
-      "responseTime": "Our concierge team responds to all inquiries within 2 hours."
+      "offices": "Offices"
     }
   },
   "footer": {
@@ -366,7 +364,7 @@
     },
     "inquire": {
       "title": "Book Your Stay",
-      "subtitle": "Complete your inquiry and our concierge team will respond within 2 hours.",
+      "subtitle": "Complete your inquiry and our concierge team will be in touch shortly.",
       "yourDetails": "Your Details",
       "stayDetails": "Stay Details",
       "selectDates": "Select Dates",
@@ -403,7 +401,7 @@
       "dedicatedConcierge": "Dedicated Concierge",
       "dedicatedConciergeDesc": "Our team is available to assist with any request during your stay",
       "instantConfirmation": "Instant Confirmation",
-      "instantConfirmationDesc": "Receive booking confirmation within 2 hours",
+      "instantConfirmationDesc": "Receive booking confirmation promptly",
       "securePayment": "Secure Payment",
       "securePaymentDesc": "Your payment details are protected with bank-level security",
       "viewAllPhotos": "View All Photos",

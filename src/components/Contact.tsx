@@ -161,16 +161,6 @@ export default function Contact() {
               </div>
             </div>
 
-            {/* Availability Note */}
-            <div className="glass-gold rounded-xl p-5">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse" />
-                <span className="text-charcoal-900 font-semibold">{t('contact.info.response')}</span>
-              </div>
-              <p className="text-charcoal-600 text-sm">
-                {t('contact.info.responseTime')}
-              </p>
-            </div>
           </motion.div>
 
           {/* Contact Form */}

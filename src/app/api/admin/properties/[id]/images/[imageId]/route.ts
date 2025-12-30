@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
+import { revalidatePath } from 'next/cache';
 import { validateSession } from '@/lib/admin';
 import { sql } from '@/lib/db';
 
@@ -21,14 +22,25 @@ export async function DELETE(request: NextRequest, { params }: Props) {
     return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
   }
 
-  const { imageId } = await params;
-  const id = parseInt(imageId, 10);
-  if (isNaN(id)) {
+  const { id, imageId } = await params;
+  const propertyId = parseInt(id, 10);
+  const imgId = parseInt(imageId, 10);
+  if (isNaN(imgId)) {
     return NextResponse.json({ success: false, error: 'Invalid ID' }, { status: 400 });
   }
 
   try {
-    await sql`DELETE FROM property_images WHERE id = ${id}`;
+    // Get property slug before deletion for revalidation
+    const propertyData = await sql`SELECT slug FROM properties WHERE id = ${propertyId}`;
+    const slug = propertyData[0]?.slug;
+    
+    await sql`DELETE FROM property_images WHERE id = ${imgId}`;
+    
+    // Revalidate affected pages
+    revalidatePath('/');
+    revalidatePath('/properties');
+    if (slug) revalidatePath(`/properties/${slug}`);
+    
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Delete image error:', error);

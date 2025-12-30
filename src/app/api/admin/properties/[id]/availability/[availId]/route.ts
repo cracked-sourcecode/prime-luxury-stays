@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
+import { revalidatePath } from 'next/cache';
 import { validateSession } from '@/lib/admin';
 import { sql } from '@/lib/db';
 
@@ -21,9 +22,10 @@ export async function PUT(request: NextRequest, { params }: Props) {
     return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
   }
 
-  const { availId } = await params;
-  const id = parseInt(availId, 10);
-  if (isNaN(id)) {
+  const { id, availId } = await params;
+  const propertyId = parseInt(id, 10);
+  const avId = parseInt(availId, 10);
+  if (isNaN(avId)) {
     return NextResponse.json({ success: false, error: 'Invalid ID' }, { status: 400 });
   }
 
@@ -40,8 +42,16 @@ export async function PUT(request: NextRequest, { params }: Props) {
         status = ${data.status || 'available'},
         notes = ${data.notes || null},
         updated_at = NOW()
-      WHERE id = ${id}
+      WHERE id = ${avId}
     `;
+
+    // Get property slug for revalidation
+    const propertyData = await sql`SELECT slug FROM properties WHERE id = ${propertyId}`;
+    const slug = propertyData[0]?.slug;
+    
+    // Revalidate affected pages
+    revalidatePath('/properties');
+    if (slug) revalidatePath(`/properties/${slug}`);
 
     return NextResponse.json({ success: true });
   } catch (error) {
@@ -57,18 +67,27 @@ export async function DELETE(request: NextRequest, { params }: Props) {
     return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 401 });
   }
 
-  const { availId } = await params;
-  const id = parseInt(availId, 10);
-  if (isNaN(id)) {
+  const { id, availId } = await params;
+  const propertyId = parseInt(id, 10);
+  const avId = parseInt(availId, 10);
+  if (isNaN(avId)) {
     return NextResponse.json({ success: false, error: 'Invalid ID' }, { status: 400 });
   }
 
   try {
-    await sql`DELETE FROM property_availability WHERE id = ${id}`;
+    // Get property slug before deletion for revalidation
+    const propertyData = await sql`SELECT slug FROM properties WHERE id = ${propertyId}`;
+    const slug = propertyData[0]?.slug;
+    
+    await sql`DELETE FROM property_availability WHERE id = ${avId}`;
+    
+    // Revalidate affected pages
+    revalidatePath('/properties');
+    if (slug) revalidatePath(`/properties/${slug}`);
+    
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Delete availability error:', error);
     return NextResponse.json({ success: false, error: 'Failed to delete' }, { status: 500 });
   }
 }
-

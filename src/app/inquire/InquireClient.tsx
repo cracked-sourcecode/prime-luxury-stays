@@ -60,7 +60,7 @@ export default function InquireClient({
 
   const benefits = [
     { icon: Shield, title: 'Verified homes', desc: 'Every property is personally vetted.' },
-    { icon: Clock, title: 'Fast response', desc: 'We typically respond within 2 hours.' },
+    { icon: Clock, title: 'Fast response', desc: 'Our team responds promptly.' },
     { icon: Sparkles, title: 'Concierge service', desc: 'Chefs, yachts, transfers & more.' },
     { icon: Star, title: 'Best value direct', desc: 'No booking platform fees.' },
   ]
@@ -193,11 +193,11 @@ export default function InquireClient({
                 </div>
                 <div className="hidden md:block text-right">
                   <div className="text-xs tracking-[0.2em] uppercase text-gold-600 font-semibold">
-                    Response time
+                    Concierge Service
                   </div>
                   <div className="text-charcoal-900 font-semibold mt-1 inline-flex items-center gap-2">
                     <Clock className="w-4 h-4 text-gold-600" />
-                    Usually within 2 hours
+                    Personal attention
                   </div>
                 </div>
               </div>
