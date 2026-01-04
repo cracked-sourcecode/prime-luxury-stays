@@ -159,10 +159,10 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
   ]
 
   const experiences = [
-    { icon: Anchor, title: 'Yacht Charters', desc: 'Explore hidden coves' },
-    { icon: Utensils, title: 'Private Chef', desc: 'Michelin-quality dining' },
-    { icon: Wine, title: 'Wine Tours', desc: 'Local vineyard experiences' },
-    { icon: Mountain, title: 'Hiking Guides', desc: 'Tramuntana adventures' },
+    { icon: Car, title: 'Luxury Transport', desc: 'Premium vehicle service', href: '/services/luxury-transport' },
+    { icon: Anchor, title: 'Yacht Charter', desc: 'Explore the Mediterranean', href: '/services/yacht-charter' },
+    { icon: Wine, title: 'Table Reservations', desc: 'Exclusive dining access', href: '/services/table-reservations' },
+    { icon: Utensils, title: 'Private Chef', desc: 'Michelin-quality dining', href: '/services/private-chef' },
   ]
 
   const nextImage = () => setCurrentImageIndex((prev) => (prev + 1) % galleryImages.length)
@@ -559,13 +559,17 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true }}
                       transition={{ delay: i * 0.1 }}
-                      className="text-center"
                     >
-                      <div className="w-16 h-16 rounded-2xl bg-white/10 flex items-center justify-center mx-auto mb-4 group-hover:bg-gold-500/20 transition-colors">
-                        <exp.icon className="w-8 h-8 text-gold-400" />
-                      </div>
-                      <h4 className="font-semibold text-white mb-1">{exp.title}</h4>
-                      <p className="text-white/50 text-sm">{exp.desc}</p>
+                      <Link 
+                        href={exp.href}
+                        className="text-center block group/exp cursor-pointer"
+                      >
+                        <div className="w-16 h-16 rounded-2xl bg-white/10 flex items-center justify-center mx-auto mb-4 group-hover/exp:bg-gold-500/30 transition-colors">
+                          <exp.icon className="w-8 h-8 text-gold-400 group-hover/exp:text-gold-300 transition-colors" />
+                        </div>
+                        <h4 className="font-semibold text-white mb-1 group-hover/exp:text-gold-300 transition-colors">{exp.title}</h4>
+                        <p className="text-white/50 text-sm">{exp.desc}</p>
+                      </Link>
                     </motion.div>
                   ))}
                 </div>
