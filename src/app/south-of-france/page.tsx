@@ -64,10 +64,10 @@ const franceSchema = {
 async function getSouthOfFranceProperties() {
   noStore(); // Opt out of caching
   try {
+    // TEMPORARILY removed is_active filter to debug sync issue
     const properties = await sql`
       SELECT * FROM properties 
-      WHERE (is_active = true OR is_active IS NULL)
-      AND region = 'South of France'
+      WHERE region = 'South of France'
       ORDER BY is_featured DESC, name ASC
     `
     return properties

@@ -39,9 +39,9 @@ export interface Property {
 
 export async function getActiveProperties(): Promise<Property[]> {
   noStore(); // Opt out of caching
+  // TEMPORARILY showing ALL properties to debug sync issue
   const properties = await sql`
     SELECT * FROM properties 
-    WHERE is_active = true OR is_active IS NULL
     ORDER BY is_featured DESC, name ASC
   `;
   return properties as Property[];
@@ -60,9 +60,10 @@ export async function getFeaturedProperties(): Promise<Property[]> {
 
 export async function getPropertyBySlug(slug: string): Promise<Property | null> {
   noStore(); // Opt out of caching
+  // TEMPORARILY removed is_active filter to debug sync issue
   const properties = await sql`
     SELECT * FROM properties 
-    WHERE slug = ${slug} AND is_active = true
+    WHERE slug = ${slug}
     LIMIT 1
   `;
   return properties[0] as Property || null;
@@ -70,17 +71,19 @@ export async function getPropertyBySlug(slug: string): Promise<Property | null> 
 
 export async function getAllPropertySlugs(): Promise<string[]> {
   noStore(); // Opt out of caching
+  // TEMPORARILY showing all to debug sync issue
   const properties = await sql`
-    SELECT slug FROM properties WHERE is_active = true
+    SELECT slug FROM properties
   `;
   return properties.map((p: any) => p.slug);
 }
 
 export async function getHeroFeaturedProperty(): Promise<Property | null> {
   noStore(); // Opt out of caching
+  // TEMPORARILY removed is_active filter to debug sync issue
   const properties = await sql`
     SELECT * FROM properties 
-    WHERE is_hero_featured = true AND is_active = true
+    WHERE is_hero_featured = true
     LIMIT 1
   `;
   return properties[0] as Property || null;

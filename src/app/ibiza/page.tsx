@@ -64,10 +64,10 @@ const ibizaSchema = {
 async function getIbizaProperties() {
   noStore(); // Opt out of caching
   try {
+    // TEMPORARILY removed is_active filter to debug sync issue
     const properties = await sql`
       SELECT * FROM properties 
-      WHERE (is_active = true OR is_active IS NULL)
-      AND LOWER(region) = 'ibiza'
+      WHERE LOWER(region) = 'ibiza'
       ORDER BY is_featured DESC, name ASC
     `
     return properties
