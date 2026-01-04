@@ -1311,7 +1311,7 @@ export default function PropertyEditor({ property, images: initialImages, availa
                   <p>No images yet. Add your first image above.</p>
                 </div>
               ) : (
-                <div className="space-y-3">
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                   {images.map((image, index) => (
                     <div 
                       key={image.id} 
@@ -1321,98 +1321,74 @@ export default function PropertyEditor({ property, images: initialImages, availa
                       onDragOver={(e) => handleDragOver(e, index)}
                       onDragLeave={handleDragLeave}
                       onDrop={(e) => handleDrop(e, index)}
-                      className={`flex items-center gap-4 rounded-xl p-3 group transition-all cursor-grab active:cursor-grabbing ${
+                      className={`relative group rounded-xl overflow-hidden cursor-grab active:cursor-grabbing transition-all ${
                         selectedImages.has(image.id) 
-                          ? 'bg-gold-50 border-2 border-gold-300' 
+                          ? 'ring-4 ring-gold-400 ring-offset-2' 
                           : dragOverIndex === index
-                            ? 'bg-blue-50 border-2 border-blue-400'
+                            ? 'ring-4 ring-blue-400 ring-offset-2 scale-105'
                             : draggedImageId === image.id
-                              ? 'bg-gray-100 border-2 border-gold-400 opacity-50'
-                              : 'bg-gray-50 hover:bg-gray-100 border-2 border-transparent'
+                              ? 'opacity-50 scale-95'
+                              : 'hover:ring-2 hover:ring-gold-200'
                       }`}
                     >
-                      {/* Drag handle & Checkbox */}
-                      <div className="flex items-center gap-2 flex-shrink-0">
-                        <div className="text-charcoal-400 cursor-grab active:cursor-grabbing">
-                          <GripVertical className="w-5 h-5" />
-                        </div>
-                        <input
-                          type="checkbox"
-                          checked={selectedImages.has(image.id)}
-                          onChange={() => toggleImageSelection(image.id)}
-                          onClick={(e) => e.stopPropagation()}
-                          className="w-5 h-5 rounded border-gray-300 text-gold-500 focus:ring-gold-500 cursor-pointer"
-                        />
-                      </div>
-
-                      {/* Order number & controls */}
-                      <div className="flex flex-col items-center gap-1 w-12">
-                        <button
-                          onClick={() => handleMoveImage(image.id, 'up')}
-                          disabled={index === 0}
-                          className="p-1 text-charcoal-400 hover:text-charcoal-700 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-                          title="Move up"
-                        >
-                          <ChevronUp className="w-5 h-5" />
-                        </button>
-                        <div className="w-8 h-8 rounded-full bg-charcoal-900 text-white flex items-center justify-center text-sm font-bold">
-                          {index + 1}
-                        </div>
-                        <button
-                          onClick={() => handleMoveImage(image.id, 'down')}
-                          disabled={index === images.length - 1}
-                          className="p-1 text-charcoal-400 hover:text-charcoal-700 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-                          title="Move down"
-                        >
-                          <ChevronDown className="w-5 h-5" />
-                        </button>
-                      </div>
-
-                      {/* Image thumbnail */}
-                      <div className="relative w-24 h-24 rounded-lg overflow-hidden flex-shrink-0">
+                      {/* Image */}
+                      <div className="aspect-square">
                         <img
                           src={image.image_url}
                           alt={image.caption || 'Property image'}
                           className="w-full h-full object-cover"
                         />
-                        {image.is_featured && (
-                          <div className="absolute top-1 left-1 bg-gold-500 text-white text-[10px] px-1.5 py-0.5 rounded-full flex items-center gap-0.5">
-                            <Star className="w-2.5 h-2.5 fill-white" />
-                            Featured
-                          </div>
-                        )}
                       </div>
 
-                      {/* Image info */}
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm text-charcoal-600 truncate font-mono">
-                          {image.image_url.split('/').pop()}
-                        </p>
-                        {image.caption && (
-                          <p className="text-sm text-charcoal-400 truncate mt-1">{image.caption}</p>
-                        )}
-                        <p className="text-xs text-charcoal-300 mt-1">
-                          {index === 0 ? '← Shows on property cards' : `Position ${index + 1}`}
-                        </p>
+                      {/* Position badge */}
+                      <div className={`absolute top-2 left-2 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold shadow-lg ${
+                        index === 0 ? 'bg-gold-500 text-white' : 'bg-white text-charcoal-900'
+                      }`}>
+                        {index + 1}
                       </div>
 
-                      {/* Actions */}
-                      <div className="flex items-center gap-2">
-                        {!image.is_featured && (
-                          <button
-                            onClick={() => handleSetFeatured(image.id)}
-                            className="p-2 text-charcoal-400 hover:text-gold-600 hover:bg-gold-50 rounded-lg transition-colors"
-                            title="Set as featured"
-                          >
-                            <Star className="w-5 h-5" />
-                          </button>
-                        )}
+                      {/* Checkbox */}
+                      <div className="absolute top-2 right-2">
+                        <input
+                          type="checkbox"
+                          checked={selectedImages.has(image.id)}
+                          onChange={() => toggleImageSelection(image.id)}
+                          onClick={(e) => e.stopPropagation()}
+                          className="w-5 h-5 rounded border-2 border-white text-gold-500 focus:ring-gold-500 cursor-pointer shadow-lg"
+                        />
+                      </div>
+
+                      {/* Featured badge */}
+                      {index === 0 && (
+                        <div className="absolute bottom-2 left-2 bg-gold-500 text-white text-[10px] px-2 py-1 rounded-full font-semibold shadow-lg">
+                          COVER
+                        </div>
+                      )}
+
+                      {/* Hover overlay with actions */}
+                      <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                        <button
+                          onClick={() => handleMoveImage(image.id, 'up')}
+                          disabled={index === 0}
+                          className="p-2 bg-white rounded-lg text-charcoal-700 hover:bg-gold-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                          title="Move left"
+                        >
+                          <ChevronUp className="w-5 h-5 -rotate-90" />
+                        </button>
                         <button
                           onClick={() => handleDeleteImage(image.id)}
-                          className="p-2 text-charcoal-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                          title="Delete image"
+                          className="p-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+                          title="Delete"
                         >
                           <Trash2 className="w-5 h-5" />
+                        </button>
+                        <button
+                          onClick={() => handleMoveImage(image.id, 'down')}
+                          disabled={index === images.length - 1}
+                          className="p-2 bg-white rounded-lg text-charcoal-700 hover:bg-gold-100 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                          title="Move right"
+                        >
+                          <ChevronDown className="w-5 h-5 -rotate-90" />
                         </button>
                       </div>
                     </div>
@@ -1645,6 +1621,46 @@ export default function PropertyEditor({ property, images: initialImages, availa
           </div>
         )}
       </main>
+
+      {/* Sticky Save Bar - Shows on all tabs */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50">
+        <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            {error && (
+              <div className="flex items-center gap-2 text-red-600">
+                <AlertCircle className="w-5 h-5" />
+                <span className="text-sm">{error}</span>
+              </div>
+            )}
+            {success && (
+              <div className="flex items-center gap-2 text-green-600">
+                <Check className="w-5 h-5" />
+                <span className="text-sm">{success}</span>
+              </div>
+            )}
+          </div>
+          <button
+            onClick={handleSaveDetails}
+            disabled={saving}
+            className="bg-gold-500 text-charcoal-900 px-8 py-3 rounded-xl font-semibold hover:bg-gold-400 transition-colors flex items-center gap-2 disabled:opacity-50 shadow-lg"
+          >
+            {saving ? (
+              <>
+                <Loader2 className="w-5 h-5 animate-spin" />
+                Saving...
+              </>
+            ) : (
+              <>
+                <Save className="w-5 h-5" />
+                Save Property
+              </>
+            )}
+          </button>
+        </div>
+      </div>
+
+      {/* Spacer for sticky bar */}
+      <div className="h-20" />
     </div>
   )
 }
