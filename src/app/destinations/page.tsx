@@ -1,4 +1,5 @@
 import { Metadata } from 'next'
+import { unstable_noStore as noStore } from 'next/cache'
 import { getActiveProperties } from '@/lib/properties'
 import Navigation from '@/components/Navigation'
 import Footer from '@/components/Footer'
@@ -36,7 +37,10 @@ export const metadata: Metadata = {
   },
 }
 
+// Disable all caching - always fetch fresh data
 export const dynamic = 'force-dynamic'
+export const revalidate = 0
+export const fetchCache = 'force-no-store'
 
 // Define available locations with their details
 const locationData: Record<string, { 

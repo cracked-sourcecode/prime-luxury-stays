@@ -1,4 +1,5 @@
 import { sql } from './db';
+import { unstable_noStore as noStore } from 'next/cache';
 
 export interface Property {
   id: number;
@@ -37,6 +38,7 @@ export interface Property {
 }
 
 export async function getActiveProperties(): Promise<Property[]> {
+  noStore(); // Opt out of caching
   const properties = await sql`
     SELECT * FROM properties 
     WHERE is_active = true OR is_active IS NULL
@@ -46,6 +48,7 @@ export async function getActiveProperties(): Promise<Property[]> {
 }
 
 export async function getFeaturedProperties(): Promise<Property[]> {
+  noStore(); // Opt out of caching
   const properties = await sql`
     SELECT * FROM properties 
     WHERE is_active = true AND is_featured = true 
@@ -56,6 +59,7 @@ export async function getFeaturedProperties(): Promise<Property[]> {
 }
 
 export async function getPropertyBySlug(slug: string): Promise<Property | null> {
+  noStore(); // Opt out of caching
   const properties = await sql`
     SELECT * FROM properties 
     WHERE slug = ${slug} AND is_active = true
@@ -65,6 +69,7 @@ export async function getPropertyBySlug(slug: string): Promise<Property | null> 
 }
 
 export async function getAllPropertySlugs(): Promise<string[]> {
+  noStore(); // Opt out of caching
   const properties = await sql`
     SELECT slug FROM properties WHERE is_active = true
   `;
@@ -72,6 +77,7 @@ export async function getAllPropertySlugs(): Promise<string[]> {
 }
 
 export async function getHeroFeaturedProperty(): Promise<Property | null> {
+  noStore(); // Opt out of caching
   const properties = await sql`
     SELECT * FROM properties 
     WHERE is_hero_featured = true AND is_active = true

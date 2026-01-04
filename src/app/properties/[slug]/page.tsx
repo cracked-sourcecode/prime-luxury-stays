@@ -1,13 +1,17 @@
 import { notFound } from 'next/navigation'
 import { Metadata } from 'next'
 import Script from 'next/script'
+import { unstable_noStore as noStore } from 'next/cache'
 import { getPropertyBySlug, getAllPropertySlugs } from '@/lib/properties'
 import { sql } from '@/lib/db'
 import PropertyDetailClient from './PropertyDetailClient'
 import Navigation from '@/components/Navigation'
 import Footer from '@/components/Footer'
 
+// Disable all caching - always fetch fresh data
 export const dynamic = 'force-dynamic'
+export const revalidate = 0
+export const fetchCache = 'force-no-store'
 
 const SITE_URL = 'https://primeluxurystays.com'
 
@@ -17,6 +21,7 @@ interface PropertyPageProps {
 
 // Fetch property images from database
 async function getPropertyImages(propertyId: number) {
+  noStore(); // Opt out of caching
   const images = await sql`
     SELECT * FROM property_images 
     WHERE property_id = ${propertyId}

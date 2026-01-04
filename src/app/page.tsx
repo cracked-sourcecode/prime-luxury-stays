@@ -8,6 +8,11 @@ import Contact from '@/components/Contact'
 import Footer from '@/components/Footer'
 import { getHeroFeaturedProperty } from '@/lib/properties'
 
+// Disable all caching - always fetch fresh data
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
+export const fetchCache = 'force-no-store'
+
 export default async function Home() {
   const heroProperty = await getHeroFeaturedProperty()
   

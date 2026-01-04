@@ -1,6 +1,7 @@
 import { Suspense } from 'react'
 import { Metadata } from 'next'
 import Script from 'next/script'
+import { unstable_noStore as noStore } from 'next/cache'
 import { sql } from '@/lib/db'
 import IbizaClient from './IbizaClient'
 import Navigation from '@/components/Navigation'
@@ -39,7 +40,10 @@ export const metadata: Metadata = {
   },
 }
 
+// Disable all caching - always fetch fresh data
 export const dynamic = 'force-dynamic'
+export const revalidate = 0
+export const fetchCache = 'force-no-store'
 
 // Ibiza destination schema
 const ibizaSchema = {
@@ -58,6 +62,7 @@ const ibizaSchema = {
 
 // Get Ibiza properties
 async function getIbizaProperties() {
+  noStore(); // Opt out of caching
   try {
     const properties = await sql`
       SELECT * FROM properties 
