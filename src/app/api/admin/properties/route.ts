@@ -41,7 +41,8 @@ export async function POST(request: NextRequest) {
         bedrooms, bathrooms, max_guests, description, short_description,
         featured_image, website_url, price_per_week, price_per_week_high,
         has_pool, has_sea_view, has_ac,
-        has_heating, has_wifi, is_beachfront, is_active, is_featured, min_stay_nights
+        has_heating, has_wifi, is_beachfront, is_active, is_featured, min_stay_nights,
+        distance_beach, distance_restaurants, distance_old_town, distance_airport
       ) VALUES (
         ${data.name}, ${data.slug}, ${data.house_type || 'Villa'}, ${data.license_number || null}, ${data.registry_number || null},
         ${data.address || null}, ${data.city || null}, ${data.region || 'Mallorca'}, ${data.country || 'Spain'},
@@ -52,7 +53,8 @@ export async function POST(request: NextRequest) {
         ${data.price_per_week || null}, ${data.price_per_week_high || null},
         ${data.has_pool || false}, ${data.has_sea_view || false}, ${data.has_ac || false},
         ${data.has_heating || false}, ${data.has_wifi || false}, ${data.is_beachfront || false},
-        ${data.is_active ?? true}, ${data.is_featured || false}, ${data.min_stay_nights || 7}
+        ${data.is_active ?? true}, ${data.is_featured || false}, ${data.min_stay_nights || 7},
+        ${data.distance_beach || null}, ${data.distance_restaurants || null}, ${data.distance_old_town || null}, ${data.distance_airport || null}
       )
       RETURNING id
     `;

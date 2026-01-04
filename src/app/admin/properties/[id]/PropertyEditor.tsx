@@ -125,6 +125,11 @@ export default function PropertyEditor({ property, images: initialImages, availa
     is_active: property?.is_active ?? true,
     is_featured: property?.is_featured || false,
     min_stay_nights: property?.min_stay_nights?.toString() || '7',
+    // Distances
+    distance_beach: property?.distance_beach || '',
+    distance_restaurants: property?.distance_restaurants || '',
+    distance_old_town: property?.distance_old_town || '',
+    distance_airport: property?.distance_airport || '',
   })
 
   // Images state
@@ -1018,6 +1023,54 @@ export default function PropertyEditor({ property, images: initialImages, availa
                       <span className="text-charcoal-700">{amenity.label}</span>
                     </label>
                   ))}
+                </div>
+              </section>
+
+              {/* Distances */}
+              <section>
+                <h3 className="font-semibold text-charcoal-900 mb-4">Nearby Distances</h3>
+                <p className="text-sm text-charcoal-500 mb-4">Distance/time to key locations (e.g. "5 min", "10 min", "2 km")</p>
+                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-charcoal-700 mb-2">🏖️ Beach</label>
+                    <input
+                      type="text"
+                      value={formData.distance_beach}
+                      onChange={(e) => setFormData(prev => ({ ...prev, distance_beach: e.target.value }))}
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
+                      placeholder="e.g. 5 min"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-charcoal-700 mb-2">🍽️ Restaurants</label>
+                    <input
+                      type="text"
+                      value={formData.distance_restaurants}
+                      onChange={(e) => setFormData(prev => ({ ...prev, distance_restaurants: e.target.value }))}
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
+                      placeholder="e.g. 10 min"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-charcoal-700 mb-2">🏛️ Old Town</label>
+                    <input
+                      type="text"
+                      value={formData.distance_old_town}
+                      onChange={(e) => setFormData(prev => ({ ...prev, distance_old_town: e.target.value }))}
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
+                      placeholder="e.g. 15 min"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-charcoal-700 mb-2">✈️ Airport</label>
+                    <input
+                      type="text"
+                      value={formData.distance_airport}
+                      onChange={(e) => setFormData(prev => ({ ...prev, distance_airport: e.target.value }))}
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
+                      placeholder="e.g. 25 min"
+                    />
+                  </div>
                 </div>
               </section>
 

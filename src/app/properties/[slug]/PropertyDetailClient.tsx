@@ -612,10 +612,10 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
               {/* Nearby */}
               <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4">
                 {[
-                  { icon: Waves, label: 'Beach', time: '5 min' },
-                  { icon: Utensils, label: 'Restaurants', time: '10 min' },
-                  { icon: Wine, label: 'Old Town', time: '15 min' },
-                  { icon: Sun, label: 'Airport', time: '25 min' },
+                  { icon: Waves, label: 'Beach', time: property.distance_beach || '5 min' },
+                  { icon: Utensils, label: 'Restaurants', time: property.distance_restaurants || '10 min' },
+                  { icon: Wine, label: 'Old Town', time: property.distance_old_town || '15 min' },
+                  { icon: Sun, label: 'Airport', time: property.distance_airport || '25 min' },
                 ].map((item) => (
                   <div key={item.label} className="bg-cream-50 rounded-xl p-4 text-center">
                     <item.icon className="w-6 h-6 text-gold-500 mx-auto mb-2" />

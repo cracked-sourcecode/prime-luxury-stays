@@ -35,6 +35,11 @@ export interface Property {
   is_hero_featured: boolean;
   video_url: string | null;
   min_stay_nights: number;
+  // Distances
+  distance_beach: string | null;
+  distance_restaurants: string | null;
+  distance_old_town: string | null;
+  distance_airport: string | null;
 }
 
 export async function getActiveProperties(): Promise<Property[]> {

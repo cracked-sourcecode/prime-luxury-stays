@@ -44,6 +44,12 @@ CREATE TABLE IF NOT EXISTS properties (
     has_wifi BOOLEAN DEFAULT true,
     is_beachfront BOOLEAN DEFAULT false,
     
+    -- Distances (in minutes)
+    distance_beach VARCHAR(50),          -- e.g. "5 min", "10 min", "N/A"
+    distance_restaurants VARCHAR(50),
+    distance_old_town VARCHAR(50),
+    distance_airport VARCHAR(50),
+    
     -- Status
     is_active BOOLEAN DEFAULT true,
     is_featured BOOLEAN DEFAULT false,

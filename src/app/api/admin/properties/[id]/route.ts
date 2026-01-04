@@ -63,6 +63,10 @@ export async function PUT(request: NextRequest, { params }: Props) {
         is_active = ${data.is_active ?? true},
         is_featured = ${data.is_featured || false},
         min_stay_nights = ${data.min_stay_nights || 7},
+        distance_beach = ${data.distance_beach || null},
+        distance_restaurants = ${data.distance_restaurants || null},
+        distance_old_town = ${data.distance_old_town || null},
+        distance_airport = ${data.distance_airport || null},
         updated_at = NOW()
       WHERE id = ${propertyId}
     `;
