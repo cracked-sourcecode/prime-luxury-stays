@@ -150,11 +150,12 @@ export default function MapInner({
                   )}
                   <Link
                     href={`/properties/${property.slug}`}
-                    className="px-4 py-2 rounded-lg text-xs font-semibold transition-colors"
+                    className="px-5 py-2.5 rounded-lg text-sm font-semibold transition-all hover:opacity-90"
                     style={{ 
-                      backgroundColor: '#b8954c', 
+                      backgroundColor: '#c9a962', 
                       color: '#ffffff',
-                      textDecoration: 'none'
+                      textDecoration: 'none',
+                      boxShadow: '0 2px 8px rgba(201, 169, 98, 0.3)'
                     }}
                   >
                     {locale === 'de' ? 'Ansehen' : 'View'}
@@ -167,7 +168,7 @@ export default function MapInner({
       </MapContainer>
 
       {/* Property count badge */}
-      <div className="absolute top-4 left-4 z-[1000] bg-white rounded-full px-4 py-2 shadow-lg border border-gray-100">
+      <div className="absolute top-4 left-4 z-10 bg-white rounded-full px-4 py-2 shadow-lg border border-gray-100">
         <span className="font-bold text-charcoal-900">{propertiesWithCoords.length}</span>
         <span className="text-charcoal-500 ml-1.5 text-sm">
           {locale === 'de' ? 'Immobilien auf der Karte' : 'properties on map'}
@@ -175,7 +176,7 @@ export default function MapInner({
       </div>
 
       {/* Zoom controls */}
-      <div className="absolute top-4 right-4 z-[1000] flex flex-col gap-1">
+      <div className="absolute top-4 right-4 z-10 flex flex-col gap-1">
         <button 
           onClick={() => {
             const map = document.querySelector('.leaflet-container') as any
