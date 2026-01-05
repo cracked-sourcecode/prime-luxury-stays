@@ -53,7 +53,7 @@ const ibizaHighlights = [
   {
     name: 'Santa Eulalia',
     subtitle: 'Family Paradise',
-    image: 'https://images.unsplash.com/photo-1602343168117-bb8ffe3e2e9f?w=800&q=80',
+    image: 'https://storage.googleapis.com/primeluxurystays/villa-dos-torres/images/1766504261465-Outdoor1.jpg',
     description: 'Elegant estates near pristine beaches',
   },
 ]
