@@ -61,15 +61,19 @@ export default function Footer() {
             </p>
             <div className="text-sm text-charcoal-500 space-y-1 mb-4">
               <p>
-                <span className="text-charcoal-400">US:</span>{' '}
+                <span className="text-charcoal-400">🇺🇸 US:</span>{' '}
                 <a href="tel:+12039797309" className="hover:text-gold-600">+1 (203) 979-7309</a>
               </p>
               <p>
-                <span className="text-charcoal-400">EU:</span>{' '}
+                <span className="text-charcoal-400">🇩🇪 DE:</span>{' '}
                 <a href="tel:+498989930046" className="hover:text-gold-600">+49 89 899 300 46</a>
               </p>
+              <p>
+                <span className="text-charcoal-400">🇪🇸 ES:</span>{' '}
+                <a href="tel:+34661539553" className="hover:text-gold-600">+34 661 53 95 53</a>
+              </p>
               <p><a href="mailto:info@primeluxurystays.com" className="hover:text-gold-600">info@primeluxurystays.com</a></p>
-              <p className="text-charcoal-400">Miami, Florida / Munich, Germany</p>
+              <p className="text-charcoal-400">Miami / Munich / Mallorca</p>
               <p className="text-charcoal-400">{t('footer.registered')}</p>
             </div>
             <div className="flex items-center gap-3 mb-8">
@@ -146,16 +150,20 @@ export default function Footer() {
               </p>
               <div className="text-charcoal-500 text-sm mb-4 space-y-1">
                 <p>
-                  <span className="text-charcoal-400 text-xs">US:</span>{' '}
+                  <span className="text-charcoal-400 text-xs">🇺🇸 US:</span>{' '}
                   <a href="tel:+12039797309" className="hover:text-gold-600 transition-colors">+1 (203) 979-7309</a>
                 </p>
                 <p>
-                  <span className="text-charcoal-400 text-xs">EU:</span>{' '}
+                  <span className="text-charcoal-400 text-xs">🇩🇪 DE:</span>{' '}
                   <a href="tel:+498989930046" className="hover:text-gold-600 transition-colors">+49 89 899 300 46</a>
+                </p>
+                <p>
+                  <span className="text-charcoal-400 text-xs">🇪🇸 ES:</span>{' '}
+                  <a href="tel:+34661539553" className="hover:text-gold-600 transition-colors">+34 661 53 95 53</a>
                 </p>
                 <p><a href="mailto:info@primeluxurystays.com" className="hover:text-gold-600 transition-colors">info@primeluxurystays.com</a></p>
               </div>
-              <p className="text-charcoal-500 text-sm mb-4">Miami, Florida / Munich, Germany</p>
+              <p className="text-charcoal-500 text-sm mb-4">Miami / Munich / Mallorca</p>
               <p className="text-xs text-charcoal-400 mb-6">{t('footer.registered')}</p>
               <div className="flex items-center gap-3">
                 {socialLinks.map((social) => (
