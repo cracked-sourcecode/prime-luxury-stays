@@ -56,18 +56,31 @@ export default function MapInner({
 }: MapInnerProps) {
   const [activeProperty, setActiveProperty] = useState<Property | null>(null)
   
-  // Filter properties with valid coordinates
-  const propertiesWithCoords = properties.filter(p => p.latitude && p.longitude)
+  // Filter properties with valid coordinates (ensure they are actual numbers)
+  const propertiesWithCoords = properties.filter(p => 
+    typeof p.latitude === 'number' && 
+    typeof p.longitude === 'number' && 
+    !isNaN(p.latitude) && 
+    !isNaN(p.longitude)
+  )
+
+  // Default centers for different regions
+  const MALLORCA_CENTER: [number, number] = [39.58, 2.65]
+  const IBIZA_CENTER: [number, number] = [38.98, 1.43]
 
   // Determine center based on prop or calculate from properties
-  const center: [number, number] = propCenter || (
-    propertiesWithCoords.length > 0 
-      ? [
-          propertiesWithCoords.reduce((sum, p) => sum + (p.latitude || 0), 0) / propertiesWithCoords.length,
-          propertiesWithCoords.reduce((sum, p) => sum + (p.longitude || 0), 0) / propertiesWithCoords.length
-        ] as [number, number]
-      : [39.58, 2.65] // Default to Mallorca
-  )
+  let center: [number, number] = MALLORCA_CENTER // Default fallback
+  
+  if (propCenter && !isNaN(propCenter[0]) && !isNaN(propCenter[1])) {
+    center = propCenter
+  } else if (propertiesWithCoords.length > 0) {
+    const avgLat = propertiesWithCoords.reduce((sum, p) => sum + (p.latitude as number), 0) / propertiesWithCoords.length
+    const avgLng = propertiesWithCoords.reduce((sum, p) => sum + (p.longitude as number), 0) / propertiesWithCoords.length
+    
+    if (!isNaN(avgLat) && !isNaN(avgLng)) {
+      center = [avgLat, avgLng]
+    }
+  }
   
   const zoom = propZoom || 10
 
