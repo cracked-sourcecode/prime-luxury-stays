@@ -300,6 +300,12 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
             >
               {/* Badges */}
               <div className="flex flex-wrap items-center gap-3 mb-6">
+                {property.is_monthly_rental && (
+                  <div className="bg-blue-500 text-white px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-2">
+                    <Calendar className="w-4 h-4" />
+                    {locale === 'de' ? 'Monatliche Vermietung' : 'Monthly Rental'}
+                  </div>
+                )}
                 {property.is_featured && (
                   <div className="bg-gold-500 text-white px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-2">
                     <Star className="w-4 h-4 fill-white" />
@@ -362,6 +368,48 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
           </div>
         </div>
       </section>
+
+      {/* ========== MONTHLY RENTAL BANNER ========== */}
+      {property.is_monthly_rental && (
+        <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white">
+          <div className="max-w-7xl mx-auto px-6 lg:px-8 py-6">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+              <div className="flex items-center gap-4">
+                <div className="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center">
+                  <Calendar className="w-7 h-7" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold">
+                    {locale === 'de' ? 'Monatliche Vermietung' : 'Monthly Rental Only'}
+                  </h3>
+                  <p className="text-blue-100 text-sm">
+                    {locale === 'de' 
+                      ? 'Diese Immobilie ist ausschließlich für Langzeitmieten ab 1 Monat verfügbar.'
+                      : 'This property is available exclusively for long-term rentals of 1 month or more.'}
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="hidden md:block text-right text-sm">
+                  <p className="text-blue-100">
+                    {locale === 'de' ? 'Kontaktieren Sie uns für' : 'Contact us for'}
+                  </p>
+                  <p className="font-semibold">
+                    {locale === 'de' ? 'Monatliche Preise' : 'Monthly Rates'}
+                  </p>
+                </div>
+                <Link 
+                  href={`/inquire?property=${property.slug}&type=monthly`}
+                  className="bg-white text-blue-700 px-6 py-3 rounded-xl font-semibold hover:bg-blue-50 transition-colors flex items-center gap-2"
+                >
+                  {locale === 'de' ? 'Anfrage senden' : 'Inquire Now'}
+                  <Calendar className="w-4 h-4" />
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ========== MAIN CONTENT ========== */}
       <div className="max-w-7xl mx-auto px-6 lg:px-8 py-16">
@@ -712,27 +760,46 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
               className="sticky top-28 space-y-6"
             >
               {/* Main Booking Card */}
-              <div className="bg-white rounded-3xl p-8 shadow-2xl border border-gray-100">
-                {/* Price Display */}
-                {property.price_per_week && (
-                  <div className="text-center mb-6 pb-6 border-b border-gray-100">
-                    <p className="text-charcoal-500 text-sm mb-1">From</p>
-                    <div className="flex items-baseline justify-center gap-1">
-                      <span className="font-merriweather text-3xl text-charcoal-900">
-                        €{Number(property.price_per_week).toLocaleString()}
-                      </span>
-                      <span className="text-charcoal-500">/week</span>
+              <div className={`rounded-3xl p-8 shadow-2xl border ${property.is_monthly_rental ? 'bg-gradient-to-b from-blue-50 to-white border-blue-200' : 'bg-white border-gray-100'}`}>
+                
+                {/* Monthly Rental Header */}
+                {property.is_monthly_rental ? (
+                  <div className="text-center mb-6 pb-6 border-b border-blue-200">
+                    <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-sm font-semibold mb-4">
+                      <Calendar className="w-4 h-4" />
+                      {locale === 'de' ? 'Nur Monatsvermietung' : 'Monthly Rental Only'}
                     </div>
-                    {property.price_per_week_high && (
-                      <p className="text-charcoal-400 text-sm mt-1">
-                        Up to €{Number(property.price_per_week_high).toLocaleString()}/week in peak season
-                      </p>
-                    )}
+                    <h3 className="font-merriweather text-2xl text-charcoal-900 mb-2">
+                      {locale === 'de' ? 'Langzeitvermietung' : 'Long-Term Rental'}
+                    </h3>
+                    <p className="text-charcoal-500 text-sm">
+                      {locale === 'de' 
+                        ? 'Mindestaufenthalt: 1 Monat'
+                        : 'Minimum stay: 1 month'}
+                    </p>
                   </div>
+                ) : (
+                  /* Price Display for short-term */
+                  property.price_per_week && (
+                    <div className="text-center mb-6 pb-6 border-b border-gray-100">
+                      <p className="text-charcoal-500 text-sm mb-1">From</p>
+                      <div className="flex items-baseline justify-center gap-1">
+                        <span className="font-merriweather text-3xl text-charcoal-900">
+                          €{Number(property.price_per_week).toLocaleString()}
+                        </span>
+                        <span className="text-charcoal-500">/week</span>
+                      </div>
+                      {property.price_per_week_high && (
+                        <p className="text-charcoal-400 text-sm mt-1">
+                          Up to €{Number(property.price_per_week_high).toLocaleString()}/week in peak season
+                        </p>
+                      )}
+                    </div>
+                  )
                 )}
 
-                {/* Selected Dates Display */}
-                {selectedDates && (
+                {/* Selected Dates Display - only for short-term */}
+                {!property.is_monthly_rental && selectedDates && (
                   <div className="bg-gold-50 border border-gold-200 rounded-xl p-4 mb-6">
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-charcoal-600 text-sm">Check-in</span>
@@ -755,24 +822,45 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
                   </div>
                 )}
 
-                {/* Calendar Button */}
-                <button
-                  onClick={() => setShowCalendar(true)}
-                  className="w-full bg-cream-100 border-2 border-cream-200 rounded-xl p-4 mb-4 hover:border-gold-300 transition-colors text-left"
-                >
-                  <div className="flex items-center gap-3">
-                    <Calendar className="w-5 h-5 text-gold-600" />
-                    <div>
-                      <p className="font-medium text-charcoal-900">
-                        {selectedDates ? 'Change Dates' : 'Select Dates'}
-                      </p>
-                      <p className="text-charcoal-500 text-sm">Check availability calendar</p>
+                {/* Calendar Button - only for short-term */}
+                {!property.is_monthly_rental && (
+                  <button
+                    onClick={() => setShowCalendar(true)}
+                    className="w-full bg-cream-100 border-2 border-cream-200 rounded-xl p-4 mb-4 hover:border-gold-300 transition-colors text-left"
+                  >
+                    <div className="flex items-center gap-3">
+                      <Calendar className="w-5 h-5 text-gold-600" />
+                      <div>
+                        <p className="font-medium text-charcoal-900">
+                          {selectedDates ? 'Change Dates' : 'Select Dates'}
+                        </p>
+                        <p className="text-charcoal-500 text-sm">Check availability calendar</p>
+                      </div>
+                    </div>
+                  </button>
+                )}
+
+                {/* Monthly Rental Info */}
+                {property.is_monthly_rental && (
+                  <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6">
+                    <div className="flex items-start gap-3">
+                      <Shield className="w-5 h-5 text-blue-600 mt-0.5" />
+                      <div>
+                        <p className="font-medium text-blue-800 mb-1">
+                          {locale === 'de' ? 'Spanisches Mietrecht' : 'Spanish Rental Law'}
+                        </p>
+                        <p className="text-blue-600 text-sm">
+                          {locale === 'de' 
+                            ? 'Diese Immobilie unterliegt den spanischen Langzeitmietvorschriften und ist nur für Aufenthalte von 1 Monat oder länger verfügbar.'
+                            : 'This property is subject to Spanish long-term rental regulations and is only available for stays of 1 month or longer.'}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </button>
+                )}
 
-                {/* Min Stay */}
-                {property.min_stay_nights && property.min_stay_nights > 7 && (
+                {/* Min Stay - only for short-term */}
+                {!property.is_monthly_rental && property.min_stay_nights && property.min_stay_nights > 7 && (
                   <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 flex items-center gap-3">
                     <Calendar className="w-5 h-5 text-amber-600" />
                     <div>
@@ -784,15 +872,20 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
 
                 {/* Features */}
                 <div className="space-y-4 mb-8">
-                  {[
+                  {(property.is_monthly_rental ? [
+                    locale === 'de' ? 'Verifizierte Luxusimmobilie' : 'Verified Luxury Property',
+                    locale === 'de' ? 'Langzeitvertrag verfügbar' : 'Long-Term Contract Available',
+                    locale === 'de' ? 'Monatliche Zahlungsoptionen' : 'Monthly Payment Options',
+                    locale === 'de' ? 'Persönlicher Ansprechpartner' : 'Dedicated Account Manager',
+                  ] : [
                     'Verified Luxury Property',
                     'Dedicated Concierge Support',
                     'Flexible Booking Options',
                     'No Hidden Fees',
-                  ].map((feature) => (
+                  ]).map((feature) => (
                     <div key={feature} className="flex items-center gap-3">
-                      <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
-                        <Check className="w-4 h-4 text-green-600" />
+                      <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${property.is_monthly_rental ? 'bg-blue-100' : 'bg-green-100'}`}>
+                        <Check className={`w-4 h-4 ${property.is_monthly_rental ? 'text-blue-600' : 'text-green-600'}`} />
                       </div>
                       <span className="text-charcoal-700">{feature}</span>
                     </div>
@@ -801,21 +894,25 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
 
                 {/* CTA */}
                 <Link
-                  href={`/inquire?property=${property.slug}${selectedDates ? `&checkIn=${selectedDates.checkIn}&checkOut=${selectedDates.checkOut}` : ''}`}
-                  className="btn-gold w-full flex items-center justify-center gap-3 text-lg py-5 mb-4"
+                  href={`/inquire?property=${property.slug}${property.is_monthly_rental ? '&type=monthly' : (selectedDates ? `&checkIn=${selectedDates.checkIn}&checkOut=${selectedDates.checkOut}` : '')}`}
+                  className={`w-full flex items-center justify-center gap-3 text-lg py-5 mb-4 rounded-xl font-semibold transition-colors ${property.is_monthly_rental ? 'bg-blue-600 hover:bg-blue-700 text-white' : 'btn-gold'}`}
                 >
                   <Calendar className="w-5 h-5" />
-                  {selectedDates ? t('pages.propertyDetail.requestToBook') : t('pages.propertyDetail.checkAvailability')}
+                  {property.is_monthly_rental 
+                    ? (locale === 'de' ? 'Monatsmiete anfragen' : 'Inquire for Monthly Rental')
+                    : (selectedDates ? t('pages.propertyDetail.requestToBook') : t('pages.propertyDetail.checkAvailability'))}
                 </Link>
 
                 <p className="text-center text-charcoal-400 text-sm mb-6">
-                  Our team will respond shortly
+                  {property.is_monthly_rental 
+                    ? (locale === 'de' ? 'Wir senden Ihnen Details zu Preisen und Verfügbarkeit' : 'We\'ll send you pricing and availability details')
+                    : 'Our team will respond shortly'}
                 </p>
 
                 <div className="border-t border-gray-100 pt-6 space-y-3">
-                  <a href="tel:+12039797309" className="flex items-center gap-3 text-charcoal-600 hover:text-gold-600 transition-colors">
+                  <a href="tel:+34661539553" className="flex items-center gap-3 text-charcoal-600 hover:text-gold-600 transition-colors">
                     <Phone className="w-5 h-5" />
-                    <span>+1 (203) 979-7309</span>
+                    <span>+34 661 53 95 53</span>
                   </a>
                   <a href="mailto:info@primeluxurystays.com" className="flex items-center gap-3 text-charcoal-600 hover:text-gold-600 transition-colors">
                     <Mail className="w-5 h-5" />
