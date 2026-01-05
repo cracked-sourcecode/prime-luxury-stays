@@ -128,7 +128,7 @@ export default function ServicesPageClient() {
       <section className="relative h-[60vh] min-h-[450px] overflow-hidden">
         <div className="absolute inset-0">
           <img
-            src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1920&q=80"
+            src="https://storage.googleapis.com/primeluxurystays/eden-roc/images/1766935948675-MR20230606066_result_12.38.51.webp"
             alt={locale === 'de' ? 'Luxus-Services' : 'Luxury Services'}
             className="w-full h-full object-cover"
           />
