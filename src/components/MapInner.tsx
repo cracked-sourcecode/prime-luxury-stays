@@ -55,8 +55,8 @@ export default function MapInner({
   // Filter properties with valid coordinates
   const propertiesWithCoords = properties.filter(p => p.latitude && p.longitude)
 
-  // Center of Mallorca
-  const center: [number, number] = [39.6, 2.9]
+  // Center of Mallorca - focused on main property areas
+  const center: [number, number] = [39.58, 2.65]
 
   useEffect(() => {
     if (selectedProperty) {
@@ -81,7 +81,7 @@ export default function MapInner({
       {/* Leaflet Map */}
       <MapContainer
         center={center}
-        zoom={9}
+        zoom={10.5}
         style={{ width: '100%', height: '100%' }}
         zoomControl={false}
       >
