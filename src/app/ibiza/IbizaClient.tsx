@@ -25,6 +25,8 @@ import {
 import type { Property } from '@/lib/properties'
 import { useLocale } from '@/i18n/LocaleProvider'
 import OtherDestinations from '@/components/OtherDestinations'
+import PropertyMap from '@/components/PropertyMap'
+import { useState } from 'react'
 
 interface IbizaClientProps {
   properties: Property[];
@@ -41,6 +43,7 @@ function getLocalizedField(property: Property, field: 'name' | 'short_descriptio
 
 export default function IbizaClient({ properties }: IbizaClientProps) {
   const { t, locale } = useLocale()
+  const [selectedProperty, setSelectedProperty] = useState<Property | null>(null)
   const heroRef = useRef(null)
   const { scrollYProgress } = useScroll({
     target: heroRef,
@@ -414,6 +417,61 @@ export default function IbizaClient({ properties }: IbizaClientProps) {
           )}
         </div>
       </section>
+
+      {/* ========== PROPERTIES MAP SECTION ========== */}
+      {properties.length > 0 && (
+        <section className="py-20 bg-cream-50 relative z-0">
+          <div className="max-w-7xl mx-auto px-6 lg:px-8">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-center mb-12"
+            >
+              <p className="text-gold-600 text-sm font-semibold tracking-[0.3em] uppercase mb-4">
+                {locale === 'de' ? 'Interaktive Karte' : 'Interactive Map'}
+              </p>
+              <h2 className="font-merriweather text-3xl md:text-4xl text-charcoal-900 mb-4">
+                {locale === 'de' ? 'Entdecken Sie Unsere Standorte' : 'Discover Our Locations'}
+              </h2>
+              <p className="text-charcoal-500 text-lg max-w-2xl mx-auto">
+                {locale === 'de' 
+                  ? 'Wählen Sie eine Immobilie aus der Liste, um den Standort zu sehen' 
+                  : 'Select a property from the list to view its location'}
+              </p>
+            </motion.div>
+
+            {/* Map Container */}
+            <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
+              <div className="h-[600px]">
+                <PropertyMap 
+                  properties={properties}
+                  selectedProperty={selectedProperty}
+                  onPropertySelect={setSelectedProperty}
+                  locale={locale}
+                />
+              </div>
+            </div>
+
+            {/* Selected Property CTA */}
+            {selectedProperty && (
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mt-6 flex justify-center"
+              >
+                <Link 
+                  href={`/properties/${selectedProperty.slug}`}
+                  className="bg-gold-500 text-white px-8 py-4 rounded-xl font-semibold hover:bg-gold-600 transition-colors inline-flex items-center gap-3 shadow-lg"
+                >
+                  {locale === 'de' ? 'Details ansehen:' : 'View Details:'} {getLocalizedField(selectedProperty, 'name', locale)}
+                  <ArrowRight className="w-5 h-5" />
+                </Link>
+              </motion.div>
+            )}
+          </div>
+        </section>
+      )}
 
       {/* ========== OTHER DESTINATIONS ========== */}
       <OtherDestinations currentDestination="ibiza" />
