@@ -563,8 +563,8 @@ export default function MallorcaClient({ properties }: MallorcaClientProps) {
                 <Calendar className="w-5 h-5" />
                 Request Your Villa
             </Link>
-              <a href="tel:+12039797309" className="text-white/70 hover:text-white transition-colors text-lg">
-                or call <span className="text-gold-400 font-semibold">+1 (203) 979-7309</span>
+              <a href="tel:+34661539553" className="text-white/70 hover:text-white transition-colors text-lg">
+                or call <span className="text-gold-400 font-semibold">+34 661 53 95 53</span>
               </a>
             </div>
           </motion.div>
