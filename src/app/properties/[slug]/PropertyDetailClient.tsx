@@ -273,19 +273,22 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
               {/* Share Button */}
               <button 
                 onClick={async () => {
-                  const url = window.location.href
+                  // Build URL with language parameter
+                  const baseUrl = window.location.origin + window.location.pathname
+                  const shareUrl = `${baseUrl}?lang=${locale}`
+                  
                   if (navigator.share) {
                     try {
                       await navigator.share({
                         title: getLocalizedField(property, 'name', locale),
                         text: getLocalizedField(property, 'short_description', locale),
-                        url: url,
+                        url: shareUrl,
                       })
                     } catch (err) {
                       // User cancelled or error
                     }
                   } else {
-                    await navigator.clipboard.writeText(url)
+                    await navigator.clipboard.writeText(shareUrl)
                     setShowShareToast(true)
                     setTimeout(() => setShowShareToast(false), 2000)
                   }
