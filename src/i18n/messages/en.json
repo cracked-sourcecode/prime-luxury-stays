@@ -45,8 +45,13 @@
       "regions": {
         "westSouthwest": {
           "name": "West / Southwest",
-          "subtitle": "Palma to Port d'Andratx",
-          "description": "Prestigious villas from Bendinat to the Tramuntana foothills"
+          "subtitle": "Santa Ponsa & Calvià",
+          "description": "Prestigious villas with stunning coastal views"
+        },
+        "portAndratx": {
+          "name": "Port d'Andratx",
+          "subtitle": "Luxury Marina Town",
+          "description": "Exclusive harbour-front estates with sunset views"
         },
         "northNorthwest": {
           "name": "North / Northwest",
@@ -57,11 +62,6 @@
           "name": "East / Southeast",
           "subtitle": "Canyamel to Ses Salines",
           "description": "Authentic fincas with crystal-clear waters"
-        },
-        "center": {
-          "name": "Center",
-          "subtitle": "Island Interior",
-          "description": "Traditional estates in the heart of Mallorca"
         }
       }
     },

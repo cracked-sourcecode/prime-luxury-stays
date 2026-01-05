@@ -13,8 +13,16 @@ const getMallorcaRegions = (t: (key: string) => string) => [
     subtitle: t('destinations.mallorca.regions.westSouthwest.subtitle'),
     image: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&q=80',
     description: t('destinations.mallorca.regions.westSouthwest.description'),
-    properties: 7,
+    properties: 4,
     slug: 'west-southwest',
+  },
+  {
+    name: t('destinations.mallorca.regions.portAndratx.name'),
+    subtitle: t('destinations.mallorca.regions.portAndratx.subtitle'),
+    image: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80',
+    description: t('destinations.mallorca.regions.portAndratx.description'),
+    properties: 3,
+    slug: 'port-andratx',
   },
   {
     name: t('destinations.mallorca.regions.northNorthwest.name'),
@@ -31,14 +39,6 @@ const getMallorcaRegions = (t: (key: string) => string) => [
     description: t('destinations.mallorca.regions.eastSoutheast.description'),
     properties: 4,
     slug: 'east-southeast',
-  },
-  {
-    name: t('destinations.mallorca.regions.center.name'),
-    subtitle: t('destinations.mallorca.regions.center.subtitle'),
-    image: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80',
-    description: t('destinations.mallorca.regions.center.description'),
-    properties: 0,
-    slug: 'center',
   },
 ]
 
