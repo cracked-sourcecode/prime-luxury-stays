@@ -343,12 +343,12 @@ export default function MallorcaClient({ properties }: MallorcaClientProps) {
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="text-center mb-20">
             <p className="text-gold-600 text-sm font-semibold tracking-[0.3em] uppercase mb-5">
-              The Island
+              {locale === 'de' ? 'Die Insel' : 'The Island'}
             </p>
             <h2 className="font-merriweather text-4xl md:text-5xl lg:text-6xl text-charcoal-900 mb-6">
-              Why the World's Elite
+              {locale === 'de' ? 'Warum die Elite der Welt' : "Why the World's Elite"}
               <br />
-              <span className="text-gold-600">Choose Mallorca</span>
+              <span className="text-gold-600">{locale === 'de' ? 'Mallorca wählt' : 'Choose Mallorca'}</span>
             </h2>
           </div>
 
@@ -357,22 +357,23 @@ export default function MallorcaClient({ properties }: MallorcaClientProps) {
             {/* Large Feature - Beaches */}
             <div className="col-span-12 md:col-span-8 row-span-2 relative rounded-3xl overflow-hidden group cursor-pointer">
               <img 
-                src="https://images.unsplash.com/photo-1539037116277-4db20889f2d4?w=1200&q=80"
-                alt="Mallorca Coast"
+                src="https://storage.googleapis.com/primeluxurystays/eden-roc/images/1766935948675-MR20230606066_result_12.38.51.webp"
+                alt="Luxury Villa with Mediterranean Views"
                 className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
               <div className="absolute bottom-0 left-0 right-0 p-10">
                 <div className="flex items-center gap-3 text-gold-400 mb-4">
                   <Waves className="w-6 h-6" />
-                  <span className="text-sm font-semibold tracking-[0.2em] uppercase">262 Beaches</span>
+                  <span className="text-sm font-semibold tracking-[0.2em] uppercase">{locale === 'de' ? '262 Strände' : '262 Beaches'}</span>
                 </div>
                 <h3 className="font-merriweather text-3xl md:text-4xl text-white mb-4">
-                  Crystal Clear Mediterranean
+                  {locale === 'de' ? 'Kristallklares Mittelmeer' : 'Crystal Clear Mediterranean'}
                 </h3>
                 <p className="text-white/70 text-lg max-w-xl">
-                  From hidden coves to pristine sandy beaches, discover waters so clear 
-                  you'll see the bottom 30 meters down.
+                  {locale === 'de' 
+                    ? 'Von versteckten Buchten bis zu unberührten Sandstränden – entdecken Sie Wasser so klar, dass Sie 30 Meter tief sehen können.'
+                    : 'From hidden coves to pristine sandy beaches, discover waters so clear you\'ll see the bottom 30 meters down.'}
                 </p>
               </div>
             </div>
@@ -380,15 +381,15 @@ export default function MallorcaClient({ properties }: MallorcaClientProps) {
             {/* Mountains */}
             <div className="col-span-12 md:col-span-4 row-span-1 relative rounded-3xl overflow-hidden group cursor-pointer">
               <img 
-                src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80"
-                alt="Tramuntana Mountains"
+                src="https://storage.googleapis.com/primeluxurystays/la-salve/images/1766937633626-ls17-602-marcgilsdorf_result_12.40.11.webp"
+                alt="Serra de Tramuntana Views"
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-black/20" />
               <div className="absolute bottom-0 left-0 right-0 p-6">
                 <div className="flex items-center gap-2 text-gold-400 mb-2">
                   <Mountain className="w-5 h-5" />
-                  <span className="text-xs font-semibold tracking-[0.15em] uppercase">UNESCO Heritage</span>
+                  <span className="text-xs font-semibold tracking-[0.15em] uppercase">UNESCO {locale === 'de' ? 'Welterbe' : 'Heritage'}</span>
                 </div>
                 <h3 className="font-merriweather text-xl text-white">
                   Serra de Tramuntana
@@ -399,18 +400,18 @@ export default function MallorcaClient({ properties }: MallorcaClientProps) {
             {/* Gastronomy */}
             <div className="col-span-6 md:col-span-4 row-span-1 relative rounded-3xl overflow-hidden group cursor-pointer">
               <img 
-                src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80"
-                alt="Fine Dining"
+                src="https://storage.googleapis.com/primeluxurystays/finca-es-boscarro/images/1767026970427-Finca_Can_Lau_Santa_Margalida_Web-47.jpg"
+                alt="Outdoor Dining Experience"
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-black/20" />
               <div className="absolute bottom-0 left-0 right-0 p-6">
                 <div className="flex items-center gap-2 text-gold-400 mb-2">
                   <Wine className="w-5 h-5" />
-                  <span className="text-xs font-semibold tracking-[0.15em] uppercase">Michelin Stars</span>
+                  <span className="text-xs font-semibold tracking-[0.15em] uppercase">{locale === 'de' ? 'Michelin Sterne' : 'Michelin Stars'}</span>
                 </div>
                 <h3 className="font-merriweather text-xl text-white">
-                  World-Class Dining
+                  {locale === 'de' ? 'Weltklasse Gastronomie' : 'World-Class Dining'}
                 </h3>
               </div>
             </div>
@@ -418,18 +419,18 @@ export default function MallorcaClient({ properties }: MallorcaClientProps) {
             {/* Yachts */}
             <div className="col-span-6 md:col-span-4 row-span-1 relative rounded-3xl overflow-hidden group cursor-pointer">
               <img 
-                src="https://images.unsplash.com/photo-1540946485063-a40da27545f8?w=800&q=80"
-                alt="Yacht Marina"
+                src="https://storage.googleapis.com/primeluxurystays/vista-malgrat/images/1765716769743-_DSC4663.jpg"
+                alt="Coastal Living"
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-black/20" />
               <div className="absolute bottom-0 left-0 right-0 p-6">
                 <div className="flex items-center gap-2 text-gold-400 mb-2">
                   <Anchor className="w-5 h-5" />
-                  <span className="text-xs font-semibold tracking-[0.15em] uppercase">Nautical Paradise</span>
+                  <span className="text-xs font-semibold tracking-[0.15em] uppercase">{locale === 'de' ? 'Nautisches Paradies' : 'Nautical Paradise'}</span>
                 </div>
                 <h3 className="font-merriweather text-xl text-white">
-                  Premier Marinas
+                  {locale === 'de' ? 'Erstklassige Yachthäfen' : 'Premier Marinas'}
                 </h3>
               </div>
             </div>
@@ -437,18 +438,18 @@ export default function MallorcaClient({ properties }: MallorcaClientProps) {
             {/* Sunshine */}
             <div className="col-span-12 md:col-span-4 row-span-1 relative rounded-3xl overflow-hidden group cursor-pointer">
               <img 
-                src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=800&q=80"
-                alt="Sunny Days"
+                src="https://storage.googleapis.com/primeluxurystays/4-elements/images/1766934271401-New_built_villa_Alcudia_ref_7724_-_night_shots_-_-2_result_12.32.15.webp"
+                alt="Villa at Sunset"
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-black/20" />
               <div className="absolute bottom-0 left-0 right-0 p-6">
                 <div className="flex items-center gap-2 text-gold-400 mb-2">
                   <Sun className="w-5 h-5" />
-                  <span className="text-xs font-semibold tracking-[0.15em] uppercase">300+ Days / Year</span>
+                  <span className="text-xs font-semibold tracking-[0.15em] uppercase">{locale === 'de' ? '300+ Tage / Jahr' : '300+ Days / Year'}</span>
                 </div>
                 <h3 className="font-merriweather text-xl text-white">
-                  Endless Sunshine
+                  {locale === 'de' ? 'Endloser Sonnenschein' : 'Endless Sunshine'}
                 </h3>
               </div>
             </div>
