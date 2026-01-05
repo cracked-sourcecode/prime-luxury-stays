@@ -8,9 +8,7 @@ import './globals.css'
 const SITE_URL = 'https://primeluxurystays.com'
 // Used for link previews (iMessage/SMS/social)
 const SHARE_IMAGE = 'https://storage.googleapis.com/primeluxurystays/Company%20Logo'
-// Used for browser tab / search bar icon
-const FAVICON_IMAGE =
-  'https://storage.googleapis.com/primeluxurystays/Logo%20no%20text%20(global%20header).png'
+// Favicon is now handled by icon.png and apple-icon.png in src/app/
 // Hero image for structured data
 const HERO_IMAGE = 'https://storage.googleapis.com/primeluxurystays/hero-luxury-villa.jpg'
 
@@ -19,10 +17,6 @@ export const metadata: Metadata = {
   description: 'Find your next luxury escape. Discover handpicked villas and estates in the world\'s most extraordinary destinations. Your private paradise awaits.',
   keywords: 'luxury villas, exclusive estates, private residences, luxury rentals, premium vacation homes, luxury vacation rentals, private villas',
   metadataBase: new URL(SITE_URL),
-  icons: {
-    icon: [{ url: FAVICON_IMAGE }],
-    apple: [{ url: FAVICON_IMAGE }],
-  },
   openGraph: {
     type: 'website',
     url: SITE_URL,
