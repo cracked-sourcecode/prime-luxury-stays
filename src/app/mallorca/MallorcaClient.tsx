@@ -24,6 +24,7 @@ import {
   Heart
 } from 'lucide-react'
 import PropertyMap from '@/components/PropertyMap'
+import OtherDestinations from '@/components/OtherDestinations'
 import type { Property } from '@/lib/properties'
 import { useLocale } from '@/i18n/LocaleProvider'
 
@@ -593,6 +594,9 @@ export default function MallorcaClient({ properties }: MallorcaClientProps) {
           )}
         </div>
       </section>
+
+      {/* ========== OTHER DESTINATIONS ========== */}
+      <OtherDestinations currentDestination="mallorca" />
 
       {/* ========== FINAL CTA ========== */}
       <section className="relative py-28 overflow-hidden">

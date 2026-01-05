@@ -24,6 +24,7 @@ import {
 } from 'lucide-react'
 import type { Property } from '@/lib/properties'
 import { useLocale } from '@/i18n/LocaleProvider'
+import OtherDestinations from '@/components/OtherDestinations'
 
 interface IbizaClientProps {
   properties: Property[];
@@ -413,6 +414,9 @@ export default function IbizaClient({ properties }: IbizaClientProps) {
           )}
         </div>
       </section>
+
+      {/* ========== OTHER DESTINATIONS ========== */}
+      <OtherDestinations currentDestination="ibiza" />
 
       {/* ========== FINAL CTA ========== */}
       <section className="relative py-32 overflow-hidden">

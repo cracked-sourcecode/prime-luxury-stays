@@ -24,6 +24,7 @@ import {
 } from 'lucide-react'
 import type { Property } from '@/lib/properties'
 import { useLocale } from '@/i18n/LocaleProvider'
+import OtherDestinations from '@/components/OtherDestinations'
 
 interface SouthOfFranceClientProps {
   properties: Property[];
@@ -414,6 +415,9 @@ export default function SouthOfFranceClient({ properties }: SouthOfFranceClientP
           )}
         </div>
       </section>
+
+      {/* ========== OTHER DESTINATIONS ========== */}
+      <OtherDestinations currentDestination="south-of-france" />
 
       {/* ========== FINAL CTA ========== */}
       <section className="relative py-32 overflow-hidden">
