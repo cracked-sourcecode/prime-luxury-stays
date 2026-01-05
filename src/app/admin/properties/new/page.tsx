@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { 
@@ -13,18 +13,78 @@ import {
   Euro,
   Home,
   Loader2,
-  Check
+  Check,
+  Upload,
+  X,
+  Image as ImageIcon,
+  GripVertical
 } from 'lucide-react'
+import { useAdminLocale } from '@/lib/adminLocale'
+
+// Compress image before upload
+async function compressImage(file: File, maxWidth = 1920, quality = 0.8): Promise<File> {
+  return new Promise((resolve) => {
+    if (!file.type.startsWith('image/') || file.size < 500000) {
+      resolve(file)
+      return
+    }
+
+    const canvas = document.createElement('canvas')
+    const ctx = canvas.getContext('2d')
+    const img = new Image()
+    
+    img.onload = () => {
+      let { width, height } = img
+      if (width > maxWidth) {
+        height = (height * maxWidth) / width
+        width = maxWidth
+      }
+      
+      canvas.width = width
+      canvas.height = height
+      ctx?.drawImage(img, 0, 0, width, height)
+      
+      canvas.toBlob(
+        (blob) => {
+          if (blob) {
+            resolve(new File([blob], file.name, { type: 'image/jpeg' }))
+          } else {
+            resolve(file)
+          }
+        },
+        'image/jpeg',
+        quality
+      )
+    }
+    
+    img.onerror = () => resolve(file)
+    img.src = URL.createObjectURL(file)
+  })
+}
+
+interface StagedImage {
+  id: string
+  file: File
+  preview: string
+}
 
 export default function NewPropertyPage() {
   const router = useRouter()
+  const { t, locale } = useAdminLocale()
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
+  const [uploadProgress, setUploadProgress] = useState('')
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  // Staged images for upload after property creation
+  const [stagedImages, setStagedImages] = useState<StagedImage[]>([])
 
   const [formData, setFormData] = useState({
     name: '',
+    name_de: '',
     house_type: 'Villa',
+    house_type_de: '',
     region: 'Mallorca',
     city: '',
     country: 'Spain',
@@ -34,7 +94,9 @@ export default function NewPropertyPage() {
     price_per_week: '',
     price_per_week_high: '',
     description: '',
+    description_de: '',
     short_description: '',
+    short_description_de: '',
     has_pool: false,
     has_sea_view: false,
     has_ac: true,
@@ -48,11 +110,64 @@ export default function NewPropertyPage() {
       .replace(/(^-|-$)/g, '')
   }
 
+  // Handle image file selection
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files
+    if (!files || files.length === 0) return
+
+    const newImages: StagedImage[] = []
+    for (const file of Array.from(files)) {
+      if (file.type.startsWith('image/')) {
+        const compressed = await compressImage(file)
+        newImages.push({
+          id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+          file: compressed,
+          preview: URL.createObjectURL(compressed)
+        })
+      }
+    }
+    
+    setStagedImages(prev => [...prev, ...newImages])
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
+  }
+
+  // Remove staged image
+  const removeStagedImage = (id: string) => {
+    setStagedImages(prev => {
+      const image = prev.find(img => img.id === id)
+      if (image) {
+        URL.revokeObjectURL(image.preview)
+      }
+      return prev.filter(img => img.id !== id)
+    })
+  }
+
+  // Upload images to a property
+  const uploadImages = async (propertyId: string) => {
+    for (let i = 0; i < stagedImages.length; i++) {
+      const image = stagedImages[i]
+      setUploadProgress(locale === 'de' 
+        ? `Bild ${i + 1} von ${stagedImages.length} wird hochgeladen...`
+        : `Uploading image ${i + 1} of ${stagedImages.length}...`)
+      
+      const formData = new FormData()
+      formData.append('file', image.file)
+      formData.append('order', String(i))
+      
+      await fetch(`/api/admin/properties/${propertyId}/images`, {
+        method: 'POST',
+        body: formData,
+      })
+    }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
     if (!formData.name.trim()) {
-      setError('Property name is required')
+      setError(locale === 'de' ? 'Immobilienname ist erforderlich' : 'Property name is required')
       return
     }
 
@@ -79,17 +194,23 @@ export default function NewPropertyPage() {
       const data = await res.json()
 
       if (data.success && data.id) {
+        // Upload staged images if any
+        if (stagedImages.length > 0) {
+          await uploadImages(data.id)
+        }
+        
         setSuccess(true)
         setTimeout(() => {
           router.push(`/admin/properties/${data.id}`)
         }, 1000)
       } else {
-        setError(data.error || 'Failed to create property')
+        setError(data.error || (locale === 'de' ? 'Fehler beim Erstellen' : 'Failed to create property'))
       }
     } catch (err) {
-      setError('Something went wrong')
+      setError(locale === 'de' ? 'Etwas ist schiefgelaufen' : 'Something went wrong')
     } finally {
       setSaving(false)
+      setUploadProgress('')
     }
   }
 
@@ -100,8 +221,12 @@ export default function NewPropertyPage() {
           <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <Check className="w-8 h-8 text-green-600" />
           </div>
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">Property Created!</h2>
-          <p className="text-gray-500">Redirecting to add images and details...</p>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">
+            {locale === 'de' ? 'Immobilie erstellt!' : 'Property Created!'}
+          </h2>
+          <p className="text-gray-500">
+            {locale === 'de' ? 'Weiterleitung zur Bearbeitung...' : 'Redirecting to edit details...'}
+          </p>
         </div>
       </div>
     )
@@ -118,23 +243,34 @@ export default function NewPropertyPage() {
           <ArrowLeft className="w-5 h-5 text-gray-600" />
         </Link>
         <div>
-          <h1 className="text-2xl font-semibold text-gray-900">Add New Property</h1>
-          <p className="text-gray-500">Create a new listing - you can add images after saving</p>
+          <h1 className="text-2xl font-semibold text-gray-900">{t('newProperty')}</h1>
+          <p className="text-gray-500">
+            {locale === 'de' 
+              ? 'Erstellen Sie eine neue Immobilie mit Bildern' 
+              : 'Create a new listing with images'}
+          </p>
         </div>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-8">
-        {/* Basic Info */}
+        {/* Basic Info with Both Languages */}
         <div className="bg-white rounded-xl border border-gray-200 p-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
             <Home className="w-5 h-5 text-gold-600" />
-            Basic Information
+            {t('propertyContent')}
           </h2>
           
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="md:col-span-2">
+          <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-6">
+            <p className="text-sm text-amber-800">
+              📝 {t('contentHint')}
+            </p>
+          </div>
+          
+          {/* Property Name - Both Languages */}
+          <div className="grid md:grid-cols-2 gap-6 mb-6">
+            <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Property Name *
+                🇬🇧 Property Name (English) *
               </label>
               <input
                 type="text"
@@ -145,10 +281,25 @@ export default function NewPropertyPage() {
                 placeholder="e.g., Villa Son Vida"
               />
             </div>
-
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Property Type
+                🇩🇪 Immobilienname (Deutsch)
+              </label>
+              <input
+                type="text"
+                value={formData.name_de}
+                onChange={(e) => setFormData({ ...formData, name_de: e.target.value })}
+                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
+                placeholder="Leer lassen für englischen Namen"
+              />
+            </div>
+          </div>
+
+          {/* Property Type - Both Languages */}
+          <div className="grid md:grid-cols-2 gap-6 mb-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                🇬🇧 Property Type
               </label>
               <select
                 value={formData.house_type}
@@ -163,10 +314,31 @@ export default function NewPropertyPage() {
                 <option value="Estate">Estate</option>
               </select>
             </div>
-
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Region *
+                🇩🇪 Haustyp (Deutsch)
+              </label>
+              <select
+                value={formData.house_type_de}
+                onChange={(e) => setFormData({ ...formData, house_type_de: e.target.value })}
+                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
+              >
+                <option value="">— Englisch verwenden —</option>
+                <option value="Villa">Villa</option>
+                <option value="Finca">Finca</option>
+                <option value="Wohnung">Wohnung</option>
+                <option value="Stadthaus">Stadthaus</option>
+                <option value="Penthouse">Penthouse</option>
+                <option value="Anwesen">Anwesen</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Location */}
+          <div className="grid md:grid-cols-3 gap-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                {t('region')} *
               </label>
               <select
                 required
@@ -179,23 +351,21 @@ export default function NewPropertyPage() {
                 <option value="South of France">South of France</option>
               </select>
             </div>
-
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                City / Area
+                {t('city')}
               </label>
               <input
                 type="text"
                 value={formData.city}
                 onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                 className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
-                placeholder="e.g., Palma, Port d'Andratx"
+                placeholder="e.g., Palma"
               />
             </div>
-
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Country
+                {t('country')}
               </label>
               <input
                 type="text"
@@ -208,17 +378,84 @@ export default function NewPropertyPage() {
           </div>
         </div>
 
+        {/* Images Section */}
+        <div className="bg-white rounded-xl border border-gray-200 p-6">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+            <ImageIcon className="w-5 h-5 text-gold-600" />
+            {t('images')}
+          </h2>
+          
+          {/* Upload Area */}
+          <div 
+            onClick={() => fileInputRef.current?.click()}
+            className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center cursor-pointer hover:border-gold-400 hover:bg-gold-50/50 transition-colors mb-4"
+          >
+            <Upload className="w-10 h-10 text-gray-400 mx-auto mb-3" />
+            <p className="text-gray-600 font-medium">
+              {locale === 'de' 
+                ? 'Klicken Sie, um Bilder auszuwählen'
+                : 'Click to select images'}
+            </p>
+            <p className="text-sm text-gray-400 mt-1">
+              {locale === 'de'
+                ? 'JPG, PNG, WebP unterstützt'
+                : 'JPG, PNG, WebP supported'}
+            </p>
+          </div>
+          
+          <input
+            ref={fileInputRef}
+            type="file"
+            multiple
+            accept="image/*"
+            onChange={handleFileSelect}
+            className="hidden"
+          />
+
+          {/* Staged Images Preview */}
+          {stagedImages.length > 0 && (
+            <div className="mt-4">
+              <p className="text-sm text-gray-600 mb-3">
+                {stagedImages.length} {locale === 'de' ? 'Bilder ausgewählt' : 'images selected'}
+              </p>
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                {stagedImages.map((image, index) => (
+                  <div key={image.id} className="relative group aspect-video rounded-lg overflow-hidden bg-gray-100">
+                    <img 
+                      src={image.preview} 
+                      alt={`Preview ${index + 1}`}
+                      className="w-full h-full object-cover"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeStagedImage(image.id)}
+                      className="absolute top-2 right-2 p-1.5 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                    {index === 0 && (
+                      <span className="absolute bottom-2 left-2 px-2 py-1 bg-gold-500 text-white text-xs rounded-full">
+                        {locale === 'de' ? 'Titelbild' : 'Featured'}
+                      </span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
         {/* Capacity */}
         <div className="bg-white rounded-xl border border-gray-200 p-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
             <Users className="w-5 h-5 text-gold-600" />
-            Capacity
+            {t('propertyDetails')}
           </h2>
           
           <div className="grid grid-cols-3 gap-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-2">
-                <Bed className="w-4 h-4" /> Bedrooms
+                <Bed className="w-4 h-4" /> {t('bedrooms')}
               </label>
               <input
                 type="number"
@@ -232,7 +469,7 @@ export default function NewPropertyPage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-2">
-                <Bath className="w-4 h-4" /> Bathrooms
+                <Bath className="w-4 h-4" /> {t('bathrooms')}
               </label>
               <input
                 type="number"
@@ -246,7 +483,7 @@ export default function NewPropertyPage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-2">
-                <Users className="w-4 h-4" /> Max Guests
+                <Users className="w-4 h-4" /> {t('maxGuests')}
               </label>
               <input
                 type="number"
@@ -264,13 +501,13 @@ export default function NewPropertyPage() {
         <div className="bg-white rounded-xl border border-gray-200 p-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
             <Euro className="w-5 h-5 text-gold-600" />
-            Pricing
+            {t('pricing')}
           </h2>
           
           <div className="grid md:grid-cols-2 gap-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Low Season (per week)
+                {t('pricePerWeekLow')}
               </label>
               <div className="relative">
                 <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">€</span>
@@ -287,7 +524,7 @@ export default function NewPropertyPage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                High Season (per week)
+                {t('pricePerWeekHigh')}
               </label>
               <div className="relative">
                 <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">€</span>
@@ -306,14 +543,14 @@ export default function NewPropertyPage() {
 
         {/* Amenities */}
         <div className="bg-white rounded-xl border border-gray-200 p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Amenities</h2>
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">{t('amenities')}</h2>
           
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
-              { key: 'has_pool', label: 'Pool' },
-              { key: 'has_sea_view', label: 'Sea View' },
-              { key: 'has_ac', label: 'Air Conditioning' },
-              { key: 'has_wifi', label: 'WiFi' },
+              { key: 'has_pool', label: t('privatePool') },
+              { key: 'has_sea_view', label: t('seaView') },
+              { key: 'has_ac', label: t('airConditioning') },
+              { key: 'has_wifi', label: t('wifi') },
             ].map(amenity => (
               <label 
                 key={amenity.key} 
@@ -342,14 +579,16 @@ export default function NewPropertyPage() {
           </div>
         </div>
 
-        {/* Description */}
+        {/* Description - Both Languages */}
         <div className="bg-white rounded-xl border border-gray-200 p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Description</h2>
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">
+            {locale === 'de' ? 'Beschreibungen' : 'Descriptions'}
+          </h2>
           
-          <div className="space-y-4">
+          <div className="grid md:grid-cols-2 gap-6 mb-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Short Description
+                🇬🇧 Short Description (English)
               </label>
               <input
                 type="text"
@@ -359,10 +598,24 @@ export default function NewPropertyPage() {
                 placeholder="A brief tagline for the property"
               />
             </div>
-
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Full Description
+                🇩🇪 Kurzbeschreibung (Deutsch)
+              </label>
+              <input
+                type="text"
+                value={formData.short_description_de}
+                onChange={(e) => setFormData({ ...formData, short_description_de: e.target.value })}
+                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
+                placeholder="Kurze Beschreibung"
+              />
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                🇬🇧 Full Description (English)
               </label>
               <textarea
                 rows={5}
@@ -370,6 +623,18 @@ export default function NewPropertyPage() {
                 onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                 className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
                 placeholder="Describe the property in detail..."
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                🇩🇪 Vollständige Beschreibung (Deutsch)
+              </label>
+              <textarea
+                rows={5}
+                value={formData.description_de}
+                onChange={(e) => setFormData({ ...formData, description_de: e.target.value })}
+                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
+                placeholder="Ausführliche Beschreibung der Immobilie..."
               />
             </div>
           </div>
@@ -388,7 +653,7 @@ export default function NewPropertyPage() {
             href="/admin/properties"
             className="px-6 py-3 text-gray-700 hover:bg-gray-100 rounded-lg font-medium transition-colors"
           >
-            Cancel
+            {locale === 'de' ? 'Abbrechen' : 'Cancel'}
           </Link>
           
           <button
@@ -399,22 +664,18 @@ export default function NewPropertyPage() {
             {saving ? (
               <>
                 <Loader2 className="w-5 h-5 animate-spin" />
-                Creating...
+                {uploadProgress || (locale === 'de' ? 'Erstellen...' : 'Creating...')}
               </>
             ) : (
               <>
                 <Save className="w-5 h-5" />
-                Create Property
+                {locale === 'de' ? 'Immobilie erstellen' : 'Create Property'}
+                {stagedImages.length > 0 && ` (${stagedImages.length} ${locale === 'de' ? 'Bilder' : 'images'})`}
               </>
             )}
           </button>
         </div>
-
-        <p className="text-sm text-gray-500 text-center">
-          After creating, you'll be able to add images, set availability, and configure more options.
-        </p>
       </form>
     </div>
   )
 }
-
