@@ -57,7 +57,7 @@ export default function IbizaClient({ properties }: IbizaClientProps) {
         <motion.div style={{ y: heroY }} className="absolute inset-0">
           {/* Background image */}
           <img
-            src="https://images.unsplash.com/photo-1539037116277-4db20889f2d4?w=1920&q=80"
+            src="https://storage.googleapis.com/primeluxurystays/Ibiza%20Photo.png"
             alt="Ibiza"
             className="absolute inset-0 w-full h-full object-cover"
             loading="eager"
