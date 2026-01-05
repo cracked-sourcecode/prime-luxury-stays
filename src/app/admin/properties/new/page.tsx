@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useCallback, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { 
@@ -79,90 +79,101 @@ export default function NewPropertyPage() {
   const [uploadProgress, setUploadProgress] = useState('')
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [translating, setTranslating] = useState<string | null>(null)
+  const translateTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   // Staged images for upload after property creation
   const [stagedImages, setStagedImages] = useState<StagedImage[]>([])
 
   // Auto-translate function using OpenAI
-  const translateField = async (
-    sourceField: keyof typeof formData,
-    targetField: keyof typeof formData,
+  const translateText = async (
+    text: string,
     targetLanguage: 'en' | 'de',
     fieldType: string
-  ) => {
-    const sourceText = formData[sourceField] as string
-    if (!sourceText?.trim()) return
+  ): Promise<string | null> => {
+    if (!text?.trim()) return null
 
-    setTranslating(targetField as string)
     try {
       const res = await fetch('/api/admin/translate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          text: sourceText,
+          text,
           targetLanguage,
           fieldType
         })
       })
       const data = await res.json()
-      if (data.translatedText) {
-        setFormData(prev => ({ ...prev, [targetField]: data.translatedText }))
-      }
+      return data.translatedText || null
     } catch (err) {
       console.error('Translation error:', err)
-    } finally {
-      setTranslating(null)
+      return null
     }
   }
 
-  // Translate all fields at once
-  const translateAllToGerman = async () => {
-    setTranslating('all_de')
-    try {
-      const translations = [
-        { source: 'name', target: 'name_de', type: 'name' },
-        { source: 'short_description', target: 'short_description_de', type: 'short_description' },
-        { source: 'description', target: 'description_de', type: 'description' },
-      ]
-      
-      for (const t of translations) {
-        if (formData[t.source as keyof typeof formData]) {
-          await translateField(
-            t.source as keyof typeof formData,
-            t.target as keyof typeof formData,
-            'de',
-            t.type
-          )
+  // Auto-translate when English field changes (with debounce)
+  const handleEnglishFieldChange = (
+    field: 'name' | 'short_description' | 'description',
+    value: string
+  ) => {
+    const germanField = `${field}_de` as keyof typeof formData
+    const fieldType = field === 'name' ? 'name' : field === 'short_description' ? 'short_description' : 'description'
+    
+    setFormData(prev => ({ ...prev, [field]: value }))
+
+    // Clear previous timeout
+    if (translateTimeoutRef.current) {
+      clearTimeout(translateTimeoutRef.current)
+    }
+
+    // Only auto-translate if there's text and German field is empty or was auto-translated
+    if (value.trim()) {
+      translateTimeoutRef.current = setTimeout(async () => {
+        setTranslating(germanField)
+        const translated = await translateText(value, 'de', fieldType)
+        if (translated) {
+          setFormData(prev => ({ ...prev, [germanField]: translated }))
         }
-      }
-    } finally {
-      setTranslating(null)
+        setTranslating(null)
+      }, 1000) // Wait 1 second after user stops typing
     }
   }
 
-  const translateAllToEnglish = async () => {
-    setTranslating('all_en')
-    try {
-      const translations = [
-        { source: 'name_de', target: 'name', type: 'name' },
-        { source: 'short_description_de', target: 'short_description', type: 'short_description' },
-        { source: 'description_de', target: 'description', type: 'description' },
-      ]
-      
-      for (const t of translations) {
-        if (formData[t.source as keyof typeof formData]) {
-          await translateField(
-            t.source as keyof typeof formData,
-            t.target as keyof typeof formData,
-            'en',
-            t.type
-          )
+  // Auto-translate when German field changes (with debounce)
+  const handleGermanFieldChange = (
+    field: 'name_de' | 'short_description_de' | 'description_de',
+    value: string
+  ) => {
+    const englishField = field.replace('_de', '') as 'name' | 'short_description' | 'description'
+    const fieldType = englishField === 'name' ? 'name' : englishField === 'short_description' ? 'short_description' : 'description'
+    
+    setFormData(prev => ({ ...prev, [field]: value }))
+
+    // Clear previous timeout
+    if (translateTimeoutRef.current) {
+      clearTimeout(translateTimeoutRef.current)
+    }
+
+    // Only auto-translate if there's text and English field is empty
+    if (value.trim() && !formData[englishField]) {
+      translateTimeoutRef.current = setTimeout(async () => {
+        setTranslating(englishField)
+        const translated = await translateText(value, 'en', fieldType)
+        if (translated) {
+          setFormData(prev => ({ ...prev, [englishField]: translated }))
         }
-      }
-    } finally {
-      setTranslating(null)
+        setTranslating(null)
+      }, 1000) // Wait 1 second after user stops typing
     }
   }
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (translateTimeoutRef.current) {
+        clearTimeout(translateTimeoutRef.current)
+      }
+    }
+  }, [])
 
   const [formData, setFormData] = useState({
     name: '',
@@ -394,7 +405,7 @@ export default function NewPropertyPage() {
                 type="text"
                 required
                 value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                onChange={(e) => handleEnglishFieldChange('name', e.target.value)}
                 className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
                 placeholder="e.g., Villa Son Vida"
               />
@@ -403,13 +414,14 @@ export default function NewPropertyPage() {
               <div className="flex items-center justify-between mb-1">
                 <label className="block text-sm font-medium text-gray-700">
                   🇩🇪 Immobilienname (Deutsch)
+                  {translating === 'name_de' && (
+                    <span className="ml-2 text-blue-600 text-xs flex items-center gap-1">
+                      <Loader2 className="w-3 h-3 animate-spin" />
+                      {locale === 'de' ? 'Übersetze...' : 'Translating...'}
+                    </span>
+                  )}
                 </label>
-                <button
-                  type="button"
-                  onClick={() => translateField('name', 'name_de', 'de', 'name')}
-                  disabled={translating !== null || !formData.name}
-                  className="text-xs text-blue-600 hover:text-blue-700 flex items-center gap-1 disabled:opacity-50"
-                >
+              </div>
                   {translating === 'name_de' ? <Loader2 className="w-3 h-3 animate-spin" /> : <Languages className="w-3 h-3" />}
                   {locale === 'de' ? 'Übersetzen' : 'Translate'}
                 </button>
@@ -417,9 +429,9 @@ export default function NewPropertyPage() {
               <input
                 type="text"
                 value={formData.name_de}
-                onChange={(e) => setFormData({ ...formData, name_de: e.target.value })}
+                onChange={(e) => handleGermanFieldChange('name_de', e.target.value)}
                 className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
-                placeholder="Leer lassen für englischen Namen"
+                placeholder={locale === 'de' ? 'Wird automatisch übersetzt' : 'Auto-translates from English'}
               />
             </div>
           </div>
@@ -722,7 +734,7 @@ export default function NewPropertyPage() {
               <input
                 type="text"
                 value={formData.short_description}
-                onChange={(e) => setFormData({ ...formData, short_description: e.target.value })}
+                onChange={(e) => handleEnglishFieldChange('short_description', e.target.value)}
                 className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
                 placeholder="A brief tagline for the property"
               />
@@ -731,23 +743,20 @@ export default function NewPropertyPage() {
               <div className="flex items-center justify-between mb-1">
                 <label className="block text-sm font-medium text-gray-700">
                   🇩🇪 Kurzbeschreibung (Deutsch)
+                  {translating === 'short_description_de' && (
+                    <span className="ml-2 text-blue-600 text-xs flex items-center gap-1">
+                      <Loader2 className="w-3 h-3 animate-spin" />
+                      {locale === 'de' ? 'Übersetze...' : 'Translating...'}
+                    </span>
+                  )}
                 </label>
-                <button
-                  type="button"
-                  onClick={() => translateField('short_description', 'short_description_de', 'de', 'short_description')}
-                  disabled={translating !== null || !formData.short_description}
-                  className="text-xs text-blue-600 hover:text-blue-700 flex items-center gap-1 disabled:opacity-50"
-                >
-                  {translating === 'short_description_de' ? <Loader2 className="w-3 h-3 animate-spin" /> : <Languages className="w-3 h-3" />}
-                  {locale === 'de' ? 'Übersetzen' : 'Translate'}
-                </button>
               </div>
               <input
                 type="text"
                 value={formData.short_description_de}
-                onChange={(e) => setFormData({ ...formData, short_description_de: e.target.value })}
+                onChange={(e) => handleGermanFieldChange('short_description_de', e.target.value)}
                 className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
-                placeholder="Kurze Beschreibung"
+                placeholder={locale === 'de' ? 'Wird automatisch übersetzt' : 'Auto-translates from English'}
               />
             </div>
           </div>
@@ -760,7 +769,7 @@ export default function NewPropertyPage() {
               <textarea
                 rows={5}
                 value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                onChange={(e) => handleEnglishFieldChange('description', e.target.value)}
                 className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
                 placeholder="Describe the property in detail..."
               />
@@ -769,23 +778,20 @@ export default function NewPropertyPage() {
               <div className="flex items-center justify-between mb-1">
                 <label className="block text-sm font-medium text-gray-700">
                   🇩🇪 Vollständige Beschreibung (Deutsch)
+                  {translating === 'description_de' && (
+                    <span className="ml-2 text-blue-600 text-xs flex items-center gap-1">
+                      <Loader2 className="w-3 h-3 animate-spin" />
+                      {locale === 'de' ? 'Übersetze...' : 'Translating...'}
+                    </span>
+                  )}
                 </label>
-                <button
-                  type="button"
-                  onClick={() => translateField('description', 'description_de', 'de', 'description')}
-                  disabled={translating !== null || !formData.description}
-                  className="text-xs text-blue-600 hover:text-blue-700 flex items-center gap-1 disabled:opacity-50"
-                >
-                  {translating === 'description_de' ? <Loader2 className="w-3 h-3 animate-spin" /> : <Languages className="w-3 h-3" />}
-                  {locale === 'de' ? 'Übersetzen' : 'Translate'}
-                </button>
               </div>
               <textarea
                 rows={5}
                 value={formData.description_de}
-                onChange={(e) => setFormData({ ...formData, description_de: e.target.value })}
+                onChange={(e) => handleGermanFieldChange('description_de', e.target.value)}
                 className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
-                placeholder="Ausführliche Beschreibung der Immobilie..."
+                placeholder={locale === 'de' ? 'Wird automatisch übersetzt' : 'Auto-translates from English'}
               />
             </div>
           </div>
