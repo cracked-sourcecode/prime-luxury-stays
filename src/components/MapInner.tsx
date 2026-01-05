@@ -81,7 +81,7 @@ export default function MapInner({
       {/* Leaflet Map */}
       <MapContainer
         center={center}
-        zoom={10.5}
+        zoom={9.5}
         style={{ width: '100%', height: '100%' }}
         zoomControl={false}
       >
@@ -150,9 +150,14 @@ export default function MapInner({
                   )}
                   <Link
                     href={`/properties/${property.slug}`}
-                    className="bg-charcoal-900 text-white px-3 py-1.5 rounded-lg text-xs font-medium hover:bg-charcoal-800 transition-colors"
+                    className="px-4 py-2 rounded-lg text-xs font-semibold transition-colors"
+                    style={{ 
+                      backgroundColor: '#b8954c', 
+                      color: '#ffffff',
+                      textDecoration: 'none'
+                    }}
                   >
-                    {locale === 'de' ? 'Details' : 'View'}
+                    {locale === 'de' ? 'Ansehen' : 'View'}
                   </Link>
                 </div>
               </div>
@@ -222,18 +227,26 @@ export default function MapInner({
         }
         .leaflet-popup-content-wrapper {
           padding: 0;
-          border-radius: 12px;
+          border-radius: 16px;
           overflow: hidden;
+          box-shadow: 0 10px 40px rgba(0,0,0,0.15);
         }
         .leaflet-popup-content {
           margin: 12px;
           width: auto !important;
+        }
+        .leaflet-popup-content a {
+          color: inherit !important;
+          text-decoration: none !important;
         }
         .leaflet-popup-tip {
           background: white;
         }
         .leaflet-container {
           font-family: inherit;
+        }
+        .leaflet-container a {
+          color: inherit;
         }
         .scrollbar-hide {
           -ms-overflow-style: none;

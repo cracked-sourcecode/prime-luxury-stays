@@ -584,7 +584,7 @@ export default function MallorcaClient({ properties }: MallorcaClientProps) {
             >
               <Link 
                 href={`/properties/${selectedProperty.slug}`}
-                className="bg-gold-500 text-charcoal-900 px-8 py-4 rounded-xl font-semibold hover:bg-gold-400 transition-colors inline-flex items-center gap-3"
+                className="bg-gold-500 text-white px-8 py-4 rounded-xl font-semibold hover:bg-gold-600 transition-colors inline-flex items-center gap-3 shadow-lg"
               >
                 {locale === 'de' ? 'Details ansehen:' : 'View Details:'} {getLocalizedField(selectedProperty, 'name', locale)}
                 <ArrowRight className="w-5 h-5" />
