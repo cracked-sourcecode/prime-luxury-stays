@@ -18,7 +18,7 @@ import {
   Car,
   TreePine,
   Share2,
-  Heart,
+  Globe,
   Calendar,
   Shield,
   Check,
@@ -128,8 +128,8 @@ function getLocalizedField(property: Property, field: 'name' | 'short_descriptio
 }
 
 export default function PropertyDetailClient({ property, galleryImages: dbImages }: PropertyDetailClientProps) {
-  const { t, locale } = useLocale()
-  const [isLiked, setIsLiked] = useState(false)
+  const { t, locale, setLocale } = useLocale()
+  const [showShareToast, setShowShareToast] = useState(false)
   const [showGallery, setShowGallery] = useState(false)
   const [showCalendar, setShowCalendar] = useState(false)
   const [selectedDates, setSelectedDates] = useState<{ checkIn: string; checkOut: string; price: number | null } | null>(null)
@@ -231,21 +231,53 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
             </div>
 
             {/* Actions */}
-            <div className="flex items-center gap-3">
-              <button className="p-2.5 rounded-full hover:bg-gray-100 transition-all">
-                <Share2 className="w-5 h-5 text-charcoal-600" />
-              </button>
+            <div className="flex items-center gap-2">
+              {/* Language Switcher */}
               <button 
-                onClick={() => setIsLiked(!isLiked)}
-                className="p-2.5 rounded-full hover:bg-gray-100 transition-all"
+                onClick={() => setLocale(locale === 'en' ? 'de' : 'en')}
+                className="flex items-center gap-1.5 px-3 py-2 rounded-lg hover:bg-gray-100 transition-all text-sm font-medium text-charcoal-600"
+                title={locale === 'en' ? 'Switch to German' : 'Auf Englisch umschalten'}
               >
-                <Heart className={`w-5 h-5 ${isLiked ? 'fill-red-500 text-red-500' : 'text-charcoal-600'}`} />
+                <Globe className="w-4 h-4" />
+                <span>{locale === 'en' ? '🇩🇪 DE' : '🇬🇧 EN'}</span>
               </button>
+              
+              {/* Share Button */}
+              <button 
+                onClick={async () => {
+                  const url = window.location.href
+                  if (navigator.share) {
+                    try {
+                      await navigator.share({
+                        title: getLocalizedField(property, 'name', locale),
+                        text: getLocalizedField(property, 'short_description', locale),
+                        url: url,
+                      })
+                    } catch (err) {
+                      // User cancelled or error
+                    }
+                  } else {
+                    await navigator.clipboard.writeText(url)
+                    setShowShareToast(true)
+                    setTimeout(() => setShowShareToast(false), 2000)
+                  }
+                }}
+                className="p-2.5 rounded-full hover:bg-gray-100 transition-all relative"
+                title={locale === 'de' ? 'Teilen' : 'Share'}
+              >
+                <Share2 className="w-5 h-5 text-charcoal-600" />
+                {showShareToast && (
+                  <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 bg-charcoal-900 text-white text-xs px-2 py-1 rounded whitespace-nowrap">
+                    {locale === 'de' ? 'Link kopiert!' : 'Link copied!'}
+                  </span>
+                )}
+              </button>
+              
               <Link 
                 href={`/inquire?property=${property.slug}`}
                 className="hidden sm:block bg-gold-500 text-charcoal-900 px-5 py-2.5 rounded-lg font-semibold hover:bg-gold-400 transition-colors text-sm"
               >
-                Inquire Now
+                {locale === 'de' ? 'Anfragen' : 'Inquire Now'}
               </Link>
             </div>
           </div>
