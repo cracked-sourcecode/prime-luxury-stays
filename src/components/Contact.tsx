@@ -125,18 +125,21 @@ export default function Contact() {
 
             {/* Contact Details */}
             <div className="space-y-4">
-              <div className="glass-card rounded-xl p-4 flex items-center gap-4 float-card cursor-pointer">
-                <div className="w-12 h-12 rounded-xl bg-gold-100 flex items-center justify-center">
+              <div className="glass-card rounded-xl p-4 flex items-start gap-4 float-card cursor-pointer">
+                <div className="w-12 h-12 rounded-xl bg-gold-100 flex items-center justify-center flex-shrink-0">
                   <Phone className="w-5 h-5 text-gold-600" />
                 </div>
-                <div>
+                <div className="space-y-1">
                   <div className="text-charcoal-400 text-xs font-medium uppercase tracking-wide">{t('contact.info.phone')}</div>
-                  <div className="text-charcoal-900 font-semibold">
-                    <span className="text-charcoal-500 text-xs">US:</span> +1 (203) 979-7309
-                  </div>
-                  <div className="text-charcoal-900 font-semibold">
-                    <span className="text-charcoal-500 text-xs">EU:</span> +49 89 899 300 46
-                  </div>
+                  <a href="tel:+12039797309" className="text-charcoal-900 font-semibold block hover:text-gold-600 transition-colors">
+                    <span className="text-charcoal-500 text-xs">🇺🇸 US:</span> +1 (203) 979-7309
+                  </a>
+                  <a href="tel:+498989930046" className="text-charcoal-900 font-semibold block hover:text-gold-600 transition-colors">
+                    <span className="text-charcoal-500 text-xs">🇩🇪 DE:</span> +49 89 899 300 46
+                  </a>
+                  <a href="tel:+34661539553" className="text-charcoal-900 font-semibold block hover:text-gold-600 transition-colors">
+                    <span className="text-charcoal-500 text-xs">🇪🇸 ES:</span> +34 661 53 95 53
+                  </a>
                 </div>
               </div>
 
@@ -156,7 +159,7 @@ export default function Contact() {
                 </div>
                 <div>
                   <div className="text-charcoal-400 text-xs font-medium uppercase tracking-wide">{t('contact.info.offices')}</div>
-                  <div className="text-charcoal-900 font-semibold">Miami, Florida / Munich, Germany</div>
+                  <div className="text-charcoal-900 font-semibold">Miami / Munich / Mallorca</div>
                 </div>
               </div>
             </div>
