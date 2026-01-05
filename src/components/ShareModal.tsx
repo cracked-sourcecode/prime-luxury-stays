@@ -28,9 +28,27 @@ export default function ShareModal({ isOpen, onClose, property, locale }: ShareM
   const [copied, setCopied] = useState(false)
 
   const handleCopyLink = async () => {
-    await navigator.clipboard.writeText(property.url)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
+    try {
+      await navigator.clipboard.writeText(property.url)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch (err) {
+      // Fallback for older browsers or if clipboard API fails
+      const textArea = document.createElement('textarea')
+      textArea.value = property.url
+      textArea.style.position = 'fixed'
+      textArea.style.left = '-999999px'
+      document.body.appendChild(textArea)
+      textArea.select()
+      try {
+        document.execCommand('copy')
+        setCopied(true)
+        setTimeout(() => setCopied(false), 2000)
+      } catch (e) {
+        console.error('Failed to copy:', e)
+      }
+      document.body.removeChild(textArea)
+    }
   }
 
   const shareOptions = [
