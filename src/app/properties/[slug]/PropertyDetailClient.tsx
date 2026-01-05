@@ -118,8 +118,17 @@ interface PropertyDetailClientProps {
   galleryImages: GalleryImage[];
 }
 
+// Helper to get localized property field
+function getLocalizedField(property: Property, field: 'name' | 'short_description' | 'description' | 'house_type', locale: string): string {
+  if (locale === 'de') {
+    const deField = property[`${field}_de` as keyof Property] as string | null
+    if (deField) return deField
+  }
+  return (property[field] as string) || ''
+}
+
 export default function PropertyDetailClient({ property, galleryImages: dbImages }: PropertyDetailClientProps) {
-  const { t } = useLocale()
+  const { t, locale } = useLocale()
   const [isLiked, setIsLiked] = useState(false)
   const [showGallery, setShowGallery] = useState(false)
   const [showCalendar, setShowCalendar] = useState(false)
@@ -181,7 +190,7 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
         >
           <OptimizedImage
             src={galleryImages[0]}
-            alt={property.name}
+            alt={getLocalizedField(property, 'name', locale)}
             className="w-full h-full object-cover"
             fill
             priority
@@ -259,7 +268,7 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
                   </div>
                 )}
                 <div className="bg-white/20 backdrop-blur-md text-white px-4 py-2 rounded-full text-sm font-medium">
-                  {property.house_type}
+                  {getLocalizedField(property, 'house_type', locale)}
                 </div>
                 {property.license_number && (
                   <div className="bg-white/20 backdrop-blur-md text-white px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2">
@@ -276,7 +285,7 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
               </div>
               
               <h1 className="font-merriweather text-4xl md:text-5xl lg:text-6xl text-white mb-6 leading-tight">
-                {property.name}
+                {getLocalizedField(property, 'name', locale)}
               </h1>
 
               {/* Quick Stats */}
@@ -338,7 +347,7 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
               </h2>
               
               <p className="text-charcoal-600 text-lg leading-relaxed mb-8">
-                {property.description || `Welcome to ${property.name}, where every detail has been carefully curated to create an unforgettable Mallorcan experience. This stunning ${property.house_type?.toLowerCase()} offers the perfect blend of luxury, comfort, and authentic island charm.`}
+                {getLocalizedField(property, 'description', locale) || `Welcome to ${getLocalizedField(property, 'name', locale)}, where every detail has been carefully curated to create an unforgettable Mallorcan experience. This stunning ${getLocalizedField(property, 'house_type', locale)?.toLowerCase()} offers the perfect blend of luxury, comfort, and authentic island charm.`}
               </p>
 
               {/* Highlights Grid */}
@@ -389,7 +398,7 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
                   >
                     <OptimizedImage 
                       src={galleryImages[0]} 
-                      alt={`${property.name} - Photo 1`}
+                      alt={`${getLocalizedField(property, 'name', locale)} - Photo 1`}
                       className="transition-transform duration-700 group-hover:scale-110"
                       fill
                     />
@@ -415,7 +424,7 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
                       >
                         <OptimizedImage 
                           src={galleryImages[1]} 
-                          alt={`${property.name} - Photo 2`}
+                          alt={`${getLocalizedField(property, 'name', locale)} - Photo 2`}
                           className="transition-transform duration-700 group-hover:scale-110"
                           fill
                         />
@@ -440,7 +449,7 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
                       >
                         <OptimizedImage 
                           src={galleryImages[2]} 
-                          alt={`${property.name} - Photo 3`}
+                          alt={`${getLocalizedField(property, 'name', locale)} - Photo 3`}
                           className="transition-transform duration-700 group-hover:scale-110"
                           fill
                         />
@@ -484,7 +493,7 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
                 <div className="px-8 py-5 border-t border-gray-100 flex items-center justify-between">
                   <div>
                     <p className="text-charcoal-900 font-medium">Virtual Tour</p>
-                    <p className="text-charcoal-500 text-sm">Experience {property.name} from anywhere</p>
+                    <p className="text-charcoal-500 text-sm">Experience {getLocalizedField(property, 'name', locale)} from anywhere</p>
                   </div>
                   <div className="flex items-center gap-2 text-gold-600">
                     <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
@@ -836,7 +845,7 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
                   src={galleryImages[currentImageIndex]?.includes('%25') 
                     ? decodeURIComponent(galleryImages[currentImageIndex]) 
                     : galleryImages[currentImageIndex]}
-                  alt={`${property.name} - Photo ${currentImageIndex + 1}`}
+                  alt={`${getLocalizedField(property, 'name', locale)} - Photo ${currentImageIndex + 1}`}
                   className="w-full h-full object-contain rounded-lg"
                 />
               </motion.div>
@@ -873,7 +882,7 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
         <div className="flex items-center justify-between gap-4">
           <div className="flex-1 min-w-0">
             <p className="font-merriweather text-charcoal-900 font-semibold truncate">
-              {property.name}
+              {getLocalizedField(property, 'name', locale)}
             </p>
             <p className="text-charcoal-500 text-sm">
               {property.city}, Mallorca
@@ -895,7 +904,7 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
       {/* Booking Calendar Modal */}
       <BookingCalendar
         propertySlug={property.slug}
-        propertyName={property.name}
+        propertyName={getLocalizedField(property, 'name', locale)}
         isOpen={showCalendar}
         onClose={() => setShowCalendar(false)}
         onSelect={(checkIn, checkOut, price) => {

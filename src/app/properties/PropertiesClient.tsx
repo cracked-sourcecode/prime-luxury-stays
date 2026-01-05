@@ -60,6 +60,15 @@ function PropertyImage({ src, alt, className }: { src: string; alt: string; clas
   )
 }
 
+// Helper to get localized property field
+function getLocalizedField(property: Property, field: 'name' | 'short_description' | 'description' | 'house_type', locale: string): string {
+  if (locale === 'de') {
+    const deField = property[`${field}_de` as keyof Property] as string | null
+    if (deField) return deField
+  }
+  return (property[field] as string) || ''
+}
+
 export default function PropertiesClient({ properties }: PropertiesClientProps) {
   const searchParams = useSearchParams()
   const { t, locale } = useLocale()
@@ -428,7 +437,7 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
                     <div className="relative aspect-[4/3] rounded-2xl overflow-hidden mb-4">
                       <PropertyImage
                         src={property.featured_image || ''}
-                        alt={property.name}
+                        alt={getLocalizedField(property, 'name', locale)}
                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
@@ -437,7 +446,7 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
                         {t('pages.properties.featured')}
                       </div>
                       <div className="absolute bottom-4 left-4 right-4">
-                        <h3 className="font-merriweather text-xl text-white mb-1">{property.name}</h3>
+                        <h3 className="font-merriweather text-xl text-white mb-1">{getLocalizedField(property, 'name', locale)}</h3>
                         <p className="text-white/80 text-sm flex items-center gap-1">
                           <MapPin className="w-3 h-3" />
                           {property.city}
@@ -714,7 +723,7 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
                             <div className="relative aspect-[4/3] rounded-2xl overflow-hidden mb-4 shadow-lg">
                               <PropertyImage
                                 src={property.featured_image || ''}
-                                alt={property.name}
+                                alt={getLocalizedField(property, 'name', locale)}
                                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                               />
                               <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -725,7 +734,7 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
                                 </div>
                               )}
                               <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-semibold">
-                                {property.house_type}
+                                {getLocalizedField(property, 'house_type', locale)}
                               </div>
                               <div className="absolute bottom-4 left-4 flex gap-2">
                                 {property.has_sea_view && (
@@ -743,9 +752,9 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
                               <span>{property.city}{property.city ? ', ' : ''}{property.region}</span>
                             </div>
                             <h3 className="font-merriweather text-xl text-charcoal-900 mb-2 group-hover:text-gold-600 transition-colors">
-                              {property.name}
+                              {getLocalizedField(property, 'name', locale)}
                             </h3>
-                            <p className="text-charcoal-500 text-sm mb-3 line-clamp-2">{property.short_description}</p>
+                            <p className="text-charcoal-500 text-sm mb-3 line-clamp-2">{getLocalizedField(property, 'short_description', locale)}</p>
                             <div className="flex items-center gap-4 text-charcoal-600 text-sm mb-3">
                               <span className="flex items-center gap-1"><Bed className="w-4 h-4" /> {property.bedrooms}</span>
                               <span className="flex items-center gap-1"><Bath className="w-4 h-4" /> {property.bathrooms}</span>
@@ -796,10 +805,10 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
                   >
                     <div className="flex gap-4">
                       <div className="relative w-28 h-20 rounded-lg overflow-hidden flex-shrink-0">
-                        <PropertyImage src={property.featured_image || ''} alt={property.name} className="w-full h-full object-cover" />
+                        <PropertyImage src={property.featured_image || ''} alt={getLocalizedField(property, 'name', locale)} className="w-full h-full object-cover" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold text-charcoal-900 truncate">{property.name}</h3>
+                        <h3 className="font-semibold text-charcoal-900 truncate">{getLocalizedField(property, 'name', locale)}</h3>
                         <p className="text-sm text-charcoal-500">{property.city}</p>
                         <div className="flex items-center gap-3 text-sm text-charcoal-600 mt-1">
                           <span><Bed className="w-3 h-3 inline" /> {property.bedrooms}</span>

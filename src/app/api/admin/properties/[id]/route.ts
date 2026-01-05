@@ -67,6 +67,10 @@ export async function PUT(request: NextRequest, { params }: Props) {
         distance_restaurants = ${data.distance_restaurants || null},
         distance_old_town = ${data.distance_old_town || null},
         distance_airport = ${data.distance_airport || null},
+        name_de = ${data.name_de || null},
+        short_description_de = ${data.short_description_de || null},
+        description_de = ${data.description_de || null},
+        house_type_de = ${data.house_type_de || null},
         updated_at = NOW()
       WHERE id = ${propertyId}
     `;

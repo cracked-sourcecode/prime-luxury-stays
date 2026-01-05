@@ -40,6 +40,11 @@ export interface Property {
   distance_restaurants: string | null;
   distance_old_town: string | null;
   distance_airport: string | null;
+  // German translations
+  name_de: string | null;
+  short_description_de: string | null;
+  description_de: string | null;
+  house_type_de: string | null;
 }
 
 export async function getActiveProperties(): Promise<Property[]> {

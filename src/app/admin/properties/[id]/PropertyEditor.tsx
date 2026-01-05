@@ -130,7 +130,15 @@ export default function PropertyEditor({ property, images: initialImages, availa
     distance_restaurants: property?.distance_restaurants || '',
     distance_old_town: property?.distance_old_town || '',
     distance_airport: property?.distance_airport || '',
+    // German translations
+    name_de: property?.name_de || '',
+    short_description_de: property?.short_description_de || '',
+    description_de: property?.description_de || '',
+    house_type_de: property?.house_type_de || '',
   })
+  
+  // Language toggle for content editing
+  const [contentLang, setContentLang] = useState<'en' | 'de'>('en')
 
   // Images state
   const [images, setImages] = useState<PropertyImage[]>(initialImages)
@@ -974,31 +982,129 @@ export default function PropertyEditor({ property, images: initialImages, availa
                 </div>
               </section>
 
-              {/* Description */}
+              {/* Description - Multi-language */}
               <section>
-                <h3 className="font-semibold text-charcoal-900 mb-4">Description</h3>
-                <div className="space-y-6">
-                  <div>
-                    <label className="block text-sm font-medium text-charcoal-700 mb-2">Short Description</label>
-                    <input
-                      type="text"
-                      value={formData.short_description}
-                      onChange={(e) => setFormData(prev => ({ ...prev, short_description: e.target.value }))}
-                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
-                      placeholder="A brief tagline for the property"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-charcoal-700 mb-2">Full Description</label>
-                    <textarea
-                      value={formData.description}
-                      onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                      rows={6}
-                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none resize-none"
-                      placeholder="Detailed description of the property..."
-                    />
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-semibold text-charcoal-900">Description</h3>
+                  <div className="flex items-center gap-2 bg-gray-100 rounded-lg p-1">
+                    <button
+                      type="button"
+                      onClick={() => setContentLang('en')}
+                      className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
+                        contentLang === 'en' ? 'bg-white shadow-sm text-charcoal-900' : 'text-charcoal-500 hover:text-charcoal-700'
+                      }`}
+                    >
+                      🇬🇧 English
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setContentLang('de')}
+                      className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
+                        contentLang === 'de' ? 'bg-white shadow-sm text-charcoal-900' : 'text-charcoal-500 hover:text-charcoal-700'
+                      }`}
+                    >
+                      🇩🇪 Deutsch
+                    </button>
                   </div>
                 </div>
+                
+                {contentLang === 'en' ? (
+                  <div className="space-y-6">
+                    <div>
+                      <label className="block text-sm font-medium text-charcoal-700 mb-2">
+                        Short Description (English)
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.short_description}
+                        onChange={(e) => setFormData(prev => ({ ...prev, short_description: e.target.value }))}
+                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
+                        placeholder="A brief tagline for the property"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-charcoal-700 mb-2">
+                        Full Description (English)
+                      </label>
+                      <textarea
+                        value={formData.description}
+                        onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                        rows={6}
+                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none resize-none"
+                        placeholder="Detailed description of the property..."
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-6">
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+                      <p className="text-sm text-blue-700">
+                        💡 Enter the German translations for this property. These will be shown to German-speaking visitors.
+                      </p>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-charcoal-700 mb-2">
+                        Property Name (German) - Name (Deutsch)
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.name_de}
+                        onChange={(e) => setFormData(prev => ({ ...prev, name_de: e.target.value }))}
+                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
+                        placeholder={formData.name || "German property name (optional)"}
+                      />
+                      <p className="text-xs text-charcoal-400 mt-1">Leave empty to use English name: "{formData.name}"</p>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-charcoal-700 mb-2">
+                        House Type (German) - Haustyp (Deutsch)
+                      </label>
+                      <select
+                        value={formData.house_type_de}
+                        onChange={(e) => setFormData(prev => ({ ...prev, house_type_de: e.target.value }))}
+                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
+                      >
+                        <option value="">Use English ({formData.house_type})</option>
+                        <option value="Villa">Villa</option>
+                        <option value="Finca">Finca</option>
+                        <option value="Wohnung">Wohnung (Apartment)</option>
+                        <option value="Stadthaus">Stadthaus (Townhouse)</option>
+                        <option value="Haus">Haus (House)</option>
+                        <option value="Penthouse">Penthouse</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-charcoal-700 mb-2">
+                        Short Description (German) - Kurzbeschreibung (Deutsch)
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.short_description_de}
+                        onChange={(e) => setFormData(prev => ({ ...prev, short_description_de: e.target.value }))}
+                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
+                        placeholder="Kurze Beschreibung der Immobilie"
+                      />
+                      {formData.short_description && (
+                        <p className="text-xs text-charcoal-400 mt-1">English: "{formData.short_description}"</p>
+                      )}
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-charcoal-700 mb-2">
+                        Full Description (German) - Vollständige Beschreibung (Deutsch)
+                      </label>
+                      <textarea
+                        value={formData.description_de}
+                        onChange={(e) => setFormData(prev => ({ ...prev, description_de: e.target.value }))}
+                        rows={6}
+                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none resize-none"
+                        placeholder="Ausführliche Beschreibung der Immobilie..."
+                      />
+                      {formData.description && (
+                        <p className="text-xs text-charcoal-400 mt-1">English version: {formData.description.substring(0, 100)}...</p>
+                      )}
+                    </div>
+                  </div>
+                )}
               </section>
 
               {/* Amenities */}
