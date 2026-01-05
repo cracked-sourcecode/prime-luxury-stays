@@ -29,6 +29,20 @@ export default function LocationsClient({ locations }: LocationsClientProps) {
     return t(`locationDescriptions.${key}`)
   }
   
+  // Get translated name for a location
+  const getLocationName = (slug: string, fallback: string) => {
+    const key = slug === 'south-of-france' ? 'southOfFrance' : slug
+    const translated = t(`locationNames.${key}`)
+    return translated.startsWith('locationNames.') ? fallback : translated
+  }
+  
+  // Get translated region for a location
+  const getRegionName = (slug: string, fallback: string) => {
+    const key = slug === 'south-of-france' ? 'southOfFrance' : slug
+    const translated = t(`locationRegions.${key}`)
+    return translated.startsWith('locationRegions.') ? fallback : translated
+  }
+  
   // Separate active and coming soon locations
   const activeLocations = locations.filter(l => !l.comingSoon && l.propertyCount > 0)
   const comingSoonLocations = locations.filter(l => l.comingSoon || l.propertyCount === 0)
@@ -94,9 +108,9 @@ export default function LocationsClient({ locations }: LocationsClientProps) {
                     
                     {/* Location Info Overlay */}
                     <div className="absolute bottom-0 left-0 right-0 p-6">
-                      <p className="text-white/80 text-sm mb-1">{location.region}, {location.country}</p>
+                      <p className="text-white/80 text-sm mb-1">{getRegionName(location.slug, location.region)}, {location.country}</p>
                       <h2 className="font-merriweather text-2xl md:text-3xl text-white mb-2">
-                        {location.name}
+                        {getLocationName(location.slug, location.name)}
                       </h2>
                     </div>
                   </div>
@@ -133,7 +147,7 @@ export default function LocationsClient({ locations }: LocationsClientProps) {
               <span className="text-sm font-semibold">{t('pages.destinations.comingSoon')}</span>
             </div>
             <h2 className="font-merriweather text-2xl md:text-3xl text-charcoal-900">
-              More Destinations Arriving
+              {t('pages.destinations.moreArriving')}
             </h2>
           </motion.div>
           
@@ -167,15 +181,15 @@ export default function LocationsClient({ locations }: LocationsClientProps) {
                     </div>
                     
                     <div className="absolute bottom-4 left-4">
-                      <p className="text-white/70 text-xs mb-1">{location.region}, {location.country}</p>
-                      <h3 className="font-merriweather text-xl text-white">{location.name}</h3>
+                      <p className="text-white/70 text-xs mb-1">{getRegionName(location.slug, location.region)}, {location.country}</p>
+                      <h3 className="font-merriweather text-xl text-white">{getLocationName(location.slug, location.name)}</h3>
                     </div>
                   </div>
                   
                   {/* Register Interest CTA */}
                   <div className="p-4 text-center">
                     <span className="text-gold-600 text-sm font-semibold flex items-center justify-center gap-2">
-                      Register Interest
+                      {t('pages.destinations.registerInterest')}
                       <ArrowRight className="w-4 h-4" />
                     </span>
                   </div>
@@ -195,17 +209,16 @@ export default function LocationsClient({ locations }: LocationsClientProps) {
           className="bg-charcoal-900 rounded-3xl p-8 md:p-12 text-center"
         >
           <h2 className="font-merriweather text-2xl md:text-3xl text-white mb-4">
-            Can't Find Your Destination?
+            {t('pages.destinations.cantFind')}
           </h2>
           <p className="text-white/70 mb-8 max-w-lg mx-auto">
-            We're constantly expanding our collection. Contact us to discuss your ideal location 
-            and we'll help you find the perfect property.
+            {t('pages.destinations.cantFindDesc')}
           </p>
           <Link
             href="/inquire"
             className="inline-flex items-center gap-2 bg-gold-500 text-charcoal-900 px-8 py-4 rounded-xl font-semibold hover:bg-gold-400 transition-colors"
           >
-            Get in Touch
+            {t('pages.destinations.getInTouch')}
             <ArrowRight className="w-5 h-5" />
           </Link>
         </motion.div>

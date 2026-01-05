@@ -204,6 +204,16 @@
     "ibiza": "Wo Luxus auf lebendige Energie trifft. Erleben Sie erstklassige Immobilien auf der Insel des ewigen Sommers.",
     "southOfFrance": "Die Französische Riviera erwartet Sie. Entdecken Sie atemberaubende Villen, Küstenanwesen und provenzalischen Charme."
   },
+  "locationNames": {
+    "mallorca": "Mallorca",
+    "ibiza": "Ibiza",
+    "southOfFrance": "Südfrankreich"
+  },
+  "locationRegions": {
+    "mallorca": "Balearen",
+    "ibiza": "Balearen",
+    "southOfFrance": "Provence & Côte d'Azur"
+  },
   "pages": {
     "properties": {
       "title": "Finden Sie Ihre Traumvilla",
@@ -223,7 +233,12 @@
       "subtitle": "Erkunden Sie unsere exklusive Sammlung von Luxusimmobilien an den begehrtesten Orten der Welt.",
       "comingSoon": "Demnächst",
       "properties": "Immobilien",
-      "viewCollection": "Sammlung Ansehen"
+      "viewCollection": "Sammlung Ansehen",
+      "moreArriving": "Weitere Reiseziele in Kürze",
+      "registerInterest": "Interesse Anmelden",
+      "cantFind": "Ihr Reiseziel nicht gefunden?",
+      "cantFindDesc": "Wir erweitern ständig unsere Sammlung. Kontaktieren Sie uns, um Ihren idealen Standort zu besprechen, und wir helfen Ihnen, die perfekte Immobilie zu finden.",
+      "getInTouch": "Kontakt Aufnehmen"
     },
     "services": {
       "title": "Maßgeschneiderte Dienstleistungen",

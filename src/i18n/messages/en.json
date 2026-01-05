@@ -204,6 +204,16 @@
     "ibiza": "Where luxury meets vibrant energy. Experience world-class properties on the island of endless summer.",
     "southOfFrance": "The French Riviera awaits. Discover stunning villas, coastal estates, and Provençal charm."
   },
+  "locationNames": {
+    "mallorca": "Mallorca",
+    "ibiza": "Ibiza",
+    "southOfFrance": "South of France"
+  },
+  "locationRegions": {
+    "mallorca": "Balearic Islands",
+    "ibiza": "Balearic Islands",
+    "southOfFrance": "Provence & Côte d'Azur"
+  },
   "pages": {
     "properties": {
       "title": "Find Your Dream Villa",
@@ -223,7 +233,12 @@
       "subtitle": "Explore our exclusive collection of luxury properties across the world's most desirable locations.",
       "comingSoon": "Coming Soon",
       "properties": "properties",
-      "viewCollection": "View Collection"
+      "viewCollection": "View Collection",
+      "moreArriving": "More Destinations Arriving",
+      "registerInterest": "Register Interest",
+      "cantFind": "Can't Find Your Destination?",
+      "cantFindDesc": "We're constantly expanding our collection. Contact us to discuss your ideal location and we'll help you find the perfect property.",
+      "getInTouch": "Get in Touch"
     },
     "services": {
       "title": "Bespoke Services",
