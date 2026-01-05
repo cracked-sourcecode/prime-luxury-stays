@@ -42,14 +42,14 @@ export default function ServicePageClient({ service }: ServicePageClientProps) {
   return (
     <div>
       {/* Hero Section */}
-      <section className="relative h-[70vh] min-h-[500px] overflow-hidden">
+      <section className="relative h-[80vh] min-h-[600px] overflow-hidden">
         <div className="absolute inset-0">
           <img
             src={service.heroImage}
             alt={title}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover object-center"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-charcoal-900" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-charcoal-900" />
         </div>
 
         <div className="relative z-10 h-full flex flex-col items-center justify-center text-center px-6">
