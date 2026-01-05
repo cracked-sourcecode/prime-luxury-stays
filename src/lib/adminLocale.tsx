@@ -11,22 +11,56 @@ const adminTranslations = {
     inquiries: 'Inquiries',
     customers: 'Customers',
     settings: 'Settings',
-    logout: 'Logout',
+    logout: 'Sign Out',
     adminPortal: 'Admin Portal',
+    adminConsole: 'Admin Console',
+    viewWebsite: 'View Website',
+    loggedInAs: 'Logged in as',
+    
+    // Dashboard
+    goodMorning: 'Good morning',
+    goodAfternoon: 'Good afternoon',
+    goodEvening: 'Good evening',
+    welcomeMessage: "Here's what's happening with your business today.",
+    totalContacts: 'Total Contacts',
+    propertiesCount: 'Properties',
+    totalInquiries: 'Total Inquiries',
+    pipelineValue: 'Pipeline Value',
+    active: 'Active',
+    newLabel: 'new',
+    deals: 'deals',
+    recentInquiries: 'Recent Inquiries',
+    viewAll: 'View all',
+    dealPipeline: 'Deal Pipeline',
+    view: 'View',
+    lead: 'Lead',
+    qualified: 'Qualified',
+    proposal: 'Proposal',
+    negotiation: 'Negotiation',
+    won: 'Won',
+    lost: 'Lost',
+    quickActions: 'Quick Actions',
+    addProperty: 'Add Property',
+    viewContacts: 'View Contacts',
+    
+    // Property List
+    allProperties: 'All Properties',
+    searchProperties: 'Search properties...',
+    addNewProperty: 'Add Property',
     
     // Property Editor
     editProperty: 'Edit Property',
     newProperty: 'New Property',
     backToProperties: 'Back to Properties',
     viewLive: 'View Live',
-    deleteProperty: 'Delete Property',
+    deleteProperty: 'Delete',
     saveProperty: 'Save Property',
     saving: 'Saving...',
     
     // Tabs
     details: 'Details',
     images: 'Images',
-    availability: 'Availability',
+    availability: 'Availability & Pricing',
     
     // Property Content Section
     propertyContent: 'Property Content (Both Languages)',
@@ -95,6 +129,7 @@ const adminTranslations = {
     status: 'Status',
     activeVisible: 'Active (Visible on website)',
     featured: 'Featured Property',
+    featuredImageUrl: 'Featured Image URL',
     
     // Images
     uploadImages: 'Upload Images',
@@ -103,6 +138,7 @@ const adminTranslations = {
     deselectAll: 'Deselect All',
     deleteSelected: 'Delete Selected',
     setAsFeatured: 'Set as Featured',
+    propertyImages: 'Property Images',
     
     // Availability
     addPeriod: 'Add Period',
@@ -110,6 +146,9 @@ const adminTranslations = {
     endDate: 'End Date',
     pricePerWeek: 'Price/Week',
     delete: 'Delete',
+    addAvailabilityPeriod: 'Add Availability Period',
+    availabilityCalendar: 'Availability Calendar',
+    periods: 'periods',
     
     // Messages
     propertyCreated: 'Property created successfully!',
@@ -118,17 +157,20 @@ const adminTranslations = {
     errorSaving: 'Error saving property',
     confirmDelete: 'Are you sure you want to delete this property?',
     
-    // Inquiries
+    // Inquiries Page
     allInquiries: 'All Inquiries',
     newInquiry: 'New',
     contacted: 'Contacted',
     closed: 'Closed',
     noInquiries: 'No inquiries yet',
     
-    // Customers
+    // Customers/CRM
     allCustomers: 'All Customers',
     addCustomer: 'Add Customer',
     noCustomers: 'No customers yet',
+    contacts: 'Contacts',
+    dealsPipeline: 'Deals Pipeline',
+    crm: 'CRM',
   },
   de: {
     // Navigation & Header
@@ -139,20 +181,54 @@ const adminTranslations = {
     settings: 'Einstellungen',
     logout: 'Abmelden',
     adminPortal: 'Admin-Portal',
+    adminConsole: 'Admin-Konsole',
+    viewWebsite: 'Website ansehen',
+    loggedInAs: 'Angemeldet als',
+    
+    // Dashboard
+    goodMorning: 'Guten Morgen',
+    goodAfternoon: 'Guten Tag',
+    goodEvening: 'Guten Abend',
+    welcomeMessage: 'Hier ist, was heute in Ihrem Geschäft passiert.',
+    totalContacts: 'Kontakte gesamt',
+    propertiesCount: 'Immobilien',
+    totalInquiries: 'Anfragen gesamt',
+    pipelineValue: 'Pipeline-Wert',
+    active: 'Aktiv',
+    newLabel: 'neu',
+    deals: 'Deals',
+    recentInquiries: 'Neueste Anfragen',
+    viewAll: 'Alle anzeigen',
+    dealPipeline: 'Deal Pipeline',
+    view: 'Ansehen',
+    lead: 'Lead',
+    qualified: 'Qualifiziert',
+    proposal: 'Angebot',
+    negotiation: 'Verhandlung',
+    won: 'Gewonnen',
+    lost: 'Verloren',
+    quickActions: 'Schnellaktionen',
+    addProperty: 'Immobilie hinzufügen',
+    viewContacts: 'Kontakte anzeigen',
+    
+    // Property List
+    allProperties: 'Alle Immobilien',
+    searchProperties: 'Immobilien suchen...',
+    addNewProperty: 'Immobilie hinzufügen',
     
     // Property Editor
     editProperty: 'Immobilie bearbeiten',
     newProperty: 'Neue Immobilie',
     backToProperties: 'Zurück zu Immobilien',
     viewLive: 'Live ansehen',
-    deleteProperty: 'Immobilie löschen',
+    deleteProperty: 'Löschen',
     saveProperty: 'Immobilie speichern',
     saving: 'Speichern...',
     
     // Tabs
     details: 'Details',
     images: 'Bilder',
-    availability: 'Verfügbarkeit',
+    availability: 'Verfügbarkeit & Preise',
     
     // Property Content Section
     propertyContent: 'Immobilieninhalt (Beide Sprachen)',
@@ -221,6 +297,7 @@ const adminTranslations = {
     status: 'Status',
     activeVisible: 'Aktiv (Auf Website sichtbar)',
     featured: 'Empfohlene Immobilie',
+    featuredImageUrl: 'Titelbild-URL',
     
     // Images
     uploadImages: 'Bilder hochladen',
@@ -229,6 +306,7 @@ const adminTranslations = {
     deselectAll: 'Auswahl aufheben',
     deleteSelected: 'Ausgewählte löschen',
     setAsFeatured: 'Als Titelbild setzen',
+    propertyImages: 'Immobilienbilder',
     
     // Availability
     addPeriod: 'Zeitraum hinzufügen',
@@ -236,6 +314,9 @@ const adminTranslations = {
     endDate: 'Enddatum',
     pricePerWeek: 'Preis/Woche',
     delete: 'Löschen',
+    addAvailabilityPeriod: 'Verfügbarkeitszeitraum hinzufügen',
+    availabilityCalendar: 'Verfügbarkeitskalender',
+    periods: 'Zeiträume',
     
     // Messages
     propertyCreated: 'Immobilie erfolgreich erstellt!',
@@ -244,17 +325,20 @@ const adminTranslations = {
     errorSaving: 'Fehler beim Speichern der Immobilie',
     confirmDelete: 'Sind Sie sicher, dass Sie diese Immobilie löschen möchten?',
     
-    // Inquiries
+    // Inquiries Page
     allInquiries: 'Alle Anfragen',
     newInquiry: 'Neu',
     contacted: 'Kontaktiert',
     closed: 'Geschlossen',
     noInquiries: 'Noch keine Anfragen',
     
-    // Customers
+    // Customers/CRM
     allCustomers: 'Alle Kunden',
     addCustomer: 'Kunde hinzufügen',
     noCustomers: 'Noch keine Kunden',
+    contacts: 'Kontakte',
+    dealsPipeline: 'Deals Pipeline',
+    crm: 'CRM',
   }
 }
 
@@ -271,9 +355,23 @@ const AdminLocaleContext = createContext<AdminLocaleContextType | null>(null)
 
 export function AdminLocaleProvider({ children }: { children: ReactNode }) {
   const [locale, setLocaleState] = useState<AdminLocale>('en')
+  const [mounted, setMounted] = useState(false)
 
-  // Load saved locale from localStorage on mount
+  // Load saved locale from URL param > localStorage on mount
   useEffect(() => {
+    setMounted(true)
+    
+    // Check URL parameter first (like frontend does)
+    const urlParams = new URLSearchParams(window.location.search)
+    const langParam = urlParams.get('lang') as AdminLocale
+    
+    if (langParam && (langParam === 'en' || langParam === 'de')) {
+      setLocaleState(langParam)
+      localStorage.setItem('admin_locale', langParam)
+      return
+    }
+    
+    // Fallback to localStorage
     const saved = localStorage.getItem('admin_locale') as AdminLocale
     if (saved && (saved === 'en' || saved === 'de')) {
       setLocaleState(saved)
@@ -283,10 +381,20 @@ export function AdminLocaleProvider({ children }: { children: ReactNode }) {
   const setLocale = (newLocale: AdminLocale) => {
     setLocaleState(newLocale)
     localStorage.setItem('admin_locale', newLocale)
+    
+    // Update URL with lang parameter (like frontend)
+    const url = new URL(window.location.href)
+    url.searchParams.set('lang', newLocale)
+    window.history.pushState({}, '', url.toString())
   }
 
   const t = (key: AdminTranslationKey): string => {
     return adminTranslations[locale][key] || adminTranslations.en[key] || key
+  }
+
+  // Prevent hydration mismatch
+  if (!mounted) {
+    return <>{children}</>
   }
 
   return (
@@ -299,8 +407,12 @@ export function AdminLocaleProvider({ children }: { children: ReactNode }) {
 export function useAdminLocale() {
   const context = useContext(AdminLocaleContext)
   if (!context) {
-    throw new Error('useAdminLocale must be used within AdminLocaleProvider')
+    // Return default if not in provider
+    return {
+      locale: 'en' as AdminLocale,
+      setLocale: () => {},
+      t: (key: AdminTranslationKey) => adminTranslations.en[key] || key,
+    }
   }
   return context
 }
-

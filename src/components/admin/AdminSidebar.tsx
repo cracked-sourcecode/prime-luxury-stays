@@ -48,6 +48,14 @@ export default function AdminSidebar({ userName, userEmail }: AdminSidebarProps)
   const [mobileOpen, setMobileOpen] = useState(false)
   const [expandedSections, setExpandedSections] = useState<string[]>(['Properties', 'CRM'])
   
+  // Helper to add lang param to hrefs
+  const localizeHref = (href: string) => {
+    if (locale === 'de') {
+      return `${href}?lang=de`
+    }
+    return href
+  }
+  
   // Navigation sections with translation keys
   const navSections: NavSection[] = [
     { 
@@ -153,7 +161,7 @@ export default function AdminSidebar({ userName, userEmail }: AdminSidebarProps)
                         return (
                           <Link
                             key={child.href}
-                            href={child.href}
+                            href={localizeHref(child.href)}
                             onClick={() => setMobileOpen(false)}
                             className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${
                               childActive 
@@ -175,7 +183,7 @@ export default function AdminSidebar({ userName, userEmail }: AdminSidebarProps)
             return (
               <Link
                 key={section.name}
-                href={section.href!}
+                href={localizeHref(section.href!)}
                 onClick={() => setMobileOpen(false)}
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors ${
                   sectionActive 

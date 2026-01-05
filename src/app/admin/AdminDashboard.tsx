@@ -18,6 +18,7 @@ import {
   Phone,
   Calendar
 } from 'lucide-react'
+import { useAdminLocale } from '@/lib/adminLocale'
 
 interface DashboardStats {
   totalCustomers: number
@@ -39,7 +40,7 @@ interface AdminDashboardProps {
 }
 
 const formatCurrency = (amount: number) => {
-  return new Intl.NumberFormat('en-US', {
+  return new Intl.NumberFormat('de-DE', {
     style: 'currency',
     currency: 'EUR',
     minimumFractionDigits: 0,
@@ -47,30 +48,44 @@ const formatCurrency = (amount: number) => {
   }).format(amount)
 }
 
-const formatDate = (date: string) => {
-  return new Date(date).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
-  })
-}
-
-const stageColors: Record<string, string> = {
-  'lead': 'bg-gray-100 text-gray-700',
-  'qualified': 'bg-blue-100 text-blue-700',
-  'proposal': 'bg-purple-100 text-purple-700',
-  'negotiation': 'bg-amber-100 text-amber-700',
-  'won': 'bg-green-100 text-green-700',
-  'lost': 'bg-red-100 text-red-700',
-}
-
 export default function AdminDashboard({ user, properties, stats }: AdminDashboardProps) {
+  const { t, locale } = useAdminLocale()
+  
+  // Helper to add lang param to hrefs
+  const localizeHref = (href: string) => {
+    if (locale === 'de') {
+      return `${href}?lang=de`
+    }
+    return href
+  }
+  
+  const formatDate = (date: string) => {
+    return new Date(date).toLocaleDateString(locale === 'de' ? 'de-DE' : 'en-US', {
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    })
+  }
+  
   const getGreeting = () => {
     const hour = new Date().getHours()
-    if (hour < 12) return 'Good morning'
-    if (hour < 18) return 'Good afternoon'
-    return 'Good evening'
+    if (hour < 12) return t('goodMorning')
+    if (hour < 18) return t('goodAfternoon')
+    return t('goodEvening')
+  }
+  
+  // Translation helper for stage names
+  const getStageName = (stage: string) => {
+    const stageMap: Record<string, 'lead' | 'qualified' | 'proposal' | 'negotiation' | 'won' | 'lost'> = {
+      'lead': 'lead',
+      'qualified': 'qualified',
+      'proposal': 'proposal',
+      'negotiation': 'negotiation',
+      'won': 'won',
+      'lost': 'lost'
+    }
+    return t(stageMap[stage] || 'lead')
   }
 
   return (
@@ -80,7 +95,7 @@ export default function AdminDashboard({ user, properties, stats }: AdminDashboa
         <h1 className="text-2xl lg:text-3xl font-semibold text-charcoal-900">
           {getGreeting()}, {user.email.split('@')[0]}
         </h1>
-        <p className="text-charcoal-500 mt-1">Here's what's happening with your business today.</p>
+        <p className="text-charcoal-500 mt-1">{t('welcomeMessage')}</p>
       </div>
 
       {/* Stats Grid */}
@@ -93,11 +108,11 @@ export default function AdminDashboard({ user, properties, stats }: AdminDashboa
             </div>
             <span className="text-xs font-medium text-green-600 bg-green-50 px-2 py-1 rounded-full flex items-center gap-1">
               <ArrowUpRight className="w-3 h-3" />
-              Active
+              {t('active')}
             </span>
           </div>
           <p className="text-2xl lg:text-3xl font-bold text-charcoal-900">{stats.totalCustomers.toLocaleString()}</p>
-          <p className="text-sm text-charcoal-500">Total Contacts</p>
+          <p className="text-sm text-charcoal-500">{t('totalContacts')}</p>
         </div>
 
         {/* Properties */}
@@ -107,11 +122,11 @@ export default function AdminDashboard({ user, properties, stats }: AdminDashboa
               <Building2 className="w-5 h-5 text-gold-600" />
             </div>
             <span className="text-xs font-medium text-charcoal-600 bg-gray-100 px-2 py-1 rounded-full">
-              {stats.activeProperties} active
+              {stats.activeProperties} {locale === 'de' ? 'aktiv' : 'active'}
             </span>
           </div>
           <p className="text-2xl lg:text-3xl font-bold text-charcoal-900">{stats.totalProperties}</p>
-          <p className="text-sm text-charcoal-500">Properties</p>
+          <p className="text-sm text-charcoal-500">{t('propertiesCount')}</p>
         </div>
 
         {/* Inquiries */}
@@ -123,12 +138,12 @@ export default function AdminDashboard({ user, properties, stats }: AdminDashboa
             {stats.pendingInquiries > 0 && (
               <span className="text-xs font-medium text-amber-600 bg-amber-50 px-2 py-1 rounded-full flex items-center gap-1">
                 <AlertCircle className="w-3 h-3" />
-                {stats.pendingInquiries} new
+                {stats.pendingInquiries} {t('newLabel')}
               </span>
             )}
           </div>
           <p className="text-2xl lg:text-3xl font-bold text-charcoal-900">{stats.totalInquiries}</p>
-          <p className="text-sm text-charcoal-500">Total Inquiries</p>
+          <p className="text-sm text-charcoal-500">{t('totalInquiries')}</p>
         </div>
 
         {/* Deal Value */}
@@ -138,11 +153,11 @@ export default function AdminDashboard({ user, properties, stats }: AdminDashboa
               <DollarSign className="w-5 h-5 text-green-600" />
             </div>
             <span className="text-xs font-medium text-charcoal-600 bg-gray-100 px-2 py-1 rounded-full">
-              {stats.totalDeals} deals
+              {stats.totalDeals} {t('deals')}
             </span>
           </div>
           <p className="text-2xl lg:text-3xl font-bold text-charcoal-900">{formatCurrency(stats.totalDealValue)}</p>
-          <p className="text-sm text-charcoal-500">Pipeline Value</p>
+          <p className="text-sm text-charcoal-500">{t('pipelineValue')}</p>
         </div>
       </div>
 
@@ -153,17 +168,17 @@ export default function AdminDashboard({ user, properties, stats }: AdminDashboa
           <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
             <h2 className="font-semibold text-charcoal-900 flex items-center gap-2">
               <Activity className="w-5 h-5 text-gold-600" />
-              Recent Inquiries
+              {t('recentInquiries')}
             </h2>
-            <Link href="/admin/inquiries" className="text-sm text-gold-600 hover:text-gold-700 font-medium">
-              View all →
+            <Link href={localizeHref("/admin/inquiries")} className="text-sm text-gold-600 hover:text-gold-700 font-medium">
+              {t('viewAll')} →
             </Link>
           </div>
           <div className="divide-y divide-gray-50">
             {stats.recentActivity.length === 0 ? (
               <div className="px-6 py-12 text-center text-charcoal-400">
                 <MessageSquare className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                <p>No recent inquiries</p>
+                <p>{t('noInquiries')}</p>
               </div>
             ) : (
               stats.recentActivity.slice(0, 5).map((item, i) => (
@@ -185,7 +200,7 @@ export default function AdminDashboard({ user, properties, stats }: AdminDashboa
                         ? 'bg-green-50 text-green-700'
                         : 'bg-gray-100 text-gray-700'
                     }`}>
-                      {item.status || 'new'}
+                      {item.status === 'new' || !item.status ? t('newLabel') : item.status}
                     </span>
                     <p className="text-xs text-charcoal-400 mt-1">{formatDate(item.created_at)}</p>
                   </div>
@@ -200,17 +215,17 @@ export default function AdminDashboard({ user, properties, stats }: AdminDashboa
           <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
             <h2 className="font-semibold text-charcoal-900 flex items-center gap-2">
               <Briefcase className="w-5 h-5 text-gold-600" />
-              Deal Pipeline
+              {t('dealPipeline')}
             </h2>
-            <Link href="/admin/deals" className="text-sm text-gold-600 hover:text-gold-700 font-medium">
-              View →
+            <Link href={localizeHref("/admin/deals")} className="text-sm text-gold-600 hover:text-gold-700 font-medium">
+              {t('view')} →
             </Link>
           </div>
           <div className="p-6">
             {stats.dealsByStage.length === 0 ? (
               <div className="text-center text-charcoal-400 py-8">
                 <Briefcase className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                <p>No deals yet</p>
+                <p>{locale === 'de' ? 'Noch keine Deals' : 'No deals yet'}</p>
               </div>
             ) : (
               <div className="space-y-3">
@@ -227,7 +242,7 @@ export default function AdminDashboard({ user, properties, stats }: AdminDashboa
                           stage === 'negotiation' ? 'bg-amber-500' :
                           stage === 'won' ? 'bg-green-500' : 'bg-red-500'
                         }`} />
-                        <span className="text-sm text-charcoal-700 capitalize">{stage}</span>
+                        <span className="text-sm text-charcoal-700">{getStageName(stage)}</span>
                       </div>
                       <span className="text-sm font-medium text-charcoal-900">{count}</span>
                     </div>
@@ -241,35 +256,35 @@ export default function AdminDashboard({ user, properties, stats }: AdminDashboa
 
       {/* Quick Actions */}
       <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
-        <h2 className="font-semibold text-charcoal-900 mb-4">Quick Actions</h2>
+        <h2 className="font-semibold text-charcoal-900 mb-4">{t('quickActions')}</h2>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <Link 
-            href="/admin/properties/new"
+            href={localizeHref("/admin/properties/new")}
             className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-dashed border-gray-200 hover:border-gold-300 hover:bg-gold-50 transition-colors text-center"
           >
             <Building2 className="w-6 h-6 text-gold-600" />
-            <span className="text-sm font-medium text-charcoal-700">Add Property</span>
+            <span className="text-sm font-medium text-charcoal-700">{t('addProperty')}</span>
           </Link>
           <Link 
-            href="/admin/customers"
+            href={localizeHref("/admin/customers")}
             className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-dashed border-gray-200 hover:border-gold-300 hover:bg-gold-50 transition-colors text-center"
           >
             <Users className="w-6 h-6 text-gold-600" />
-            <span className="text-sm font-medium text-charcoal-700">View Contacts</span>
+            <span className="text-sm font-medium text-charcoal-700">{t('viewContacts')}</span>
           </Link>
           <Link 
-            href="/admin/deals"
+            href={localizeHref("/admin/deals")}
             className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-dashed border-gray-200 hover:border-gold-300 hover:bg-gold-50 transition-colors text-center"
           >
             <Briefcase className="w-6 h-6 text-gold-600" />
-            <span className="text-sm font-medium text-charcoal-700">Deal Pipeline</span>
+            <span className="text-sm font-medium text-charcoal-700">{t('dealPipeline')}</span>
           </Link>
           <Link 
-            href="/admin/inquiries"
+            href={localizeHref("/admin/inquiries")}
             className="flex flex-col items-center gap-2 p-4 rounded-xl border-2 border-dashed border-gray-200 hover:border-gold-300 hover:bg-gold-50 transition-colors text-center"
           >
             <MessageSquare className="w-6 h-6 text-gold-600" />
-            <span className="text-sm font-medium text-charcoal-700">Inquiries</span>
+            <span className="text-sm font-medium text-charcoal-700">{t('inquiries')}</span>
           </Link>
         </div>
       </div>
