@@ -558,56 +558,20 @@ export default function MallorcaClient({ properties }: MallorcaClientProps) {
             </h2>
             <p className="text-charcoal-500 text-lg max-w-2xl mx-auto">
               {locale === 'de' 
-                ? 'Klicken Sie auf eine Immobilie, um mehr Details zu sehen' 
-                : 'Click on a property to see more details'}
+                ? 'Wählen Sie eine Immobilie aus der Liste, um den Standort zu sehen' 
+                : 'Select a property from the list to view its location'}
             </p>
           </motion.div>
 
           {/* Map Container */}
           <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
-            <div className="h-[500px]">
+            <div className="h-[600px]">
               <PropertyMap 
                 properties={properties}
                 selectedProperty={selectedProperty}
                 onPropertySelect={setSelectedProperty}
+                locale={locale}
               />
-            </div>
-            
-            {/* Property Cards Strip */}
-            <div className="border-t border-gray-100 bg-white p-4">
-              <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
-                {properties.map((property) => (
-                  <div
-                    key={property.id}
-                    onClick={() => setSelectedProperty(property)}
-                    className={`flex-shrink-0 flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all ${
-                      selectedProperty?.id === property.id 
-                        ? 'bg-gold-50 border-2 border-gold-500 shadow-md' 
-                        : 'bg-gray-50 border-2 border-transparent hover:bg-gray-100'
-                    }`}
-                  >
-                    <img 
-                      src={property.featured_image || ''} 
-                      alt={getLocalizedField(property, 'name', locale)}
-                      className="w-16 h-16 rounded-lg object-cover"
-                    />
-                    <div className="min-w-0">
-                      <h4 className="font-semibold text-charcoal-900 text-sm truncate max-w-[140px]">
-                        {getLocalizedField(property, 'name', locale)}
-                      </h4>
-                      <p className="text-charcoal-500 text-xs flex items-center gap-1">
-                        <MapPin className="w-3 h-3" />
-                        {property.city}
-                      </p>
-                      {property.price_per_week && (
-                        <p className="text-gold-600 text-xs font-semibold mt-0.5">
-                          €{Number(property.price_per_week).toLocaleString()}/week
-                        </p>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
             </div>
           </div>
 
@@ -627,31 +591,6 @@ export default function MallorcaClient({ properties }: MallorcaClientProps) {
               </Link>
             </motion.div>
           )}
-        </div>
-      </section>
-
-      {/* ========== SOCIAL PROOF STRIP ========== */}
-      <section className="py-16 bg-charcoal-900">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-            {[
-              { value: properties.length.toString(), label: locale === 'de' ? 'Luxusimmobilien' : 'Luxury Properties' },
-              { value: '500+', label: locale === 'de' ? 'Zufriedene Gäste' : 'Happy Guests' },
-              { value: '5★', label: locale === 'de' ? 'Service-Bewertung' : 'Service Rating' },
-              { value: '24/7', label: locale === 'de' ? 'Concierge-Service' : 'Concierge Support' },
-            ].map((stat, i) => (
-              <motion.div
-                key={stat.label}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-              >
-                <div className="font-merriweather text-3xl md:text-4xl text-gold-400 mb-2">{stat.value}</div>
-                <div className="text-white/70 text-sm font-medium">{stat.label}</div>
-              </motion.div>
-            ))}
-          </div>
         </div>
       </section>
 
