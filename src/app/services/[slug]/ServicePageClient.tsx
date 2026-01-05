@@ -1,7 +1,7 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Check, ArrowRight, Phone, Mail } from 'lucide-react'
+import { Check, ArrowRight, Phone, Mail, Plane, Utensils, Car, Shield, Ship, Navigation, Sparkles, Building } from 'lucide-react'
 import Link from 'next/link'
 import { useLocale } from '@/i18n/LocaleProvider'
 
@@ -29,14 +29,14 @@ export default function ServicePageClient({ service }: ServicePageClientProps) {
   const features = locale === 'de' && service.featuresDe ? service.featuresDe : service.features
 
   const otherServices = [
-    { name: locale === 'de' ? 'Concierge' : 'Concierge', slug: 'concierge' },
-    { name: locale === 'de' ? 'Privatflüge' : 'Private Aviation', slug: 'private-aviation' },
-    { name: locale === 'de' ? 'Privatkoch' : 'Private Chef', slug: 'private-chef' },
-    { name: locale === 'de' ? 'Luxustransport' : 'Luxury Transport', slug: 'luxury-transport' },
-    { name: locale === 'de' ? 'Erlebnisse' : 'Experiences', slug: 'experiences' },
-    { name: locale === 'de' ? 'Privatsphäre & Sicherheit' : 'Privacy & Security', slug: 'privacy-security' },
-    { name: locale === 'de' ? 'Yachtcharter' : 'Yacht Charter', slug: 'yacht-charter' },
-    { name: locale === 'de' ? 'Helikopter' : 'Helicopter', slug: 'helicopter' },
+    { name: locale === 'de' ? 'Privatflüge' : 'Private Aviation', slug: 'private-aviation', icon: Plane },
+    { name: locale === 'de' ? 'Privatkoch' : 'Private Chef', slug: 'private-chef', icon: Utensils },
+    { name: locale === 'de' ? 'Yachtcharter' : 'Yacht Charter', slug: 'yacht-charter', icon: Ship },
+    { name: locale === 'de' ? 'Luxustransport' : 'Luxury Transport', slug: 'luxury-transport', icon: Car },
+    { name: locale === 'de' ? 'Helikopter' : 'Helicopter', slug: 'helicopter', icon: Navigation },
+    { name: locale === 'de' ? 'Privatsphäre & Sicherheit' : 'Privacy & Security', slug: 'privacy-security', icon: Shield },
+    { name: locale === 'de' ? 'Tischreservierungen' : 'Table Reservations', slug: 'table-reservations', icon: Sparkles },
+    { name: locale === 'de' ? 'Reisebuchungen' : 'Travel Bookings', slug: 'travel-bookings', icon: Building },
   ]
 
   return (
@@ -211,38 +211,73 @@ export default function ServicePageClient({ service }: ServicePageClientProps) {
       </section>
 
       {/* Other Services */}
-      <section className="py-20 bg-cream-50">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="font-merriweather text-3xl text-charcoal-900 mb-4">
+      <section className="py-20 bg-gradient-to-b from-cream-50 to-white">
+        <div className="max-w-6xl mx-auto px-6 lg:px-8">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-14"
+          >
+            <p className="text-gold-600 text-sm font-semibold tracking-[0.2em] uppercase mb-3">
+              {locale === 'de' ? 'Unsere Services' : 'Our Services'}
+            </p>
+            <h2 className="font-merriweather text-3xl md:text-4xl text-charcoal-900 mb-4">
               {locale === 'de' ? 'Weitere Services entdecken' : 'Explore More Services'}
             </h2>
-            <p className="text-charcoal-500">
-              {locale === 'de' ? 'Entdecken Sie unser gesamtes Angebot an Luxus-Services' : 'Discover our complete range of luxury services'}
+            <p className="text-charcoal-500 max-w-xl mx-auto">
+              {locale === 'de' 
+                ? 'Entdecken Sie unser gesamtes Angebot an exklusiven Luxus-Services' 
+                : 'Discover our complete range of exclusive luxury services'}
             </p>
-          </div>
+          </motion.div>
 
-          <div className="flex flex-wrap justify-center gap-4">
-            {otherServices.map((s) => (
-              <Link
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+            {otherServices.map((s, index) => (
+              <motion.div
                 key={s.slug}
-                href={`/services/${s.slug}`}
-                className="px-6 py-3 bg-white rounded-full text-charcoal-700 hover:bg-gold-500 hover:text-white transition-colors shadow-sm"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.05 }}
               >
-                {s.name}
-              </Link>
+                <Link
+                  href={`/services/${s.slug}`}
+                  className="group flex flex-col items-center p-6 bg-white rounded-2xl border border-gray-100 hover:border-gold-200 hover:shadow-lg transition-all duration-300"
+                >
+                  <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-gold-100 to-gold-50 flex items-center justify-center mb-4 group-hover:from-gold-200 group-hover:to-gold-100 transition-all">
+                    <s.icon className="w-7 h-7 text-gold-600" />
+                  </div>
+                  <span className="text-charcoal-800 font-medium text-center text-sm group-hover:text-gold-700 transition-colors">
+                    {s.name}
+                  </span>
+                </Link>
+              </motion.div>
             ))}
           </div>
 
-          <div className="text-center mt-12">
+          <motion.div 
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3 }}
+            className="flex flex-col sm:flex-row items-center justify-center gap-6 mt-14"
+          >
+            <Link
+              href="/services"
+              className="inline-flex items-center gap-2 bg-charcoal-900 text-white px-8 py-4 rounded-xl font-semibold hover:bg-charcoal-800 transition-colors"
+            >
+              {locale === 'de' ? 'Alle Services ansehen' : 'View All Services'}
+              <ArrowRight className="w-5 h-5" />
+            </Link>
             <Link
               href="/properties"
               className="inline-flex items-center gap-2 text-gold-600 font-semibold hover:text-gold-700 transition-colors"
             >
-              {locale === 'de' ? 'Unsere Immobilien ansehen' : 'View Our Properties'}
+              {locale === 'de' ? 'Unsere Immobilien' : 'Our Properties'}
               <ArrowRight className="w-5 h-5" />
             </Link>
-          </div>
+          </motion.div>
         </div>
       </section>
     </div>
