@@ -41,6 +41,28 @@
         "title": "Ready to Discover Mallorca?",
         "description": "Explore our complete collection of luxury villas and fincas across the island. Each property is personally vetted to ensure an exceptional experience.",
         "button": "Explore Mallorca"
+      },
+      "regions": {
+        "westSouthwest": {
+          "name": "West / Southwest",
+          "subtitle": "Palma to Port d'Andratx",
+          "description": "Prestigious villas from Bendinat to the Tramuntana foothills"
+        },
+        "northNorthwest": {
+          "name": "North / Northwest",
+          "subtitle": "Pollensa & Alcudia Bay",
+          "description": "Stunning properties in the island's northern paradise"
+        },
+        "eastSoutheast": {
+          "name": "East / Southeast",
+          "subtitle": "Canyamel to Ses Salines",
+          "description": "Authentic fincas with crystal-clear waters"
+        },
+        "center": {
+          "name": "Center",
+          "subtitle": "Island Interior",
+          "description": "Traditional estates in the heart of Mallorca"
+        }
       }
     },
     "ibiza": {

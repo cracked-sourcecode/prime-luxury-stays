@@ -6,39 +6,39 @@ import { ArrowRight, MapPin, Star, Home } from 'lucide-react'
 import Link from 'next/link'
 import { useLocale } from '@/i18n/LocaleProvider'
 
-// Mallorca regions with our properties
-const mallorcaRegions = [
+// Mallorca regions with our properties - organized by direction
+const getMallorcaRegions = (t: (key: string) => string) => [
   {
-    name: 'Southwest Coast',
-    subtitle: 'Santa Ponsa & Calvià',
+    name: t('destinations.mallorca.regions.westSouthwest.name'),
+    subtitle: t('destinations.mallorca.regions.westSouthwest.subtitle'),
     image: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&q=80',
-    description: 'Prestigious villas with Malgrats Islands views',
-    properties: 3,
-    slug: 'southwest',
+    description: t('destinations.mallorca.regions.westSouthwest.description'),
+    properties: 7,
+    slug: 'west-southwest',
   },
   {
-    name: 'Port d\'Andratx',
-    subtitle: 'Luxury Marina Town',
-    image: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80',
-    description: 'Exclusive harbour-front estates with sunset views',
-    properties: 2,
-    slug: 'port-andratx',
-  },
-  {
-    name: 'Alcudia',
-    subtitle: 'Northern Paradise',
+    name: t('destinations.mallorca.regions.northNorthwest.name'),
+    subtitle: t('destinations.mallorca.regions.northNorthwest.subtitle'),
     image: 'https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?w=800&q=80',
-    description: 'Modern luxury in the exclusive Bonaire area',
-    properties: 1,
-    slug: 'alcudia',
+    description: t('destinations.mallorca.regions.northNorthwest.description'),
+    properties: 5,
+    slug: 'north-northwest',
   },
   {
-    name: 'East Coast',
-    subtitle: 'Cas Concos & Canyamel',
+    name: t('destinations.mallorca.regions.eastSoutheast.name'),
+    subtitle: t('destinations.mallorca.regions.eastSoutheast.subtitle'),
     image: 'https://images.unsplash.com/photo-1580541631950-7282082b53ce?w=800&q=80',
-    description: 'Authentic fincas with first-line sea access',
-    properties: 1,
-    slug: 'east-coast',
+    description: t('destinations.mallorca.regions.eastSoutheast.description'),
+    properties: 4,
+    slug: 'east-southeast',
+  },
+  {
+    name: t('destinations.mallorca.regions.center.name'),
+    subtitle: t('destinations.mallorca.regions.center.subtitle'),
+    image: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80',
+    description: t('destinations.mallorca.regions.center.description'),
+    properties: 0,
+    slug: 'center',
   },
 ]
 
@@ -100,7 +100,7 @@ export default function Destinations() {
 
         {/* Regions Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {mallorcaRegions.map((region, index) => (
+          {getMallorcaRegions(t).map((region, index) => (
             <motion.div
               key={region.name}
               initial={{ opacity: 0, y: 30 }}

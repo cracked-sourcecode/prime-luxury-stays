@@ -41,6 +41,28 @@
         "title": "Bereit, Mallorca zu entdecken?",
         "description": "Erkunden Sie unsere komplette Sammlung von Luxusvillen und Fincas auf der ganzen Insel. Jede Immobilie wird persönlich geprüft, um ein außergewöhnliches Erlebnis zu gewährleisten.",
         "button": "Mallorca Erkunden"
+      },
+      "regions": {
+        "westSouthwest": {
+          "name": "West / Südwest",
+          "subtitle": "Palma bis Port d'Andratx",
+          "description": "Prestigeträchtige Villen von Bendinat bis zum Fuß der Tramuntana"
+        },
+        "northNorthwest": {
+          "name": "Nord / Nordwest",
+          "subtitle": "Pollensa & Bucht von Alcudia",
+          "description": "Atemberaubende Immobilien im nördlichen Paradies der Insel"
+        },
+        "eastSoutheast": {
+          "name": "Ost / Südost",
+          "subtitle": "Canyamel bis Ses Salines",
+          "description": "Authentische Fincas mit kristallklarem Wasser"
+        },
+        "center": {
+          "name": "Zentrum",
+          "subtitle": "Inselinneres",
+          "description": "Traditionelle Anwesen im Herzen Mallorcas"
+        }
       }
     },
     "ibiza": {
