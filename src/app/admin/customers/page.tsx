@@ -22,6 +22,7 @@ import {
   UserPlus,
   Sparkles
 } from 'lucide-react'
+import { useAdminLocale } from '@/lib/adminLocale'
 
 interface Customer {
   id: number
@@ -35,6 +36,7 @@ interface Customer {
 }
 
 export default function CustomersPage() {
+  const { t, locale } = useAdminLocale()
   const [customers, setCustomers] = useState<Customer[]>([])
   const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery] = useState('')
@@ -198,8 +200,8 @@ export default function CustomersPage() {
       {/* Header */}
       <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold text-charcoal-900">Contacts</h1>
-          <p className="text-charcoal-500">{customers.length.toLocaleString()} total contacts</p>
+          <h1 className="text-2xl font-semibold text-charcoal-900">{t('contacts')}</h1>
+          <p className="text-charcoal-500">{customers.length.toLocaleString()} {t('totalContactsLabel')}</p>
         </div>
         <div className="flex items-center gap-3">
           <button
@@ -207,14 +209,14 @@ export default function CustomersPage() {
             className="flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
           >
             <Download className="w-4 h-4" />
-            Export CSV
+            {t('exportCsv')}
           </button>
           <button
             onClick={() => setShowAddModal(true)}
             className="flex items-center gap-2 px-4 py-2 bg-gold-500 hover:bg-gold-600 text-white rounded-lg font-medium transition-colors"
           >
             <Plus className="w-4 h-4" />
-            Add Contact
+            {t('addCustomer')}
           </button>
         </div>
       </div>
@@ -227,7 +229,7 @@ export default function CustomersPage() {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
               <input
                 type="text"
-                placeholder="Search by name, email, or phone..."
+                placeholder={t('searchByNameEmailPhone')}
                 value={searchQuery}
                 onChange={(e) => {
                   setSearchQuery(e.target.value)
@@ -237,7 +239,7 @@ export default function CustomersPage() {
               />
             </div>
             <div className="text-sm text-gray-500">
-              Showing {paginatedCustomers.length} of {filteredCustomers.length} results
+              {t('showingResults')} {paginatedCustomers.length} {t('ofResults')} {filteredCustomers.length} {t('results')}
             </div>
           </div>
         </div>
@@ -372,24 +374,24 @@ export default function CustomersPage() {
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-gray-900">Add Customer</h2>
+              <h2 className="text-xl font-bold text-gray-900">{t('addCustomer')}</h2>
               <button onClick={() => setShowAddModal(false)} className="text-gray-400 hover:text-gray-600">
                 <X className="w-5 h-5" />
               </button>
             </div>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t('name')} *</label>
                 <input
                   type="text"
                   value={newCustomer.name}
                   onChange={(e) => setNewCustomer({ ...newCustomer, name: e.target.value })}
                   className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
-                  placeholder="Full name"
+                  placeholder={t('fullName')}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t('email')}</label>
                 <input
                   type="email"
                   value={newCustomer.email}
@@ -399,7 +401,7 @@ export default function CustomersPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t('phone')}</label>
                 <input
                   type="tel"
                   value={newCustomer.phone}
@@ -409,13 +411,13 @@ export default function CustomersPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t('notes')}</label>
                 <textarea
                   value={newCustomer.notes}
                   onChange={(e) => setNewCustomer({ ...newCustomer, notes: e.target.value })}
                   className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none resize-none"
                   rows={3}
-                  placeholder="Any notes about this customer..."
+                  placeholder={t('anyNotesAboutCustomer')}
                 />
               </div>
             </div>
@@ -424,14 +426,14 @@ export default function CustomersPage() {
                 onClick={() => setShowAddModal(false)}
                 className="flex-1 px-4 py-2.5 border border-gray-200 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
               >
-                Cancel
+                {t('cancel')}
               </button>
               <button
                 onClick={handleAddCustomer}
                 disabled={!newCustomer.name || saving}
                 className="flex-1 px-4 py-2.5 bg-gold-500 hover:bg-gold-600 text-white rounded-lg font-medium transition-colors disabled:opacity-50"
               >
-                {saving ? 'Adding...' : 'Add Customer'}
+                {saving ? (locale === 'de' ? 'Hinzufügen...' : 'Adding...') : t('addCustomer')}
               </button>
             </div>
           </div>
@@ -443,14 +445,14 @@ export default function CustomersPage() {
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-gray-900">Edit Customer</h2>
+              <h2 className="text-xl font-bold text-gray-900">{locale === 'de' ? 'Kontakt bearbeiten' : 'Edit Customer'}</h2>
               <button onClick={() => setEditingCustomer(null)} className="text-gray-400 hover:text-gray-600">
                 <X className="w-5 h-5" />
               </button>
             </div>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t('name')} *</label>
                 <input
                   type="text"
                   value={editingCustomer.name}
@@ -459,7 +461,7 @@ export default function CustomersPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t('email')}</label>
                 <input
                   type="email"
                   value={editingCustomer.email || ''}
@@ -468,7 +470,7 @@ export default function CustomersPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t('phone')}</label>
                 <input
                   type="tel"
                   value={editingCustomer.phone || ''}
@@ -477,7 +479,7 @@ export default function CustomersPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">{t('notes')}</label>
                 <textarea
                   value={editingCustomer.notes || ''}
                   onChange={(e) => setEditingCustomer({ ...editingCustomer, notes: e.target.value })}
@@ -491,14 +493,14 @@ export default function CustomersPage() {
                 onClick={() => setEditingCustomer(null)}
                 className="flex-1 px-4 py-2.5 border border-gray-200 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
               >
-                Cancel
+                {t('cancel')}
               </button>
               <button
                 onClick={handleUpdateCustomer}
                 disabled={!editingCustomer.name || saving}
                 className="flex-1 px-4 py-2.5 bg-gold-500 hover:bg-gold-600 text-white rounded-lg font-medium transition-colors disabled:opacity-50"
               >
-                {saving ? 'Saving...' : 'Save Changes'}
+                {saving ? (locale === 'de' ? 'Speichern...' : 'Saving...') : (locale === 'de' ? 'Änderungen speichern' : 'Save Changes')}
               </button>
             </div>
           </div>

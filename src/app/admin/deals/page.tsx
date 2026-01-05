@@ -24,6 +24,7 @@ import {
   DollarSign,
   Check
 } from 'lucide-react'
+import { useAdminLocale } from '@/lib/adminLocale'
 
 interface Deal {
   id: number
@@ -47,13 +48,13 @@ interface Deal {
   created_at: string
 }
 
-const STAGES = [
-  { id: 'lead', name: 'Lead', color: '#94a3b8', bgColor: 'bg-slate-50', borderColor: 'border-slate-200' },
-  { id: 'qualified', name: 'Qualified', color: '#3b82f6', bgColor: 'bg-blue-50', borderColor: 'border-blue-200' },
-  { id: 'proposal', name: 'Proposal Sent', color: '#f59e0b', bgColor: 'bg-amber-50', borderColor: 'border-amber-200' },
-  { id: 'negotiation', name: 'Negotiations Started', color: '#8b5cf6', bgColor: 'bg-purple-50', borderColor: 'border-purple-200' },
-  { id: 'won', name: 'Deal Won', color: '#10b981', bgColor: 'bg-emerald-50', borderColor: 'border-emerald-200' },
-  { id: 'lost', name: 'Deal Lost', color: '#ef4444', bgColor: 'bg-red-50', borderColor: 'border-red-200' },
+const getStages = (locale: string) => [
+  { id: 'lead', name: locale === 'de' ? 'Lead' : 'Lead', color: '#94a3b8', bgColor: 'bg-slate-50', borderColor: 'border-slate-200' },
+  { id: 'qualified', name: locale === 'de' ? 'Qualifiziert' : 'Qualified', color: '#3b82f6', bgColor: 'bg-blue-50', borderColor: 'border-blue-200' },
+  { id: 'proposal', name: locale === 'de' ? 'Angebot gesendet' : 'Proposal Sent', color: '#f59e0b', bgColor: 'bg-amber-50', borderColor: 'border-amber-200' },
+  { id: 'negotiation', name: locale === 'de' ? 'Verhandlung begonnen' : 'Negotiations Started', color: '#8b5cf6', bgColor: 'bg-purple-50', borderColor: 'border-purple-200' },
+  { id: 'won', name: locale === 'de' ? 'Deal gewonnen' : 'Deal Won', color: '#10b981', bgColor: 'bg-emerald-50', borderColor: 'border-emerald-200' },
+  { id: 'lost', name: locale === 'de' ? 'Deal verloren' : 'Deal Lost', color: '#ef4444', bgColor: 'bg-red-50', borderColor: 'border-red-200' },
 ]
 
 interface Contact {
@@ -64,6 +65,8 @@ interface Contact {
 }
 
 export default function DealsPage() {
+  const { t, locale } = useAdminLocale()
+  const STAGES = getStages(locale)
   const [deals, setDeals] = useState<Deal[]>([])
   const [contacts, setContacts] = useState<Contact[]>([])
   const [loading, setLoading] = useState(true)
@@ -250,7 +253,7 @@ export default function DealsPage() {
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
-              <span className="font-semibold text-gray-900">Deals</span>
+              <span className="font-semibold text-gray-900">{t('dealsTitle')}</span>
               <span className="bg-gray-800 text-white text-xs px-2 py-0.5 rounded-full font-medium">
                 {deals.length}
               </span>
@@ -263,7 +266,7 @@ export default function DealsPage() {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
               <input
                 type="text"
-                placeholder="Search"
+                placeholder={t('search')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-9 pr-4 py-2 border border-gray-200 rounded-md w-64 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
@@ -279,7 +282,7 @@ export default function DealsPage() {
                 }`}
               >
                 <LayoutGrid className="w-4 h-4" />
-                Board view
+                {t('boardView')}
               </button>
               <button
                 onClick={() => setView('table')}
@@ -288,14 +291,14 @@ export default function DealsPage() {
                 }`}
               >
                 <List className="w-4 h-4" />
-                Table view
+                {t('tableView')}
               </button>
             </div>
 
             {/* Filters */}
             <button className="flex items-center gap-2 px-3 py-2 border border-gray-200 rounded-md text-sm text-gray-700 hover:bg-gray-50">
               <SlidersHorizontal className="w-4 h-4" />
-              Filters
+              {t('filters')}
             </button>
 
             {/* Add Deal */}
@@ -303,7 +306,7 @@ export default function DealsPage() {
               onClick={() => setShowAddModal(true)}
               className="bg-[#ff5c35] hover:bg-[#e54e2b] text-white px-4 py-2 rounded-md font-medium text-sm flex items-center gap-2 transition-colors"
             >
-              Add deals
+              {t('addDeals')}
               <ChevronDown className="w-4 h-4" />
             </button>
           </div>
@@ -312,22 +315,22 @@ export default function DealsPage() {
         {/* Filter Pills */}
         <div className="flex items-center gap-3 mt-3 text-sm">
           <button className="flex items-center gap-1 text-gray-700 hover:text-gray-900">
-            Deal owner <ChevronDown className="w-3 h-3" />
+            {t('dealOwner')} <ChevronDown className="w-3 h-3" />
           </button>
           <button className="flex items-center gap-1 text-gray-700 hover:text-gray-900">
-            Create date <ChevronDown className="w-3 h-3" />
+            {t('createDate')} <ChevronDown className="w-3 h-3" />
           </button>
           <button className="flex items-center gap-1 text-gray-700 hover:text-gray-900">
-            Last activity date <ChevronDown className="w-3 h-3" />
+            {t('lastActivityDate')} <ChevronDown className="w-3 h-3" />
           </button>
           <button className="flex items-center gap-1 text-gray-700 hover:text-gray-900">
-            Close date <ChevronDown className="w-3 h-3" />
+            {t('closeDate')} <ChevronDown className="w-3 h-3" />
           </button>
           <button className="flex items-center gap-1 text-blue-600 hover:text-blue-700">
-            <Plus className="w-3 h-3" /> More
+            <Plus className="w-3 h-3" /> {t('more')}
           </button>
           <button className="flex items-center gap-1 text-blue-600 hover:text-blue-700 ml-4">
-            <SlidersHorizontal className="w-3 h-3" /> Advanced filters
+            <SlidersHorizontal className="w-3 h-3" /> {t('advancedFilters')}
           </button>
         </div>
       </div>

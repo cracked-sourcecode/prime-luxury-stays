@@ -13,6 +13,7 @@ import {
   MessageSquare,
   ChevronDown
 } from 'lucide-react'
+import { useAdminLocale } from '@/lib/adminLocale'
 
 interface Inquiry {
   id: number
@@ -30,6 +31,7 @@ interface Inquiry {
 }
 
 export default function InquiriesPage() {
+  const { t, locale } = useAdminLocale()
   const [inquiries, setInquiries] = useState<Inquiry[]>([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState<'all' | 'new' | 'contacted' | 'booked' | 'closed'>('all')
@@ -88,33 +90,42 @@ export default function InquiriesPage() {
     <div className="p-6 lg:p-8">
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-charcoal-900">Inquiries</h1>
-        <p className="text-charcoal-500">{inquiries.length} total booking requests</p>
+        <h1 className="text-2xl font-semibold text-charcoal-900">{t('inquiries')}</h1>
+        <p className="text-charcoal-500">{inquiries.length} {t('totalBookingRequests')}</p>
       </div>
 
       {/* Status Tabs */}
         <div className="flex items-center gap-2 mb-6 overflow-x-auto pb-2">
-          {(['all', 'new', 'contacted', 'booked', 'closed'] as const).map((status) => (
-            <button
-              key={status}
-              onClick={() => setFilter(status)}
-              className={`px-4 py-2 rounded-lg font-medium text-sm whitespace-nowrap transition-colors ${
-                filter === status
-                  ? 'bg-gold-500 text-white'
-                  : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'
-              }`}
-            >
-              {status.charAt(0).toUpperCase() + status.slice(1)}
-              <span className="ml-2 text-xs opacity-75">({statusCounts[status]})</span>
-            </button>
-          ))}
+          {(['all', 'new', 'contacted', 'booked', 'closed'] as const).map((status) => {
+            const statusLabels: Record<string, string> = {
+              all: t('all'),
+              new: locale === 'de' ? 'Neu' : 'New',
+              contacted: t('contacted'),
+              booked: t('booked'),
+              closed: t('closed')
+            }
+            return (
+              <button
+                key={status}
+                onClick={() => setFilter(status)}
+                className={`px-4 py-2 rounded-lg font-medium text-sm whitespace-nowrap transition-colors ${
+                  filter === status
+                    ? 'bg-gold-500 text-white'
+                    : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'
+                }`}
+              >
+                {statusLabels[status]}
+                <span className="ml-2 text-xs opacity-75">({statusCounts[status]})</span>
+              </button>
+            )
+          })}
         </div>
 
         {/* Inquiries List */}
         <div className="space-y-4">
           {filteredInquiries.length === 0 ? (
             <div className="bg-white rounded-xl p-12 text-center text-gray-500">
-              No inquiries found
+              {t('noInquiries')}
             </div>
           ) : (
             filteredInquiries.map((inquiry) => (
