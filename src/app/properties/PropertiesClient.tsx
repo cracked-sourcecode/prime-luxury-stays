@@ -62,7 +62,7 @@ function PropertyImage({ src, alt, className }: { src: string; alt: string; clas
 
 export default function PropertiesClient({ properties }: PropertiesClientProps) {
   const searchParams = useSearchParams()
-  const { t } = useLocale()
+  const { t, locale } = useLocale()
   const [viewMode, setViewMode] = useState<'grid' | 'map'>('grid')
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null)
   const [showFilters, setShowFilters] = useState(false)
@@ -70,9 +70,9 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
   
   // Format date for display
   const formatDisplayDate = (dateStr: string) => {
-    if (!dateStr) return 'Select'
+    if (!dateStr) return t('pages.properties.selectDates')
     const date = new Date(dateStr)
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+    return date.toLocaleDateString(locale === 'de' ? 'de-DE' : 'en-US', { month: 'short', day: 'numeric' })
   }
   
   // Guest-focused search filters - initialized from URL params
@@ -148,19 +148,19 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
   // Define region display order and metadata
   const regionInfo: Record<string, { name: string; slug: string; tagline: string }> = {
     'Mallorca': { 
-      name: 'Mallorca', 
+      name: t('locationNames.mallorca'), 
       slug: '/mallorca', 
-      tagline: 'The Jewel of the Mediterranean' 
+      tagline: t('pages.properties.regionTaglines.mallorca') 
     },
     'Ibiza': { 
-      name: 'Ibiza', 
+      name: t('locationNames.ibiza'), 
       slug: '/ibiza', 
-      tagline: 'The White Isle' 
+      tagline: t('pages.properties.regionTaglines.ibiza') 
     },
     'South of France': { 
-      name: 'South of France', 
+      name: t('locationNames.southOfFrance'), 
       slug: '/south-of-france', 
-      tagline: 'The French Riviera' 
+      tagline: t('pages.properties.regionTaglines.southOfFrance') 
     },
   }
 
@@ -241,7 +241,7 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
                     {filters.checkIn && filters.checkOut ? (
                       <span>{formatDisplayDate(filters.checkIn)} – {formatDisplayDate(filters.checkOut)}</span>
                     ) : (
-                      <span className="text-charcoal-400">Select dates</span>
+                      <span className="text-charcoal-400">{t('pages.properties.selectDates')}</span>
                     )}
                   </div>
                 </div>
@@ -256,7 +256,7 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
                     onChange={(e) => setFilters(f => ({ ...f, guests: e.target.value }))}
                     className="w-full bg-transparent text-charcoal-900 font-medium focus:outline-none cursor-pointer text-base text-left"
                   >
-                    <option value="any">Any</option>
+                    <option value="any">{t('pages.properties.any')}</option>
                     <option value="2">2+</option>
                     <option value="4">4+</option>
                     <option value="6">6+</option>
@@ -275,7 +275,7 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
                     onChange={(e) => setFilters(f => ({ ...f, bedrooms: e.target.value }))}
                     className="w-full bg-transparent text-charcoal-900 font-medium focus:outline-none cursor-pointer text-base text-left"
                   >
-                    <option value="any">Any</option>
+                    <option value="any">{t('pages.properties.any')}</option>
                     <option value="2">2+</option>
                     <option value="3">3+</option>
                     <option value="4">4+</option>
@@ -299,14 +299,14 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label className="block text-left text-[11px] font-semibold text-charcoal-400 uppercase tracking-wider mb-1">
-                      Destination
+                      {t('pages.properties.destination')}
                     </label>
                     <select
                       value={filters.destination}
                       onChange={(e) => setFilters(f => ({ ...f, destination: e.target.value }))}
                       className="w-full bg-gray-50 text-charcoal-900 font-medium focus:outline-none cursor-pointer text-sm text-left px-3 py-2.5 rounded-lg border border-gray-200"
                     >
-                      <option value="all">All</option>
+                      <option value="all">{t('hero.all')}</option>
                       {availableDestinations.map(d => (
                         <option key={d} value={d.toLowerCase().replace(/ /g, '-')}>{d}</option>
                       ))}
@@ -390,7 +390,7 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
               transition={{ duration: 2, repeat: Infinity }}
               className="flex flex-col items-center gap-2 text-white/60"
             >
-              <span className="text-xs tracking-widest uppercase">Explore</span>
+              <span className="text-xs tracking-widest uppercase">{t('pages.properties.explore')}</span>
               <ChevronDown className="w-5 h-5" />
             </motion.div>
           </motion.div>
@@ -408,10 +408,10 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
               className="text-center mb-12"
             >
               <p className="text-gold-600 text-sm font-semibold tracking-[0.2em] uppercase mb-4">
-                Handpicked For You
+                {t('pages.properties.handpicked')}
               </p>
               <h2 className="font-merriweather text-3xl md:text-4xl text-charcoal-900">
-                Featured Properties
+                {t('pages.properties.featuredProperties')}
               </h2>
             </motion.div>
 
@@ -434,7 +434,7 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
                       <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
                       <div className="absolute top-4 left-4 bg-gold-500 text-white px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1">
                         <Star className="w-3 h-3 fill-white" />
-                        Featured
+                        {t('pages.properties.featured')}
                       </div>
                       <div className="absolute bottom-4 left-4 right-4">
                         <h3 className="font-merriweather text-xl text-white mb-1">{property.name}</h3>
@@ -467,14 +467,13 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
               viewport={{ once: true }}
             >
               <p className="text-gold-600 text-sm font-semibold tracking-[0.2em] uppercase mb-4">
-                Why Choose Us
+                {t('pages.properties.whyChooseUs')}
               </p>
               <h2 className="font-merriweather text-3xl md:text-4xl text-charcoal-900 mb-6">
-                More Than Just Properties
+                {t('pages.properties.moreThanProperties')}
               </h2>
               <p className="text-charcoal-600 text-lg mb-8">
-                We don't just offer luxury accommodations – we create unforgettable experiences. 
-                Every property is personally vetted, and our concierge team ensures your stay is perfect.
+                {t('pages.properties.moreThanDesc')}
               </p>
               
               <div className="space-y-6">
@@ -483,8 +482,8 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
                     <Shield className="w-6 h-6 text-gold-600" />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-charcoal-900 mb-1">Verified Properties</h4>
-                    <p className="text-charcoal-500 text-sm">Every property personally inspected by our team</p>
+                    <h4 className="font-semibold text-charcoal-900 mb-1">{t('pages.properties.verifiedProperties')}</h4>
+                    <p className="text-charcoal-500 text-sm">{t('pages.properties.verifiedPropertiesDesc')}</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
@@ -492,8 +491,8 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
                     <Clock className="w-6 h-6 text-gold-600" />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-charcoal-900 mb-1">Dedicated Concierge</h4>
-                    <p className="text-charcoal-500 text-sm">Round-the-clock support for anything you need</p>
+                    <h4 className="font-semibold text-charcoal-900 mb-1">{t('pages.properties.dedicatedConcierge')}</h4>
+                    <p className="text-charcoal-500 text-sm">{t('pages.properties.dedicatedConciergeDesc')}</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
@@ -501,8 +500,8 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
                     <Star className="w-6 h-6 text-gold-600" />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-charcoal-900 mb-1">Best Price Direct</h4>
-                    <p className="text-charcoal-500 text-sm">Book direct for guaranteed best rates, no hidden fees</p>
+                    <h4 className="font-semibold text-charcoal-900 mb-1">{t('pages.properties.bestPriceDirect')}</h4>
+                    <p className="text-charcoal-500 text-sm">{t('pages.properties.bestPriceDirectDesc')}</p>
                   </div>
                 </div>
               </div>
@@ -525,12 +524,12 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
                 <div className="flex items-center gap-4">
                   <div className="text-center">
                     <div className="font-merriweather text-3xl text-gold-600">{properties.length}+</div>
-                    <div className="text-xs text-charcoal-500">Properties</div>
+                    <div className="text-xs text-charcoal-500">{t('pages.properties.properties')}</div>
                   </div>
                   <div className="w-px h-12 bg-gray-200" />
                   <div className="text-center">
                     <div className="font-merriweather text-3xl text-gold-600">5★</div>
-                    <div className="text-xs text-charcoal-500">Service</div>
+                    <div className="text-xs text-charcoal-500">{t('pages.properties.service')}</div>
                   </div>
                 </div>
               </div>
@@ -551,13 +550,13 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
           >
             <div>
               <p className="text-gold-600 text-sm font-semibold tracking-[0.2em] uppercase mb-3">
-                Browse Collection
+                {t('pages.properties.browseCollection')}
               </p>
               <h2 className="font-merriweather text-3xl md:text-4xl text-charcoal-900">
-                All Properties
+                {t('pages.properties.allProperties')}
               </h2>
               <p className="text-charcoal-500 mt-2">
-                {sortedProperties.length} properties available
+                {sortedProperties.length} {t('pages.properties.propertiesAvailable')}
               </p>
             </div>
 
@@ -572,7 +571,7 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
                 }`}
               >
                 <Filter className="w-4 h-4" />
-                Filters
+                {t('pages.properties.filters')}
               </button>
               
               <div className="flex items-center bg-gray-100 rounded-xl p-1">
@@ -604,24 +603,24 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
               className="bg-cream-50 rounded-2xl p-6 mb-8"
             >
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold text-charcoal-900">Refine Your Search</h3>
+                <h3 className="font-semibold text-charcoal-900">{t('pages.properties.refineSearch')}</h3>
                 <button
                   onClick={() => setFilters({ destination: 'all', guests: 'any', checkIn: '', checkOut: '', priceRange: 'any', bedrooms: 'any', seaView: false, pool: false })}
                   className="text-sm text-gold-600 hover:text-gold-700"
                 >
-                  Clear all
+                  {t('pages.properties.clearAll')}
                 </button>
               </div>
 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div>
-                  <label className="block text-xs font-medium text-charcoal-500 mb-1.5 uppercase">Bedrooms</label>
+                  <label className="block text-xs font-medium text-charcoal-500 mb-1.5 uppercase">{t('pages.properties.bedroomsLabel')}</label>
                   <select
                     value={filters.bedrooms}
                     onChange={(e) => setFilters(f => ({ ...f, bedrooms: e.target.value }))}
                     className="w-full px-3 py-2.5 rounded-xl border border-gray-200 bg-white text-sm"
                   >
-                    <option value="any">Any</option>
+                    <option value="any">{t('pages.properties.any')}</option>
                     <option value="2">2+</option>
                     <option value="3">3+</option>
                     <option value="4">4+</option>
@@ -630,17 +629,17 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-charcoal-500 mb-1.5 uppercase">Price Range</label>
+                  <label className="block text-xs font-medium text-charcoal-500 mb-1.5 uppercase">{t('pages.properties.priceRange')}</label>
                   <select
                     value={filters.priceRange}
                     onChange={(e) => setFilters(f => ({ ...f, priceRange: e.target.value }))}
                     className="w-full px-3 py-2.5 rounded-xl border border-gray-200 bg-white text-sm"
                   >
-                    <option value="any">Any Price</option>
-                    <option value="budget">Budget-Friendly</option>
-                    <option value="mid">Mid-Range</option>
-                    <option value="luxury">Luxury</option>
-                    <option value="ultra">Ultra-Luxury</option>
+                    <option value="any">{t('pages.properties.anyPrice')}</option>
+                    <option value="budget">{t('pages.properties.budgetFriendly')}</option>
+                    <option value="mid">{t('pages.properties.midRange')}</option>
+                    <option value="luxury">{t('pages.properties.luxury')}</option>
+                    <option value="ultra">{t('pages.properties.ultraLuxury')}</option>
                   </select>
                 </div>
                 <div className="col-span-2 flex items-end gap-4">
@@ -651,7 +650,7 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
                       onChange={(e) => setFilters(f => ({ ...f, seaView: e.target.checked }))}
                       className="w-5 h-5 rounded border-gray-300 text-gold-500"
                     />
-                    <span className="text-sm text-charcoal-700">Sea View</span>
+                    <span className="text-sm text-charcoal-700">{t('pages.properties.seaView')}</span>
                   </label>
                   <label className="flex items-center gap-2 cursor-pointer">
                     <input
@@ -660,7 +659,7 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
                       onChange={(e) => setFilters(f => ({ ...f, pool: e.target.checked }))}
                       className="w-5 h-5 rounded border-gray-300 text-gold-500"
                     />
-                    <span className="text-sm text-charcoal-700">Private Pool</span>
+                    <span className="text-sm text-charcoal-700">{t('pages.properties.privatePool')}</span>
                   </label>
                 </div>
               </div>
@@ -686,17 +685,17 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
                           </span>
                         </div>
                         <h3 className="font-merriweather text-2xl md:text-3xl text-charcoal-900">
-                          {info?.name || region} Collection
+                          {info?.name || region} {t('pages.properties.collection')}
                         </h3>
                         <p className="text-charcoal-500 mt-1">
-                          {regionProperties.length} {regionProperties.length === 1 ? 'property' : 'properties'} available
+                          {regionProperties.length} {regionProperties.length === 1 ? t('pages.properties.property') : t('pages.properties.propertiesLabel')} {t('pages.properties.available')}
                         </p>
                       </div>
                       <Link 
                         href={info?.slug || '#'} 
                         className="inline-flex items-center gap-2 text-gold-600 font-semibold hover:text-gold-700 transition-colors"
                       >
-                        <span>Explore {info?.name || region}</span>
+                        <span>{t('pages.properties.explore')} {info?.name || region}</span>
                         <ArrowRight className="w-4 h-4" />
                       </Link>
                     </div>
@@ -722,7 +721,7 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
                               
                               {property.is_featured && (
                                 <div className="absolute top-4 left-4 bg-gold-500 text-white px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1">
-                                  <Star className="w-3 h-3 fill-white" /> Featured
+                                  <Star className="w-3 h-3 fill-white" /> {t('pages.properties.featured')}
                                 </div>
                               )}
                               <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-semibold">
@@ -761,7 +760,7 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
                                     <span> - €{Number(property.price_per_week_high).toLocaleString()}</span>
                                   )}
                                 </span>
-                                <span className="text-charcoal-500 text-sm">/week</span>
+                                <span className="text-charcoal-500 text-sm">{t('pages.properties.perWeek')}</span>
                               </div>
                             )}
                           </Link>
@@ -818,13 +817,13 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
           {sortedProperties.length === 0 && (
             <div className="text-center py-16">
               <Home className="w-16 h-16 text-charcoal-300 mx-auto mb-4" />
-              <h3 className="font-merriweather text-xl text-charcoal-900 mb-2">No properties found</h3>
-              <p className="text-charcoal-500 mb-6">Try adjusting your search or filters</p>
+              <h3 className="font-merriweather text-xl text-charcoal-900 mb-2">{t('pages.properties.noPropertiesFound')}</h3>
+              <p className="text-charcoal-500 mb-6">{t('pages.properties.tryAdjustingFilters')}</p>
               <button
-                onClick={() => { setSearchQuery(''); setFilters({ type: 'all', bedrooms: 'any', guests: 'any', seaView: false, pool: false }) }}
+                onClick={() => { setFilters({ destination: 'all', guests: 'any', checkIn: '', checkOut: '', priceRange: 'any', bedrooms: 'any', seaView: false, pool: false }) }}
                 className="btn-gold"
               >
-                Clear All
+                {t('pages.properties.clearAll')}
               </button>
             </div>
           )}
@@ -835,13 +834,13 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
       <section className="py-20 bg-charcoal-900 relative z-10">
         <div className="max-w-4xl mx-auto px-6 text-center">
           <h2 className="font-merriweather text-3xl md:text-4xl text-white mb-6">
-            Can't Find What You're Looking For?
+            {t('pages.properties.cantFind')}
           </h2>
           <p className="text-white/70 text-lg mb-8">
-            Tell us your requirements and we'll help you find the perfect property for your stay.
+            {t('pages.properties.cantFindDesc')}
           </p>
           <Link href="/inquire" className="btn-gold inline-flex items-center gap-2">
-            Contact Our Team
+            {t('pages.properties.contactOurTeam')}
             <ArrowRight className="w-5 h-5" />
           </Link>
         </div>
@@ -856,7 +855,6 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
         }}
         initialCheckIn={filters.checkIn}
         initialCheckOut={filters.checkOut}
-        title="Select your travel dates"
       />
     </div>
   )
