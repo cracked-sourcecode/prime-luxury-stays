@@ -4,19 +4,26 @@ import Navigation from '@/components/Navigation'
 import Footer from '@/components/Footer'
 import ServicePageClient from './ServicePageClient'
 
-// Service data with full details
+// Service data with full details including German translations
 const servicesData: Record<string, {
   title: string
+  titleDe: string
   subtitle: string
+  subtitleDe: string
   description: string
+  descriptionDe: string
   heroImage: string
   features: string[]
-  benefits: { title: string; description: string }[]
+  featuresDe: string[]
+  benefits: { title: string; titleDe: string; description: string; descriptionDe: string }[]
 }> = {
   'private-aviation': {
     title: 'Private Aviation',
+    titleDe: 'Privatflüge',
     subtitle: 'Seamless Private Jet Travel',
+    subtitleDe: 'Nahtlose Privatjet-Reisen',
     description: 'Arrive in style with our private aviation services. From light jets for quick island hops to long-range aircraft for intercontinental travel, we arrange every detail of your journey.',
+    descriptionDe: 'Kommen Sie mit Stil an mit unseren Privatflug-Services. Von leichten Jets für schnelle Inselsprünge bis hin zu Langstreckenflugzeugen für interkontinentale Reisen – wir arrangieren jedes Detail Ihrer Reise.',
     heroImage: 'https://images.unsplash.com/photo-1540962351504-03099e0a754b?w=1920&q=80',
     features: [
       'Access to 5,000+ private aircraft worldwide',
@@ -26,16 +33,27 @@ const servicesData: Record<string, {
       'Pet-friendly travel arrangements',
       'Multi-leg journey coordination',
     ],
+    featuresDe: [
+      'Zugang zu über 5.000 Privatflugzeugen weltweit',
+      'Flexible Terminplanung nach Ihrem Zeitplan',
+      'VIP-Terminal und beschleunigte Zollabfertigung',
+      'Bordverpflegung nach Ihren Wünschen',
+      'Haustierfreundliche Reiseorganisation',
+      'Koordination von Mehretappen-Reisen',
+    ],
     benefits: [
-      { title: 'Time Efficiency', description: 'Skip commercial airports and fly direct' },
-      { title: 'Complete Privacy', description: 'Travel with discretion and comfort' },
-      { title: 'Flexible Scheduling', description: 'Depart when it suits you' },
+      { title: 'Time Efficiency', titleDe: 'Zeiteffizienz', description: 'Skip commercial airports and fly direct', descriptionDe: 'Umgehen Sie kommerzielle Flughäfen und fliegen Sie direkt' },
+      { title: 'Complete Privacy', titleDe: 'Vollständige Privatsphäre', description: 'Travel with discretion and comfort', descriptionDe: 'Reisen Sie diskret und komfortabel' },
+      { title: 'Flexible Scheduling', titleDe: 'Flexible Terminplanung', description: 'Depart when it suits you', descriptionDe: 'Abflug, wann es Ihnen passt' },
     ],
   },
   'private-chef': {
     title: 'Private Chef',
+    titleDe: 'Privatkoch',
     subtitle: 'Culinary Excellence at Your Residence',
+    subtitleDe: 'Kulinarische Exzellenz in Ihrer Residenz',
     description: 'Indulge in world-class cuisine without leaving your villa. Our network of Michelin-trained private chefs create bespoke dining experiences tailored to your tastes and dietary requirements.',
+    descriptionDe: 'Genießen Sie Weltklasse-Küche, ohne Ihre Villa zu verlassen. Unser Netzwerk von Michelin-ausgebildeten Privatköchen kreiert maßgeschneiderte Genusserlebnisse, abgestimmt auf Ihren Geschmack und Ihre Ernährungsanforderungen.',
     heroImage: 'https://images.unsplash.com/photo-1556910103-1c02745aae4d?w=1920&q=80',
     features: [
       'Michelin-trained private chefs',
@@ -45,16 +63,27 @@ const servicesData: Record<string, {
       'Special dietary accommodations',
       'Cooking classes available',
     ],
+    featuresDe: [
+      'Michelin-ausgebildete Privatköche',
+      'Maßgeschneiderte Menüs nach Ihren Wünschen',
+      'Lokale und saisonale Zutaten',
+      'Weinberatung und Paarungsempfehlungen',
+      'Berücksichtigung spezieller Ernährungsanforderungen',
+      'Kochkurse verfügbar',
+    ],
     benefits: [
-      { title: 'Restaurant Quality', description: 'Fine dining in the comfort of your villa' },
-      { title: 'Personalized Menus', description: 'Every meal crafted to your taste' },
-      { title: 'Intimate Dining', description: 'Perfect for celebrations and gatherings' },
+      { title: 'Restaurant Quality', titleDe: 'Restaurantqualität', description: 'Fine dining in the comfort of your villa', descriptionDe: 'Gehobene Küche im Komfort Ihrer Villa' },
+      { title: 'Personalized Menus', titleDe: 'Personalisierte Menüs', description: 'Every meal crafted to your taste', descriptionDe: 'Jede Mahlzeit nach Ihrem Geschmack zubereitet' },
+      { title: 'Intimate Dining', titleDe: 'Intimes Dinner', description: 'Perfect for celebrations and gatherings', descriptionDe: 'Perfekt für Feiern und Zusammenkünfte' },
     ],
   },
   'luxury-transport': {
     title: 'Luxury Transport',
+    titleDe: 'Luxustransport',
     subtitle: 'Premium Vehicles & Chauffeur Services',
+    subtitleDe: 'Premium-Fahrzeuge & Chauffeurservice',
     description: 'Travel in style with our fleet of luxury vehicles. From supercars for coastal drives to chauffeur-driven limousines for elegant arrivals, we ensure every journey is exceptional.',
+    descriptionDe: 'Reisen Sie stilvoll mit unserer Flotte von Luxusfahrzeugen. Von Supersportwagen für Küstenfahrten bis hin zu Limousinen mit Chauffeur für elegante Ankünfte – wir sorgen dafür, dass jede Fahrt außergewöhnlich ist.',
     heroImage: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=1920&q=80',
     features: [
       'Ferrari, Lamborghini, Porsche available',
@@ -64,16 +93,27 @@ const servicesData: Record<string, {
       'Child seats and accessibility options',
       'Full insurance coverage included',
     ],
+    featuresDe: [
+      'Ferrari, Lamborghini, Porsche verfügbar',
+      'Professioneller Chauffeurservice',
+      'Flughafentransfers in Luxusfahrzeugen',
+      'Mehrtägige Vermietungen möglich',
+      'Kindersitze und Barrierefreiheitsoptionen',
+      'Vollständiger Versicherungsschutz inklusive',
+    ],
     benefits: [
-      { title: 'Prestigious Fleet', description: 'Access to the world\'s finest vehicles' },
-      { title: 'Professional Drivers', description: 'Experienced, discreet chauffeurs' },
-      { title: 'Flexibility', description: 'Self-drive or chauffeur-driven options' },
+      { title: 'Prestigious Fleet', titleDe: 'Prestigeträchtige Flotte', description: 'Access to the world\'s finest vehicles', descriptionDe: 'Zugang zu den besten Fahrzeugen der Welt' },
+      { title: 'Professional Drivers', titleDe: 'Professionelle Fahrer', description: 'Experienced, discreet chauffeurs', descriptionDe: 'Erfahrene, diskrete Chauffeure' },
+      { title: 'Flexibility', titleDe: 'Flexibilität', description: 'Self-drive or chauffeur-driven options', descriptionDe: 'Selbstfahrer- oder Chauffeur-Optionen' },
     ],
   },
   'privacy-security': {
     title: 'Privacy & Security',
+    titleDe: 'Privatsphäre & Sicherheit',
     subtitle: 'Discreet Protection for Your Peace of Mind',
+    subtitleDe: 'Diskrete Sicherheit für Ihren Seelenfrieden',
     description: 'Your privacy is paramount. Our security services ensure complete confidentiality and peace of mind, with discreet protection arrangements tailored to your requirements.',
+    descriptionDe: 'Ihre Privatsphäre ist uns wichtig. Unsere Sicherheitsdienste gewährleisten vollständige Vertraulichkeit und Seelenfrieden mit diskreten Schutzarrangements, die auf Ihre Anforderungen zugeschnitten sind.',
     heroImage: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1920&q=80',
     features: [
       'Vetted security personnel',
@@ -83,16 +123,27 @@ const servicesData: Record<string, {
       'Emergency response protocols',
       'NDAs for all service staff',
     ],
+    featuresDe: [
+      'Überprüftes Sicherheitspersonal',
+      'Sichere Transportarrangements',
+      'Privatsphäre-Screening für Immobilien',
+      'Vertrauliche Reisekoordination',
+      'Notfall-Reaktionsprotokolle',
+      'Geheimhaltungsvereinbarungen für alle Servicemitarbeiter',
+    ],
     benefits: [
-      { title: 'Complete Discretion', description: 'Your stay remains private' },
-      { title: 'Professional Team', description: 'Experienced security specialists' },
-      { title: 'Peace of Mind', description: 'Relax knowing you\'re protected' },
+      { title: 'Complete Discretion', titleDe: 'Vollständige Diskretion', description: 'Your stay remains private', descriptionDe: 'Ihr Aufenthalt bleibt privat' },
+      { title: 'Professional Team', titleDe: 'Professionelles Team', description: 'Experienced security specialists', descriptionDe: 'Erfahrene Sicherheitsspezialisten' },
+      { title: 'Peace of Mind', titleDe: 'Seelenfrieden', description: 'Relax knowing you\'re protected', descriptionDe: 'Entspannen Sie in dem Wissen, dass Sie geschützt sind' },
     ],
   },
   'yacht-charter': {
     title: 'Yacht Charter',
+    titleDe: 'Yachtcharter',
     subtitle: 'Luxury Sailing Experiences',
+    subtitleDe: 'Luxuriöse Segelerlebnisse',
     description: 'Set sail on the Mediterranean aboard a luxury yacht. From intimate day sails to week-long voyages, explore hidden coves, pristine beaches, and coastal gems in ultimate style.',
+    descriptionDe: 'Setzen Sie die Segel auf dem Mittelmeer an Bord einer Luxusyacht. Von intimen Tagesausflügen bis hin zu wochenlangen Reisen – erkunden Sie versteckte Buchten, unberührte Strände und Küstenjuwelen im ultimativen Stil.',
     heroImage: 'https://images.unsplash.com/photo-1567899378494-47b22a2ae96a?w=1920&q=80',
     features: [
       'Motor yachts and sailing vessels',
@@ -102,16 +153,27 @@ const servicesData: Record<string, {
       'Custom itinerary planning',
       'Day trips or extended charters',
     ],
+    featuresDe: [
+      'Motoryachten und Segelschiffe',
+      'Professioneller Kapitän und Crew',
+      'Koch an Bord und Catering',
+      'Wassersportgeräte und Ausrüstung inklusive',
+      'Individuelle Routenplanung',
+      'Tagesausflüge oder mehrtägige Charter',
+    ],
     benefits: [
-      { title: 'Freedom to Explore', description: 'Access secluded bays and islands' },
-      { title: 'Full Service', description: 'Captain, crew, and chef included' },
-      { title: 'Bespoke Journeys', description: 'Every voyage tailored to you' },
+      { title: 'Freedom to Explore', titleDe: 'Freiheit zu erkunden', description: 'Access secluded bays and islands', descriptionDe: 'Zugang zu abgelegenen Buchten und Inseln' },
+      { title: 'Full Service', titleDe: 'Vollständiger Service', description: 'Captain, crew, and chef included', descriptionDe: 'Kapitän, Crew und Koch inklusive' },
+      { title: 'Bespoke Journeys', titleDe: 'Maßgeschneiderte Reisen', description: 'Every voyage tailored to you', descriptionDe: 'Jede Reise auf Sie zugeschnitten' },
     ],
   },
   'helicopter': {
     title: 'Helicopter Transport',
+    titleDe: 'Helikoptertransfer',
     subtitle: 'Swift Transfers & Scenic Tours',
+    subtitleDe: 'Schnelle Transfers & malerische Touren',
     description: 'Experience the islands from above with our helicopter services. Whether for swift airport transfers or breathtaking scenic tours, see the Mediterranean from an exclusive perspective.',
+    descriptionDe: 'Erleben Sie die Inseln von oben mit unserem Helikopterservice. Ob für schnelle Flughafentransfers oder atemberaubende Panoramaflüge – sehen Sie das Mittelmeer aus einer exklusiven Perspektive.',
     heroImage: 'https://images.unsplash.com/photo-1534321238895-da3ab632df3e?w=1920&q=80',
     features: [
       'Airport and inter-island transfers',
@@ -121,16 +183,27 @@ const servicesData: Record<string, {
       'Golf course transfers',
       'Emergency medical transport',
     ],
+    featuresDe: [
+      'Flughafen- und Inseltransfers',
+      'Malerische Küsten- und Bergtouren',
+      'Private Hubschrauberlandeplätze bei ausgewählten Immobilien',
+      'Foto- und Videoflüge',
+      'Transfers zu Golfplätzen',
+      'Medizinischer Notfalltransport',
+    ],
     benefits: [
-      { title: 'Save Time', description: 'Skip traffic with aerial transfers' },
-      { title: 'Stunning Views', description: 'See the islands from above' },
-      { title: 'Exclusive Access', description: 'Reach remote locations with ease' },
+      { title: 'Save Time', titleDe: 'Zeit sparen', description: 'Skip traffic with aerial transfers', descriptionDe: 'Umgehen Sie Verkehr mit Lufttransfers' },
+      { title: 'Stunning Views', titleDe: 'Atemberaubende Aussichten', description: 'See the islands from above', descriptionDe: 'Sehen Sie die Inseln von oben' },
+      { title: 'Exclusive Access', titleDe: 'Exklusiver Zugang', description: 'Reach remote locations with ease', descriptionDe: 'Erreichen Sie abgelegene Orte mit Leichtigkeit' },
     ],
   },
   'table-reservations': {
     title: 'Table Reservations',
+    titleDe: 'Tischreservierungen',
     subtitle: 'Priority Access to the Finest Dining',
+    subtitleDe: 'Prioritätszugang zu den besten Restaurants',
     description: 'Secure tables at the most sought-after restaurants and exclusive dining venues. Our relationships with top establishments ensure priority bookings, even at fully-booked locations.',
+    descriptionDe: 'Sichern Sie sich Tische in den gefragtesten Restaurants und exklusiven Dinner-Locations. Unsere Beziehungen zu Top-Restaurants gewährleisten Prioritätsbuchungen, auch bei ausgebuchten Locations.',
     heroImage: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1920&q=80',
     features: [
       'Priority bookings at Michelin-starred restaurants',
@@ -140,16 +213,27 @@ const servicesData: Record<string, {
       'Dietary requirements coordinated in advance',
       'Last-minute reservation assistance',
     ],
+    featuresDe: [
+      'Prioritätsbuchungen in Michelin-Sternerestaurants',
+      'Exklusive Chef\'s Table Erlebnisse',
+      'Arrangements für private Speiseräume',
+      'Feiern besonderer Anlässe',
+      'Vorabkoordination von Ernährungsanforderungen',
+      'Unterstützung bei kurzfristigen Reservierungen',
+    ],
     benefits: [
-      { title: 'VIP Access', description: 'Tables at fully-booked restaurants' },
-      { title: 'Local Connections', description: 'Insider relationships with top venues' },
-      { title: 'Seamless Planning', description: 'All details handled for you' },
+      { title: 'VIP Access', titleDe: 'VIP-Zugang', description: 'Tables at fully-booked restaurants', descriptionDe: 'Tische in ausgebuchten Restaurants' },
+      { title: 'Local Connections', titleDe: 'Lokale Verbindungen', description: 'Insider relationships with top venues', descriptionDe: 'Insider-Beziehungen zu Top-Locations' },
+      { title: 'Seamless Planning', titleDe: 'Nahtlose Planung', description: 'All details handled for you', descriptionDe: 'Alle Details werden für Sie erledigt' },
     ],
   },
   'travel-bookings': {
     title: 'Travel Bookings',
+    titleDe: 'Reisebuchungen',
     subtitle: 'Luxury Accommodations Beyond Your Villa',
+    subtitleDe: 'Luxusunterkünfte über Ihre Villa hinaus',
     description: 'Extend your journey with seamless hotel and travel arrangements. Whether you\'re island hopping or exploring the mainland, we coordinate luxury accommodations and travel logistics worldwide.',
+    descriptionDe: 'Verlängern Sie Ihre Reise mit nahtlosen Hotel- und Reisearrangements. Ob Inselhopping oder Erkundung des Festlands – wir koordinieren Luxusunterkünfte und Reiselogistik weltweit.',
     heroImage: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1920&q=80',
     features: [
       'Luxury hotel reservations worldwide',
@@ -159,10 +243,18 @@ const servicesData: Record<string, {
       'Travel insurance coordination',
       'Complete trip logistics management',
     ],
+    featuresDe: [
+      'Luxushotelreservierungen weltweit',
+      'Mehrziel-Reiseplanung',
+      'Boutique- und Fünf-Sterne-Hotels',
+      'Suite-Upgrades und VIP-Annehmlichkeiten',
+      'Koordination der Reiseversicherung',
+      'Vollständiges Reiselogistik-Management',
+    ],
     benefits: [
-      { title: 'Global Network', description: 'Access to the world\'s finest hotels' },
-      { title: 'Preferred Rates', description: 'Exclusive pricing and upgrades' },
-      { title: 'End-to-End Service', description: 'Your entire journey coordinated' },
+      { title: 'Global Network', titleDe: 'Globales Netzwerk', description: 'Access to the world\'s finest hotels', descriptionDe: 'Zugang zu den besten Hotels der Welt' },
+      { title: 'Preferred Rates', titleDe: 'Vorzugspreise', description: 'Exclusive pricing and upgrades', descriptionDe: 'Exklusive Preise und Upgrades' },
+      { title: 'End-to-End Service', titleDe: 'Rundum-Service', description: 'Your entire journey coordinated', descriptionDe: 'Ihre gesamte Reise wird koordiniert' },
     ],
   },
 }
@@ -201,4 +293,3 @@ export default function ServicePage({ params }: { params: { slug: string } }) {
     </main>
   )
 }
-

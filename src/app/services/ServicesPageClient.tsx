@@ -16,87 +16,111 @@ import {
 } from 'lucide-react'
 import { useLocale } from '@/i18n/LocaleProvider'
 
-const serviceCategories = [
-  {
-    title: 'Concierge',
-    subtitle: 'Personal Luxury Management',
-    description: 'Your dedicated team handling every detail of your stay.',
-    services: [
-      {
-        icon: Utensils,
-        title: 'Private Chef',
-        description: 'World-class chefs creating bespoke culinary experiences in your residence.',
-        slug: 'private-chef',
-      },
-      {
-        icon: Shield,
-        title: 'Privacy & Security',
-        description: 'Discreet security arrangements and complete confidentiality guaranteed.',
-        slug: 'privacy-security',
-      },
-    ],
-  },
-  {
-    title: 'Experiences',
-    subtitle: 'Dining & Travel',
-    description: 'Exceptional dining and seamless travel arrangements.',
-    services: [
-      {
-        icon: Utensils,
-        title: 'Table Reservations',
-        description: 'Priority bookings at the finest restaurants and exclusive dining venues.',
-        slug: 'table-reservations',
-      },
-      {
-        icon: Building,
-        title: 'Travel Bookings',
-        description: 'Luxury hotel arrangements and travel coordination beyond your villa stay.',
-        slug: 'travel-bookings',
-      },
-    ],
-  },
-  {
-    title: 'Private Aviation',
-    subtitle: 'Air Travel Excellence',
-    description: 'Seamless journeys by air, your way.',
-    services: [
-      {
-        icon: Plane,
-        title: 'Private Aviation',
-        description: 'Seamless private jet arrangements to and from your destination.',
-        slug: 'private-aviation',
-      },
-      {
-        icon: Navigation,
-        title: 'Helicopter Transport',
-        description: 'Swift helicopter transfers and scenic tours across the islands.',
-        slug: 'helicopter',
-      },
-    ],
-  },
-  {
-    title: 'Transportation',
-    subtitle: 'Ground & Sea',
-    description: 'Premium travel by land and water.',
-    services: [
-      {
-        icon: Car,
-        title: 'Luxury Transport',
-        description: 'Premium vehicle fleet including supercars and chauffeur services.',
-        slug: 'luxury-transport',
-      },
-      {
-        icon: Ship,
-        title: 'Yacht Charter',
-        description: 'Luxury yacht experiences from intimate day sails to multi-day Mediterranean voyages.',
-        slug: 'yacht-charter',
-      },
-    ],
-  },
-]
-
 export default function ServicesPageClient() {
-  const { t } = useLocale()
+  const { t, locale } = useLocale()
+
+  const serviceCategories = [
+    {
+      title: locale === 'de' ? 'Concierge' : 'Concierge',
+      subtitle: locale === 'de' ? 'Persönliches Luxus-Management' : 'Personal Luxury Management',
+      description: locale === 'de' 
+        ? 'Ihr engagiertes Team kümmert sich um jedes Detail Ihres Aufenthalts.'
+        : 'Your dedicated team handling every detail of your stay.',
+      services: [
+        {
+          icon: Utensils,
+          title: locale === 'de' ? 'Privatkoch' : 'Private Chef',
+          description: locale === 'de'
+            ? 'Weltklasse-Köche kreieren maßgeschneiderte kulinarische Erlebnisse in Ihrer Residenz.'
+            : 'World-class chefs creating bespoke culinary experiences in your residence.',
+          slug: 'private-chef',
+        },
+        {
+          icon: Shield,
+          title: locale === 'de' ? 'Privatsphäre & Sicherheit' : 'Privacy & Security',
+          description: locale === 'de'
+            ? 'Diskrete Sicherheitsvorkehrungen und vollständige Vertraulichkeit garantiert.'
+            : 'Discreet security arrangements and complete confidentiality guaranteed.',
+          slug: 'privacy-security',
+        },
+      ],
+    },
+    {
+      title: locale === 'de' ? 'Erlebnisse' : 'Experiences',
+      subtitle: locale === 'de' ? 'Gastronomie & Reisen' : 'Dining & Travel',
+      description: locale === 'de'
+        ? 'Außergewöhnliche Gastronomie und nahtlose Reiseorganisation.'
+        : 'Exceptional dining and seamless travel arrangements.',
+      services: [
+        {
+          icon: Utensils,
+          title: locale === 'de' ? 'Tischreservierungen' : 'Table Reservations',
+          description: locale === 'de'
+            ? 'Prioritätsbuchungen in den besten Restaurants und exklusiven Dinner-Locations.'
+            : 'Priority bookings at the finest restaurants and exclusive dining venues.',
+          slug: 'table-reservations',
+        },
+        {
+          icon: Building,
+          title: locale === 'de' ? 'Reisebuchungen' : 'Travel Bookings',
+          description: locale === 'de'
+            ? 'Luxushotel-Arrangements und Reisekoordination über Ihren Villenaufenthalt hinaus.'
+            : 'Luxury hotel arrangements and travel coordination beyond your villa stay.',
+          slug: 'travel-bookings',
+        },
+      ],
+    },
+    {
+      title: locale === 'de' ? 'Privatflüge' : 'Private Aviation',
+      subtitle: locale === 'de' ? 'Flugreisen auf höchstem Niveau' : 'Air Travel Excellence',
+      description: locale === 'de'
+        ? 'Nahtlose Reisen in der Luft, ganz nach Ihren Wünschen.'
+        : 'Seamless journeys by air, your way.',
+      services: [
+        {
+          icon: Plane,
+          title: locale === 'de' ? 'Privatflüge' : 'Private Aviation',
+          description: locale === 'de'
+            ? 'Nahtlose Privatjet-Arrangements zu und von Ihrem Reiseziel.'
+            : 'Seamless private jet arrangements to and from your destination.',
+          slug: 'private-aviation',
+        },
+        {
+          icon: Navigation,
+          title: locale === 'de' ? 'Helikoptertransfer' : 'Helicopter Transport',
+          description: locale === 'de'
+            ? 'Schnelle Helikoptertransfers und malerische Touren über die Inseln.'
+            : 'Swift helicopter transfers and scenic tours across the islands.',
+          slug: 'helicopter',
+        },
+      ],
+    },
+    {
+      title: locale === 'de' ? 'Transport' : 'Transportation',
+      subtitle: locale === 'de' ? 'Land & See' : 'Ground & Sea',
+      description: locale === 'de'
+        ? 'Premium-Reisen zu Wasser und zu Land.'
+        : 'Premium travel by land and water.',
+      services: [
+        {
+          icon: Car,
+          title: locale === 'de' ? 'Luxustransport' : 'Luxury Transport',
+          description: locale === 'de'
+            ? 'Premium-Fahrzeugflotte inklusive Supersportwagen und Chauffeurservice.'
+            : 'Premium vehicle fleet including supercars and chauffeur services.',
+          slug: 'luxury-transport',
+        },
+        {
+          icon: Ship,
+          title: locale === 'de' ? 'Yachtcharter' : 'Yacht Charter',
+          description: locale === 'de'
+            ? 'Luxus-Yachterlebnisse von intimen Tagesausflügen bis zu mehrtägigen Mittelmeerreisen.'
+            : 'Luxury yacht experiences from intimate day sails to multi-day Mediterranean voyages.',
+          slug: 'yacht-charter',
+        },
+      ],
+    },
+  ]
   
   return (
     <div>
@@ -105,7 +129,7 @@ export default function ServicesPageClient() {
         <div className="absolute inset-0">
           <img
             src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1920&q=80"
-            alt="Luxury Services"
+            alt={locale === 'de' ? 'Luxus-Services' : 'Luxury Services'}
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-charcoal-900" />
@@ -119,13 +143,15 @@ export default function ServicesPageClient() {
             className="max-w-4xl"
           >
             <p className="text-gold-400 text-sm font-semibold tracking-[0.2em] uppercase mb-4">
-              {t('services.title')}
+              {locale === 'de' ? 'Unsere Services' : 'Our Services'}
             </p>
             <h1 className="font-merriweather text-4xl md:text-5xl lg:text-6xl text-white mb-6">
-              {t('pages.services.title')}
+              {locale === 'de' ? 'Exklusive Concierge-Services' : 'Exclusive Concierge Services'}
             </h1>
             <p className="text-white/80 text-lg md:text-xl max-w-2xl mx-auto">
-              {t('pages.services.subtitle')}
+              {locale === 'de' 
+                ? 'Von Privatköchen bis hin zu Yachtcharter – wir gestalten Ihren perfekten Aufenthalt.'
+                : 'From private chefs to yacht charters, we craft your perfect stay.'}
             </p>
           </motion.div>
         </div>
@@ -188,7 +214,7 @@ export default function ServicesPageClient() {
 
                       {/* Link */}
                       <div className="flex items-center gap-2 text-gold-600 font-medium text-sm group-hover:text-gold-700 transition-colors">
-                        Learn More
+                        {locale === 'de' ? 'Mehr erfahren' : 'Learn More'}
                         <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                       </div>
                     </div>
@@ -209,14 +235,15 @@ export default function ServicesPageClient() {
             viewport={{ once: true }}
           >
             <p className="text-gold-400 text-sm font-semibold tracking-[0.2em] uppercase mb-4">
-              Ready to Experience
+              {locale === 'de' ? 'Bereit zu erleben' : 'Ready to Experience'}
             </p>
             <h2 className="font-merriweather text-3xl md:text-4xl text-white mb-6">
-              The Prime Luxury Difference?
+              {locale === 'de' ? 'Der Prime Luxury Unterschied?' : 'The Prime Luxury Difference?'}
             </h2>
             <p className="text-white/70 text-lg mb-10 max-w-2xl mx-auto">
-              Contact our concierge team to discuss your requirements. 
-              We'll craft a bespoke experience tailored to your every need.
+              {locale === 'de' 
+                ? 'Kontaktieren Sie unser Concierge-Team, um Ihre Anforderungen zu besprechen. Wir gestalten ein maßgeschneidertes Erlebnis für jeden Ihrer Wünsche.'
+                : 'Contact our concierge team to discuss your requirements. We\'ll craft a bespoke experience tailored to your every need.'}
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
@@ -224,25 +251,25 @@ export default function ServicesPageClient() {
                 href="/inquire"
                 className="inline-flex items-center gap-2 bg-gold-500 text-white px-8 py-4 rounded-xl font-semibold hover:bg-gold-600 transition-colors w-full sm:w-auto justify-center"
               >
-                Start Planning
+                {locale === 'de' ? 'Planung starten' : 'Start Planning'}
                 <ArrowRight className="w-5 h-5" />
               </Link>
               <Link
                 href="/properties"
                 className="inline-flex items-center gap-2 bg-white/10 text-white px-8 py-4 rounded-xl font-semibold hover:bg-white/20 transition-colors w-full sm:w-auto justify-center"
               >
-                View Properties
+                {locale === 'de' ? 'Immobilien ansehen' : 'View Properties'}
               </Link>
             </div>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-6 text-white/60 text-sm">
               <a href="tel:+12039797309" className="flex items-center gap-2 hover:text-gold-400 transition-colors">
                 <Phone className="w-4 h-4" />
-                US: +1 (203) 979-7309
+                🇺🇸 +1 (203) 979-7309
               </a>
-              <a href="tel:+498989930046" className="flex items-center gap-2 hover:text-gold-400 transition-colors">
+              <a href="tel:+34661539553" className="flex items-center gap-2 hover:text-gold-400 transition-colors">
                 <Phone className="w-4 h-4" />
-                EU: +49 89 899 300 46
+                🇪🇸 +34 661 53 95 53
               </a>
               <a href="mailto:info@primeluxurystays.com" className="flex items-center gap-2 hover:text-gold-400 transition-colors">
                 <Mail className="w-4 h-4" />
@@ -255,4 +282,3 @@ export default function ServicesPageClient() {
     </div>
   )
 }
-

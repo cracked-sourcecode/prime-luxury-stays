@@ -3,19 +3,42 @@
 import { motion } from 'framer-motion'
 import { Check, ArrowRight, Phone, Mail } from 'lucide-react'
 import Link from 'next/link'
+import { useLocale } from '@/i18n/LocaleProvider'
 
 interface ServicePageClientProps {
   service: {
     title: string
+    titleDe?: string
     subtitle: string
+    subtitleDe?: string
     description: string
+    descriptionDe?: string
     heroImage: string
     features: string[]
-    benefits: { title: string; description: string }[]
+    featuresDe?: string[]
+    benefits: { title: string; titleDe?: string; description: string; descriptionDe?: string }[]
   }
 }
 
 export default function ServicePageClient({ service }: ServicePageClientProps) {
+  const { locale } = useLocale()
+
+  const title = locale === 'de' && service.titleDe ? service.titleDe : service.title
+  const subtitle = locale === 'de' && service.subtitleDe ? service.subtitleDe : service.subtitle
+  const description = locale === 'de' && service.descriptionDe ? service.descriptionDe : service.description
+  const features = locale === 'de' && service.featuresDe ? service.featuresDe : service.features
+
+  const otherServices = [
+    { name: locale === 'de' ? 'Concierge' : 'Concierge', slug: 'concierge' },
+    { name: locale === 'de' ? 'Privatflüge' : 'Private Aviation', slug: 'private-aviation' },
+    { name: locale === 'de' ? 'Privatkoch' : 'Private Chef', slug: 'private-chef' },
+    { name: locale === 'de' ? 'Luxustransport' : 'Luxury Transport', slug: 'luxury-transport' },
+    { name: locale === 'de' ? 'Erlebnisse' : 'Experiences', slug: 'experiences' },
+    { name: locale === 'de' ? 'Privatsphäre & Sicherheit' : 'Privacy & Security', slug: 'privacy-security' },
+    { name: locale === 'de' ? 'Yachtcharter' : 'Yacht Charter', slug: 'yacht-charter' },
+    { name: locale === 'de' ? 'Helikopter' : 'Helicopter', slug: 'helicopter' },
+  ]
+
   return (
     <div>
       {/* Hero Section */}
@@ -23,7 +46,7 @@ export default function ServicePageClient({ service }: ServicePageClientProps) {
         <div className="absolute inset-0">
           <img
             src={service.heroImage}
-            alt={service.title}
+            alt={title}
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-charcoal-900" />
@@ -37,19 +60,19 @@ export default function ServicePageClient({ service }: ServicePageClientProps) {
             className="max-w-4xl"
           >
             <p className="text-gold-400 text-sm font-semibold tracking-[0.2em] uppercase mb-4">
-              Premium Service
+              {locale === 'de' ? 'Premium Service' : 'Premium Service'}
             </p>
             <h1 className="font-merriweather text-4xl md:text-5xl lg:text-6xl text-white mb-6">
-              {service.title}
+              {title}
             </h1>
             <p className="text-white/80 text-xl md:text-2xl max-w-2xl mx-auto mb-8">
-              {service.subtitle}
+              {subtitle}
             </p>
             <a
               href="#inquire"
               className="inline-flex items-center gap-2 bg-gold-500 text-white px-8 py-4 rounded-xl font-semibold hover:bg-gold-600 transition-colors"
             >
-              Request This Service
+              {locale === 'de' ? 'Diesen Service anfragen' : 'Request This Service'}
               <ArrowRight className="w-5 h-5" />
             </a>
           </motion.div>
@@ -67,10 +90,10 @@ export default function ServicePageClient({ service }: ServicePageClientProps) {
               viewport={{ once: true }}
             >
               <h2 className="font-merriweather text-3xl md:text-4xl text-charcoal-900 mb-6">
-                The Experience
+                {locale === 'de' ? 'Das Erlebnis' : 'The Experience'}
               </h2>
               <p className="text-charcoal-600 text-lg leading-relaxed mb-8">
-                {service.description}
+                {description}
               </p>
 
               {/* Benefits */}
@@ -88,8 +111,12 @@ export default function ServicePageClient({ service }: ServicePageClientProps) {
                       <Check className="w-6 h-6 text-gold-600" />
                     </div>
                     <div>
-                      <h4 className="font-semibold text-charcoal-900 mb-1">{benefit.title}</h4>
-                      <p className="text-charcoal-500 text-sm">{benefit.description}</p>
+                      <h4 className="font-semibold text-charcoal-900 mb-1">
+                        {locale === 'de' && benefit.titleDe ? benefit.titleDe : benefit.title}
+                      </h4>
+                      <p className="text-charcoal-500 text-sm">
+                        {locale === 'de' && benefit.descriptionDe ? benefit.descriptionDe : benefit.description}
+                      </p>
                     </div>
                   </motion.div>
                 ))}
@@ -104,10 +131,10 @@ export default function ServicePageClient({ service }: ServicePageClientProps) {
               className="bg-cream-50 rounded-3xl p-8 lg:p-10"
             >
               <h3 className="font-merriweather text-2xl text-charcoal-900 mb-6">
-                What's Included
+                {locale === 'de' ? 'Was enthalten ist' : 'What\'s Included'}
               </h3>
               <ul className="space-y-4">
-                {service.features.map((feature, index) => (
+                {features.map((feature, index) => (
                   <motion.li
                     key={feature}
                     initial={{ opacity: 0, x: 20 }}
@@ -137,14 +164,15 @@ export default function ServicePageClient({ service }: ServicePageClientProps) {
             viewport={{ once: true }}
           >
             <p className="text-gold-400 text-sm font-semibold tracking-[0.2em] uppercase mb-4">
-              Ready to Experience
+              {locale === 'de' ? 'Bereit zu erleben' : 'Ready to Experience'}
             </p>
             <h2 className="font-merriweather text-3xl md:text-4xl text-white mb-6">
-              {service.title}?
+              {title}?
             </h2>
             <p className="text-white/70 text-lg mb-10 max-w-2xl mx-auto">
-              Contact our concierge team to arrange this service for your stay. 
-              We'll handle every detail to ensure a flawless experience.
+              {locale === 'de' 
+                ? 'Kontaktieren Sie unser Concierge-Team, um diesen Service für Ihren Aufenthalt zu arrangieren. Wir kümmern uns um jedes Detail für ein perfektes Erlebnis.'
+                : 'Contact our concierge team to arrange this service for your stay. We\'ll handle every detail to ensure a flawless experience.'}
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
@@ -152,26 +180,26 @@ export default function ServicePageClient({ service }: ServicePageClientProps) {
                 href="/inquire"
                 className="inline-flex items-center gap-2 bg-gold-500 text-white px-8 py-4 rounded-xl font-semibold hover:bg-gold-600 transition-colors w-full sm:w-auto justify-center"
               >
-                Request This Service
+                {locale === 'de' ? 'Diesen Service anfragen' : 'Request This Service'}
                 <ArrowRight className="w-5 h-5" />
               </Link>
               <a
-                href="tel:+12039797309"
+                href="tel:+34661539553"
                 className="inline-flex items-center gap-2 bg-white/10 text-white px-8 py-4 rounded-xl font-semibold hover:bg-white/20 transition-colors w-full sm:w-auto justify-center"
               >
                 <Phone className="w-5 h-5" />
-                Call Us Now
+                {locale === 'de' ? 'Jetzt anrufen' : 'Call Us Now'}
               </a>
             </div>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-6 text-white/60 text-sm">
               <a href="tel:+12039797309" className="flex items-center gap-2 hover:text-gold-400 transition-colors">
                 <Phone className="w-4 h-4" />
-                US: +1 (203) 979-7309
+                🇺🇸 +1 (203) 979-7309
               </a>
-              <a href="tel:+498989930046" className="flex items-center gap-2 hover:text-gold-400 transition-colors">
+              <a href="tel:+34661539553" className="flex items-center gap-2 hover:text-gold-400 transition-colors">
                 <Phone className="w-4 h-4" />
-                EU: +49 89 899 300 46
+                🇪🇸 +34 661 53 95 53
               </a>
               <a href="mailto:info@primeluxurystays.com" className="flex items-center gap-2 hover:text-gold-400 transition-colors">
                 <Mail className="w-4 h-4" />
@@ -187,24 +215,15 @@ export default function ServicePageClient({ service }: ServicePageClientProps) {
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="font-merriweather text-3xl text-charcoal-900 mb-4">
-              Explore More Services
+              {locale === 'de' ? 'Weitere Services entdecken' : 'Explore More Services'}
             </h2>
             <p className="text-charcoal-500">
-              Discover our complete range of luxury services
+              {locale === 'de' ? 'Entdecken Sie unser gesamtes Angebot an Luxus-Services' : 'Discover our complete range of luxury services'}
             </p>
           </div>
 
           <div className="flex flex-wrap justify-center gap-4">
-            {[
-              { name: 'Concierge', slug: 'concierge' },
-              { name: 'Private Aviation', slug: 'private-aviation' },
-              { name: 'Private Chef', slug: 'private-chef' },
-              { name: 'Luxury Transport', slug: 'luxury-transport' },
-              { name: 'Experiences', slug: 'experiences' },
-              { name: 'Privacy & Security', slug: 'privacy-security' },
-              { name: 'Yacht Charter', slug: 'yacht-charter' },
-              { name: 'Helicopter', slug: 'helicopter' },
-            ].map((s) => (
+            {otherServices.map((s) => (
               <Link
                 key={s.slug}
                 href={`/services/${s.slug}`}
@@ -220,7 +239,7 @@ export default function ServicePageClient({ service }: ServicePageClientProps) {
               href="/properties"
               className="inline-flex items-center gap-2 text-gold-600 font-semibold hover:text-gold-700 transition-colors"
             >
-              View Our Properties
+              {locale === 'de' ? 'Unsere Immobilien ansehen' : 'View Our Properties'}
               <ArrowRight className="w-5 h-5" />
             </Link>
           </div>
@@ -229,4 +248,3 @@ export default function ServicePageClient({ service }: ServicePageClientProps) {
     </div>
   )
 }
-
