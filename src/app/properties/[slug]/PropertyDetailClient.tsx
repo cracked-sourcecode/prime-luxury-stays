@@ -130,6 +130,7 @@ function getLocalizedField(property: Property, field: 'name' | 'short_descriptio
 export default function PropertyDetailClient({ property, galleryImages: dbImages }: PropertyDetailClientProps) {
   const { t, locale, setLocale } = useLocale()
   const [showShareToast, setShowShareToast] = useState(false)
+  const [showLangMenu, setShowLangMenu] = useState(false)
   const [showGallery, setShowGallery] = useState(false)
   const [showCalendar, setShowCalendar] = useState(false)
   const [selectedDates, setSelectedDates] = useState<{ checkIn: string; checkOut: string; price: number | null } | null>(null)
@@ -232,15 +233,42 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
 
             {/* Actions */}
             <div className="flex items-center gap-2">
-              {/* Language Switcher */}
-              <button 
-                onClick={() => setLocale(locale === 'en' ? 'de' : 'en')}
-                className="flex items-center gap-1.5 px-3 py-2 rounded-lg hover:bg-gray-100 transition-all text-sm font-medium text-charcoal-600"
-                title={locale === 'en' ? 'Switch to German' : 'Auf Englisch umschalten'}
-              >
-                <Globe className="w-4 h-4" />
-                <span>{locale === 'en' ? '🇩🇪 DE' : '🇬🇧 EN'}</span>
-              </button>
+              {/* Language Switcher - Same as Navigation */}
+              <div className="relative">
+                <button
+                  onClick={() => setShowLangMenu(!showLangMenu)}
+                  className="flex items-center gap-1.5 text-charcoal-700 hover:text-gold-600 transition-colors py-2 px-2"
+                >
+                  <Globe className="w-[18px] h-[18px]" />
+                  <span className="text-sm font-medium uppercase">{locale}</span>
+                </button>
+                
+                <AnimatePresence>
+                  {showLangMenu && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      className="absolute top-full right-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-100 overflow-hidden min-w-[120px] z-50"
+                    >
+                      <button
+                        onClick={() => { setLocale('en'); setShowLangMenu(false) }}
+                        className={`w-full px-4 py-2.5 text-left text-sm flex items-center gap-2 hover:bg-cream-50 transition-colors ${locale === 'en' ? 'text-gold-600 font-medium' : 'text-charcoal-700'}`}
+                      >
+                        <span className="text-lg">🇬🇧</span>
+                        English
+                      </button>
+                      <button
+                        onClick={() => { setLocale('de'); setShowLangMenu(false) }}
+                        className={`w-full px-4 py-2.5 text-left text-sm flex items-center gap-2 hover:bg-cream-50 transition-colors ${locale === 'de' ? 'text-gold-600 font-medium' : 'text-charcoal-700'}`}
+                      >
+                        <span className="text-lg">🇩🇪</span>
+                        Deutsch
+                      </button>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
               
               {/* Share Button */}
               <button 
