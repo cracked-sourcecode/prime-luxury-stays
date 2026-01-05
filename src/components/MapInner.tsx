@@ -13,6 +13,8 @@ interface MapInnerProps {
   selectedProperty?: Property | null;
   onPropertySelect?: (property: Property) => void;
   locale?: string;
+  center?: [number, number];
+  zoom?: number;
 }
 
 // Custom price marker icon creator
@@ -48,15 +50,26 @@ export default function MapInner({
   properties, 
   selectedProperty, 
   onPropertySelect,
-  locale = 'en' 
+  locale = 'en',
+  center: propCenter,
+  zoom: propZoom
 }: MapInnerProps) {
   const [activeProperty, setActiveProperty] = useState<Property | null>(null)
   
   // Filter properties with valid coordinates
   const propertiesWithCoords = properties.filter(p => p.latitude && p.longitude)
 
-  // Center of Mallorca - focused on main property areas
-  const center: [number, number] = [39.58, 2.65]
+  // Determine center based on prop or calculate from properties
+  const center: [number, number] = propCenter || (
+    propertiesWithCoords.length > 0 
+      ? [
+          propertiesWithCoords.reduce((sum, p) => sum + (p.latitude || 0), 0) / propertiesWithCoords.length,
+          propertiesWithCoords.reduce((sum, p) => sum + (p.longitude || 0), 0) / propertiesWithCoords.length
+        ] as [number, number]
+      : [39.58, 2.65] // Default to Mallorca
+  )
+  
+  const zoom = propZoom || 10
 
   useEffect(() => {
     if (selectedProperty) {
@@ -81,7 +94,7 @@ export default function MapInner({
       {/* Leaflet Map */}
       <MapContainer
         center={center}
-        zoom={9.5}
+        zoom={zoom}
         style={{ width: '100%', height: '100%' }}
         zoomControl={false}
       >

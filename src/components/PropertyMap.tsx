@@ -11,6 +11,8 @@ interface PropertyMapProps {
   selectedProperty?: Property | null;
   onPropertySelect?: (property: Property) => void;
   locale?: string;
+  center?: [number, number];
+  zoom?: number;
 }
 
 // Dynamically import the map to avoid SSR issues

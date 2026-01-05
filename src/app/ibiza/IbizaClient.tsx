@@ -449,6 +449,8 @@ export default function IbizaClient({ properties }: IbizaClientProps) {
                   selectedProperty={selectedProperty}
                   onPropertySelect={setSelectedProperty}
                   locale={locale}
+                  center={[38.98, 1.43]}
+                  zoom={11}
                 />
               </div>
             </div>
