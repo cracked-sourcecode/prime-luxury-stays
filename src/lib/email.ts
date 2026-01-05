@@ -52,6 +52,10 @@ const emailTranslations = {
     step3: 'Personalized booking confirmation',
     questions: 'Questions?',
     footer: 'Prime Luxury Stays · Mallorca · Ibiza · All Properties',
+    browseMore: 'Browse More Properties',
+    thankYouSubject: 'Thank you for your inquiry',
+    yourSelection: 'Your Selection',
+    allProperties: 'All Properties',
   },
   de: {
     newInquiry: 'Neue Anfrage',
@@ -79,6 +83,10 @@ const emailTranslations = {
     step3: 'Personalisierte Buchungsbestätigung',
     questions: 'Fragen?',
     footer: 'Prime Luxury Stays · Mallorca · Ibiza · Alle Immobilien',
+    browseMore: 'Weitere Immobilien entdecken',
+    thankYouSubject: 'Vielen Dank für Ihre Anfrage',
+    yourSelection: 'Ihre Auswahl',
+    allProperties: 'Alle Immobilien',
   }
 }
 
@@ -375,7 +383,7 @@ ${data.propertyImage ? `
 ` : ''}
 <tr>
 <td style="padding:20px;">
-<p style="margin:0 0 4px; font-size:11px; color:${GOLD}; text-transform:uppercase; letter-spacing:1px; font-weight:bold;">${isGerman ? 'Ihre Auswahl' : 'Your Selection'}</p>
+<p style="margin:0 0 4px; font-size:11px; color:${GOLD}; text-transform:uppercase; letter-spacing:1px; font-weight:bold;">${t.yourSelection}</p>
 <p class="property-title" style="margin:0 0 6px; font-size:20px; color:${CHARCOAL}; font-weight:bold; font-family:Georgia, serif;">
 <a href="https://primeluxurystays.com/properties/${data.propertySlug || ''}" style="color:${CHARCOAL}; text-decoration:none;">${data.propertyName}</a>
 </p>
@@ -432,8 +440,8 @@ ${data.guests ? `<span style="color:#666; margin-left:14px;">${data.guests} ${t.
 <table width="100%" cellpadding="0" cellspacing="0" border="0">
 <tr>
 <td align="center" style="background-color:${GOLD}; border-radius:6px;">
-<a class="button" href="https://primeluxurystays.com/properties" style="display:block; padding:16px 28px; font-size:15px; color:#ffffff; text-decoration:none; font-family:Georgia, serif; text-align:center;">
-Browse More Properties
+<a class="button" href="https://primeluxurystays.com/properties${isGerman ? '?lang=de' : ''}" style="display:block; padding:16px 28px; font-size:15px; color:#ffffff; text-decoration:none; font-family:Georgia, serif; text-align:center;">
+${t.browseMore}
 </a>
 </td>
 </tr>
@@ -445,7 +453,7 @@ Browse More Properties
 <tr>
 <td class="footer" style="padding:24px 20px; background-color:${CREAM}; text-align:center; border-top:1px solid #e0e0e0;">
 <p style="margin:0 0 8px; font-size:15px; color:${CHARCOAL};">${t.questions} <a href="mailto:info@primeluxurystays.com" style="color:${GOLD}; text-decoration:none; font-weight:bold;">info@primeluxurystays.com</a></p>
-<p style="margin:0; font-size:14px; color:#666;">Prime Luxury Stays · <a href="https://primeluxurystays.com/mallorca" style="color:${GOLD}; text-decoration:none;">Mallorca</a> · <a href="https://primeluxurystays.com/ibiza" style="color:${GOLD}; text-decoration:none;">Ibiza</a> · <a href="https://primeluxurystays.com/properties" style="color:${GOLD}; text-decoration:none;">${isGerman ? 'Alle Immobilien' : 'All Properties'}</a></p>
+<p style="margin:0; font-size:14px; color:#666;">Prime Luxury Stays · <a href="https://primeluxurystays.com/mallorca${isGerman ? '?lang=de' : ''}" style="color:${GOLD}; text-decoration:none;">Mallorca</a> · <a href="https://primeluxurystays.com/ibiza${isGerman ? '?lang=de' : ''}" style="color:${GOLD}; text-decoration:none;">Ibiza</a> · <a href="https://primeluxurystays.com/properties${isGerman ? '?lang=de' : ''}" style="color:${GOLD}; text-decoration:none;">${t.allProperties}</a></p>
 </td>
 </tr>
 
@@ -492,12 +500,14 @@ export async function sendInquiryConfirmation(data: InquiryEmailData) {
     return { success: false, error: 'Email not configured' }
   }
 
+  const t = getT(data.locale)
+  
   try {
     const { data: emailData, error } = await resend.emails.send({
       from: FROM_EMAIL,
       to: [data.email],
       replyTo: ADMIN_EMAIL,
-      subject: `Thank you for your inquiry${data.propertyName ? ` · ${data.propertyName}` : ''}`,
+      subject: `${t.thankYouSubject}${data.propertyName ? ` · ${data.propertyName}` : ''}`,
       html: getCustomerEmailTemplate(data),
     })
 
