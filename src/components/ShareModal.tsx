@@ -7,8 +7,7 @@ import {
   Copy, 
   Mail, 
   MessageCircle, 
-  Facebook, 
-  Twitter,
+  Facebook,
   Check,
   Link2
 } from 'lucide-react'
@@ -67,8 +66,12 @@ export default function ShareModal({ isOpen, onClose, property, locale }: ShareM
       },
     },
     {
-      name: 'Twitter',
-      icon: Twitter,
+      name: 'X',
+      icon: () => (
+        <svg viewBox="0 0 24 24" className="w-5 h-5" fill="currentColor">
+          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+        </svg>
+      ),
       onClick: () => {
         window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(property.name)}&url=${encodeURIComponent(property.url)}`, '_blank', 'width=600,height=400')
       },
@@ -97,12 +100,17 @@ export default function ShareModal({ isOpen, onClose, property, locale }: ShareM
 
           {/* Modal */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-white rounded-2xl shadow-2xl z-50 overflow-hidden"
+            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+            onClick={onClose}
           >
+            <div 
+              className="w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
+            >
             {/* Header */}
             <div className="flex items-center justify-between p-5 border-b border-gray-100">
               <h2 className="text-xl font-semibold text-charcoal-900">
@@ -162,6 +170,7 @@ export default function ShareModal({ isOpen, onClose, property, locale }: ShareM
                   {property.url}
                 </span>
               </div>
+            </div>
             </div>
           </motion.div>
         </>
