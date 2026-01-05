@@ -84,6 +84,30 @@ export default function NewPropertyPage() {
   // Staged images for upload after property creation
   const [stagedImages, setStagedImages] = useState<StagedImage[]>([])
 
+  const [formData, setFormData] = useState({
+    name: '',
+    name_de: '',
+    house_type: 'Villa',
+    house_type_de: '',
+    region: 'Mallorca',
+    city: '',
+    country: 'Spain',
+    bedrooms: '',
+    bathrooms: '',
+    max_guests: '',
+    price_per_week: '',
+    price_per_week_high: '',
+    description: '',
+    description_de: '',
+    short_description: '',
+    short_description_de: '',
+    has_pool: false,
+    has_sea_view: false,
+    has_ac: true,
+    has_wifi: true,
+    is_active: true,
+  })
+
   // Auto-translate function using OpenAI
   const translateText = async (
     text: string,
@@ -116,7 +140,7 @@ export default function NewPropertyPage() {
     value: string
   ) => {
     const germanField = `${field}_de` as keyof typeof formData
-    const fieldType = field === 'name' ? 'name' : field === 'short_description' ? 'short_description' : 'description'
+    const fieldType = field
     
     setFormData(prev => ({ ...prev, [field]: value }))
 
@@ -125,7 +149,7 @@ export default function NewPropertyPage() {
       clearTimeout(translateTimeoutRef.current)
     }
 
-    // Only auto-translate if there's text and German field is empty or was auto-translated
+    // Auto-translate after user stops typing
     if (value.trim()) {
       translateTimeoutRef.current = setTimeout(async () => {
         setTranslating(germanField)
@@ -134,7 +158,7 @@ export default function NewPropertyPage() {
           setFormData(prev => ({ ...prev, [germanField]: translated }))
         }
         setTranslating(null)
-      }, 1000) // Wait 1 second after user stops typing
+      }, 1000)
     }
   }
 
@@ -144,7 +168,7 @@ export default function NewPropertyPage() {
     value: string
   ) => {
     const englishField = field.replace('_de', '') as 'name' | 'short_description' | 'description'
-    const fieldType = englishField === 'name' ? 'name' : englishField === 'short_description' ? 'short_description' : 'description'
+    const fieldType = englishField
     
     setFormData(prev => ({ ...prev, [field]: value }))
 
@@ -153,7 +177,7 @@ export default function NewPropertyPage() {
       clearTimeout(translateTimeoutRef.current)
     }
 
-    // Only auto-translate if there's text and English field is empty
+    // Only auto-translate if English field is empty
     if (value.trim() && !formData[englishField]) {
       translateTimeoutRef.current = setTimeout(async () => {
         setTranslating(englishField)
@@ -162,7 +186,7 @@ export default function NewPropertyPage() {
           setFormData(prev => ({ ...prev, [englishField]: translated }))
         }
         setTranslating(null)
-      }, 1000) // Wait 1 second after user stops typing
+      }, 1000)
     }
   }
 
@@ -175,29 +199,41 @@ export default function NewPropertyPage() {
     }
   }, [])
 
-  const [formData, setFormData] = useState({
-    name: '',
-    name_de: '',
-    house_type: 'Villa',
-    house_type_de: '',
-    region: 'Mallorca',
-    city: '',
-    country: 'Spain',
-    bedrooms: '',
-    bathrooms: '',
-    max_guests: '',
-    price_per_week: '',
-    price_per_week_high: '',
-    description: '',
-    description_de: '',
-    short_description: '',
-    short_description_de: '',
-    has_pool: false,
-    has_sea_view: false,
-    has_ac: true,
-    has_wifi: true,
-    is_active: true,
-  })
+  // Translate all fields at once
+  const translateAllToGerman = async () => {
+    setTranslating('all_de')
+    try {
+      const fields = ['name', 'short_description', 'description'] as const
+      for (const field of fields) {
+        if (formData[field]) {
+          const translated = await translateText(formData[field], 'de', field)
+          if (translated) {
+            setFormData(prev => ({ ...prev, [`${field}_de`]: translated }))
+          }
+        }
+      }
+    } finally {
+      setTranslating(null)
+    }
+  }
+
+  const translateAllToEnglish = async () => {
+    setTranslating('all_en')
+    try {
+      const fields = ['name_de', 'short_description_de', 'description_de'] as const
+      for (const field of fields) {
+        if (formData[field]) {
+          const englishField = field.replace('_de', '') as 'name' | 'short_description' | 'description'
+          const translated = await translateText(formData[field], 'en', englishField)
+          if (translated) {
+            setFormData(prev => ({ ...prev, [englishField]: translated }))
+          }
+        }
+      }
+    } finally {
+      setTranslating(null)
+    }
+  }
 
   const generateSlug = (name: string) => {
     return name.toLowerCase()
@@ -415,16 +451,12 @@ export default function NewPropertyPage() {
                 <label className="block text-sm font-medium text-gray-700">
                   🇩🇪 Immobilienname (Deutsch)
                   {translating === 'name_de' && (
-                    <span className="ml-2 text-blue-600 text-xs flex items-center gap-1">
+                    <span className="ml-2 text-blue-600 text-xs inline-flex items-center gap-1">
                       <Loader2 className="w-3 h-3 animate-spin" />
                       {locale === 'de' ? 'Übersetze...' : 'Translating...'}
                     </span>
                   )}
                 </label>
-              </div>
-                  {translating === 'name_de' ? <Loader2 className="w-3 h-3 animate-spin" /> : <Languages className="w-3 h-3" />}
-                  {locale === 'de' ? 'Übersetzen' : 'Translate'}
-                </button>
               </div>
               <input
                 type="text"

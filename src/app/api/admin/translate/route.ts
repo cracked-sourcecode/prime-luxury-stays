@@ -1,10 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import OpenAI from 'openai'
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-})
-
 export async function POST(request: NextRequest) {
   try {
     const { text, targetLanguage, fieldType } = await request.json()
@@ -12,6 +8,11 @@ export async function POST(request: NextRequest) {
     if (!text || !targetLanguage) {
       return NextResponse.json({ error: 'Missing text or targetLanguage' }, { status: 400 })
     }
+
+    // Initialize OpenAI client inside the handler
+    const openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    })
 
     const sourceLang = targetLanguage === 'de' ? 'English' : 'German'
     const targetLang = targetLanguage === 'de' ? 'German' : 'English'
