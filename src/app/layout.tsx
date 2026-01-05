@@ -8,7 +8,8 @@ import './globals.css'
 const SITE_URL = 'https://primeluxurystays.com'
 // Used for link previews (iMessage/SMS/social)
 const SHARE_IMAGE = 'https://storage.googleapis.com/primeluxurystays/Company%20Logo'
-// Favicon is now handled by icon.png and apple-icon.png in src/app/
+// Logo URL for structured data (favicon handled by icon.png in src/app/)
+const LOGO_IMAGE = 'https://storage.googleapis.com/primeluxurystays/Logo%20no%20text%20(global%20header).png'
 // Hero image for structured data
 const HERO_IMAGE = 'https://storage.googleapis.com/primeluxurystays/hero-luxury-villa.jpg'
 
@@ -59,7 +60,7 @@ const organizationSchema = {
   '@type': 'Organization',
   name: 'Prime Luxury Stays',
   url: SITE_URL,
-  logo: FAVICON_IMAGE,
+  logo: LOGO_IMAGE,
   image: SHARE_IMAGE,
   description: 'Find your next luxury escape. Discover handpicked villas and estates in the world\'s most extraordinary destinations.',
   sameAs: [],
@@ -81,7 +82,7 @@ const websiteSchema = {
     name: 'Prime Luxury Stays',
     logo: {
       '@type': 'ImageObject',
-      url: FAVICON_IMAGE,
+      url: LOGO_IMAGE,
     },
   },
   potentialAction: {
@@ -96,7 +97,7 @@ const travelAgencySchema = {
   '@type': 'TravelAgency',
   name: 'Prime Luxury Stays',
   url: SITE_URL,
-  logo: FAVICON_IMAGE,
+  logo: LOGO_IMAGE,
   image: [
     SHARE_IMAGE,
     HERO_IMAGE,
