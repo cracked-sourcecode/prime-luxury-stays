@@ -148,8 +148,123 @@ export default function MallorcaClient({ properties }: MallorcaClientProps) {
         </motion.div>
       </section>
 
+      {/* ========== BROWSE BY REGION ========== */}
+      <section className="relative z-20 py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <p className="text-gold-600 text-sm font-semibold tracking-[0.3em] uppercase mb-5">
+              {locale === 'de' ? 'Nach Region Entdecken' : 'Explore by Region'}
+            </p>
+            <h2 className="font-merriweather text-3xl md:text-4xl lg:text-5xl text-charcoal-900 mb-6">
+              {locale === 'de' ? 'Finden Sie Ihre Perfekte Lage' : 'Find Your Perfect Location'}
+            </h2>
+            <p className="text-charcoal-500 text-lg max-w-2xl mx-auto">
+              {locale === 'de' 
+                ? 'Von der dramatischen Westküste bis zu den ruhigen Stränden des Nordens – jede Region Mallorcas hat ihren eigenen Charakter.' 
+                : 'From the dramatic west coast to the tranquil beaches of the north, each region of Mallorca has its own distinct character.'}
+            </p>
+          </motion.div>
+
+          {/* Region Cards Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            {[
+              {
+                name: locale === 'de' ? 'West / Südwest' : 'West / Southwest',
+                subtitle: 'Santa Ponsa, Calvià, Bendinat',
+                image: 'https://storage.googleapis.com/primeluxurystays/villa-del-mar/images/1767466932071-Kopie_von_2c3d6789-1a64-492e-895a-1d13fcbd9aea_result_22.48.41.webp',
+                cities: ['Santa Ponsa', 'Calvià', 'Bendinat'],
+                count: properties.filter(p => ['Santa Ponsa', 'Calvià', 'Bendinat'].some(c => p.city?.includes(c))).length
+              },
+              {
+                name: "Port d'Andratx",
+                subtitle: locale === 'de' ? 'Luxuriöse Hafenstadt' : 'Luxury Marina Town',
+                image: 'https://storage.googleapis.com/primeluxurystays/sunset-dreams/images/1767546840732-PROTEA32_result_22.48.12.webp',
+                cities: ['Port d\'Andratx', 'Port Andratx'],
+                count: properties.filter(p => p.city?.toLowerCase().includes('andratx')).length
+              },
+              {
+                name: locale === 'de' ? 'Nord / Nordwest' : 'North / Northwest',
+                subtitle: 'Pollensa, Alcudia, Sa Pobla',
+                image: 'https://storage.googleapis.com/primeluxurystays/la-salve/images/1766937633626-ls17-602-marcgilsdorf_result_12.40.11.webp',
+                cities: ['Pollensa', 'Alcudia', 'Sa Pobla', 'Santa Margalida'],
+                count: properties.filter(p => ['Pollensa', 'Alcudia', 'Sa Pobla', 'Santa Margalida'].some(c => p.city?.includes(c))).length
+              },
+              {
+                name: locale === 'de' ? 'Ost / Südost' : 'East / Southeast',
+                subtitle: 'Canyamel, Ses Salines, S\'Horta',
+                image: 'https://storage.googleapis.com/primeluxurystays/eden-roc/images/1766935948675-MR20230606066_result_12.38.51.webp',
+                cities: ['Canyamel', 'Cas Concos', 'Ses Salines', 'S´Horta', 'S\'Horta'],
+                count: properties.filter(p => ['Canyamel', 'Cas Concos', 'Ses Salines', 'S´Horta', 'S\'Horta'].some(c => p.city?.includes(c))).length
+              },
+            ].map((region, index) => (
+              <motion.div
+                key={region.name}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="group cursor-pointer"
+                onClick={() => {
+                  const villasSection = document.getElementById('villas')
+                  villasSection?.scrollIntoView({ behavior: 'smooth' })
+                }}
+              >
+                <div className="relative aspect-[3/4] rounded-2xl overflow-hidden shadow-lg">
+                  <img
+                    src={region.image}
+                    alt={region.name}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+                  
+                  {/* Property Count Badge */}
+                  <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-sm text-charcoal-900 px-3 py-1.5 rounded-full text-sm font-semibold flex items-center gap-2 shadow-lg">
+                    <MapPin className="w-4 h-4 text-gold-500" />
+                    {region.count} {region.count === 1 ? (locale === 'de' ? 'Immobilie' : 'property') : (locale === 'de' ? 'Immobilien' : 'properties')}
+                  </div>
+                  
+                  {/* Content */}
+                  <div className="absolute bottom-0 left-0 right-0 p-5">
+                    <p className="text-gold-400 text-xs font-semibold tracking-[0.15em] uppercase mb-2">
+                      {region.subtitle}
+                    </p>
+                    <h3 className="font-merriweather text-xl text-white mb-2">
+                      {region.name}
+                    </h3>
+                    <div className="flex items-center gap-2 text-white/80 text-sm opacity-0 group-hover:opacity-100 transition-opacity">
+                      <span>{locale === 'de' ? 'Immobilien ansehen' : 'View properties'}</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Quick Stats */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-12">
+            {[
+              { value: properties.length, label: locale === 'de' ? 'Luxusimmobilien' : 'Luxury Properties' },
+              { value: '4', label: locale === 'de' ? 'Regionen' : 'Regions' },
+              { value: '300+', label: locale === 'de' ? 'Sonnentage/Jahr' : 'Sunny Days/Year' },
+              { value: '24/7', label: locale === 'de' ? 'Concierge-Service' : 'Concierge Support' },
+            ].map((stat) => (
+              <div key={stat.label} className="text-center p-6 bg-cream-50 rounded-2xl">
+                <div className="font-merriweather text-3xl md:text-4xl text-gold-600 mb-2">{stat.value}</div>
+                <div className="text-charcoal-500 text-sm">{stat.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ========== THE PROMISE - WHAT WE OFFER ========== */}
-      <section className="relative z-20 py-28 bg-white">
+      <section className="relative z-20 py-28 bg-cream-50">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-20 items-center">
             <div>
