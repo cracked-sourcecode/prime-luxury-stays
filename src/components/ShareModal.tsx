@@ -8,8 +8,7 @@ import {
   Mail, 
   MessageCircle, 
   Facebook,
-  Check,
-  Link2
+  Check
 } from 'lucide-react'
 
 interface ShareModalProps {
@@ -180,15 +179,6 @@ export default function ShareModal({ isOpen, onClose, property, locale }: ShareM
               })}
             </div>
 
-            {/* URL Preview */}
-            <div className="px-5 pb-5">
-              <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
-                <Link2 className="w-4 h-4 text-charcoal-400 flex-shrink-0" />
-                <span className="text-sm text-charcoal-500 truncate flex-1">
-                  {property.url}
-                </span>
-              </div>
-            </div>
             </div>
           </motion.div>
         </>
