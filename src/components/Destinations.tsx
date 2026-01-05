@@ -11,7 +11,7 @@ const getMallorcaRegions = (t: (key: string) => string) => [
   {
     name: t('destinations.mallorca.regions.westSouthwest.name'),
     subtitle: t('destinations.mallorca.regions.westSouthwest.subtitle'),
-    image: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800&q=80',
+    image: 'https://storage.googleapis.com/primeluxurystays/villa-del-mar/images/1767466932071-Kopie_von_2c3d6789-1a64-492e-895a-1d13fcbd9aea_result_22.48.41.webp',
     description: t('destinations.mallorca.regions.westSouthwest.description'),
     properties: 4,
     slug: 'west-southwest',
@@ -19,7 +19,7 @@ const getMallorcaRegions = (t: (key: string) => string) => [
   {
     name: t('destinations.mallorca.regions.portAndratx.name'),
     subtitle: t('destinations.mallorca.regions.portAndratx.subtitle'),
-    image: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80',
+    image: 'https://storage.googleapis.com/primeluxurystays/sunset-dreams/images/1767546840732-PROTEA32_result_22.48.12.webp',
     description: t('destinations.mallorca.regions.portAndratx.description'),
     properties: 3,
     slug: 'port-andratx',
@@ -27,7 +27,7 @@ const getMallorcaRegions = (t: (key: string) => string) => [
   {
     name: t('destinations.mallorca.regions.northNorthwest.name'),
     subtitle: t('destinations.mallorca.regions.northNorthwest.subtitle'),
-    image: 'https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?w=800&q=80',
+    image: 'https://storage.googleapis.com/primeluxurystays/la-salve/images/1766937633626-ls17-602-marcgilsdorf_result_12.40.11.webp',
     description: t('destinations.mallorca.regions.northNorthwest.description'),
     properties: 5,
     slug: 'north-northwest',
@@ -35,7 +35,7 @@ const getMallorcaRegions = (t: (key: string) => string) => [
   {
     name: t('destinations.mallorca.regions.eastSoutheast.name'),
     subtitle: t('destinations.mallorca.regions.eastSoutheast.subtitle'),
-    image: 'https://images.unsplash.com/photo-1580541631950-7282082b53ce?w=800&q=80',
+    image: 'https://storage.googleapis.com/primeluxurystays/eden-roc/images/1766935948675-MR20230606066_result_12.38.51.webp',
     description: t('destinations.mallorca.regions.eastSoutheast.description'),
     properties: 4,
     slug: 'east-southeast',
