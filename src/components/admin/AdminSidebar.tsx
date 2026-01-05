@@ -21,8 +21,10 @@ import {
   List,
   UserPlus,
   Mail,
-  BarChart3
+  BarChart3,
+  Globe
 } from 'lucide-react'
+import { useAdminLocale } from '@/lib/adminLocale'
 
 interface AdminSidebarProps {
   userName?: string
@@ -38,41 +40,43 @@ interface NavSection {
   children?: { name: string; href: string; icon: React.ElementType }[]
 }
 
-const navSections: NavSection[] = [
-  { 
-    name: 'Dashboard', 
-    href: '/admin', 
-    icon: LayoutDashboard 
-  },
-  { 
-    name: 'Properties', 
-    icon: Building2,
-    children: [
-      { name: 'All Properties', href: '/admin/properties', icon: List },
-      { name: 'Add Property', href: '/admin/properties/new', icon: PlusCircle },
-    ]
-  },
-  { 
-    name: 'CRM', 
-    icon: Users,
-    children: [
-      { name: 'Contacts', href: '/admin/customers', icon: Users },
-      { name: 'Deals Pipeline', href: '/admin/deals', icon: Briefcase },
-    ]
-  },
-  { 
-    name: 'Inquiries', 
-    href: '/admin/inquiries', 
-    icon: MessageSquare 
-  },
-]
-
 export default function AdminSidebar({ userName, userEmail }: AdminSidebarProps) {
   const pathname = usePathname()
   const router = useRouter()
+  const { locale, setLocale, t } = useAdminLocale()
   const [collapsed, setCollapsed] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const [expandedSections, setExpandedSections] = useState<string[]>(['Properties', 'CRM'])
+  
+  // Navigation sections with translation keys
+  const navSections: NavSection[] = [
+    { 
+      name: t('dashboard'), 
+      href: '/admin', 
+      icon: LayoutDashboard 
+    },
+    { 
+      name: t('properties'), 
+      icon: Building2,
+      children: [
+        { name: locale === 'de' ? 'Alle Immobilien' : 'All Properties', href: '/admin/properties', icon: List },
+        { name: locale === 'de' ? 'Neue Immobilie' : 'Add Property', href: '/admin/properties/new', icon: PlusCircle },
+      ]
+    },
+    { 
+      name: 'CRM', 
+      icon: Users,
+      children: [
+        { name: locale === 'de' ? 'Kontakte' : 'Contacts', href: '/admin/customers', icon: Users },
+        { name: locale === 'de' ? 'Deals Pipeline' : 'Deals Pipeline', href: '/admin/deals', icon: Briefcase },
+      ]
+    },
+    { 
+      name: t('inquiries'), 
+      href: '/admin/inquiries', 
+      icon: MessageSquare 
+    },
+  ]
 
   const handleLogout = async () => {
     await fetch('/api/admin/logout', { method: 'POST' })
@@ -189,18 +193,50 @@ export default function AdminSidebar({ userName, userEmail }: AdminSidebarProps)
 
       {/* Bottom section */}
       <div className="border-t border-gray-100 p-3 space-y-2">
+        {/* Language Switcher */}
+        <div className={`flex items-center gap-2 ${collapsed ? 'justify-center' : 'px-2'}`}>
+          {collapsed ? (
+            <button
+              onClick={() => setLocale(locale === 'en' ? 'de' : 'en')}
+              className="p-2 rounded-lg hover:bg-gray-50 transition-colors"
+              title={locale === 'en' ? 'Switch to German' : 'Auf Englisch umschalten'}
+            >
+              <Globe className="w-5 h-5 text-charcoal-600" />
+            </button>
+          ) : (
+            <div className="flex items-center gap-2 bg-gray-100 rounded-lg p-1 w-full">
+              <button
+                onClick={() => setLocale('en')}
+                className={`flex-1 flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-md text-xs font-medium transition-colors ${
+                  locale === 'en' ? 'bg-white shadow-sm text-charcoal-900' : 'text-charcoal-500 hover:text-charcoal-700'
+                }`}
+              >
+                🇬🇧 English
+              </button>
+              <button
+                onClick={() => setLocale('de')}
+                className={`flex-1 flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-md text-xs font-medium transition-colors ${
+                  locale === 'de' ? 'bg-white shadow-sm text-charcoal-900' : 'text-charcoal-500 hover:text-charcoal-700'
+                }`}
+              >
+                🇩🇪 Deutsch
+              </button>
+            </div>
+          )}
+        </div>
+        
         <Link 
           href="/" 
           target="_blank"
           className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-charcoal-600 hover:bg-gray-50 transition-colors ${collapsed ? 'justify-center' : ''}`}
         >
           <Home className="w-5 h-5" />
-          {!collapsed && <span className="text-sm">View Website</span>}
+          {!collapsed && <span className="text-sm">{locale === 'de' ? 'Website ansehen' : 'View Website'}</span>}
         </Link>
         
         {!collapsed && (
           <div className="px-3 py-2 rounded-lg bg-cream-50 border border-cream-200">
-            <p className="text-xs text-charcoal-500">Logged in as</p>
+            <p className="text-xs text-charcoal-500">{locale === 'de' ? 'Angemeldet als' : 'Logged in as'}</p>
             <p className="text-sm font-medium text-charcoal-800 truncate">{userName || userEmail}</p>
           </div>
         )}
@@ -210,7 +246,7 @@ export default function AdminSidebar({ userName, userEmail }: AdminSidebarProps)
           className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-red-600 hover:bg-red-50 transition-colors ${collapsed ? 'justify-center' : ''}`}
         >
           <LogOut className="w-5 h-5" />
-          {!collapsed && <span className="text-sm font-medium">Sign Out</span>}
+          {!collapsed && <span className="text-sm font-medium">{t('logout')}</span>}
         </button>
       </div>
     </div>

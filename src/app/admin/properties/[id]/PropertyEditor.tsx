@@ -32,6 +32,7 @@ import {
 } from 'lucide-react'
 import type { Property } from '@/lib/properties'
 import type { PropertyImage, PropertyAvailability } from '@/lib/admin'
+import { useAdminLocale } from '@/lib/adminLocale'
 
 // Compress image before upload
 async function compressImage(file: File, maxWidth = 1920, quality = 0.8): Promise<File> {
@@ -89,6 +90,7 @@ interface PropertyEditorProps {
 
 export default function PropertyEditor({ property, images: initialImages, availability: initialAvailability, isNew }: PropertyEditorProps) {
   const router = useRouter()
+  const { t } = useAdminLocale()
   const [activeTab, setActiveTab] = useState<'details' | 'images' | 'availability'>('details')
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
@@ -136,9 +138,6 @@ export default function PropertyEditor({ property, images: initialImages, availa
     description_de: property?.description_de || '',
     house_type_de: property?.house_type_de || '',
   })
-  
-  // Language toggle for content editing
-  const [contentLang, setContentLang] = useState<'en' | 'de'>('en')
 
   // Images state
   const [images, setImages] = useState<PropertyImage[]>(initialImages)
@@ -680,7 +679,7 @@ export default function PropertyEditor({ property, images: initialImages, availa
               </Link>
               <div>
                 <h1 className="font-semibold text-charcoal-900">
-                  {isNew ? 'Add New Property' : `Edit: ${property?.name}`}
+                  {isNew ? t('newProperty') : `${t('editProperty')}: ${property?.name}`}
                 </h1>
                 {!isNew && (
                   <p className="text-sm text-charcoal-500">ID: {property?.id}</p>
@@ -696,7 +695,7 @@ export default function PropertyEditor({ property, images: initialImages, availa
                   className="text-charcoal-600 hover:text-gold-600 transition-colors flex items-center gap-2"
                 >
                   <ExternalLink className="w-5 h-5" />
-                  <span className="hidden sm:inline">View Live</span>
+                  <span className="hidden sm:inline">{t('viewLive')}</span>
                 </Link>
               )}
               
@@ -706,7 +705,7 @@ export default function PropertyEditor({ property, images: initialImages, availa
                   className="text-red-600 hover:text-red-700 transition-colors flex items-center gap-2"
                 >
                   <Trash2 className="w-5 h-5" />
-                  <span className="hidden sm:inline">Delete</span>
+                  <span className="hidden sm:inline">{t('deleteProperty')}</span>
                 </button>
               )}
             </div>
@@ -739,9 +738,9 @@ export default function PropertyEditor({ property, images: initialImages, availa
         {/* Tabs */}
         <div className="flex items-center gap-1 bg-gray-100 rounded-xl p-1 mb-8">
           {[
-            { id: 'details', label: 'Details', icon: Bed },
-            { id: 'images', label: 'Images', icon: ImageIcon, disabled: isNew },
-            { id: 'availability', label: 'Availability & Pricing', icon: Calendar, disabled: isNew },
+            { id: 'details', label: t('details'), icon: Bed },
+            { id: 'images', label: t('images'), icon: ImageIcon, disabled: isNew },
+            { id: 'availability', label: t('availability'), icon: Calendar, disabled: isNew },
           ].map((tab) => (
             <button
               key={tab.id}
@@ -767,19 +766,8 @@ export default function PropertyEditor({ property, images: initialImages, availa
             <div className="space-y-8">
               {/* Basic Info */}
               <section>
-                <h3 className="font-semibold text-charcoal-900 mb-4">Basic Information</h3>
+                <h3 className="font-semibold text-charcoal-900 mb-4">{t('basicInfo')}</h3>
                 <div className="grid md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-charcoal-700 mb-2">Property Name *</label>
-                    <input
-                      type="text"
-                      value={formData.name}
-                      onChange={(e) => handleNameChange(e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
-                      placeholder="Villa Vista Malgrat"
-                      required
-                    />
-                  </div>
                   <div>
                     <label className="block text-sm font-medium text-charcoal-700 mb-2">URL Slug *</label>
                     <input
@@ -790,19 +778,7 @@ export default function PropertyEditor({ property, images: initialImages, availa
                       placeholder="villa-vista-malgrat"
                       required
                     />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-charcoal-700 mb-2">House Type</label>
-                    <select
-                      value={formData.house_type}
-                      onChange={(e) => setFormData(prev => ({ ...prev, house_type: e.target.value }))}
-                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
-                    >
-                      <option value="Villa">Villa</option>
-                      <option value="Finca">Finca</option>
-                      <option value="Apartment">Apartment</option>
-                      <option value="Townhouse">Townhouse</option>
-                    </select>
+                    <p className="text-xs text-charcoal-400 mt-1">Used in the property URL (auto-generated from name)</p>
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-charcoal-700 mb-2">Website URL</label>
@@ -819,7 +795,7 @@ export default function PropertyEditor({ property, images: initialImages, availa
 
               {/* License */}
               <section>
-                <h3 className="font-semibold text-charcoal-900 mb-4">License Information</h3>
+                <h3 className="font-semibold text-charcoal-900 mb-4">{t('licenseInfo')}</h3>
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-medium text-charcoal-700 mb-2">License Number</label>
@@ -846,7 +822,7 @@ export default function PropertyEditor({ property, images: initialImages, availa
 
               {/* Location */}
               <section>
-                <h3 className="font-semibold text-charcoal-900 mb-4">Location</h3>
+                <h3 className="font-semibold text-charcoal-900 mb-4">{t('location')}</h3>
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="md:col-span-2">
                     <label className="block text-sm font-medium text-charcoal-700 mb-2">Address</label>
@@ -905,7 +881,7 @@ export default function PropertyEditor({ property, images: initialImages, availa
 
               {/* Property Details */}
               <section>
-                <h3 className="font-semibold text-charcoal-900 mb-4">Property Details</h3>
+                <h3 className="font-semibold text-charcoal-900 mb-4">{t('propertyDetails')}</h3>
                 <div className="grid md:grid-cols-4 gap-6">
                   <div>
                     <label className="block text-sm font-medium text-charcoal-700 mb-2">Bedrooms</label>
@@ -952,7 +928,7 @@ export default function PropertyEditor({ property, images: initialImages, availa
 
               {/* Pricing */}
               <section>
-                <h3 className="font-semibold text-charcoal-900 mb-4">Pricing (Display)</h3>
+                <h3 className="font-semibold text-charcoal-900 mb-4">{t('pricing')}</h3>
                 <p className="text-sm text-charcoal-500 mb-4">Set the weekly price range to display on property cards. Use low/high for seasonal variation.</p>
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
@@ -982,134 +958,143 @@ export default function PropertyEditor({ property, images: initialImages, availa
                 </div>
               </section>
 
-              {/* Description - Multi-language */}
+              {/* Description - Both Languages Side by Side */}
               <section>
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="font-semibold text-charcoal-900">Description</h3>
-                  <div className="flex items-center gap-2 bg-gray-100 rounded-lg p-1">
-                    <button
-                      type="button"
-                      onClick={() => setContentLang('en')}
-                      className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
-                        contentLang === 'en' ? 'bg-white shadow-sm text-charcoal-900' : 'text-charcoal-500 hover:text-charcoal-700'
-                      }`}
-                    >
-                      🇬🇧 English
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setContentLang('de')}
-                      className={`px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
-                        contentLang === 'de' ? 'bg-white shadow-sm text-charcoal-900' : 'text-charcoal-500 hover:text-charcoal-700'
-                      }`}
-                    >
-                      🇩🇪 Deutsch
-                    </button>
-                  </div>
+                <h3 className="font-semibold text-charcoal-900 mb-4">{t('propertyContent')}</h3>
+                <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-6">
+                  <p className="text-sm text-amber-800">
+                    📝 {t('contentHint')}
+                  </p>
                 </div>
                 
-                {contentLang === 'en' ? (
-                  <div className="space-y-6">
-                    <div>
-                      <label className="block text-sm font-medium text-charcoal-700 mb-2">
-                        Short Description (English)
-                      </label>
-                      <input
-                        type="text"
-                        value={formData.short_description}
-                        onChange={(e) => setFormData(prev => ({ ...prev, short_description: e.target.value }))}
-                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
-                        placeholder="A brief tagline for the property"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-charcoal-700 mb-2">
-                        Full Description (English)
-                      </label>
-                      <textarea
-                        value={formData.description}
-                        onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                        rows={6}
-                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none resize-none"
-                        placeholder="Detailed description of the property..."
-                      />
-                    </div>
+                {/* Property Name - Both Languages */}
+                <div className="grid md:grid-cols-2 gap-6 mb-6">
+                  <div>
+                    <label className="block text-sm font-medium text-charcoal-700 mb-2">
+                      🇬🇧 Property Name (English) *
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.name}
+                      onChange={(e) => handleNameChange(e.target.value)}
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
+                      placeholder="Villa Vista Malgrat"
+                      required
+                    />
                   </div>
-                ) : (
-                  <div className="space-y-6">
-                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
-                      <p className="text-sm text-blue-700">
-                        💡 Enter the German translations for this property. These will be shown to German-speaking visitors.
-                      </p>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-charcoal-700 mb-2">
-                        Property Name (German) - Name (Deutsch)
-                      </label>
-                      <input
-                        type="text"
-                        value={formData.name_de}
-                        onChange={(e) => setFormData(prev => ({ ...prev, name_de: e.target.value }))}
-                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
-                        placeholder={formData.name || "German property name (optional)"}
-                      />
-                      <p className="text-xs text-charcoal-400 mt-1">Leave empty to use English name: "{formData.name}"</p>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-charcoal-700 mb-2">
-                        House Type (German) - Haustyp (Deutsch)
-                      </label>
-                      <select
-                        value={formData.house_type_de}
-                        onChange={(e) => setFormData(prev => ({ ...prev, house_type_de: e.target.value }))}
-                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
-                      >
-                        <option value="">Use English ({formData.house_type})</option>
-                        <option value="Villa">Villa</option>
-                        <option value="Finca">Finca</option>
-                        <option value="Wohnung">Wohnung (Apartment)</option>
-                        <option value="Stadthaus">Stadthaus (Townhouse)</option>
-                        <option value="Haus">Haus (House)</option>
-                        <option value="Penthouse">Penthouse</option>
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-charcoal-700 mb-2">
-                        Short Description (German) - Kurzbeschreibung (Deutsch)
-                      </label>
-                      <input
-                        type="text"
-                        value={formData.short_description_de}
-                        onChange={(e) => setFormData(prev => ({ ...prev, short_description_de: e.target.value }))}
-                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
-                        placeholder="Kurze Beschreibung der Immobilie"
-                      />
-                      {formData.short_description && (
-                        <p className="text-xs text-charcoal-400 mt-1">English: "{formData.short_description}"</p>
-                      )}
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-charcoal-700 mb-2">
-                        Full Description (German) - Vollständige Beschreibung (Deutsch)
-                      </label>
-                      <textarea
-                        value={formData.description_de}
-                        onChange={(e) => setFormData(prev => ({ ...prev, description_de: e.target.value }))}
-                        rows={6}
-                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none resize-none"
-                        placeholder="Ausführliche Beschreibung der Immobilie..."
-                      />
-                      {formData.description && (
-                        <p className="text-xs text-charcoal-400 mt-1">English version: {formData.description.substring(0, 100)}...</p>
-                      )}
-                    </div>
+                  <div>
+                    <label className="block text-sm font-medium text-charcoal-700 mb-2">
+                      🇩🇪 Immobilienname (Deutsch)
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.name_de}
+                      onChange={(e) => setFormData(prev => ({ ...prev, name_de: e.target.value }))}
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
+                      placeholder="Leer lassen für englischen Namen"
+                    />
                   </div>
-                )}
+                </div>
+
+                {/* House Type - Both Languages */}
+                <div className="grid md:grid-cols-2 gap-6 mb-6">
+                  <div>
+                    <label className="block text-sm font-medium text-charcoal-700 mb-2">
+                      🇬🇧 House Type (English)
+                    </label>
+                    <select
+                      value={formData.house_type}
+                      onChange={(e) => setFormData(prev => ({ ...prev, house_type: e.target.value }))}
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
+                    >
+                      <option value="Villa">Villa</option>
+                      <option value="Finca">Finca</option>
+                      <option value="Apartment">Apartment</option>
+                      <option value="Townhouse">Townhouse</option>
+                      <option value="House">House</option>
+                      <option value="Penthouse">Penthouse</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-charcoal-700 mb-2">
+                      🇩🇪 Haustyp (Deutsch)
+                    </label>
+                    <select
+                      value={formData.house_type_de}
+                      onChange={(e) => setFormData(prev => ({ ...prev, house_type_de: e.target.value }))}
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
+                    >
+                      <option value="">— Englisch verwenden —</option>
+                      <option value="Villa">Villa</option>
+                      <option value="Finca">Finca</option>
+                      <option value="Wohnung">Wohnung</option>
+                      <option value="Stadthaus">Stadthaus</option>
+                      <option value="Haus">Haus</option>
+                      <option value="Penthouse">Penthouse</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Short Description - Both Languages */}
+                <div className="grid md:grid-cols-2 gap-6 mb-6">
+                  <div>
+                    <label className="block text-sm font-medium text-charcoal-700 mb-2">
+                      🇬🇧 Short Description (English)
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.short_description}
+                      onChange={(e) => setFormData(prev => ({ ...prev, short_description: e.target.value }))}
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
+                      placeholder="A brief tagline for the property"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-charcoal-700 mb-2">
+                      🇩🇪 Kurzbeschreibung (Deutsch)
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.short_description_de}
+                      onChange={(e) => setFormData(prev => ({ ...prev, short_description_de: e.target.value }))}
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
+                      placeholder="Kurze Beschreibung der Immobilie"
+                    />
+                  </div>
+                </div>
+
+                {/* Full Description - Both Languages */}
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-charcoal-700 mb-2">
+                      🇬🇧 Full Description (English)
+                    </label>
+                    <textarea
+                      value={formData.description}
+                      onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
+                      rows={6}
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none resize-none"
+                      placeholder="Detailed description of the property..."
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-charcoal-700 mb-2">
+                      🇩🇪 Vollständige Beschreibung (Deutsch)
+                    </label>
+                    <textarea
+                      value={formData.description_de}
+                      onChange={(e) => setFormData(prev => ({ ...prev, description_de: e.target.value }))}
+                      rows={6}
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none resize-none"
+                      placeholder="Ausführliche Beschreibung der Immobilie..."
+                    />
+                  </div>
+                </div>
               </section>
 
               {/* Amenities */}
               <section>
-                <h3 className="font-semibold text-charcoal-900 mb-4">Amenities</h3>
+                <h3 className="font-semibold text-charcoal-900 mb-4">{t('amenities')}</h3>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                   {[
                     { key: 'has_pool', label: 'Private Pool' },
@@ -1134,7 +1119,7 @@ export default function PropertyEditor({ property, images: initialImages, availa
 
               {/* Distances */}
               <section>
-                <h3 className="font-semibold text-charcoal-900 mb-4">Nearby Distances</h3>
+                <h3 className="font-semibold text-charcoal-900 mb-4">{t('nearbyDistances')}</h3>
                 <p className="text-sm text-charcoal-500 mb-4">Distance/time to key locations (e.g. "5 min", "10 min", "2 km")</p>
                 <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
                   <div>
@@ -1277,12 +1262,12 @@ export default function PropertyEditor({ property, images: initialImages, availa
                   {saving ? (
                     <>
                       <Loader2 className="w-5 h-5 animate-spin" />
-                      Saving...
+                      {t('saving')}
                     </>
                   ) : (
                     <>
                       <Save className="w-5 h-5" />
-                      Save Property
+                      {t('saveProperty')}
                     </>
                   )}
                 </button>
@@ -1753,12 +1738,12 @@ export default function PropertyEditor({ property, images: initialImages, availa
             {saving ? (
               <>
                 <Loader2 className="w-5 h-5 animate-spin" />
-                Saving...
+                {t('saving')}
               </>
             ) : (
               <>
                 <Save className="w-5 h-5" />
-                Save Property
+                {t('saveProperty')}
               </>
             )}
           </button>

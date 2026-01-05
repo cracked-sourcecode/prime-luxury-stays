@@ -2,6 +2,7 @@ import { Metadata } from 'next'
 import { cookies } from 'next/headers'
 import { validateSession } from '@/lib/admin'
 import AdminSidebar from '@/components/admin/AdminSidebar'
+import AdminWrapper from '@/components/admin/AdminWrapper'
 
 export const metadata: Metadata = {
   title: 'Admin | Prime Luxury Stays',
@@ -22,18 +23,22 @@ export default async function AdminLayout({
   if (isLoginPage) {
     return (
       <div className="min-h-screen bg-cream-50">
-        {children}
+        <AdminWrapper>
+          {children}
+        </AdminWrapper>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <AdminSidebar userName={user?.email} userEmail={user?.email} />
-      <main className="admin-main min-h-screen transition-all duration-300">
-        {children}
-      </main>
-    </div>
+    <AdminWrapper>
+      <div className="min-h-screen bg-gray-50">
+        <AdminSidebar userName={user?.email} userEmail={user?.email} />
+        <main className="admin-main min-h-screen transition-all duration-300">
+          {children}
+        </main>
+      </div>
+    </AdminWrapper>
   )
 }
 
