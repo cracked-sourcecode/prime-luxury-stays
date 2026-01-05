@@ -52,6 +52,16 @@
         "title": "Entdecken Sie Ibizas Finest",
         "description": "Von böhmisch-schicken Rückzugsorten bis hin zu ultramodernen Anwesen – finden Sie Ihren perfekten Ibiza-Urlaub mit unserer kuratierten Sammlung.",
         "button": "Ibiza Erkunden"
+      },
+      "highlights": {
+        "sanJose": {
+          "subtitle": "Böhmischer Luxus",
+          "description": "Atemberaubende Sonnenuntergangs-Villen mit Panorama-Meerblick"
+        },
+        "santaEulalia": {
+          "subtitle": "Familienparadies",
+          "description": "Elegante Anwesen in der Nähe von unberührten Stränden"
+        }
       }
     }
   },

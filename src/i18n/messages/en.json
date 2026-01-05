@@ -52,6 +52,16 @@
         "title": "Discover Ibiza's Finest",
         "description": "From bohemian-chic retreats to ultra-modern estates, find your perfect Ibiza escape with our curated collection.",
         "button": "Explore Ibiza"
+      },
+      "highlights": {
+        "sanJose": {
+          "subtitle": "Bohemian Luxury",
+          "description": "Stunning sunset villas with panoramic sea views"
+        },
+        "santaEulalia": {
+          "subtitle": "Family Paradise",
+          "description": "Elegant estates near pristine beaches"
+        }
       }
     }
   },

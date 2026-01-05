@@ -42,19 +42,19 @@ const mallorcaRegions = [
   },
 ]
 
-// Ibiza highlights
-const ibizaHighlights = [
+// Ibiza highlights - using translation keys
+const getIbizaHighlights = (t: (key: string) => string) => [
   {
     name: 'San José',
-    subtitle: 'Bohemian Luxury',
+    subtitle: t('destinations.ibiza.highlights.sanJose.subtitle'),
     image: 'https://storage.googleapis.com/primeluxurystays/Ibiza%20Photo.png',
-    description: 'Stunning sunset villas with panoramic sea views',
+    description: t('destinations.ibiza.highlights.sanJose.description'),
   },
   {
     name: 'Santa Eulalia',
-    subtitle: 'Family Paradise',
+    subtitle: t('destinations.ibiza.highlights.santaEulalia.subtitle'),
     image: 'https://storage.googleapis.com/primeluxurystays/villa-dos-torres/images/1766504261465-Outdoor1.jpg',
-    description: 'Elegant estates near pristine beaches',
+    description: t('destinations.ibiza.highlights.santaEulalia.description'),
   },
 ]
 
@@ -198,7 +198,7 @@ export default function Destinations() {
 
           {/* Ibiza Grid - 2 column featured layout */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {ibizaHighlights.map((area, index) => (
+            {getIbizaHighlights(t).map((area, index) => (
               <motion.div
                 key={area.name}
                 initial={{ opacity: 0, y: 30 }}
