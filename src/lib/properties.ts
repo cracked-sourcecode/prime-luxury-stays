@@ -45,6 +45,8 @@ export interface Property {
   short_description_de: string | null;
   description_de: string | null;
   house_type_de: string | null;
+  // Rental type
+  is_monthly_rental: boolean;
 }
 
 export async function getActiveProperties(): Promise<Property[]> {

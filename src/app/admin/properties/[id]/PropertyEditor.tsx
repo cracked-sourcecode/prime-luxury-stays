@@ -129,6 +129,7 @@ export default function PropertyEditor({ property, images: initialImages, availa
     is_beachfront: property?.is_beachfront || false,
     is_active: property?.is_active ?? true,
     is_featured: property?.is_featured || false,
+    is_monthly_rental: property?.is_monthly_rental || false,
     min_stay_nights: property?.min_stay_nights?.toString() || '7',
     // Distances
     distance_beach: property?.distance_beach || '',
@@ -1393,6 +1394,18 @@ export default function PropertyEditor({ property, images: initialImages, availa
                     <span className="text-charcoal-700 flex items-center gap-2">
                       {formData.is_featured ? <Star className="w-5 h-5 text-gold-500 fill-gold-500" /> : <StarOff className="w-5 h-5 text-gray-400" />}
                       Featured Property
+                    </span>
+                  </label>
+                  <label className="flex items-center gap-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={formData.is_monthly_rental}
+                      onChange={(e) => setFormData(prev => ({ ...prev, is_monthly_rental: e.target.checked }))}
+                      className="w-5 h-5 rounded border-gray-300 text-gold-500 focus:ring-gold-500"
+                    />
+                    <span className="text-charcoal-700 flex items-center gap-2">
+                      <Calendar className={`w-5 h-5 ${formData.is_monthly_rental ? 'text-blue-500' : 'text-gray-400'}`} />
+                      Monthly Rental (Long-term)
                     </span>
                   </label>
                 </div>

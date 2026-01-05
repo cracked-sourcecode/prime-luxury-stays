@@ -44,6 +44,10 @@ function getLocalizedField(property: Property, field: 'name' | 'short_descriptio
 export default function MallorcaClient({ properties }: MallorcaClientProps) {
   const { t, locale } = useLocale()
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null)
+  
+  // Separate short-term and monthly rentals
+  const shortTermProperties = properties.filter(p => !p.is_monthly_rental)
+  const monthlyRentals = properties.filter(p => p.is_monthly_rental)
   const heroCandidates = [
     'https://storage.googleapis.com/primeluxurystays/Mallorca%20page%20Hero%20Section.png',
   ]
@@ -469,7 +473,7 @@ export default function MallorcaClient({ properties }: MallorcaClientProps) {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-            {properties.map((property) => (
+            {shortTermProperties.map((property) => (
               <div key={property.id}>
                 <Link href={`/properties/${property.slug}`} className="group block">
                   <div className="relative aspect-[4/3] rounded-2xl overflow-hidden mb-6 shadow-xl">
@@ -541,6 +545,103 @@ export default function MallorcaClient({ properties }: MallorcaClientProps) {
           </div>
         </div>
       </section>
+
+      {/* ========== MONTHLY RENTALS SECTION ========== */}
+      {monthlyRentals.length > 0 && (
+        <section className="relative z-20 bg-white py-28">
+          <div className="max-w-7xl mx-auto px-6 lg:px-8">
+            <div className="text-center mb-16">
+              <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-700 px-4 py-2 rounded-full text-sm font-semibold mb-6">
+                <Calendar className="w-4 h-4" />
+                {locale === 'de' ? 'Langzeitvermietung' : 'Long-Term Rentals'}
+              </div>
+              <h2 className="font-merriweather text-4xl md:text-5xl text-charcoal-900 mb-6">
+                {locale === 'de' ? 'Monatliche Vermietungen' : 'Monthly Rentals'}
+              </h2>
+              <p className="text-charcoal-500 text-xl max-w-3xl mx-auto">
+                {locale === 'de' 
+                  ? 'Perfekt für längere Aufenthalte. Diese Immobilien sind ausschließlich für monatliche Vermietungen verfügbar.'
+                  : 'Perfect for extended stays. These properties are available exclusively for monthly rentals.'}
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+              {monthlyRentals.map((property) => (
+                <motion.div 
+                  key={property.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                >
+                  <Link href={`/properties/${property.slug}`} className="group block">
+                    <div className="relative aspect-[16/10] rounded-2xl overflow-hidden mb-6 shadow-xl">
+                      <img
+                        src={property.featured_image || ''}
+                        alt={getLocalizedField(property, 'name', locale)}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                      
+                      <div className="absolute top-5 left-5 bg-blue-500 text-white px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-2 shadow-lg">
+                        <Calendar className="w-4 h-4" />
+                        {locale === 'de' ? 'Monatlich' : 'Monthly'}
+                      </div>
+
+                      <div className="absolute top-5 right-5 bg-white/95 backdrop-blur-sm text-charcoal-900 px-4 py-2 rounded-full text-sm font-semibold shadow-lg">
+                        {getLocalizedField(property, 'house_type', locale)}
+                      </div>
+
+                      {/* Quick stats on hover */}
+                      <div className="absolute bottom-5 left-5 right-5 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-4 group-hover:translate-y-0">
+                        <div className="bg-white/95 backdrop-blur-sm rounded-xl px-5 py-4 flex items-center justify-between">
+                          <div className="flex items-center gap-5 text-charcoal-700">
+                            <span className="flex items-center gap-2">
+                              <Bed className="w-5 h-5" /> {property.bedrooms}
+                            </span>
+                            <span className="flex items-center gap-2">
+                              <Bath className="w-5 h-5" /> {property.bathrooms}
+                            </span>
+                            <span className="flex items-center gap-2">
+                              <Users className="w-5 h-5" /> {property.max_guests}
+                            </span>
+                          </div>
+                          <ArrowRight className="w-5 h-5 text-blue-500" />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2 text-charcoal-500 text-sm mb-3">
+                      <MapPin className="w-4 h-4 text-blue-500" />
+                      <span>{property.city}, Mallorca</span>
+                    </div>
+
+                    <h3 className="font-merriweather text-2xl text-charcoal-900 mb-3 group-hover:text-blue-600 transition-colors">
+                      {getLocalizedField(property, 'name', locale)}
+                    </h3>
+
+                    <p className="text-charcoal-500 leading-relaxed mb-4">
+                      {getLocalizedField(property, 'short_description', locale)}
+                    </p>
+
+                    <div className="inline-flex items-center gap-2 text-blue-600 font-semibold">
+                      {locale === 'de' ? 'Anfrage für monatliche Vermietung' : 'Inquire for Monthly Rates'}
+                      <ArrowRight className="w-4 h-4" />
+                    </div>
+                  </Link>
+                </motion.div>
+              ))}
+            </div>
+
+            <div className="text-center mt-12">
+              <p className="text-charcoal-500 text-sm">
+                {locale === 'de' 
+                  ? '* Monatliche Vermietungen unterliegen den spanischen Langzeitmietgesetzen.'
+                  : '* Monthly rentals are subject to Spanish long-term rental regulations.'}
+              </p>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* ========== PROPERTIES MAP SECTION ========== */}
       <section className="py-20 bg-cream-50 relative z-0">
