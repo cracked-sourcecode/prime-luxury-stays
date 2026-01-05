@@ -47,7 +47,7 @@ const ibizaHighlights = [
   {
     name: 'San José',
     subtitle: 'Bohemian Luxury',
-    image: 'https://images.unsplash.com/photo-1539037116277-4db20889f2d4?w=800&q=80',
+    image: 'https://storage.googleapis.com/primeluxurystays/Ibiza%20Photo.png',
     description: 'Stunning sunset villas with panoramic sea views',
   },
   {
