@@ -29,8 +29,17 @@ interface IbizaClientProps {
   properties: Property[];
 }
 
+// Helper to get localized property field
+function getLocalizedField(property: Property, field: 'name' | 'short_description' | 'description' | 'house_type', locale: string): string {
+  if (locale === 'de') {
+    const deField = property[`${field}_de` as keyof Property] as string | null
+    if (deField) return deField
+  }
+  return (property[field] as string) || ''
+}
+
 export default function IbizaClient({ properties }: IbizaClientProps) {
-  const { t } = useLocale()
+  const { t, locale } = useLocale()
   const heroRef = useRef(null)
   const { scrollYProgress } = useScroll({
     target: heroRef,
@@ -317,7 +326,7 @@ export default function IbizaClient({ properties }: IbizaClientProps) {
                     <div className="relative aspect-[4/3] rounded-2xl overflow-hidden mb-6 shadow-xl">
                       <img
                         src={property.featured_image || ''}
-                        alt={property.name}
+                        alt={getLocalizedField(property, 'name', locale)}
                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -330,7 +339,7 @@ export default function IbizaClient({ properties }: IbizaClientProps) {
                       )}
 
                       <div className="absolute top-5 right-5 bg-white/95 backdrop-blur-sm text-charcoal-900 px-4 py-2 rounded-full text-sm font-semibold shadow-lg">
-                        {property.house_type}
+                        {getLocalizedField(property, 'house_type', locale)}
                       </div>
 
                       {/* Quick stats on hover */}
@@ -358,11 +367,11 @@ export default function IbizaClient({ properties }: IbizaClientProps) {
                     </div>
 
                     <h3 className="font-merriweather text-2xl text-charcoal-900 mb-3 group-hover:text-gold-600 transition-colors">
-                      {property.name}
+                      {getLocalizedField(property, 'name', locale)}
                     </h3>
 
                     <p className="text-charcoal-500 leading-relaxed mb-3">
-                      {property.short_description}
+                      {getLocalizedField(property, 'short_description', locale)}
                     </p>
 
                     {/* Price */}

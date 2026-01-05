@@ -33,6 +33,15 @@ interface PropertiesClientProps {
   properties: Property[];
 }
 
+// Helper to get localized property field
+function getLocalizedField(property: Property, field: 'name' | 'short_description' | 'description' | 'house_type', locale: string): string {
+  if (locale === 'de') {
+    const deField = property[`${field}_de` as keyof Property] as string | null
+    if (deField) return deField
+  }
+  return (property[field] as string) || ''
+}
+
 // Image component with error handling
 function PropertyImage({ src, alt, className }: { src: string; alt: string; className?: string }) {
   const [error, setError] = useState(false)
@@ -58,15 +67,6 @@ function PropertyImage({ src, alt, className }: { src: string; alt: string; clas
       onError={() => setError(true)}
     />
   )
-}
-
-// Helper to get localized property field
-function getLocalizedField(property: Property, field: 'name' | 'short_description' | 'description' | 'house_type', locale: string): string {
-  if (locale === 'de') {
-    const deField = property[`${field}_de` as keyof Property] as string | null
-    if (deField) return deField
-  }
-  return (property[field] as string) || ''
 }
 
 export default function PropertiesClient({ properties }: PropertiesClientProps) {
