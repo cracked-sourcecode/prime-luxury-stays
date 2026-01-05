@@ -1,10 +1,10 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet'
 import L from 'leaflet'
 import type { Property } from '@/lib/properties'
-import { MapPin, Bed, Bath, Users, X, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react'
+import { MapPin, Bed, Bath, Users } from 'lucide-react'
 import Link from 'next/link'
 import 'leaflet/dist/leaflet.css'
 
@@ -51,7 +51,6 @@ export default function MapInner({
   locale = 'en' 
 }: MapInnerProps) {
   const [activeProperty, setActiveProperty] = useState<Property | null>(null)
-  const scrollRef = useRef<HTMLDivElement>(null)
   
   // Filter properties with valid coordinates
   const propertiesWithCoords = properties.filter(p => p.latitude && p.longitude)
@@ -68,16 +67,6 @@ export default function MapInner({
   const handleMarkerClick = (property: Property) => {
     setActiveProperty(property)
     onPropertySelect?.(property)
-  }
-
-  const scroll = (direction: 'left' | 'right') => {
-    if (scrollRef.current) {
-      const scrollAmount = 280
-      scrollRef.current.scrollBy({
-        left: direction === 'left' ? -scrollAmount : scrollAmount,
-        behavior: 'smooth'
-      })
-    }
   }
 
   const formatPrice = (property: Property) => {
@@ -202,71 +191,6 @@ export default function MapInner({
         </button>
       </div>
 
-      {/* Property Cards Strip - Bottom */}
-      <div className="absolute bottom-0 left-0 right-0 z-[1000] bg-gradient-to-t from-white via-white to-transparent pt-6 pb-4">
-        {/* Scroll buttons */}
-        <button
-          onClick={() => scroll('left')}
-          className="absolute left-2 top-1/2 z-10 w-10 h-10 bg-white rounded-full shadow-lg border border-gray-100 flex items-center justify-center text-charcoal-600 hover:text-charcoal-900 transition-colors"
-        >
-          <ChevronLeft className="w-5 h-5" />
-        </button>
-        <button
-          onClick={() => scroll('right')}
-          className="absolute right-2 top-1/2 z-10 w-10 h-10 bg-white rounded-full shadow-lg border border-gray-100 flex items-center justify-center text-charcoal-600 hover:text-charcoal-900 transition-colors"
-        >
-          <ChevronRight className="w-5 h-5" />
-        </button>
-
-        <div 
-          ref={scrollRef}
-          className="flex gap-3 overflow-x-auto scrollbar-hide px-14"
-        >
-          {properties.map((property) => (
-            <button
-              key={property.id}
-              onClick={() => handleMarkerClick(property)}
-              className={`flex-shrink-0 bg-white rounded-2xl overflow-hidden shadow-lg transition-all hover:shadow-xl w-[260px] text-left border-2 ${
-                activeProperty?.id === property.id 
-                  ? 'border-charcoal-900 scale-[1.02]' 
-                  : 'border-transparent hover:border-gray-200'
-              }`}
-            >
-              <div className="flex gap-3 p-3">
-                <img 
-                  src={property.featured_image || ''} 
-                  alt={property.name}
-                  className="w-20 h-20 rounded-xl object-cover flex-shrink-0"
-                />
-                <div className="min-w-0 flex flex-col justify-between py-0.5">
-                  <div>
-                    <h4 className="font-semibold text-charcoal-900 text-sm truncate">
-                      {property.name}
-                    </h4>
-                    <p className="text-charcoal-500 text-xs flex items-center gap-1 mt-0.5">
-                      <MapPin className="w-3 h-3 flex-shrink-0" />
-                      <span className="truncate">{property.city}</span>
-                    </p>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <span className="text-charcoal-400 text-xs flex items-center gap-0.5">
-                      <Bed className="w-3 h-3" /> {property.bedrooms}
-                    </span>
-                    <span className="text-charcoal-400 text-xs flex items-center gap-0.5">
-                      <Bath className="w-3 h-3" /> {property.bathrooms}
-                    </span>
-                    {property.price_per_week && (
-                      <span className="text-charcoal-900 text-xs font-bold ml-auto">
-                        €{Number(property.price_per_week).toLocaleString()}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </button>
-          ))}
-        </div>
-      </div>
 
       {/* Custom marker styles */}
       <style jsx global>{`
