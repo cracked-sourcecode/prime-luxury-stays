@@ -1108,44 +1108,11 @@ export default function PropertyEditor({ property, images: initialImages, availa
               {/* Description - Both Languages Side by Side */}
               <section>
                 <h3 className="font-semibold text-charcoal-900 mb-4">{t('propertyContent')}</h3>
-                <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-6">
-                  <p className="text-sm text-amber-800">
-                    📝 {t('contentHint')}
-                  </p>
-                </div>
-
-                {/* Auto-Translate Buttons */}
-                <div className="flex flex-wrap items-center gap-3 mb-6 p-4 bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-xl">
-                  <div className="flex items-center gap-2 text-sm text-blue-800 font-medium">
-                    <Sparkles className="w-4 h-4" />
-                    {locale === 'de' ? 'AI-Übersetzung:' : 'AI Translation:'}
-                  </div>
-                  <button
-                    type="button"
-                    onClick={translateAllToGerman}
-                    disabled={translating !== null || !formData.name}
-                    className="flex items-center gap-2 px-4 py-2 bg-white border border-blue-300 rounded-lg text-sm font-medium text-blue-700 hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                  >
-                    {translating === 'all_de' ? (
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                    ) : (
-                      <Languages className="w-4 h-4" />
-                    )}
-                    🇬🇧 → 🇩🇪 {locale === 'de' ? 'Ins Deutsche übersetzen' : 'Translate to German'}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={translateAllToEnglish}
-                    disabled={translating !== null || !formData.name_de}
-                    className="flex items-center gap-2 px-4 py-2 bg-white border border-blue-300 rounded-lg text-sm font-medium text-blue-700 hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                  >
-                    {translating === 'all_en' ? (
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                    ) : (
-                      <Languages className="w-4 h-4" />
-                    )}
-                    🇩🇪 → 🇬🇧 {locale === 'de' ? 'Ins Englische übersetzen' : 'Translate to English'}
-                  </button>
+                <div className="flex items-center gap-2 text-sm text-gray-500 mb-6">
+                  <Sparkles className="w-4 h-4 text-blue-500" />
+                  {locale === 'de' 
+                    ? 'Texte werden automatisch übersetzt während Sie tippen' 
+                    : 'Text auto-translates as you type'}
                 </div>
                 
                 {/* Property Name - Both Languages */}
