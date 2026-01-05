@@ -15,12 +15,14 @@ const destinations = [
     name: 'Mallorca',
     image: 'https://storage.googleapis.com/primeluxurystays/Mallorca%20page%20Hero%20Section.png',
     href: '/mallorca',
+    comingSoon: false,
   },
   {
     id: 'ibiza',
     name: 'Ibiza',
     image: 'https://storage.googleapis.com/primeluxurystays/Ibiza%20Photo.png',
     href: '/ibiza',
+    comingSoon: false,
   },
   {
     id: 'south-of-france',
@@ -28,6 +30,7 @@ const destinations = [
     nameDe: 'Südfrankreich',
     image: 'https://images.unsplash.com/photo-1533104816931-20fa691ff6ca?w=800&q=80',
     href: '/south-of-france',
+    comingSoon: true,
   },
 ]
 
@@ -67,14 +70,21 @@ export default function OtherDestinations({ currentDestination }: OtherDestinati
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
             >
-              <Link href={destination.href} className="group block">
-                <div className="relative aspect-[16/9] rounded-2xl overflow-hidden shadow-xl">
+              <Link href={destination.comingSoon ? '/#contact' : destination.href} className="group block">
+                <div className={`relative aspect-[16/9] rounded-2xl overflow-hidden shadow-xl ${destination.comingSoon ? 'grayscale' : ''}`}>
                   <img
                     src={destination.image}
                     alt={destination.name}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    className={`w-full h-full object-cover transition-transform duration-700 ${destination.comingSoon ? '' : 'group-hover:scale-110'}`}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                  
+                  {/* Coming Soon Badge */}
+                  {destination.comingSoon && (
+                    <div className="absolute top-4 right-4 bg-gold-500 text-charcoal-900 px-4 py-2 rounded-full text-sm font-semibold">
+                      {locale === 'de' ? 'Demnächst' : 'Coming Soon'}
+                    </div>
+                  )}
                   
                   <div className="absolute bottom-0 left-0 right-0 p-6">
                     <div className="flex items-center gap-2 text-gold-400 mb-2">
@@ -88,7 +98,10 @@ export default function OtherDestinations({ currentDestination }: OtherDestinati
                     </h3>
                     <div className="flex items-center gap-2 text-white/80 group-hover:text-gold-400 transition-colors">
                       <span className="text-sm font-medium">
-                        {locale === 'de' ? 'Erkunden' : 'Explore'}
+                        {destination.comingSoon 
+                          ? (locale === 'de' ? 'Interesse Anmelden' : 'Register Interest')
+                          : (locale === 'de' ? 'Erkunden' : 'Explore')
+                        }
                       </span>
                       <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                     </div>
