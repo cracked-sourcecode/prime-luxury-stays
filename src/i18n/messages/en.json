@@ -393,7 +393,11 @@
       "viewDetails": "View Details",
       "exploreAll": "Explore All Ibiza Properties",
       "noProperties": "Coming Soon",
-      "noPropertiesDesc": "We're currently curating exceptional properties in Ibiza. Register your interest to be the first to know."
+      "noPropertiesDesc": "We're currently curating exceptional properties in Ibiza. Register your interest to be the first to know.",
+      "ctaTitle": "Your Ibiza Adventure",
+      "ctaHighlight": "Awaits",
+      "ctaDesc": "Let our concierge team craft the perfect Ibiza escape. Direct booking. Exclusive properties. Unforgettable experiences.",
+      "requestVilla": "Request Your Villa"
     },
     "southOfFrance": {
       "badge": "The French Riviera",

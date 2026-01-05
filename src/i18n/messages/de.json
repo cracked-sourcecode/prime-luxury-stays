@@ -393,7 +393,11 @@
       "viewDetails": "Details Ansehen",
       "exploreAll": "Alle Ibiza-Immobilien Erkunden",
       "noProperties": "Demnächst",
-      "noPropertiesDesc": "Wir kuratieren derzeit außergewöhnliche Immobilien auf Ibiza. Registrieren Sie Ihr Interesse, um als Erster informiert zu werden."
+      "noPropertiesDesc": "Wir kuratieren derzeit außergewöhnliche Immobilien auf Ibiza. Registrieren Sie Ihr Interesse, um als Erster informiert zu werden.",
+      "ctaTitle": "Ihr Ibiza-Abenteuer",
+      "ctaHighlight": "Wartet",
+      "ctaDesc": "Lassen Sie unser Concierge-Team Ihren perfekten Ibiza-Urlaub gestalten. Direktbuchung. Exklusive Immobilien. Unvergessliche Erlebnisse.",
+      "requestVilla": "Villa Anfragen"
     },
     "southOfFrance": {
       "badge": "Die Französische Riviera",

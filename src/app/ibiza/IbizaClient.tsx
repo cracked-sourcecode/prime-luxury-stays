@@ -434,13 +434,12 @@ export default function IbizaClient({ properties }: IbizaClientProps) {
             <Sparkles className="w-10 h-10 text-gold-400 mx-auto mb-8" />
             
             <h2 className="font-merriweather text-4xl md:text-5xl lg:text-6xl text-white mb-8 leading-tight">
-              Your Ibiza Adventure
+              {t('pages.ibiza.ctaTitle')}
               <br />
-              <span className="text-gold-400">Awaits</span>
+              <span className="text-gold-400">{t('pages.ibiza.ctaHighlight')}</span>
             </h2>
             <p className="text-white/70 text-xl md:text-2xl mb-12 max-w-3xl mx-auto leading-relaxed">
-              Let our concierge team craft the perfect Ibiza escape. 
-              Direct booking. Exclusive properties. Unforgettable experiences.
+              {t('pages.ibiza.ctaDesc')}
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-5">
               <Link 
@@ -448,7 +447,7 @@ export default function IbizaClient({ properties }: IbizaClientProps) {
                 className="btn-gold text-lg px-12 py-5 flex items-center gap-3"
               >
                 <Calendar className="w-5 h-5" />
-                {hasProperties ? 'Request Your Villa' : 'Register Interest'}
+                {hasProperties ? t('pages.ibiza.requestVilla') : t('pages.ibiza.registerInterest')}
               </Link>
             </div>
           </motion.div>
