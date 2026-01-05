@@ -276,20 +276,41 @@ export default function NewPropertyPage() {
   }
 
   // Upload images to a property
-  const uploadImages = async (propertyId: string) => {
+  const uploadImages = async (propertyId: string, propertySlug: string) => {
     for (let i = 0; i < stagedImages.length; i++) {
       const image = stagedImages[i]
       setUploadProgress(locale === 'de' 
         ? `Bild ${i + 1} von ${stagedImages.length} wird hochgeladen...`
         : `Uploading image ${i + 1} of ${stagedImages.length}...`)
       
-      const formData = new FormData()
-      formData.append('file', image.file)
-      formData.append('order', String(i))
+      // Step 1: Upload file to GCS
+      const uploadFormData = new FormData()
+      uploadFormData.append('file', image.file)
+      uploadFormData.append('propertySlug', propertySlug)
+      uploadFormData.append('propertyId', propertyId)
+      uploadFormData.append('fileType', 'image')
       
+      const uploadRes = await fetch('/api/admin/upload', {
+        method: 'POST',
+        body: uploadFormData,
+      })
+      
+      const uploadData = await uploadRes.json()
+      
+      if (!uploadData.success || !uploadData.url) {
+        console.error('Failed to upload image:', uploadData.error)
+        continue
+      }
+      
+      // Step 2: Save image record to database
       await fetch(`/api/admin/properties/${propertyId}/images`, {
         method: 'POST',
-        body: formData,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          image_url: uploadData.url,
+          is_featured: i === 0, // First image is featured
+          image_type: 'gallery',
+        }),
       })
     }
   }
@@ -327,7 +348,8 @@ export default function NewPropertyPage() {
       if (data.success && data.id) {
         // Upload staged images if any
         if (stagedImages.length > 0) {
-          await uploadImages(data.id)
+          const slug = generateSlug(formData.name)
+          await uploadImages(data.id, slug)
         }
         
         setSuccess(true)
