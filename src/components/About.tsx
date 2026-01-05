@@ -42,7 +42,7 @@ export default function About() {
                 <div
                   className="absolute inset-0 bg-cover bg-center"
                   style={{
-                    backgroundImage: `url('https://images.unsplash.com/photo-1564013799919-ab600027ffc6?q=80&w=2940&auto=format&fit=crop')`,
+                    backgroundImage: `url('https://storage.googleapis.com/primeluxurystays/4-elements/images/1766934271401-New_built_villa_Alcudia_ref_7724_-_night_shots_-_-2_result_12.32.15.webp')`,
                   }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-white/20 to-transparent" />
