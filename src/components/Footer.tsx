@@ -11,27 +11,29 @@ import { useLocale } from '@/i18n/LocaleProvider'
 
 const LOGO_URL = 'https://storage.googleapis.com/primeluxurystays/Logo%20no%20text%20(global%20header).png'
 
-const footerLinks = {
+// Footer links with translation keys
+const getFooterLinks = (t: (key: string) => string) => ({
   destinations: [
     { name: 'Ibiza', href: '/ibiza' },
     { name: 'Mallorca', href: '/mallorca' },
-    { name: 'South of France', href: '/south-of-france' },
+    { name: t('footer.links.southOfFrance'), href: '/south-of-france' },
   ],
   services: [
-    { name: 'Concierge', href: '#' },
-    { name: 'Experiences', href: '#' },
-    { name: 'Private Aviation', href: '#' },
-    { name: 'Yacht Charter', href: '#' },
+    { name: t('footer.links.concierge'), href: '/services/table-reservations' },
+    { name: t('footer.links.experiences'), href: '/services/private-chef' },
+    { name: t('footer.links.privateAviation'), href: '/services/private-aviation' },
+    { name: t('footer.links.yachtCharter'), href: '/services/yacht-charter' },
   ],
   company: [
-    { name: 'About Us', href: '/#about' },
-    { name: 'Contact', href: '/#contact' },
+    { name: t('footer.links.aboutUs'), href: '/#about' },
+    { name: t('footer.links.contact'), href: '/#contact' },
   ],
-}
+})
 
 export default function Footer() {
   const { t } = useLocale()
   const currentYear = new Date().getFullYear()
+  const footerLinks = getFooterLinks(t)
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' })

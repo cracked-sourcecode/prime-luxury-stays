@@ -174,7 +174,16 @@
     "terms": "Terms",
     "cookies": "Cookies",
     "legal": "Legal",
-    "registered": "EU & US Registered Business"
+    "registered": "EU & US Registered Business",
+    "links": {
+      "southOfFrance": "South of France",
+      "concierge": "Concierge",
+      "experiences": "Experiences",
+      "privateAviation": "Private Aviation",
+      "yachtCharter": "Yacht Charter",
+      "aboutUs": "About Us",
+      "contact": "Contact"
+    }
   },
   "common": {
     "learnMore": "Learn More",
