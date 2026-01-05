@@ -1107,7 +1107,37 @@ export default function PropertyEditor({ property, images: initialImages, availa
 
               {/* Description - Both Languages Side by Side */}
               <section>
-                <h3 className="font-semibold text-charcoal-900 mb-4">{t('propertyContent')}</h3>
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-semibold text-charcoal-900">{t('propertyContent')}</h3>
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={translateAllToGerman}
+                      disabled={translating !== null}
+                      className="flex items-center gap-2 px-3 py-1.5 bg-blue-50 text-blue-700 rounded-lg text-sm font-medium hover:bg-blue-100 disabled:opacity-50 transition-colors"
+                    >
+                      {translating === 'all_de' ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <span>🇬🇧 → 🇩🇪</span>
+                      )}
+                      {locale === 'de' ? 'Alles übersetzen' : 'Translate All'}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={translateAllToEnglish}
+                      disabled={translating !== null}
+                      className="flex items-center gap-2 px-3 py-1.5 bg-blue-50 text-blue-700 rounded-lg text-sm font-medium hover:bg-blue-100 disabled:opacity-50 transition-colors"
+                    >
+                      {translating === 'all_en' ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <span>🇩🇪 → 🇬🇧</span>
+                      )}
+                      {locale === 'de' ? 'Alles übersetzen' : 'Translate All'}
+                    </button>
+                  </div>
+                </div>
                 <div className="flex items-center gap-2 text-sm text-gray-500 mb-6">
                   <Sparkles className="w-4 h-4 text-blue-500" />
                   {locale === 'de' 
