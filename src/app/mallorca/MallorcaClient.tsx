@@ -542,90 +542,103 @@ export default function MallorcaClient({ properties }: MallorcaClientProps) {
       </section>
 
       {/* ========== PROPERTIES MAP SECTION ========== */}
-      <section className="py-28 bg-charcoal-900 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute inset-0" style={{
-            backgroundImage: `radial-gradient(circle at 2px 2px, rgba(184,149,76,0.3) 1px, transparent 0)`,
-            backgroundSize: '40px 40px',
-          }} />
-        </div>
-        
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 relative">
+      <section className="py-20 bg-cream-50">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-16"
+            className="text-center mb-12"
           >
-            <p className="text-gold-400 text-sm font-semibold tracking-[0.3em] uppercase mb-5">
-              Prime Locations
+            <p className="text-gold-600 text-sm font-semibold tracking-[0.3em] uppercase mb-4">
+              {locale === 'de' ? 'Interaktive Karte' : 'Interactive Map'}
             </p>
-            <h2 className="font-merriweather text-4xl md:text-5xl text-white mb-6">
-              Our Properties Across the Island
+            <h2 className="font-merriweather text-3xl md:text-4xl text-charcoal-900 mb-4">
+              {locale === 'de' ? 'Entdecken Sie Unsere Standorte' : 'Discover Our Locations'}
             </h2>
-            <p className="text-white/60 text-xl max-w-2xl mx-auto">
-              Strategically located in Mallorca's most prestigious areas. 
-              Each pin represents an opportunity for an unforgettable experience.
+            <p className="text-charcoal-500 text-lg max-w-2xl mx-auto">
+              {locale === 'de' 
+                ? 'Klicken Sie auf eine Immobilie, um mehr Details zu sehen' 
+                : 'Click on a property to see more details'}
             </p>
           </motion.div>
 
-          {/* Region Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-12">
-            {[
-              { name: 'Santa Ponsa', count: 2 },
-              { name: 'Calvià', count: 1 },
-              { name: 'Port d\'Andratx', count: 2 },
-              { name: 'Alcudia', count: 1 },
-              { name: 'Cas Concos', count: 1 },
-            ].map((region, i) => (
-              <motion.div
-                key={region.name}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="bg-white/5 backdrop-blur-sm rounded-2xl p-5 text-center border border-white/10 hover:bg-white/10 transition-colors cursor-pointer"
-              >
-                <div className="text-gold-400 font-merriweather text-2xl mb-1">{region.count}</div>
-                <div className="text-white/70 text-sm">{region.name}</div>
-              </motion.div>
-            ))}
+          {/* Map Container */}
+          <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
+            <div className="h-[500px]">
+              <PropertyMap 
+                properties={properties}
+                selectedProperty={selectedProperty}
+                onPropertySelect={setSelectedProperty}
+              />
+            </div>
+            
+            {/* Property Cards Strip */}
+            <div className="border-t border-gray-100 bg-white p-4">
+              <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide">
+                {properties.map((property) => (
+                  <div
+                    key={property.id}
+                    onClick={() => setSelectedProperty(property)}
+                    className={`flex-shrink-0 flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all ${
+                      selectedProperty?.id === property.id 
+                        ? 'bg-gold-50 border-2 border-gold-500 shadow-md' 
+                        : 'bg-gray-50 border-2 border-transparent hover:bg-gray-100'
+                    }`}
+                  >
+                    <img 
+                      src={property.featured_image || ''} 
+                      alt={getLocalizedField(property, 'name', locale)}
+                      className="w-16 h-16 rounded-lg object-cover"
+                    />
+                    <div className="min-w-0">
+                      <h4 className="font-semibold text-charcoal-900 text-sm truncate max-w-[140px]">
+                        {getLocalizedField(property, 'name', locale)}
+                      </h4>
+                      <p className="text-charcoal-500 text-xs flex items-center gap-1">
+                        <MapPin className="w-3 h-3" />
+                        {property.city}
+                      </p>
+                      {property.price_per_week && (
+                        <p className="text-gold-600 text-xs font-semibold mt-0.5">
+                          €{Number(property.price_per_week).toLocaleString()}/week
+                        </p>
+                      )}
+                    </div>
                   </div>
+                ))}
+              </div>
+            </div>
+          </div>
 
-          <div className="h-[500px] rounded-3xl overflow-hidden shadow-2xl border border-white/10">
-            <PropertyMap 
-              properties={properties}
-              selectedProperty={selectedProperty}
-              onPropertySelect={setSelectedProperty}
-            />
-                  </div>
-
+          {/* Selected Property CTA */}
           {selectedProperty && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mt-8 flex justify-center"
+              className="mt-6 flex justify-center"
             >
               <Link 
                 href={`/properties/${selectedProperty.slug}`}
-                className="bg-gold-500 text-charcoal-900 px-10 py-5 rounded-xl font-semibold hover:bg-gold-400 transition-colors inline-flex items-center gap-3 text-lg"
+                className="bg-gold-500 text-charcoal-900 px-8 py-4 rounded-xl font-semibold hover:bg-gold-400 transition-colors inline-flex items-center gap-3"
               >
-                View {selectedProperty.name}
+                {locale === 'de' ? 'Details ansehen:' : 'View Details:'} {getLocalizedField(selectedProperty, 'name', locale)}
                 <ArrowRight className="w-5 h-5" />
               </Link>
             </motion.div>
           )}
-                  </div>
+        </div>
       </section>
 
-      {/* ========== URGENCY / SOCIAL PROOF ========== */}
-      <section className="py-20 bg-gold-500">
+      {/* ========== SOCIAL PROOF STRIP ========== */}
+      <section className="py-16 bg-charcoal-900">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="grid md:grid-cols-3 gap-8 text-center">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             {[
-              { value: '500+', label: 'Happy Guests' },
-              { value: '7', label: 'Exclusive Properties' },
-              { value: '5★', label: 'Service Rating' },
+              { value: properties.length.toString(), label: locale === 'de' ? 'Luxusimmobilien' : 'Luxury Properties' },
+              { value: '500+', label: locale === 'de' ? 'Zufriedene Gäste' : 'Happy Guests' },
+              { value: '5★', label: locale === 'de' ? 'Service-Bewertung' : 'Service Rating' },
+              { value: '24/7', label: locale === 'de' ? 'Concierge-Service' : 'Concierge Support' },
             ].map((stat, i) => (
               <motion.div
                 key={stat.label}
@@ -634,8 +647,8 @@ export default function MallorcaClient({ properties }: MallorcaClientProps) {
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
               >
-                <div className="font-merriweather text-4xl md:text-5xl text-white mb-2">{stat.value}</div>
-                <div className="text-white/80 font-medium">{stat.label}</div>
+                <div className="font-merriweather text-3xl md:text-4xl text-gold-400 mb-2">{stat.value}</div>
+                <div className="text-white/70 text-sm font-medium">{stat.label}</div>
               </motion.div>
             ))}
           </div>
@@ -643,14 +656,14 @@ export default function MallorcaClient({ properties }: MallorcaClientProps) {
       </section>
 
       {/* ========== FINAL CTA ========== */}
-      <section className="relative py-32 overflow-hidden">
+      <section className="relative py-28 overflow-hidden">
         <div 
-          className="absolute inset-0 bg-cover bg-center bg-fixed"
+          className="absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage: `url('https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=1920&q=80')`,
+            backgroundImage: `url('https://storage.googleapis.com/primeluxurystays/Mallorca%20page%20Hero%20Section.png')`,
           }}
         />
-        <div className="absolute inset-0 bg-charcoal-900/85" />
+        <div className="absolute inset-0 bg-charcoal-900/80" />
         
         <div className="relative max-w-4xl mx-auto px-6 lg:px-8 text-center">
           <motion.div
@@ -662,13 +675,14 @@ export default function MallorcaClient({ properties }: MallorcaClientProps) {
             <Sparkles className="w-10 h-10 text-gold-400 mx-auto mb-8" />
             
             <h2 className="font-merriweather text-4xl md:text-5xl lg:text-6xl text-white mb-8 leading-tight">
-              Your Mediterranean Dream
+              {locale === 'de' ? 'Ihr Mediterraner Traum' : 'Your Mediterranean Dream'}
               <br />
-              <span className="text-gold-400">Starts Here</span>
+              <span className="text-gold-400">{locale === 'de' ? 'Beginnt Hier' : 'Starts Here'}</span>
             </h2>
             <p className="text-white/70 text-xl md:text-2xl mb-12 max-w-3xl mx-auto leading-relaxed">
-              Let our concierge team craft the perfect Mallorcan escape. 
-              Direct booking. Exclusive properties. Unforgettable experiences.
+              {locale === 'de' 
+                ? 'Lassen Sie unser Concierge-Team den perfekten mallorquinischen Urlaub für Sie gestalten. Direktbuchung. Exklusive Immobilien. Unvergessliche Erlebnisse.' 
+                : 'Let our concierge team craft the perfect Mallorcan escape. Direct booking. Exclusive properties. Unforgettable experiences.'}
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-5">
               <Link 
@@ -676,10 +690,10 @@ export default function MallorcaClient({ properties }: MallorcaClientProps) {
                 className="btn-gold text-lg px-12 py-5 flex items-center gap-3"
               >
                 <Calendar className="w-5 h-5" />
-                Request Your Villa
-            </Link>
+                {locale === 'de' ? 'Ihre Villa Anfragen' : 'Request Your Villa'}
+              </Link>
               <a href="tel:+34661539553" className="text-white/70 hover:text-white transition-colors text-lg">
-                or call <span className="text-gold-400 font-semibold">+34 661 53 95 53</span>
+                {locale === 'de' ? 'oder anrufen' : 'or call'} <span className="text-gold-400 font-semibold">+34 661 53 95 53</span>
               </a>
             </div>
           </motion.div>

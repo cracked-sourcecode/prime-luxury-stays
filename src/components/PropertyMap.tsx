@@ -1,7 +1,7 @@
 'use client'
 
 import type { Property } from '@/lib/properties'
-import { MapPin, ExternalLink } from 'lucide-react'
+import { ExternalLink, Navigation } from 'lucide-react'
 
 interface PropertyMapProps {
   properties: Property[];
@@ -10,18 +10,20 @@ interface PropertyMapProps {
 }
 
 export default function PropertyMap({ properties, selectedProperty, onPropertySelect }: PropertyMapProps) {
-  // Filter properties with valid coordinates
-  const propertiesWithCoords = properties.filter(p => p.latitude && p.longitude);
-  
-  // Use Google Maps embed for simplicity
+  // Use Google Maps embed - zoom in if property selected, otherwise show island
   const center = selectedProperty 
     ? { lat: selectedProperty.latitude!, lng: selectedProperty.longitude! }
     : { lat: 39.6, lng: 2.9 }; // Mallorca center
+  
+  const zoom = selectedProperty ? 14 : 10;
 
-  const mapUrl = `https://www.google.com/maps/embed/v1/view?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&center=${center.lat},${center.lng}&zoom=10&maptype=roadmap`;
+  // Use Places mode to show actual markers if we have a selected property
+  const mapUrl = selectedProperty && selectedProperty.latitude && selectedProperty.longitude
+    ? `https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=${center.lat},${center.lng}&zoom=${zoom}&maptype=roadmap`
+    : `https://www.google.com/maps/embed/v1/view?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&center=${center.lat},${center.lng}&zoom=${zoom}&maptype=roadmap`;
 
   return (
-    <div className="relative w-full h-full min-h-[400px] rounded-2xl overflow-hidden bg-cream-100">
+    <div className="relative w-full h-full min-h-[400px] overflow-hidden bg-gray-100">
       {/* Google Maps Embed */}
       <iframe
         src={mapUrl}
@@ -30,47 +32,34 @@ export default function PropertyMap({ properties, selectedProperty, onPropertySe
         loading="lazy"
         referrerPolicy="no-referrer-when-downgrade"
       />
-      
-      {/* Property List Overlay */}
-      <div className="absolute bottom-4 left-4 right-4 max-h-48 overflow-y-auto">
-        <div className="flex gap-3 overflow-x-auto pb-2">
-          {propertiesWithCoords.map((property) => (
-            <button
-              key={property.id}
-              onClick={() => onPropertySelect?.(property)}
-              className={`flex-shrink-0 bg-white rounded-xl p-3 shadow-lg transition-all hover:scale-105 ${
-                selectedProperty?.id === property.id ? 'ring-2 ring-gold-500' : ''
-              }`}
-            >
-              <div className="flex items-center gap-3">
-                <img 
-                  src={property.featured_image || ''} 
-                  alt={property.name}
-                  className="w-12 h-12 rounded-lg object-cover"
-                />
-                <div className="text-left">
-                  <h4 className="font-semibold text-charcoal-900 text-sm whitespace-nowrap">
-                    {property.name}
-                  </h4>
-                  <p className="text-xs text-charcoal-500">{property.city}</p>
-                </div>
-              </div>
-            </button>
-          ))}
-        </div>
-      </div>
 
-      {/* View on Google Maps Link */}
+      {/* Selected Property Info Overlay */}
       {selectedProperty && (
-        <a
-          href={`https://www.google.com/maps/search/?api=1&query=${selectedProperty.latitude},${selectedProperty.longitude}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="absolute top-4 right-4 bg-white rounded-lg px-4 py-2 shadow-lg flex items-center gap-2 text-charcoal-700 hover:text-gold-600 transition-colors text-sm font-medium"
-        >
-          <ExternalLink className="w-4 h-4" />
-          Open in Google Maps
-        </a>
+        <div className="absolute top-4 left-4 right-4 flex justify-between items-start gap-4">
+          {/* Property Name Badge */}
+          <div className="bg-white/95 backdrop-blur-sm rounded-xl px-4 py-3 shadow-lg flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg bg-gold-500 flex items-center justify-center">
+              <Navigation className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <h4 className="font-semibold text-charcoal-900 text-sm">
+                {selectedProperty.name}
+              </h4>
+              <p className="text-xs text-charcoal-500">{selectedProperty.city}, Mallorca</p>
+            </div>
+          </div>
+          
+          {/* Google Maps Link */}
+          <a
+            href={`https://www.google.com/maps/search/?api=1&query=${selectedProperty.latitude},${selectedProperty.longitude}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-white/95 backdrop-blur-sm rounded-xl px-4 py-3 shadow-lg flex items-center gap-2 text-charcoal-700 hover:text-gold-600 transition-colors text-sm font-medium"
+          >
+            <ExternalLink className="w-4 h-4" />
+            <span className="hidden sm:inline">Open in Maps</span>
+          </a>
+        </div>
       )}
     </div>
   );
