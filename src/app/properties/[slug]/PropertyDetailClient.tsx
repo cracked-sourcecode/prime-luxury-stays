@@ -43,6 +43,7 @@ import {
 } from 'lucide-react'
 import type { Property } from '@/lib/properties'
 import BookingCalendar from '@/components/BookingCalendar'
+import ShareModal from '@/components/ShareModal'
 import { useLocale } from '@/i18n/LocaleProvider'
 
 // Simple image component with loading state and error handling
@@ -129,7 +130,7 @@ function getLocalizedField(property: Property, field: 'name' | 'short_descriptio
 
 export default function PropertyDetailClient({ property, galleryImages: dbImages }: PropertyDetailClientProps) {
   const { t, locale, setLocale } = useLocale()
-  const [showShareToast, setShowShareToast] = useState(false)
+  const [showShareModal, setShowShareModal] = useState(false)
   const [showLangMenu, setShowLangMenu] = useState(false)
   const [showGallery, setShowGallery] = useState(false)
   const [showCalendar, setShowCalendar] = useState(false)
@@ -272,36 +273,11 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
               
               {/* Share Button */}
               <button 
-                onClick={async () => {
-                  // Build URL with language parameter
-                  const baseUrl = window.location.origin + window.location.pathname
-                  const shareUrl = `${baseUrl}?lang=${locale}`
-                  
-                  if (navigator.share) {
-                    try {
-                      await navigator.share({
-                        title: getLocalizedField(property, 'name', locale),
-                        text: getLocalizedField(property, 'short_description', locale),
-                        url: shareUrl,
-                      })
-                    } catch (err) {
-                      // User cancelled or error
-                    }
-                  } else {
-                    await navigator.clipboard.writeText(shareUrl)
-                    setShowShareToast(true)
-                    setTimeout(() => setShowShareToast(false), 2000)
-                  }
-                }}
-                className="p-2.5 rounded-full hover:bg-gray-100 transition-all relative"
+                onClick={() => setShowShareModal(true)}
+                className="p-2.5 rounded-full hover:bg-gray-100 transition-all"
                 title={locale === 'de' ? 'Teilen' : 'Share'}
               >
                 <Share2 className="w-5 h-5 text-charcoal-600" />
-                {showShareToast && (
-                  <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 bg-charcoal-900 text-white text-xs px-2 py-1 rounded whitespace-nowrap">
-                    {locale === 'de' ? 'Link kopiert!' : 'Link copied!'}
-                  </span>
-                )}
               </button>
               
               <Link 
@@ -975,6 +951,21 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
         }}
         initialCheckIn={selectedDates?.checkIn}
         initialCheckOut={selectedDates?.checkOut}
+      />
+
+      {/* Share Modal */}
+      <ShareModal
+        isOpen={showShareModal}
+        onClose={() => setShowShareModal(false)}
+        property={{
+          name: getLocalizedField(property, 'name', locale),
+          shortDescription: getLocalizedField(property, 'short_description', locale),
+          image: property.featured_image || '',
+          url: typeof window !== 'undefined' 
+            ? `${window.location.origin}/properties/${property.slug}?lang=${locale}`
+            : `/properties/${property.slug}?lang=${locale}`,
+        }}
+        locale={locale}
       />
     </div>
   )
