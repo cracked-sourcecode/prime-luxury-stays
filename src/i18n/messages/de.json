@@ -185,6 +185,16 @@
       "contact": "Kontakt"
     }
   },
+  "datePicker": {
+    "title": "Wählen Sie Ihre Reisedaten",
+    "checkIn": "Anreise",
+    "checkOut": "Abreise",
+    "duration": "Dauer",
+    "nights": "Nächte",
+    "nightsSelected": "Nächte ausgewählt",
+    "clear": "Löschen",
+    "confirm": "Bestätigen"
+  },
   "common": {
     "learnMore": "Mehr Erfahren",
     "viewProperties": "Immobilien Ansehen",

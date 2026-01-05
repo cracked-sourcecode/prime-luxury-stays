@@ -185,6 +185,16 @@
       "contact": "Contact"
     }
   },
+  "datePicker": {
+    "title": "Select your travel dates",
+    "checkIn": "Check-in",
+    "checkOut": "Check-out",
+    "duration": "Duration",
+    "nights": "nights",
+    "nightsSelected": "nights selected",
+    "clear": "Clear",
+    "confirm": "Confirm"
+  },
   "common": {
     "learnMore": "Learn More",
     "viewProperties": "View Properties",

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ChevronLeft, ChevronRight, X } from 'lucide-react'
+import { useLocale } from '@/i18n/LocaleProvider'
 
 interface DatePickerModalProps {
   isOpen: boolean
@@ -19,8 +20,9 @@ export default function DatePickerModal({
   onSelectDates,
   initialCheckIn,
   initialCheckOut,
-  title = 'Select Dates'
+  title
 }: DatePickerModalProps) {
+  const { t, locale } = useLocale()
   const [currentMonth, setCurrentMonth] = useState(new Date())
   const [checkIn, setCheckIn] = useState<Date | null>(initialCheckIn ? new Date(initialCheckIn) : null)
   const [checkOut, setCheckOut] = useState<Date | null>(initialCheckOut ? new Date(initialCheckOut) : null)
@@ -34,10 +36,17 @@ export default function DatePickerModal({
   const today = new Date()
   today.setHours(0, 0, 0, 0)
 
-  const monthNames = [
+  const monthNames = locale === 'de' ? [
+    'Januar', 'Februar', 'März', 'April', 'Mai', 'Juni',
+    'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'
+  ] : [
     'January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December'
   ]
+  
+  const dayNames = locale === 'de' ? ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'] : ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa']
+  
+  const modalTitle = title || t('datePicker.title')
 
   const getDaysInMonth = (date: Date) => {
     const year = date.getFullYear()
@@ -55,7 +64,7 @@ export default function DatePickerModal({
 
   const formatDisplayDate = (date: Date | null) => {
     if (!date) return '—'
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+    return date.toLocaleDateString(locale === 'de' ? 'de-DE' : 'en-US', { month: 'short', day: 'numeric', year: 'numeric' })
   }
 
   const handleDateClick = (day: number, month: number, year: number) => {
@@ -179,7 +188,7 @@ export default function DatePickerModal({
         >
           {/* Header */}
           <div className="flex items-center justify-between px-4 md:px-6 py-3 md:py-4 border-b border-cream-200">
-            <h2 className="font-merriweather text-lg md:text-xl text-charcoal-900">{title}</h2>
+            <h2 className="font-merriweather text-lg md:text-xl text-charcoal-900">{modalTitle}</h2>
             <button
               onClick={onClose}
               className="p-2 hover:bg-cream-100 rounded-full transition-colors"
@@ -192,19 +201,19 @@ export default function DatePickerModal({
           <div className="px-4 md:px-6 py-4 bg-cream-50 border-b border-cream-200">
             <div className="flex items-center gap-2 md:gap-4">
               <div className={`flex-1 p-2 md:p-3 rounded-xl border-2 transition-colors ${selectingCheckOut ? 'border-cream-200 bg-white' : 'border-gold-500 bg-white'}`}>
-                <div className="text-[10px] md:text-xs text-charcoal-500 uppercase tracking-wide">Check-in</div>
+                <div className="text-[10px] md:text-xs text-charcoal-500 uppercase tracking-wide">{t('datePicker.checkIn')}</div>
                 <div className="font-semibold text-charcoal-900 mt-0.5 text-sm md:text-base">{formatDisplayDate(checkIn)}</div>
               </div>
               <div className="text-charcoal-300">→</div>
               <div className={`flex-1 p-2 md:p-3 rounded-xl border-2 transition-colors ${selectingCheckOut && checkIn ? 'border-gold-500 bg-white' : 'border-cream-200 bg-white'}`}>
-                <div className="text-[10px] md:text-xs text-charcoal-500 uppercase tracking-wide">Check-out</div>
+                <div className="text-[10px] md:text-xs text-charcoal-500 uppercase tracking-wide">{t('datePicker.checkOut')}</div>
                 <div className="font-semibold text-charcoal-900 mt-0.5 text-sm md:text-base">{formatDisplayDate(checkOut)}</div>
               </div>
               {checkIn && checkOut && (
                 <div className="hidden md:block flex-1 p-3 rounded-xl bg-gold-50 border border-gold-200">
-                  <div className="text-xs text-gold-600 uppercase tracking-wide">Duration</div>
+                  <div className="text-xs text-gold-600 uppercase tracking-wide">{t('datePicker.duration')}</div>
                   <div className="font-semibold text-gold-800 mt-0.5">
-                    {Math.ceil((checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24))} nights
+                    {Math.ceil((checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24))} {t('datePicker.nights')}
                   </div>
                 </div>
               )}
@@ -213,7 +222,7 @@ export default function DatePickerModal({
             {checkIn && checkOut && (
               <div className="md:hidden mt-3 p-2 rounded-xl bg-gold-50 border border-gold-200 text-center">
                 <span className="text-sm font-semibold text-gold-800">
-                  {Math.ceil((checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24))} nights selected
+                  {Math.ceil((checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24))} {t('datePicker.nightsSelected')}
                 </span>
               </div>
             )}
@@ -267,7 +276,7 @@ export default function DatePickerModal({
             {/* Single Month View - Mobile */}
             <div className="md:hidden">
               <div className="grid grid-cols-7 gap-1 mb-2">
-                {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map((day) => (
+                {dayNames.map((day) => (
                   <div key={day} className="h-10 flex items-center justify-center text-xs font-medium text-charcoal-400">
                     {day}
                   </div>
@@ -283,7 +292,7 @@ export default function DatePickerModal({
               {/* First Month */}
               <div>
                 <div className="grid grid-cols-7 gap-1 mb-2">
-                  {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map((day) => (
+                  {dayNames.map((day) => (
                     <div key={day} className="h-10 flex items-center justify-center text-xs font-medium text-charcoal-400">
                       {day}
                     </div>
@@ -297,7 +306,7 @@ export default function DatePickerModal({
               {/* Second Month */}
               <div>
                 <div className="grid grid-cols-7 gap-1 mb-2">
-                  {['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'].map((day) => (
+                  {dayNames.map((day) => (
                     <div key={day} className="h-10 flex items-center justify-center text-xs font-medium text-charcoal-400">
                       {day}
                     </div>
@@ -316,14 +325,14 @@ export default function DatePickerModal({
               onClick={handleClear}
               className="text-charcoal-600 hover:text-charcoal-900 font-medium transition-colors text-sm md:text-base"
             >
-              Clear
+              {t('datePicker.clear')}
             </button>
             <button
               onClick={handleConfirm}
               disabled={!checkIn || !checkOut}
               className="bg-gold-500 hover:bg-gold-600 text-white px-5 md:px-6 py-2.5 md:py-3 rounded-xl font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-sm md:text-base"
             >
-              Confirm
+              {t('datePicker.confirm')}
             </button>
           </div>
         </motion.div>
