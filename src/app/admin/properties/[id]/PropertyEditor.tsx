@@ -28,7 +28,9 @@ import {
   GripVertical,
   Crown,
   Upload,
-  CloudUpload
+  CloudUpload,
+  Languages,
+  Sparkles
 } from 'lucide-react'
 import type { Property } from '@/lib/properties'
 import type { PropertyImage, PropertyAvailability } from '@/lib/admin'
@@ -90,11 +92,12 @@ interface PropertyEditorProps {
 
 export default function PropertyEditor({ property, images: initialImages, availability: initialAvailability, isNew }: PropertyEditorProps) {
   const router = useRouter()
-  const { t } = useAdminLocale()
+  const { t, locale } = useAdminLocale()
   const [activeTab, setActiveTab] = useState<'details' | 'images' | 'availability'>('details')
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
+  const [translating, setTranslating] = useState<string | null>(null)
 
   // Form state
   const [formData, setFormData] = useState({
@@ -138,6 +141,87 @@ export default function PropertyEditor({ property, images: initialImages, availa
     description_de: property?.description_de || '',
     house_type_de: property?.house_type_de || '',
   })
+
+  // Auto-translate function using OpenAI
+  const translateField = async (
+    sourceField: keyof typeof formData,
+    targetField: keyof typeof formData,
+    targetLanguage: 'en' | 'de',
+    fieldType: string
+  ) => {
+    const sourceText = formData[sourceField] as string
+    if (!sourceText?.trim()) return
+
+    setTranslating(targetField as string)
+    try {
+      const res = await fetch('/api/admin/translate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          text: sourceText,
+          targetLanguage,
+          fieldType
+        })
+      })
+      const data = await res.json()
+      if (data.translatedText) {
+        setFormData(prev => ({ ...prev, [targetField]: data.translatedText }))
+      }
+    } catch (err) {
+      console.error('Translation error:', err)
+    } finally {
+      setTranslating(null)
+    }
+  }
+
+  // Translate all fields at once
+  const translateAllToGerman = async () => {
+    setTranslating('all_de')
+    try {
+      const translations = [
+        { source: 'name', target: 'name_de', type: 'name' },
+        { source: 'short_description', target: 'short_description_de', type: 'short_description' },
+        { source: 'description', target: 'description_de', type: 'description' },
+      ]
+      
+      for (const t of translations) {
+        if (formData[t.source as keyof typeof formData]) {
+          await translateField(
+            t.source as keyof typeof formData,
+            t.target as keyof typeof formData,
+            'de',
+            t.type
+          )
+        }
+      }
+    } finally {
+      setTranslating(null)
+    }
+  }
+
+  const translateAllToEnglish = async () => {
+    setTranslating('all_en')
+    try {
+      const translations = [
+        { source: 'name_de', target: 'name', type: 'name' },
+        { source: 'short_description_de', target: 'short_description', type: 'short_description' },
+        { source: 'description_de', target: 'description', type: 'description' },
+      ]
+      
+      for (const t of translations) {
+        if (formData[t.source as keyof typeof formData]) {
+          await translateField(
+            t.source as keyof typeof formData,
+            t.target as keyof typeof formData,
+            'en',
+            t.type
+          )
+        }
+      }
+    } finally {
+      setTranslating(null)
+    }
+  }
 
   // Images state
   const [images, setImages] = useState<PropertyImage[]>(initialImages)
@@ -966,6 +1050,40 @@ export default function PropertyEditor({ property, images: initialImages, availa
                     📝 {t('contentHint')}
                   </p>
                 </div>
+
+                {/* Auto-Translate Buttons */}
+                <div className="flex flex-wrap items-center gap-3 mb-6 p-4 bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-xl">
+                  <div className="flex items-center gap-2 text-sm text-blue-800 font-medium">
+                    <Sparkles className="w-4 h-4" />
+                    {locale === 'de' ? 'AI-Übersetzung:' : 'AI Translation:'}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={translateAllToGerman}
+                    disabled={translating !== null || !formData.name}
+                    className="flex items-center gap-2 px-4 py-2 bg-white border border-blue-300 rounded-lg text-sm font-medium text-blue-700 hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    {translating === 'all_de' ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <Languages className="w-4 h-4" />
+                    )}
+                    🇬🇧 → 🇩🇪 {locale === 'de' ? 'Ins Deutsche übersetzen' : 'Translate to German'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={translateAllToEnglish}
+                    disabled={translating !== null || !formData.name_de}
+                    className="flex items-center gap-2 px-4 py-2 bg-white border border-blue-300 rounded-lg text-sm font-medium text-blue-700 hover:bg-blue-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    {translating === 'all_en' ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <Languages className="w-4 h-4" />
+                    )}
+                    🇩🇪 → 🇬🇧 {locale === 'de' ? 'Ins Englische übersetzen' : 'Translate to English'}
+                  </button>
+                </div>
                 
                 {/* Property Name - Both Languages */}
                 <div className="grid md:grid-cols-2 gap-6 mb-6">
@@ -983,9 +1101,20 @@ export default function PropertyEditor({ property, images: initialImages, availa
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-charcoal-700 mb-2">
-                      🇩🇪 Immobilienname (Deutsch)
-                    </label>
+                    <div className="flex items-center justify-between mb-2">
+                      <label className="block text-sm font-medium text-charcoal-700">
+                        🇩🇪 Immobilienname (Deutsch)
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => translateField('name', 'name_de', 'de', 'name')}
+                        disabled={translating !== null || !formData.name}
+                        className="text-xs text-blue-600 hover:text-blue-700 flex items-center gap-1 disabled:opacity-50"
+                      >
+                        {translating === 'name_de' ? <Loader2 className="w-3 h-3 animate-spin" /> : <Languages className="w-3 h-3" />}
+                        {locale === 'de' ? 'Übersetzen' : 'Translate'}
+                      </button>
+                    </div>
                     <input
                       type="text"
                       value={formData.name_de}
@@ -1050,9 +1179,20 @@ export default function PropertyEditor({ property, images: initialImages, availa
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-charcoal-700 mb-2">
-                      🇩🇪 Kurzbeschreibung (Deutsch)
-                    </label>
+                    <div className="flex items-center justify-between mb-2">
+                      <label className="block text-sm font-medium text-charcoal-700">
+                        🇩🇪 Kurzbeschreibung (Deutsch)
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => translateField('short_description', 'short_description_de', 'de', 'short_description')}
+                        disabled={translating !== null || !formData.short_description}
+                        className="text-xs text-blue-600 hover:text-blue-700 flex items-center gap-1 disabled:opacity-50"
+                      >
+                        {translating === 'short_description_de' ? <Loader2 className="w-3 h-3 animate-spin" /> : <Languages className="w-3 h-3" />}
+                        {locale === 'de' ? 'Übersetzen' : 'Translate'}
+                      </button>
+                    </div>
                     <input
                       type="text"
                       value={formData.short_description_de}
@@ -1078,9 +1218,20 @@ export default function PropertyEditor({ property, images: initialImages, availa
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-charcoal-700 mb-2">
-                      🇩🇪 Vollständige Beschreibung (Deutsch)
-                    </label>
+                    <div className="flex items-center justify-between mb-2">
+                      <label className="block text-sm font-medium text-charcoal-700">
+                        🇩🇪 Vollständige Beschreibung (Deutsch)
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => translateField('description', 'description_de', 'de', 'description')}
+                        disabled={translating !== null || !formData.description}
+                        className="text-xs text-blue-600 hover:text-blue-700 flex items-center gap-1 disabled:opacity-50"
+                      >
+                        {translating === 'description_de' ? <Loader2 className="w-3 h-3 animate-spin" /> : <Languages className="w-3 h-3" />}
+                        {locale === 'de' ? 'Übersetzen' : 'Translate'}
+                      </button>
+                    </div>
                     <textarea
                       value={formData.description_de}
                       onChange={(e) => setFormData(prev => ({ ...prev, description_de: e.target.value }))}
