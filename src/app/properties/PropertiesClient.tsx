@@ -116,8 +116,27 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
   // Use regions as destinations (not cities)
   const availableDestinations = ['Mallorca', 'Ibiza', 'South of France']
 
+  // Calculate stay duration in days
+  const getStayDuration = (): number => {
+    if (!filters.checkIn || !filters.checkOut) return 0
+    const checkIn = new Date(filters.checkIn)
+    const checkOut = new Date(filters.checkOut)
+    const diffTime = checkOut.getTime() - checkIn.getTime()
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+    return diffDays > 0 ? diffDays : 0
+  }
+
+  const stayDuration = getStayDuration()
+  const isMonthlyStay = stayDuration >= 28 // 4 weeks / ~1 month
+
   // Filter properties based on guest-focused criteria
   const filteredProperties = properties.filter(property => {
+    // Filter out monthly-only rentals unless booking for a month or more
+    if (property.is_monthly_rental) {
+      // If no dates selected or stay is less than 28 days, hide monthly rentals
+      if (!isMonthlyStay) return false
+    }
+    
     // Filter by region (destination)
     if (filters.destination !== 'all') {
       const propertyRegion = property.region?.toLowerCase() || 'mallorca'
