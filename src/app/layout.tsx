@@ -18,6 +18,13 @@ export const metadata: Metadata = {
   description: 'Find your next luxury escape. Discover handpicked villas and estates in the world\'s most extraordinary destinations. Your private paradise awaits.',
   keywords: 'luxury villas, exclusive estates, private residences, luxury rentals, premium vacation homes, luxury vacation rentals, private villas',
   metadataBase: new URL(SITE_URL),
+  icons: {
+    icon: [
+      { url: '/favicon.ico', sizes: '32x32', type: 'image/x-icon' },
+      { url: '/icon.png', sizes: '32x32', type: 'image/png' },
+    ],
+    apple: '/apple-icon.png',
+  },
   openGraph: {
     type: 'website',
     url: SITE_URL,
