@@ -444,14 +444,15 @@ export default function MallorcaClient({ properties }: MallorcaClientProps) {
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="text-center mb-20">
             <p className="text-gold-600 text-sm font-semibold tracking-[0.3em] uppercase mb-5">
-              Our Collection
+              {locale === 'de' ? 'Unsere Kollektion' : 'Our Collection'}
             </p>
             <h2 className="font-merriweather text-4xl md:text-5xl lg:text-6xl text-charcoal-900 mb-6">
-              Handpicked Luxury Villas
+              {locale === 'de' ? 'Handverlesene Luxusvillen' : 'Handpicked Luxury Villas'}
             </h2>
             <p className="text-charcoal-500 text-xl max-w-3xl mx-auto">
-              Each property personally vetted to ensure it meets our exacting standards. 
-              These aren't just houses—they're experiences waiting to unfold.
+              {locale === 'de' 
+                ? 'Jede Immobilie wird persönlich geprüft, um sicherzustellen, dass sie unseren hohen Standards entspricht. Dies sind nicht nur Häuser – es sind Erlebnisse, die darauf warten, entdeckt zu werden.'
+                : 'Each property personally vetted to ensure it meets our exacting standards. These aren\'t just houses—they\'re experiences waiting to unfold.'}
             </p>
           </div>
 
@@ -470,7 +471,7 @@ export default function MallorcaClient({ properties }: MallorcaClientProps) {
                     {property.is_featured && (
                       <div className="absolute top-5 left-5 bg-gold-500 text-white px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-2 shadow-lg">
                         <Star className="w-4 h-4 fill-white" />
-                        Featured
+                        {locale === 'de' ? 'Empfohlen' : 'Featured'}
                       </div>
                     )}
 
@@ -519,7 +520,7 @@ export default function MallorcaClient({ properties }: MallorcaClientProps) {
                           <span> - €{Number((property as any).price_per_week_high).toLocaleString()}</span>
                         )}
                       </span>
-                      <span className="text-charcoal-500 text-sm">/week</span>
+                      <span className="text-charcoal-500 text-sm">{locale === 'de' ? '/Woche' : '/week'}</span>
                     </div>
                   )}
                 </Link>
