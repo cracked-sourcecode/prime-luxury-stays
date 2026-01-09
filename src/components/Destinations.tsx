@@ -42,19 +42,22 @@ const getMallorcaRegions = (t: (key: string) => string) => [
   },
 ]
 
-// Ibiza highlights - using translation keys
+// Ibiza highlights - Es Cubells area + Villa Dos Torres property
 const getIbizaHighlights = (t: (key: string) => string) => [
   {
-    name: 'San José',
-    subtitle: t('destinations.ibiza.highlights.sanJose.subtitle'),
+    name: 'Es Cubells',
+    subtitle: t('destinations.ibiza.highlights.esCubells.subtitle'),
     image: 'https://storage.googleapis.com/primeluxurystays/Ibiza%20Photo.png',
-    description: t('destinations.ibiza.highlights.sanJose.description'),
+    description: t('destinations.ibiza.highlights.esCubells.description'),
+    isArea: true,
   },
   {
-    name: 'Santa Eulalia',
-    subtitle: t('destinations.ibiza.highlights.santaEulalia.subtitle'),
+    name: 'Villa Dos Torres',
+    subtitle: t('destinations.ibiza.highlights.villaDostorres.subtitle'),
     image: 'https://storage.googleapis.com/primeluxurystays/villa-dos-torres/images/1766504261465-Outdoor1.jpg',
-    description: t('destinations.ibiza.highlights.santaEulalia.description'),
+    description: t('destinations.ibiza.highlights.villaDostorres.description'),
+    isArea: false,
+    slug: 'villa-dos-torres',
   },
 ]
 
@@ -196,32 +199,32 @@ export default function Destinations() {
             </Link>
           </div>
 
-          {/* Ibiza Grid - 2 column featured layout */}
+          {/* Ibiza Grid - Es Cubells area + Villa Dos Torres side by side */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {getIbizaHighlights(t).map((area, index) => (
+            {getIbizaHighlights(t).map((item, index) => (
               <motion.div
-                key={area.name}
+                key={item.name}
                 initial={{ opacity: 0, y: 30 }}
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.6, delay: 0.7 + index * 0.1 }}
               >
-                <Link href="/ibiza" className="group block">
+                <Link href={item.isArea ? "/ibiza" : `/properties/${item.slug}`} className="group block">
                   <div className="relative aspect-[16/10] rounded-2xl overflow-hidden shadow-lg">
                     <img
-                      src={area.image}
-                      alt={area.name}
+                      src={item.image}
+                      alt={item.name}
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
                     <div className="absolute bottom-0 left-0 right-0 p-6">
-                      <p className="text-white/80 text-sm font-medium mb-1">
-                        {area.subtitle}
+                      <p className="text-gold-400 text-sm font-semibold tracking-wider uppercase mb-1">
+                        {item.subtitle}
                       </p>
                       <h3 className="font-merriweather text-2xl md:text-3xl text-white mb-2">
-                        {area.name}
+                        {item.name}
                       </h3>
                       <p className="text-white/70 text-sm">
-                        {area.description}
+                        {item.description}
                       </p>
                     </div>
                   </div>

@@ -76,13 +76,13 @@
         "button": "Ibiza Erkunden"
       },
       "highlights": {
-        "sanJose": {
-          "subtitle": "Böhmischer Luxus",
-          "description": "Atemberaubende Sonnenuntergangs-Villen mit Panorama-Meerblick"
+        "esCubells": {
+          "subtitle": "Ibizas Exklusivste Enklave",
+          "description": "Die ultimative Luxusadresse auf Ibiza. Klippenanwesen mit atemberaubendem Mittelmeerblick."
         },
-        "santaEulalia": {
-          "subtitle": "Familienparadies",
-          "description": "Elegante Anwesen in der Nähe von unberührten Stränden"
+        "villaDostorres": {
+          "subtitle": "Ausgewählte Immobilie",
+          "description": "Atemberaubende zeitgenössische Villa mit Panorama-Meerblick und erstklassigen Annehmlichkeiten."
         }
       }
     }

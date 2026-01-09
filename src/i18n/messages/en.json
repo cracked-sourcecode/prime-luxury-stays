@@ -76,13 +76,13 @@
         "button": "Explore Ibiza"
       },
       "highlights": {
-        "sanJose": {
-          "subtitle": "Bohemian Luxury",
-          "description": "Stunning sunset villas with panoramic sea views"
+        "esCubells": {
+          "subtitle": "Ibiza's Most Exclusive Enclave",
+          "description": "The ultimate luxury address in Ibiza. Clifftop estates with breathtaking Mediterranean views."
         },
-        "santaEulalia": {
-          "subtitle": "Family Paradise",
-          "description": "Elegant estates near pristine beaches"
+        "villaDostorres": {
+          "subtitle": "Featured Property",
+          "description": "Stunning contemporary villa with panoramic sea views and world-class amenities."
         }
       }
     }
