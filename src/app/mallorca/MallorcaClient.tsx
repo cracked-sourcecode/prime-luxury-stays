@@ -656,6 +656,8 @@ export default function MallorcaClient({ properties }: MallorcaClientProps) {
                 selectedProperty={selectedProperty}
                 onPropertySelect={setSelectedProperty}
                 locale={locale}
+                center={[39.6, 2.9]}
+                zoom={9}
               />
             </div>
           </div>

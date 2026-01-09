@@ -63,11 +63,17 @@ export default function MapInner({
     return isNaN(num) ? null : num
   }
   
+  // Validate coordinates are in Balearic Islands region (lat ~38-41, lng ~1-5)
+  const isValidBalearicCoord = (lat: number, lng: number): boolean => {
+    return lat >= 38 && lat <= 41 && lng >= 1 && lng <= 5
+  }
+  
   // Filter properties with valid coordinates (handles string/number from DB)
   const propertiesWithCoords = properties.filter(p => {
     const lat = parseCoord(p.latitude)
     const lng = parseCoord(p.longitude)
-    return lat !== null && lng !== null && lat !== 0 && lng !== 0
+    // Must be valid numbers AND in the Balearic Islands region
+    return lat !== null && lng !== null && isValidBalearicCoord(lat, lng)
   }).map(p => ({
     ...p,
     latitude: parseCoord(p.latitude) as number,
