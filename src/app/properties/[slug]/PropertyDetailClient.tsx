@@ -38,7 +38,6 @@ import {
   Home,
   Maximize,
   Grid3X3,
-  Quote,
   ImageOff
 } from 'lucide-react'
 import type { Property } from '@/lib/properties'
@@ -722,33 +721,6 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
               </div>
             </motion.section>
 
-            {/* ===== TESTIMONIAL ===== */}
-            <motion.section
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="bg-gradient-to-br from-gold-50 to-cream-50 rounded-3xl p-8 md:p-12 border border-gold-100"
-            >
-              <Quote className="w-12 h-12 text-gold-400 mb-6" />
-              <p className="font-merriweather text-2xl md:text-3xl text-charcoal-800 mb-8 leading-relaxed italic">
-                "An absolutely stunning property. Every detail was perfect—from the breathtaking views to the impeccable service. 
-                We didn't want to leave."
-              </p>
-              <div className="flex items-center gap-4">
-                <div className="w-14 h-14 rounded-full bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center">
-                  <span className="text-white font-bold text-xl">S</span>
-                </div>
-                <div>
-                  <p className="font-semibold text-charcoal-900 text-lg">Sarah & James</p>
-                  <p className="text-charcoal-500">London, UK • August 2024</p>
-                </div>
-                <div className="ml-auto flex items-center gap-1">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-5 h-5 text-gold-500 fill-gold-500" />
-                  ))}
-                </div>
-              </div>
-            </motion.section>
           </div>
 
           {/* ===== STICKY SIDEBAR (Hidden on mobile) ===== */}

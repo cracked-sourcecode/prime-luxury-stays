@@ -16,7 +16,6 @@ import {
   Bath,
   Users,
   Calendar,
-  Quote,
   ChevronDown,
   Sparkles,
   Shield,
@@ -315,23 +314,6 @@ export default function MallorcaClient({ properties }: MallorcaClientProps) {
                   alt="Luxury Villa"
                   className="w-full h-full object-cover"
                 />
-              </div>
-              {/* Floating testimonial */}
-              <div className="absolute -bottom-10 -left-10 bg-white rounded-2xl shadow-2xl p-8 max-w-sm border border-gray-100">
-                <Quote className="w-10 h-10 text-gold-400 mb-4" />
-                <p className="text-charcoal-700 text-lg italic mb-5 leading-relaxed">
-                  "The villa exceeded every expectation. The concierge arranged everything 
-                  perfectly. This is how luxury should feel."
-                </p>
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-gold-400 to-gold-600 flex items-center justify-center">
-                    <span className="text-white font-semibold text-lg">M</span>
-                  </div>
-                  <div>
-                    <p className="font-semibold text-charcoal-900">Marcus R.</p>
-                    <p className="text-charcoal-400 text-sm">Vista Malgrat, July 2024</p>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
