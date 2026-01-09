@@ -279,7 +279,8 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 }
 
 export default function ServicePage({ params }: { params: { slug: string } }) {
-  const service = servicesData[params.slug]
+  const { slug } = params
+  const service = servicesData[slug]
 
   if (!service) {
     notFound()

@@ -19,22 +19,21 @@ import {
   UtensilsCrossed,
   Car,
   ChefHat,
-  Palmtree,
-  Music,
-  Camera,
+  Lock,
+  Globe,
 } from 'lucide-react'
 import { useLocale } from '@/i18n/LocaleProvider'
 
+// Services that match the actual service pages
 const serviceOptions = [
-  { value: 'private-chef', label: 'Private Chef', labelDe: 'Privatkoch', icon: ChefHat },
-  { value: 'yacht-charter', label: 'Yacht Charter', labelDe: 'Yacht Charter', icon: Ship },
-  { value: 'luxury-transport', label: 'Luxury Transport', labelDe: 'Luxus-Transport', icon: Car },
   { value: 'private-aviation', label: 'Private Aviation', labelDe: 'Privatflüge', icon: Plane },
+  { value: 'private-chef', label: 'Private Chef', labelDe: 'Privatkoch', icon: ChefHat },
+  { value: 'yacht-charter', label: 'Yacht Charter', labelDe: 'Yachtcharter', icon: Ship },
+  { value: 'luxury-transport', label: 'Luxury Transport', labelDe: 'Luxustransport', icon: Car },
+  { value: 'helicopter', label: 'Helicopter', labelDe: 'Helikopter', icon: Plane },
+  { value: 'privacy-security', label: 'Privacy & Security', labelDe: 'Privatsphäre & Sicherheit', icon: Lock },
   { value: 'table-reservations', label: 'Table Reservations', labelDe: 'Tischreservierungen', icon: UtensilsCrossed },
-  { value: 'wellness-spa', label: 'Wellness & Spa', labelDe: 'Wellness & Spa', icon: Palmtree },
-  { value: 'event-planning', label: 'Event Planning', labelDe: 'Eventplanung', icon: Music },
-  { value: 'photography', label: 'Photography', labelDe: 'Fotografie', icon: Camera },
-  { value: 'other', label: 'Other Services', labelDe: 'Andere Dienstleistungen', icon: Sparkles },
+  { value: 'travel-bookings', label: 'Travel Bookings', labelDe: 'Reisebuchungen', icon: Globe },
 ]
 
 export default function ServicesInquireClient({
