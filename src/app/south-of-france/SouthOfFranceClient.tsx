@@ -58,7 +58,7 @@ export default function SouthOfFranceClient({ properties }: SouthOfFranceClientP
         <motion.div style={{ y: heroY }} className="absolute inset-0">
           {/* Background image */}
           <img
-            src="https://images.unsplash.com/photo-1534258936925-c58bed479fcb?w=1920&q=80"
+            src="https://images.unsplash.com/photo-1491166617655-0723a0999cfc?w=1920&q=80"
             alt="South of France"
             className="absolute inset-0 w-full h-full object-cover"
             loading="eager"
@@ -190,7 +190,7 @@ export default function SouthOfFranceClient({ properties }: SouthOfFranceClientP
             <div className="relative">
               <div className="aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl">
                 <img 
-                  src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1000&q=80"
+                  src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=1000&q=80"
                   alt="Luxury Villa French Riviera"
                   className="w-full h-full object-cover"
                 />
@@ -219,7 +219,7 @@ export default function SouthOfFranceClient({ properties }: SouthOfFranceClientP
             {/* Large Feature - Coastline */}
             <div className="col-span-12 md:col-span-8 row-span-2 relative rounded-3xl overflow-hidden group cursor-pointer">
               <img 
-                src="https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=1200&q=80"
+                src="https://images.unsplash.com/photo-1504512485720-7d83a16ee930?w=1200&q=80"
                 alt="French Riviera Coast"
                 className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
               />
@@ -243,7 +243,7 @@ export default function SouthOfFranceClient({ properties }: SouthOfFranceClientP
             {/* Art & Culture */}
             <div className="col-span-12 md:col-span-4 row-span-1 relative rounded-3xl overflow-hidden group cursor-pointer">
               <img 
-                src="https://images.unsplash.com/photo-1580136579312-94651dfd596d?w=800&q=80"
+                src="https://images.unsplash.com/photo-1544531586-fde5298cdd40?w=800&q=80"
                 alt="Art Gallery"
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
               />
@@ -448,7 +448,7 @@ export default function SouthOfFranceClient({ properties }: SouthOfFranceClientP
         <div 
           className="absolute inset-0 bg-cover bg-center bg-fixed"
           style={{
-            backgroundImage: `url('https://images.unsplash.com/photo-1533929736562-6f91513a9631?w=1920&q=80')`,
+            backgroundImage: `url('https://images.unsplash.com/photo-1491166617655-0723a0999cfc?w=1920&q=80')`,
           }}
         />
         <div className="absolute inset-0 bg-charcoal-900/85" />
