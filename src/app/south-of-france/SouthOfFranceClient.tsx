@@ -125,7 +125,7 @@ export default function SouthOfFranceClient({ properties }: SouthOfFranceClientP
               transition={{ duration: 2, repeat: Infinity }}
               className="flex flex-col items-center gap-3 text-white/60"
             >
-              <span className="text-xs tracking-[0.3em] uppercase">Discover More</span>
+              <span className="text-xs tracking-[0.3em] uppercase">{locale === 'de' ? 'Mehr Entdecken' : 'Discover More'}</span>
               <ChevronDown className="w-6 h-6" />
             </motion.div>
           </motion.div>
@@ -138,25 +138,41 @@ export default function SouthOfFranceClient({ properties }: SouthOfFranceClientP
           <div className="grid lg:grid-cols-2 gap-20 items-center">
             <div>
               <p className="text-gold-600 text-sm font-semibold tracking-[0.3em] uppercase mb-5">
-                The Prime Luxury Stays Experience
+                {locale === 'de' ? 'Das Prime Luxury Stays Erlebnis' : 'The Prime Luxury Stays Experience'}
               </p>
               <h2 className="font-merriweather text-3xl md:text-4xl lg:text-5xl text-charcoal-900 mb-8 leading-tight">
-                La Dolce Vita,
+                {locale === 'de' ? 'La Dolce Vita,' : 'La Dolce Vita,'}
                 <br />
-                <span className="text-gold-600">French Style.</span>
+                <span className="text-gold-600">{locale === 'de' ? 'Französischer Stil.' : 'French Style.'}</span>
               </h2>
               <p className="text-charcoal-500 text-xl mb-10 leading-relaxed">
-                From the glamour of Saint-Tropez to the artistic legacy of Nice, 
-                from Cannes' red carpets to Provence's sun-drenched vineyards—
-                discover why the world's elite have made this their playground for centuries.
+                {locale === 'de' 
+                  ? 'Vom Glamour von Saint-Tropez bis zum künstlerischen Erbe von Nizza, von Cannes\' roten Teppichen bis zu den sonnenverwöhnten Weinbergen der Provence – entdecken Sie, warum die Weltelite diesen Ort seit Jahrhunderten zu ihrem Spielplatz gemacht hat.'
+                  : 'From the glamour of Saint-Tropez to the artistic legacy of Nice, from Cannes\' red carpets to Provence\'s sun-drenched vineyards— discover why the world\'s elite have made this their playground for centuries.'}
               </p>
 
               <div className="space-y-6">
                 {[
-                  { icon: Shield, title: 'Verified Excellence', desc: 'Every villa personally inspected by our team' },
-                  { icon: Clock, title: 'Dedicated Concierge', desc: 'Private chefs, yacht charters, exclusive access' },
-                  { icon: Heart, title: 'Curated Experiences', desc: 'Wine tours, art galleries, Michelin dining' },
-                  { icon: Star, title: 'Best Price Guarantee', desc: 'Direct booking means no middleman markups' },
+                  { 
+                    icon: Shield, 
+                    title: locale === 'de' ? 'Geprüfte Exzellenz' : 'Verified Excellence', 
+                    desc: locale === 'de' ? 'Jede Villa persönlich von unserem Team inspiziert' : 'Every villa personally inspected by our team' 
+                  },
+                  { 
+                    icon: Clock, 
+                    title: locale === 'de' ? 'Persönlicher Concierge' : 'Dedicated Concierge', 
+                    desc: locale === 'de' ? 'Privatköche, Yachtcharter, exklusiver Zugang' : 'Private chefs, yacht charters, exclusive access' 
+                  },
+                  { 
+                    icon: Heart, 
+                    title: locale === 'de' ? 'Kuratierte Erlebnisse' : 'Curated Experiences', 
+                    desc: locale === 'de' ? 'Weintouren, Kunstgalerien, Michelin-Restaurants' : 'Wine tours, art galleries, Michelin dining' 
+                  },
+                  { 
+                    icon: Star, 
+                    title: locale === 'de' ? 'Bestpreis-Garantie' : 'Best Price Guarantee', 
+                    desc: locale === 'de' ? 'Direktbuchung ohne Vermittlergebühren' : 'Direct booking means no middleman markups' 
+                  },
                 ].map((item) => (
                   <div key={item.title} className="flex items-start gap-5">
                     <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-gold-100 to-gold-50 flex items-center justify-center flex-shrink-0">
@@ -189,12 +205,12 @@ export default function SouthOfFranceClient({ properties }: SouthOfFranceClientP
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="text-center mb-20">
             <p className="text-gold-600 text-sm font-semibold tracking-[0.3em] uppercase mb-5">
-              The Region
+              {locale === 'de' ? 'Die Region' : 'The Region'}
             </p>
             <h2 className="font-merriweather text-4xl md:text-5xl lg:text-6xl text-charcoal-900 mb-6">
-              Why the Côte d'Azur
+              {locale === 'de' ? 'Warum die Côte d\'Azur' : 'Why the Côte d\'Azur'}
               <br />
-              <span className="text-gold-600">Captures Hearts</span>
+              <span className="text-gold-600">{locale === 'de' ? 'Herzen Erobert' : 'Captures Hearts'}</span>
             </h2>
           </div>
 
@@ -211,14 +227,15 @@ export default function SouthOfFranceClient({ properties }: SouthOfFranceClientP
               <div className="absolute bottom-0 left-0 right-0 p-10">
                 <div className="flex items-center gap-3 text-gold-400 mb-4">
                   <Waves className="w-6 h-6" />
-                  <span className="text-sm font-semibold tracking-[0.2em] uppercase">The Azure Coast</span>
+                  <span className="text-sm font-semibold tracking-[0.2em] uppercase">{locale === 'de' ? 'Die Azurblaue Küste' : 'The Azure Coast'}</span>
                 </div>
                 <h3 className="font-merriweather text-3xl md:text-4xl text-white mb-4">
-                  115km of Stunning Coastline
+                  {locale === 'de' ? '115km Atemberaubende Küste' : '115km of Stunning Coastline'}
                 </h3>
                 <p className="text-white/70 text-lg max-w-xl">
-                  From Nice to Monaco, discover beaches that have inspired artists, 
-                  captivated royalty, and defined Mediterranean luxury.
+                  {locale === 'de' 
+                    ? 'Von Nizza bis Monaco – entdecken Sie Strände, die Künstler inspiriert, Könige verzaubert und den mediterranen Luxus definiert haben.'
+                    : 'From Nice to Monaco, discover beaches that have inspired artists, captivated royalty, and defined Mediterranean luxury.'}
                 </p>
               </div>
             </div>
@@ -234,10 +251,10 @@ export default function SouthOfFranceClient({ properties }: SouthOfFranceClientP
               <div className="absolute bottom-0 left-0 right-0 p-6">
                 <div className="flex items-center gap-2 text-gold-400 mb-2">
                   <Palette className="w-5 h-5" />
-                  <span className="text-xs font-semibold tracking-[0.15em] uppercase">Artistic</span>
+                  <span className="text-xs font-semibold tracking-[0.15em] uppercase">{locale === 'de' ? 'Künstlerisch' : 'Artistic'}</span>
                 </div>
                 <h3 className="font-merriweather text-xl text-white">
-                  World-Class Art & Culture
+                  {locale === 'de' ? 'Weltklasse Kunst & Kultur' : 'World-Class Art & Culture'}
                 </h3>
               </div>
             </div>
@@ -253,10 +270,10 @@ export default function SouthOfFranceClient({ properties }: SouthOfFranceClientP
               <div className="absolute bottom-0 left-0 right-0 p-6">
                 <div className="flex items-center gap-2 text-gold-400 mb-2">
                   <Wine className="w-5 h-5" />
-                  <span className="text-xs font-semibold tracking-[0.15em] uppercase">Michelin Stars</span>
+                  <span className="text-xs font-semibold tracking-[0.15em] uppercase">{locale === 'de' ? 'Michelin-Sterne' : 'Michelin Stars'}</span>
                 </div>
                 <h3 className="font-merriweather text-xl text-white">
-                  Exceptional Gastronomy
+                  {locale === 'de' ? 'Exzellente Gastronomie' : 'Exceptional Gastronomy'}
                 </h3>
               </div>
             </div>
@@ -275,7 +292,7 @@ export default function SouthOfFranceClient({ properties }: SouthOfFranceClientP
                   <span className="text-xs font-semibold tracking-[0.15em] uppercase">Provence</span>
                 </div>
                 <h3 className="font-merriweather text-xl text-white">
-                  Legendary Vineyards
+                  {locale === 'de' ? 'Legendäre Weinberge' : 'Legendary Vineyards'}
                 </h3>
               </div>
             </div>
@@ -291,10 +308,10 @@ export default function SouthOfFranceClient({ properties }: SouthOfFranceClientP
               <div className="absolute bottom-0 left-0 right-0 p-6">
                 <div className="flex items-center gap-2 text-gold-400 mb-2">
                   <Sun className="w-5 h-5" />
-                  <span className="text-xs font-semibold tracking-[0.15em] uppercase">300+ Sunny Days</span>
+                  <span className="text-xs font-semibold tracking-[0.15em] uppercase">{locale === 'de' ? '300+ Sonnentage' : '300+ Sunny Days'}</span>
                 </div>
                 <h3 className="font-merriweather text-xl text-white">
-                  Provençal Paradise
+                  {locale === 'de' ? 'Provenzalisches Paradies' : 'Provençal Paradise'}
                 </h3>
               </div>
             </div>
@@ -307,15 +324,21 @@ export default function SouthOfFranceClient({ properties }: SouthOfFranceClientP
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="text-center mb-20">
             <p className="text-gold-600 text-sm font-semibold tracking-[0.3em] uppercase mb-5">
-              Our Collection
+              {locale === 'de' ? 'Unsere Kollektion' : 'Our Collection'}
             </p>
             <h2 className="font-merriweather text-4xl md:text-5xl lg:text-6xl text-charcoal-900 mb-6">
-              {hasProperties ? 'French Riviera Estates' : 'Coming Soon to the Riviera'}
+              {hasProperties 
+                ? (locale === 'de' ? 'Anwesen an der Französischen Riviera' : 'French Riviera Estates')
+                : (locale === 'de' ? 'Demnächst an der Riviera' : 'Coming Soon to the Riviera')}
             </h2>
             <p className="text-charcoal-500 text-xl max-w-3xl mx-auto">
               {hasProperties 
-                ? 'Each property personally vetted to ensure it meets our exacting standards. These aren\'t just houses—they\'re experiences waiting to unfold.'
-                : 'We\'re expanding our collection to the South of France. Register your interest to be the first to know when our exclusive Riviera properties become available.'
+                ? (locale === 'de' 
+                    ? 'Jede Immobilie wird persönlich geprüft, um sicherzustellen, dass sie unseren hohen Standards entspricht. Dies sind nicht nur Häuser – es sind Erlebnisse, die darauf warten, entdeckt zu werden.'
+                    : 'Each property personally vetted to ensure it meets our exacting standards. These aren\'t just houses—they\'re experiences waiting to unfold.')
+                : (locale === 'de'
+                    ? 'Wir erweitern unsere Kollektion auf Südfrankreich. Registrieren Sie Ihr Interesse, um als Erster zu erfahren, wann unsere exklusiven Riviera-Immobilien verfügbar sind.'
+                    : 'We\'re expanding our collection to the South of France. Register your interest to be the first to know when our exclusive Riviera properties become available.')
               }
             </p>
           </div>
@@ -336,7 +359,7 @@ export default function SouthOfFranceClient({ properties }: SouthOfFranceClientP
                       {property.is_featured && (
                         <div className="absolute top-5 left-5 bg-gold-500 text-white px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-2 shadow-lg">
                           <Star className="w-4 h-4 fill-white" />
-                          Featured
+                          {locale === 'de' ? 'Empfohlen' : 'Featured'}
                         </div>
                       )}
 
@@ -385,7 +408,7 @@ export default function SouthOfFranceClient({ properties }: SouthOfFranceClientP
                             <span> - €{Number((property as any).price_per_week_high).toLocaleString()}</span>
                           )}
                         </span>
-                        <span className="text-charcoal-500 text-sm">/week</span>
+                        <span className="text-charcoal-500 text-sm">{locale === 'de' ? '/Woche' : '/week'}</span>
                       </div>
                     )}
                   </Link>
@@ -397,17 +420,18 @@ export default function SouthOfFranceClient({ properties }: SouthOfFranceClientP
               <div className="bg-white rounded-3xl shadow-xl p-12 max-w-2xl mx-auto border border-gold-100">
                 <Sparkles className="w-16 h-16 text-gold-500 mx-auto mb-6" />
                 <h3 className="font-merriweather text-2xl text-charcoal-900 mb-4">
-                  Be the First to Know
+                  {locale === 'de' ? 'Seien Sie der Erste' : 'Be the First to Know'}
                 </h3>
                 <p className="text-charcoal-500 mb-8">
-                  Our South of France collection is coming soon. Register your interest and we'll notify you 
-                  when exclusive Riviera properties become available.
+                  {locale === 'de' 
+                    ? 'Unsere Südfrankreich-Kollektion kommt bald. Registrieren Sie Ihr Interesse und wir benachrichtigen Sie, wenn exklusive Riviera-Immobilien verfügbar werden.'
+                    : 'Our South of France collection is coming soon. Register your interest and we\'ll notify you when exclusive Riviera properties become available.'}
                 </p>
                 <Link 
                   href="/#contact"
                   className="btn-gold inline-flex items-center gap-2"
                 >
-                  <span>Register Interest</span>
+                  <span>{locale === 'de' ? 'Interesse Registrieren' : 'Register Interest'}</span>
                   <ArrowRight className="w-5 h-5" />
                 </Link>
               </div>
@@ -439,13 +463,14 @@ export default function SouthOfFranceClient({ properties }: SouthOfFranceClientP
             <Sparkles className="w-10 h-10 text-gold-400 mx-auto mb-8" />
             
             <h2 className="font-merriweather text-4xl md:text-5xl lg:text-6xl text-white mb-8 leading-tight">
-              Your French Riviera Dream
+              {locale === 'de' ? 'Ihr Riviera-Traum' : 'Your French Riviera Dream'}
               <br />
-              <span className="text-gold-400">Begins Here</span>
+              <span className="text-gold-400">{locale === 'de' ? 'Beginnt Hier' : 'Begins Here'}</span>
             </h2>
             <p className="text-white/70 text-xl md:text-2xl mb-12 max-w-3xl mx-auto leading-relaxed">
-              Let our concierge team craft the perfect Riviera escape. 
-              Direct booking. Exclusive properties. Unforgettable experiences.
+              {locale === 'de' 
+                ? 'Lassen Sie unser Concierge-Team den perfekten Riviera-Aufenthalt für Sie gestalten. Direktbuchung. Exklusive Immobilien. Unvergessliche Erlebnisse.'
+                : 'Let our concierge team craft the perfect Riviera escape. Direct booking. Exclusive properties. Unforgettable experiences.'}
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-5">
               <Link 
@@ -453,7 +478,9 @@ export default function SouthOfFranceClient({ properties }: SouthOfFranceClientP
                 className="btn-gold text-lg px-12 py-5 flex items-center gap-3"
               >
                 <Calendar className="w-5 h-5" />
-                {hasProperties ? 'Request Your Villa' : 'Register Interest'}
+                {hasProperties 
+                  ? (locale === 'de' ? 'Villa Anfragen' : 'Request Your Villa')
+                  : (locale === 'de' ? 'Interesse Registrieren' : 'Register Interest')}
               </Link>
             </div>
           </motion.div>

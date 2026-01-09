@@ -149,16 +149,31 @@ export default function IbizaClient({ properties }: IbizaClientProps) {
                 <span className="text-gold-600">{t('pages.ibiza.diffTitle2')}</span>
               </h2>
               <p className="text-charcoal-500 text-xl mb-10 leading-relaxed">
-                {t('pages.ibiza.diffDesc')} 
-                travelers call their private paradise.
+                {t('pages.ibiza.diffDesc')}
               </p>
 
               <div className="space-y-6">
                 {[
-                  { icon: Shield, title: 'Verified Excellence', desc: 'Every villa personally inspected by our team' },
-                  { icon: Clock, title: 'Dedicated Concierge', desc: 'VIP access, yacht charters, private chefs' },
-                  { icon: Heart, title: 'Curated Experiences', desc: 'Secret beaches, exclusive events, wellness retreats' },
-                  { icon: Star, title: 'Best Price Guarantee', desc: 'Direct booking means no middleman markups' },
+                  { 
+                    icon: Shield, 
+                    title: locale === 'de' ? 'Geprüfte Exzellenz' : 'Verified Excellence', 
+                    desc: locale === 'de' ? 'Jede Villa persönlich von unserem Team inspiziert' : 'Every villa personally inspected by our team' 
+                  },
+                  { 
+                    icon: Clock, 
+                    title: locale === 'de' ? 'Persönlicher Concierge' : 'Dedicated Concierge', 
+                    desc: locale === 'de' ? 'VIP-Zugang, Yachtcharter, Privatköche' : 'VIP access, yacht charters, private chefs' 
+                  },
+                  { 
+                    icon: Heart, 
+                    title: locale === 'de' ? 'Kuratierte Erlebnisse' : 'Curated Experiences', 
+                    desc: locale === 'de' ? 'Geheime Strände, exklusive Events, Wellness-Retreats' : 'Secret beaches, exclusive events, wellness retreats' 
+                  },
+                  { 
+                    icon: Star, 
+                    title: locale === 'de' ? 'Bestpreis-Garantie' : 'Best Price Guarantee', 
+                    desc: locale === 'de' ? 'Direktbuchung ohne Vermittlergebühren' : 'Direct booking means no middleman markups' 
+                  },
                 ].map((item) => (
                   <div key={item.title} className="flex items-start gap-5">
                     <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-gold-100 to-gold-50 flex items-center justify-center flex-shrink-0">
@@ -191,12 +206,12 @@ export default function IbizaClient({ properties }: IbizaClientProps) {
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="text-center mb-20">
             <p className="text-gold-600 text-sm font-semibold tracking-[0.3em] uppercase mb-5">
-              The Island
+              {locale === 'de' ? 'Die Insel' : 'The Island'}
             </p>
             <h2 className="font-merriweather text-4xl md:text-5xl lg:text-6xl text-charcoal-900 mb-6">
-              Why Ibiza Captivates
+              {locale === 'de' ? 'Warum Ibiza' : 'Why Ibiza Captivates'}
               <br />
-              <span className="text-gold-600">The World's Elite</span>
+              <span className="text-gold-600">{locale === 'de' ? 'Die Weltelite Begeistert' : "The World's Elite"}</span>
             </h2>
           </div>
 
@@ -213,14 +228,15 @@ export default function IbizaClient({ properties }: IbizaClientProps) {
               <div className="absolute bottom-0 left-0 right-0 p-10">
                 <div className="flex items-center gap-3 text-gold-400 mb-4">
                   <Waves className="w-6 h-6" />
-                  <span className="text-sm font-semibold tracking-[0.2em] uppercase">80+ Beaches</span>
+                  <span className="text-sm font-semibold tracking-[0.2em] uppercase">{locale === 'de' ? '80+ Strände' : '80+ Beaches'}</span>
                 </div>
                 <h3 className="font-merriweather text-3xl md:text-4xl text-white mb-4">
-                  Hidden Coves & Crystal Waters
+                  {locale === 'de' ? 'Versteckte Buchten & Kristallklares Wasser' : 'Hidden Coves & Crystal Waters'}
                 </h3>
                 <p className="text-white/70 text-lg max-w-xl">
-                  From the famous Ses Salines to secret spots only locals know. 
-                  Discover beaches that feel like your own private paradise.
+                  {locale === 'de' 
+                    ? 'Von den berühmten Ses Salines bis zu geheimen Orten, die nur Einheimische kennen. Entdecken Sie Strände, die sich wie Ihr eigenes privates Paradies anfühlen.'
+                    : 'From the famous Ses Salines to secret spots only locals know. Discover beaches that feel like your own private paradise.'}
                 </p>
               </div>
             </div>
@@ -236,10 +252,10 @@ export default function IbizaClient({ properties }: IbizaClientProps) {
               <div className="absolute bottom-0 left-0 right-0 p-6">
                 <div className="flex items-center gap-2 text-gold-400 mb-2">
                   <Music className="w-5 h-5" />
-                  <span className="text-xs font-semibold tracking-[0.15em] uppercase">Legendary</span>
+                  <span className="text-xs font-semibold tracking-[0.15em] uppercase">{locale === 'de' ? 'Legendär' : 'Legendary'}</span>
                 </div>
                 <h3 className="font-merriweather text-xl text-white">
-                  World-Famous Nightlife
+                  {locale === 'de' ? 'Weltberühmtes Nachtleben' : 'World-Famous Nightlife'}
                 </h3>
               </div>
             </div>
@@ -258,7 +274,7 @@ export default function IbizaClient({ properties }: IbizaClientProps) {
                   <span className="text-xs font-semibold tracking-[0.15em] uppercase">Beach Clubs</span>
                 </div>
                 <h3 className="font-merriweather text-xl text-white">
-                  Gourmet Experiences
+                  {locale === 'de' ? 'Gourmet-Erlebnisse' : 'Gourmet Experiences'}
                 </h3>
               </div>
             </div>
@@ -274,10 +290,10 @@ export default function IbizaClient({ properties }: IbizaClientProps) {
               <div className="absolute bottom-0 left-0 right-0 p-6">
                 <div className="flex items-center gap-2 text-gold-400 mb-2">
                   <Anchor className="w-5 h-5" />
-                  <span className="text-xs font-semibold tracking-[0.15em] uppercase">Nautical</span>
+                  <span className="text-xs font-semibold tracking-[0.15em] uppercase">{locale === 'de' ? 'Nautisch' : 'Nautical'}</span>
                 </div>
                 <h3 className="font-merriweather text-xl text-white">
-                  Yacht & Sailing
+                  {locale === 'de' ? 'Yacht & Segeln' : 'Yacht & Sailing'}
                 </h3>
               </div>
             </div>
@@ -293,10 +309,10 @@ export default function IbizaClient({ properties }: IbizaClientProps) {
               <div className="absolute bottom-0 left-0 right-0 p-6">
                 <div className="flex items-center gap-2 text-gold-400 mb-2">
                   <Sun className="w-5 h-5" />
-                  <span className="text-xs font-semibold tracking-[0.15em] uppercase">Legendary</span>
+                  <span className="text-xs font-semibold tracking-[0.15em] uppercase">{locale === 'de' ? 'Legendär' : 'Legendary'}</span>
                 </div>
                 <h3 className="font-merriweather text-xl text-white">
-                  Iconic Sunsets
+                  {locale === 'de' ? 'Ikonische Sonnenuntergänge' : 'Iconic Sunsets'}
                 </h3>
               </div>
             </div>
@@ -309,15 +325,21 @@ export default function IbizaClient({ properties }: IbizaClientProps) {
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="text-center mb-20">
             <p className="text-gold-600 text-sm font-semibold tracking-[0.3em] uppercase mb-5">
-              Our Collection
+              {locale === 'de' ? 'Unsere Kollektion' : 'Our Collection'}
             </p>
             <h2 className="font-merriweather text-4xl md:text-5xl lg:text-6xl text-charcoal-900 mb-6">
-              {hasProperties ? 'Exclusive Ibiza Villas' : 'Coming Soon to Ibiza'}
+              {hasProperties 
+                ? (locale === 'de' ? 'Exklusive Ibiza Villen' : 'Exclusive Ibiza Villas')
+                : (locale === 'de' ? 'Demnächst auf Ibiza' : 'Coming Soon to Ibiza')}
             </h2>
             <p className="text-charcoal-500 text-xl max-w-3xl mx-auto">
               {hasProperties 
-                ? 'Each property personally vetted to ensure it meets our exacting standards. These aren\'t just houses—they\'re experiences waiting to unfold.'
-                : 'We\'re expanding our collection to Ibiza. Register your interest to be the first to know when our exclusive Ibiza properties become available.'
+                ? (locale === 'de' 
+                    ? 'Jede Immobilie wird persönlich geprüft, um sicherzustellen, dass sie unseren hohen Standards entspricht. Dies sind nicht nur Häuser – es sind Erlebnisse, die darauf warten, entdeckt zu werden.'
+                    : 'Each property personally vetted to ensure it meets our exacting standards. These aren\'t just houses—they\'re experiences waiting to unfold.')
+                : (locale === 'de'
+                    ? 'Wir erweitern unsere Kollektion auf Ibiza. Registrieren Sie Ihr Interesse, um als Erster zu erfahren, wann unsere exklusiven Ibiza-Immobilien verfügbar sind.'
+                    : 'We\'re expanding our collection to Ibiza. Register your interest to be the first to know when our exclusive Ibiza properties become available.')
               }
             </p>
           </div>
@@ -338,7 +360,7 @@ export default function IbizaClient({ properties }: IbizaClientProps) {
                       {property.is_featured && (
                         <div className="absolute top-5 left-5 bg-gold-500 text-white px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-2 shadow-lg">
                           <Star className="w-4 h-4 fill-white" />
-                          Featured
+                          {locale === 'de' ? 'Empfohlen' : 'Featured'}
                         </div>
                       )}
 
@@ -387,7 +409,7 @@ export default function IbizaClient({ properties }: IbizaClientProps) {
                             <span> - €{Number((property as any).price_per_week_high).toLocaleString()}</span>
                           )}
                         </span>
-                        <span className="text-charcoal-500 text-sm">/week</span>
+                        <span className="text-charcoal-500 text-sm">{locale === 'de' ? '/Woche' : '/week'}</span>
                       </div>
                     )}
                   </Link>
@@ -399,17 +421,18 @@ export default function IbizaClient({ properties }: IbizaClientProps) {
               <div className="bg-white rounded-3xl shadow-xl p-12 max-w-2xl mx-auto border border-gold-100">
                 <Sparkles className="w-16 h-16 text-gold-500 mx-auto mb-6" />
                 <h3 className="font-merriweather text-2xl text-charcoal-900 mb-4">
-                  Be the First to Know
+                  {locale === 'de' ? 'Seien Sie der Erste' : 'Be the First to Know'}
                 </h3>
                 <p className="text-charcoal-500 mb-8">
-                  Our Ibiza collection is coming soon. Register your interest and we'll notify you 
-                  when exclusive properties become available.
+                  {locale === 'de' 
+                    ? 'Unsere Ibiza-Kollektion kommt bald. Registrieren Sie Ihr Interesse und wir benachrichtigen Sie, wenn exklusive Immobilien verfügbar werden.'
+                    : 'Our Ibiza collection is coming soon. Register your interest and we\'ll notify you when exclusive properties become available.'}
                 </p>
                 <Link 
                   href="/#contact"
                   className="btn-gold inline-flex items-center gap-2"
                 >
-                  <span>Register Interest</span>
+                  <span>{locale === 'de' ? 'Interesse Registrieren' : 'Register Interest'}</span>
                   <ArrowRight className="w-5 h-5" />
                 </Link>
               </div>
