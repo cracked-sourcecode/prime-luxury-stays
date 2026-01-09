@@ -288,7 +288,7 @@ export default function ServicePage({ params }: { params: { slug: string } }) {
   return (
     <main className="min-h-screen">
       <Navigation />
-      <ServicePageClient service={service} />
+      <ServicePageClient service={service} slug={slug} />
       <Footer />
     </main>
   )

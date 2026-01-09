@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { useLocale } from '@/i18n/LocaleProvider'
 
 interface ServicePageClientProps {
+  slug: string
   service: {
     title: string
     titleDe?: string
@@ -20,7 +21,7 @@ interface ServicePageClientProps {
   }
 }
 
-export default function ServicePageClient({ service }: ServicePageClientProps) {
+export default function ServicePageClient({ service, slug }: ServicePageClientProps) {
   const { locale } = useLocale()
 
   const title = locale === 'de' && service.titleDe ? service.titleDe : service.title
@@ -177,7 +178,7 @@ export default function ServicePageClient({ service }: ServicePageClientProps) {
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
               <Link
-                href="/inquire"
+                href={`/inquire/services?service=${slug}`}
                 className="inline-flex items-center gap-2 bg-gold-500 text-white px-8 py-4 rounded-xl font-semibold hover:bg-gold-600 transition-colors w-full sm:w-auto justify-center"
               >
                 {locale === 'de' ? 'Diesen Service anfragen' : 'Request This Service'}

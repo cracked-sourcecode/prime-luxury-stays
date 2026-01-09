@@ -248,7 +248,7 @@ export default function ServicesPageClient() {
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
               <Link
-                href="/inquire"
+                href="/inquire/services"
                 className="inline-flex items-center gap-2 bg-gold-500 text-white px-8 py-4 rounded-xl font-semibold hover:bg-gold-600 transition-colors w-full sm:w-auto justify-center"
               >
                 {locale === 'de' ? 'Planung starten' : 'Start Planning'}
