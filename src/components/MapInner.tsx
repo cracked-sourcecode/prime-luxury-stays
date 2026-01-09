@@ -56,17 +56,26 @@ export default function MapInner({
 }: MapInnerProps) {
   const [activeProperty, setActiveProperty] = useState<Property | null>(null)
   
-  // Filter properties with valid coordinates (ensure they are actual numbers)
-  const propertiesWithCoords = properties.filter(p => 
-    typeof p.latitude === 'number' && 
-    typeof p.longitude === 'number' && 
-    !isNaN(p.latitude) && 
-    !isNaN(p.longitude)
-  )
+  // Helper to parse coordinate (handles both number and string types from DB)
+  const parseCoord = (val: any): number | null => {
+    if (val === null || val === undefined || val === '') return null
+    const num = typeof val === 'number' ? val : parseFloat(val)
+    return isNaN(num) ? null : num
+  }
+  
+  // Filter properties with valid coordinates (handles string/number from DB)
+  const propertiesWithCoords = properties.filter(p => {
+    const lat = parseCoord(p.latitude)
+    const lng = parseCoord(p.longitude)
+    return lat !== null && lng !== null && lat !== 0 && lng !== 0
+  }).map(p => ({
+    ...p,
+    latitude: parseCoord(p.latitude) as number,
+    longitude: parseCoord(p.longitude) as number
+  }))
 
   // Default centers for different regions
   const MALLORCA_CENTER: [number, number] = [39.58, 2.65]
-  const IBIZA_CENTER: [number, number] = [38.98, 1.43]
 
   // Determine center based on prop or calculate from properties
   let center: [number, number] = MALLORCA_CENTER // Default fallback
@@ -74,15 +83,17 @@ export default function MapInner({
   if (propCenter && !isNaN(propCenter[0]) && !isNaN(propCenter[1])) {
     center = propCenter
   } else if (propertiesWithCoords.length > 0) {
-    const avgLat = propertiesWithCoords.reduce((sum, p) => sum + (p.latitude as number), 0) / propertiesWithCoords.length
-    const avgLng = propertiesWithCoords.reduce((sum, p) => sum + (p.longitude as number), 0) / propertiesWithCoords.length
+    const avgLat = propertiesWithCoords.reduce((sum, p) => sum + p.latitude, 0) / propertiesWithCoords.length
+    const avgLng = propertiesWithCoords.reduce((sum, p) => sum + p.longitude, 0) / propertiesWithCoords.length
     
     if (!isNaN(avgLat) && !isNaN(avgLng)) {
       center = [avgLat, avgLng]
     }
   }
   
-  const zoom = propZoom || 10
+  // For single property view, zoom in more and center on the property
+  const isSingleProperty = propertiesWithCoords.length === 1
+  const zoom = propZoom || (isSingleProperty ? 13 : 10)
 
   useEffect(() => {
     if (selectedProperty) {
@@ -103,12 +114,12 @@ export default function MapInner({
   }
 
   return (
-    <div className="relative w-full h-full">
+    <div className="relative w-full h-full" style={{ zIndex: 0 }}>
       {/* Leaflet Map */}
       <MapContainer
         center={center}
         zoom={zoom}
-        style={{ width: '100%', height: '100%' }}
+        style={{ width: '100%', height: '100%', zIndex: 0 }}
         zoomControl={false}
       >
         {/* Beautiful light map tiles - CartoDB Voyager (Airbnb-like style) */}
@@ -193,13 +204,15 @@ export default function MapInner({
         ))}
       </MapContainer>
 
-      {/* Property count badge */}
-      <div className="absolute top-4 left-4 z-10 bg-white rounded-full px-4 py-2 shadow-lg border border-gray-100">
-        <span className="font-bold text-charcoal-900">{propertiesWithCoords.length}</span>
-        <span className="text-charcoal-500 ml-1.5 text-sm">
-          {locale === 'de' ? 'Immobilien auf der Karte' : 'properties on map'}
-        </span>
-      </div>
+      {/* Property count badge - only show for multiple properties */}
+      {!isSingleProperty && (
+        <div className="absolute top-4 left-4 z-10 bg-white rounded-full px-4 py-2 shadow-lg border border-gray-100">
+          <span className="font-bold text-charcoal-900">{propertiesWithCoords.length}</span>
+          <span className="text-charcoal-500 ml-1.5 text-sm">
+            {locale === 'de' ? 'Immobilien auf der Karte' : 'properties on map'}
+          </span>
+        </div>
+      )}
 
       {/* Zoom controls */}
       <div className="absolute top-4 right-4 z-10 flex flex-col gap-1">
@@ -271,9 +284,17 @@ export default function MapInner({
         }
         .leaflet-container {
           font-family: inherit;
+          z-index: 0 !important;
         }
         .leaflet-container a {
           color: inherit;
+        }
+        .leaflet-pane {
+          z-index: 0 !important;
+        }
+        .leaflet-top,
+        .leaflet-bottom {
+          z-index: 1 !important;
         }
         .scrollbar-hide {
           -ms-overflow-style: none;
