@@ -721,8 +721,8 @@ export default function MallorcaClient({ properties }: MallorcaClientProps) {
                 <Calendar className="w-5 h-5" />
                 {locale === 'de' ? 'Ihre Villa Anfragen' : 'Request Your Villa'}
               </Link>
-              <a href="tel:+34661539553" className="text-white/70 hover:text-white transition-colors text-lg">
-                {locale === 'de' ? 'oder anrufen' : 'or call'} <span className="text-gold-400 font-semibold">+34 661 53 95 53</span>
+              <a href="tel:+34634306076" className="text-white/70 hover:text-white transition-colors text-lg">
+                {locale === 'de' ? 'oder anrufen' : 'or call'} <span className="text-gold-400 font-semibold">+34 634 306 076</span>
               </a>
             </div>
           </motion.div>

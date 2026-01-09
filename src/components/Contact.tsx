@@ -137,8 +137,8 @@ export default function Contact() {
                   <a href="tel:+498989930046" className="text-charcoal-900 font-semibold block hover:text-gold-600 transition-colors">
                     <span className="text-charcoal-500 text-xs">🇩🇪 DE:</span> +49 89 899 300 46
                   </a>
-                  <a href="tel:+34661539553" className="text-charcoal-900 font-semibold block hover:text-gold-600 transition-colors">
-                    <span className="text-charcoal-500 text-xs">🇪🇸 ES:</span> +34 661 53 95 53
+                  <a href="tel:+34634306076" className="text-charcoal-900 font-semibold block hover:text-gold-600 transition-colors">
+                    <span className="text-charcoal-500 text-xs">🇪🇸 ES:</span> +34 634 306 076
                   </a>
                 </div>
               </div>

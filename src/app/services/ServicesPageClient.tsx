@@ -267,9 +267,9 @@ export default function ServicesPageClient() {
                 <Phone className="w-4 h-4" />
                 🇺🇸 +1 (203) 979-7309
               </a>
-              <a href="tel:+34661539553" className="flex items-center gap-2 hover:text-gold-400 transition-colors">
+              <a href="tel:+34634306076" className="flex items-center gap-2 hover:text-gold-400 transition-colors">
                 <Phone className="w-4 h-4" />
-                🇪🇸 +34 661 53 95 53
+                🇪🇸 +34 634 306 076
               </a>
               <a href="mailto:info@primeluxurystays.com" className="flex items-center gap-2 hover:text-gold-400 transition-colors">
                 <Mail className="w-4 h-4" />

@@ -882,9 +882,9 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
                 </p>
 
                 <div className="border-t border-gray-100 pt-6 space-y-3">
-                  <a href="tel:+34661539553" className="flex items-center gap-3 text-charcoal-600 hover:text-gold-600 transition-colors">
+                  <a href="tel:+34634306076" className="flex items-center gap-3 text-charcoal-600 hover:text-gold-600 transition-colors">
                     <Phone className="w-5 h-5" />
-                    <span>+34 661 53 95 53</span>
+                    <span>+34 634 306 076</span>
                   </a>
                   <a href="mailto:info@primeluxurystays.com" className="flex items-center gap-3 text-charcoal-600 hover:text-gold-600 transition-colors">
                     <Mail className="w-5 h-5" />

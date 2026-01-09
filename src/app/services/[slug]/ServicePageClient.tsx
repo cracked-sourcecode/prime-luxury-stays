@@ -184,7 +184,7 @@ export default function ServicePageClient({ service }: ServicePageClientProps) {
                 <ArrowRight className="w-5 h-5" />
               </Link>
               <a
-                href="tel:+34661539553"
+                href="tel:+34634306076"
                 className="inline-flex items-center gap-2 bg-white/10 text-white px-8 py-4 rounded-xl font-semibold hover:bg-white/20 transition-colors w-full sm:w-auto justify-center"
               >
                 <Phone className="w-5 h-5" />
@@ -197,9 +197,9 @@ export default function ServicePageClient({ service }: ServicePageClientProps) {
                 <Phone className="w-4 h-4" />
                 🇺🇸 +1 (203) 979-7309
               </a>
-              <a href="tel:+34661539553" className="flex items-center gap-2 hover:text-gold-400 transition-colors">
+              <a href="tel:+34634306076" className="flex items-center gap-2 hover:text-gold-400 transition-colors">
                 <Phone className="w-4 h-4" />
-                🇪🇸 +34 661 53 95 53
+                🇪🇸 +34 634 306 076
               </a>
               <a href="mailto:info@primeluxurystays.com" className="flex items-center gap-2 hover:text-gold-400 transition-colors">
                 <Mail className="w-4 h-4" />

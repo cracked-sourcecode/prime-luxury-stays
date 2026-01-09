@@ -70,7 +70,7 @@ export default function Footer() {
               </p>
               <p>
                 <span className="text-charcoal-400">🇪🇸 ES:</span>{' '}
-                <a href="tel:+34661539553" className="hover:text-gold-600">+34 661 53 95 53</a>
+                <a href="tel:+34634306076" className="hover:text-gold-600">+34 634 306 076</a>
               </p>
               <p><a href="mailto:info@primeluxurystays.com" className="hover:text-gold-600">info@primeluxurystays.com</a></p>
               <p className="text-charcoal-400">Miami / Munich / Mallorca</p>
@@ -159,7 +159,7 @@ export default function Footer() {
                 </p>
                 <p>
                   <span className="text-charcoal-400 text-xs">🇪🇸 ES:</span>{' '}
-                  <a href="tel:+34661539553" className="hover:text-gold-600 transition-colors">+34 661 53 95 53</a>
+                  <a href="tel:+34634306076" className="hover:text-gold-600 transition-colors">+34 634 306 076</a>
                 </p>
                 <p><a href="mailto:info@primeluxurystays.com" className="hover:text-gold-600 transition-colors">info@primeluxurystays.com</a></p>
               </div>
