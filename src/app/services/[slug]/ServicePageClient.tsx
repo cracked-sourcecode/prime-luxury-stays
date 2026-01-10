@@ -66,16 +66,9 @@ export default function ServicePageClient({ service, slug }: ServicePageClientPr
             <h1 className="font-merriweather text-4xl md:text-5xl lg:text-6xl text-white mb-6">
               {title}
             </h1>
-            <p className="text-white/80 text-xl md:text-2xl max-w-2xl mx-auto mb-8">
+            <p className="text-white/80 text-xl md:text-2xl max-w-2xl mx-auto">
               {subtitle}
             </p>
-            <a
-              href="#inquire"
-              className="inline-flex items-center gap-2 bg-gold-500 text-white px-8 py-4 rounded-xl font-semibold hover:bg-gold-600 transition-colors"
-            >
-              {locale === 'de' ? 'Diesen Service anfragen' : 'Request This Service'}
-              <ArrowRight className="w-5 h-5" />
-            </a>
           </motion.div>
         </div>
       </section>
