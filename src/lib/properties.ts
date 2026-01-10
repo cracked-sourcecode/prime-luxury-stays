@@ -29,6 +29,9 @@ export interface Property {
   has_ac: boolean;
   has_heating: boolean;
   has_wifi: boolean;
+  has_parking: boolean;
+  has_smart_home: boolean;
+  has_kitchen: boolean;
   is_beachfront: boolean;
   is_active: boolean;
   is_featured: boolean;

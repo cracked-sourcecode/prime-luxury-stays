@@ -126,6 +126,9 @@ export default function PropertyEditor({ property, images: initialImages, availa
     has_ac: property?.has_ac || false,
     has_heating: property?.has_heating || false,
     has_wifi: property?.has_wifi || false,
+    has_parking: property?.has_parking ?? true,
+    has_smart_home: property?.has_smart_home ?? true,
+    has_kitchen: property?.has_kitchen ?? true,
     is_beachfront: property?.is_beachfront || false,
     is_active: property?.is_active ?? true,
     is_featured: property?.is_featured || false,
@@ -1306,6 +1309,9 @@ export default function PropertyEditor({ property, images: initialImages, availa
                     { key: 'has_ac', label: 'Air Conditioning' },
                     { key: 'has_heating', label: 'Heating' },
                     { key: 'has_wifi', label: 'WiFi' },
+                    { key: 'has_parking', label: 'Private Parking' },
+                    { key: 'has_smart_home', label: 'Smart Home' },
+                    { key: 'has_kitchen', label: 'Fully Equipped Kitchen' },
                     { key: 'is_beachfront', label: 'Beachfront' },
                   ].map((amenity) => (
                     <label key={amenity.key} className="flex items-center gap-3 cursor-pointer">

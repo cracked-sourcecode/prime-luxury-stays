@@ -157,9 +157,9 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
     { icon: Wind, label: locale === 'de' ? 'Klimaanlage' : 'Air Conditioning', available: property.has_ac, description: locale === 'de' ? 'Klimatisiert in allen Räumen' : 'Climate controlled throughout' },
     { icon: Flame, label: locale === 'de' ? 'Heizung' : 'Heating', available: property.has_heating, description: locale === 'de' ? 'Gemütliche Winterwärme' : 'Cozy winter warmth' },
     { icon: Wifi, label: locale === 'de' ? 'Highspeed-WLAN' : 'High-Speed WiFi', available: property.has_wifi, description: locale === 'de' ? 'Arbeiten Sie remote im Paradies' : 'Work remotely in paradise' },
-    { icon: Car, label: locale === 'de' ? 'Privater Parkplatz' : 'Private Parking', available: true, description: locale === 'de' ? 'Sicherer Parkplatz inklusive' : 'Secure parking included' },
-    { icon: Coffee, label: locale === 'de' ? 'Voll ausgestattete Küche' : 'Fully Equipped Kitchen', available: true, description: locale === 'de' ? 'Alles was Sie brauchen' : 'Everything you need' },
-    { icon: Home, label: locale === 'de' ? 'Smart Home' : 'Smart Home', available: true, description: locale === 'de' ? 'Moderner Komfort' : 'Modern conveniences' },
+    { icon: Car, label: locale === 'de' ? 'Privater Parkplatz' : 'Private Parking', available: property.has_parking, description: locale === 'de' ? 'Sicherer Parkplatz inklusive' : 'Secure parking included' },
+    { icon: Coffee, label: locale === 'de' ? 'Voll ausgestattete Küche' : 'Fully Equipped Kitchen', available: property.has_kitchen, description: locale === 'de' ? 'Alles was Sie brauchen' : 'Everything you need' },
+    { icon: Home, label: locale === 'de' ? 'Smart Home' : 'Smart Home', available: property.has_smart_home, description: locale === 'de' ? 'Moderner Komfort' : 'Modern conveniences' },
   ].filter(a => a.available)
 
   const highlights = [
