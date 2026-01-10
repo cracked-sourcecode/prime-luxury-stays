@@ -130,6 +130,7 @@ export default function PropertyEditor({ property, images: initialImages, availa
     is_active: property?.is_active ?? true,
     is_featured: property?.is_featured || false,
     is_monthly_rental: property?.is_monthly_rental || false,
+    region_zone: property?.region_zone || '',
     min_stay_nights: property?.min_stay_nights?.toString() || '7',
     // Distances
     distance_beach: property?.distance_beach || '',
@@ -1408,6 +1409,27 @@ export default function PropertyEditor({ property, images: initialImages, availa
                       Monthly Rental (Long-term)
                     </span>
                   </label>
+                </div>
+
+                {/* Region Zone for Mallorca */}
+                <div className="p-4 rounded-xl border border-gray-200 bg-gray-50">
+                  <label className="block text-sm font-semibold text-charcoal-700 mb-2">
+                    Region Zone (for Mallorca categorization)
+                  </label>
+                  <select
+                    value={formData.region_zone}
+                    onChange={(e) => setFormData(prev => ({ ...prev, region_zone: e.target.value }))}
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-gold-500 focus:border-transparent"
+                  >
+                    <option value="">-- Select Region Zone --</option>
+                    <option value="west-southwest">West / Southwest</option>
+                    <option value="port-andratx">Port d'Andratx</option>
+                    <option value="north-northwest">North / Northwest</option>
+                    <option value="east-southeast">East / Southeast</option>
+                  </select>
+                  <p className="text-xs text-charcoal-500 mt-2">
+                    This determines how the property is categorized in the "Explore the Island" widget on the Mallorca page.
+                  </p>
                 </div>
                 
                 {/* Hero Featured - Only one property can have this */}

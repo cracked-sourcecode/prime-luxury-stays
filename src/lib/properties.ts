@@ -47,6 +47,8 @@ export interface Property {
   house_type_de: string | null;
   // Rental type
   is_monthly_rental: boolean;
+  // Region zone for Mallorca categorization
+  region_zone: string | null;
 }
 
 export async function getActiveProperties(): Promise<Property[]> {

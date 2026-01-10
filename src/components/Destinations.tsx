@@ -1,43 +1,68 @@
 'use client'
 
 import { motion, useInView } from 'framer-motion'
-import { useRef } from 'react'
+import { useRef, useMemo } from 'react'
 import { ArrowRight, MapPin, Star, Home } from 'lucide-react'
 import Link from 'next/link'
 import { useLocale } from '@/i18n/LocaleProvider'
+import type { Property } from '@/lib/properties'
 
-// Mallorca regions with our properties - organized by direction
-const getMallorcaRegions = (t: (key: string) => string) => [
+interface DestinationsProps {
+  properties?: Property[]
+}
+
+// Region zone definitions with static images
+const regionZones = [
+  {
+    id: 'west-southwest',
+    image: 'https://storage.googleapis.com/primeluxurystays/villa-del-mar/images/1767466932071-Kopie_von_2c3d6789-1a64-492e-895a-1d13fcbd9aea_result_22.48.41.webp',
+  },
+  {
+    id: 'port-andratx',
+    image: 'https://storage.googleapis.com/primeluxurystays/sunset-dreams/images/1767546840732-PROTEA32_result_22.48.12.webp',
+  },
+  {
+    id: 'north-northwest',
+    image: 'https://storage.googleapis.com/primeluxurystays/la-salve/images/1766937633626-ls17-602-marcgilsdorf_result_12.40.11.webp',
+  },
+  {
+    id: 'east-southeast',
+    image: 'https://storage.googleapis.com/primeluxurystays/eden-roc/images/1766935948675-MR20230606066_result_12.38.51.webp',
+  },
+]
+
+// Mallorca regions with dynamic property counts
+const getMallorcaRegions = (t: (key: string) => string, propertyCounts: Record<string, number>) => [
   {
     name: t('destinations.mallorca.regions.westSouthwest.name'),
     subtitle: t('destinations.mallorca.regions.westSouthwest.subtitle'),
-    image: 'https://storage.googleapis.com/primeluxurystays/villa-del-mar/images/1767466932071-Kopie_von_2c3d6789-1a64-492e-895a-1d13fcbd9aea_result_22.48.41.webp',
+    image: regionZones[0].image,
     description: t('destinations.mallorca.regions.westSouthwest.description'),
-    properties: 4,
+    properties: propertyCounts['west-southwest'] || 0,
     slug: 'west-southwest',
   },
   {
     name: t('destinations.mallorca.regions.portAndratx.name'),
     subtitle: t('destinations.mallorca.regions.portAndratx.subtitle'),
-    image: 'https://storage.googleapis.com/primeluxurystays/sunset-dreams/images/1767546840732-PROTEA32_result_22.48.12.webp',
+    image: regionZones[1].image,
     description: t('destinations.mallorca.regions.portAndratx.description'),
-    properties: 3,
+    properties: propertyCounts['port-andratx'] || 0,
     slug: 'port-andratx',
   },
   {
     name: t('destinations.mallorca.regions.northNorthwest.name'),
     subtitle: t('destinations.mallorca.regions.northNorthwest.subtitle'),
-    image: 'https://storage.googleapis.com/primeluxurystays/la-salve/images/1766937633626-ls17-602-marcgilsdorf_result_12.40.11.webp',
+    image: regionZones[2].image,
     description: t('destinations.mallorca.regions.northNorthwest.description'),
-    properties: 5,
+    properties: propertyCounts['north-northwest'] || 0,
     slug: 'north-northwest',
   },
   {
     name: t('destinations.mallorca.regions.eastSoutheast.name'),
     subtitle: t('destinations.mallorca.regions.eastSoutheast.subtitle'),
-    image: 'https://storage.googleapis.com/primeluxurystays/eden-roc/images/1766935948675-MR20230606066_result_12.38.51.webp',
+    image: regionZones[3].image,
     description: t('destinations.mallorca.regions.eastSoutheast.description'),
-    properties: 4,
+    properties: propertyCounts['east-southeast'] || 0,
     slug: 'east-southeast',
   },
 ]
@@ -61,10 +86,23 @@ const getIbizaHighlights = (t: (key: string) => string) => [
   },
 ]
 
-export default function Destinations() {
+export default function Destinations({ properties = [] }: DestinationsProps) {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: '-100px' })
   const { t } = useLocale()
+
+  // Calculate property counts by region_zone
+  const propertyCounts = useMemo(() => {
+    const counts: Record<string, number> = {}
+    // Only count Mallorca properties
+    const mallorcaProperties = properties.filter(p => p.region === 'Mallorca')
+    mallorcaProperties.forEach(property => {
+      if (property.region_zone) {
+        counts[property.region_zone] = (counts[property.region_zone] || 0) + 1
+      }
+    })
+    return counts
+  }, [properties])
 
   return (
     <section id="destinations" ref={ref} className="py-16 lg:py-20 pattern-bg">
@@ -103,7 +141,7 @@ export default function Destinations() {
 
         {/* Regions Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {getMallorcaRegions(t).map((region, index) => (
+          {getMallorcaRegions(t, propertyCounts).map((region, index) => (
             <motion.div
               key={region.name}
               initial={{ opacity: 0, y: 30 }}

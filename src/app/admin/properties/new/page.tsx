@@ -90,6 +90,7 @@ export default function NewPropertyPage() {
     house_type: 'Villa',
     house_type_de: '',
     region: 'Mallorca',
+    region_zone: '',
     city: '',
     country: 'Spain',
     bedrooms: '',
@@ -513,6 +514,24 @@ export default function NewPropertyPage() {
                 <option value="South of France">South of France</option>
               </select>
             </div>
+            {formData.region === 'Mallorca' && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Region Zone (for island categorization)
+                </label>
+                <select
+                  value={formData.region_zone}
+                  onChange={(e) => setFormData({ ...formData, region_zone: e.target.value })}
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
+                >
+                  <option value="">-- Select Zone --</option>
+                  <option value="west-southwest">West / Southwest</option>
+                  <option value="port-andratx">Port d'Andratx</option>
+                  <option value="north-northwest">North / Northwest</option>
+                  <option value="east-southeast">East / Southeast</option>
+                </select>
+              </div>
+            )}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 {t('city')}

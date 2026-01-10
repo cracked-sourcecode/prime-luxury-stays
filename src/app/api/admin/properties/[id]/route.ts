@@ -63,6 +63,7 @@ export async function PUT(request: NextRequest, { params }: Props) {
         is_active = ${data.is_active ?? true},
         is_featured = ${data.is_featured || false},
         is_monthly_rental = ${data.is_monthly_rental || false},
+        region_zone = ${data.region_zone || null},
         min_stay_nights = ${data.min_stay_nights || 7},
         distance_beach = ${data.distance_beach || null},
         distance_restaurants = ${data.distance_restaurants || null},
