@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getPropertyBySlug } from '@/lib/properties'
 import { createInquiry } from '@/lib/inquiries'
 import { sendInquiryNotification, sendInquiryConfirmation } from '@/lib/email'
+import { sql } from '@/lib/db'
 
 export async function POST(req: NextRequest) {
   try {
@@ -55,6 +56,36 @@ export async function POST(req: NextRequest) {
         { success: false, error: 'Failed to save inquiry. Please try again.' },
         { status: 500 }
       )
+    }
+
+    // Add/update customer in CRM as a lead
+    try {
+      // Check if customer already exists by email
+      const existingCustomer = await sql`
+        SELECT id FROM customers WHERE email = ${email} LIMIT 1
+      `
+      
+      if (existingCustomer.length === 0) {
+        // Create new customer as a lead
+        const propertyInfo = property ? `Inquiry for: ${property.name}` : (message?.includes('[SERVICE INQUIRY:') ? 'Service inquiry' : 'General inquiry')
+        await sql`
+          INSERT INTO customers (name, email, phone, notes, source, status)
+          VALUES (${full_name}, ${email}, ${phone || null}, ${propertyInfo}, 'website', 'lead')
+        `
+      } else {
+        // Update existing customer with latest info if phone was provided
+        if (phone) {
+          await sql`
+            UPDATE customers 
+            SET phone = COALESCE(phone, ${phone}),
+                updated_at = NOW()
+            WHERE id = ${existingCustomer[0].id}
+          `
+        }
+      }
+    } catch (crmErr) {
+      console.error('CRM insert error (non-critical):', crmErr)
+      // Don't fail the inquiry if CRM insert fails
     }
 
     // Send email notifications (completely non-blocking - don't await)

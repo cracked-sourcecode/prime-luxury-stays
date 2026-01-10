@@ -711,7 +711,7 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
                 {[
                   { icon: Waves, label: locale === 'de' ? 'Strand' : 'Beach', time: property.distance_beach || '5 min' },
                   { icon: Utensils, label: locale === 'de' ? 'Restaurants' : 'Restaurants', time: property.distance_restaurants || '10 min' },
-                  { icon: Wine, label: locale === 'de' ? 'Altstadt' : 'Old Town', time: property.distance_old_town || '15 min' },
+                  { icon: Wine, label: locale === 'de' ? 'Altstadt Palma' : 'Palma Old Town', time: property.distance_old_town || '15 min' },
                   { icon: Sun, label: locale === 'de' ? 'Flughafen' : 'Airport', time: property.distance_airport || '25 min' },
                 ].map((item) => (
                   <div key={item.label} className="bg-cream-50 rounded-xl p-4 text-center">
