@@ -152,27 +152,27 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
   }, [])
 
   const amenities = [
-    { icon: Waves, label: 'Sea View', available: property.has_sea_view, description: 'Stunning Mediterranean views' },
-    { icon: TreePine, label: 'Private Pool', available: property.has_pool, description: 'Your own oasis' },
-    { icon: Wind, label: 'Air Conditioning', available: property.has_ac, description: 'Climate controlled throughout' },
-    { icon: Flame, label: 'Heating', available: property.has_heating, description: 'Cozy winter warmth' },
-    { icon: Wifi, label: 'High-Speed WiFi', available: property.has_wifi, description: 'Work remotely in paradise' },
-    { icon: Car, label: 'Private Parking', available: true, description: 'Secure parking included' },
-    { icon: Coffee, label: 'Fully Equipped Kitchen', available: true, description: 'Everything you need' },
-    { icon: Home, label: 'Smart Home', available: true, description: 'Modern conveniences' },
+    { icon: Waves, label: locale === 'de' ? 'Meerblick' : 'Sea View', available: property.has_sea_view, description: locale === 'de' ? 'Atemberaubender Mittelmeerblick' : 'Stunning Mediterranean views' },
+    { icon: TreePine, label: locale === 'de' ? 'Privatpool' : 'Private Pool', available: property.has_pool, description: locale === 'de' ? 'Ihre eigene Oase' : 'Your own oasis' },
+    { icon: Wind, label: locale === 'de' ? 'Klimaanlage' : 'Air Conditioning', available: property.has_ac, description: locale === 'de' ? 'Klimatisiert in allen Räumen' : 'Climate controlled throughout' },
+    { icon: Flame, label: locale === 'de' ? 'Heizung' : 'Heating', available: property.has_heating, description: locale === 'de' ? 'Gemütliche Winterwärme' : 'Cozy winter warmth' },
+    { icon: Wifi, label: locale === 'de' ? 'Highspeed-WLAN' : 'High-Speed WiFi', available: property.has_wifi, description: locale === 'de' ? 'Arbeiten Sie remote im Paradies' : 'Work remotely in paradise' },
+    { icon: Car, label: locale === 'de' ? 'Privater Parkplatz' : 'Private Parking', available: true, description: locale === 'de' ? 'Sicherer Parkplatz inklusive' : 'Secure parking included' },
+    { icon: Coffee, label: locale === 'de' ? 'Voll ausgestattete Küche' : 'Fully Equipped Kitchen', available: true, description: locale === 'de' ? 'Alles was Sie brauchen' : 'Everything you need' },
+    { icon: Home, label: locale === 'de' ? 'Smart Home' : 'Smart Home', available: true, description: locale === 'de' ? 'Moderner Komfort' : 'Modern conveniences' },
   ].filter(a => a.available)
 
   const highlights = [
-    { icon: Shield, title: 'Verified Excellence', desc: 'Personally inspected by our team' },
-    { icon: Clock, title: 'Dedicated Concierge', desc: 'Personal support throughout your stay' },
-    { icon: Star, title: 'Best Price Direct', desc: 'No booking fees, ever' },
+    { icon: Shield, title: locale === 'de' ? 'Geprüfte Exzellenz' : 'Verified Excellence', desc: locale === 'de' ? 'Persönlich von unserem Team inspiziert' : 'Personally inspected by our team' },
+    { icon: Clock, title: locale === 'de' ? 'Persönlicher Concierge' : 'Dedicated Concierge', desc: locale === 'de' ? 'Persönliche Betreuung während Ihres Aufenthalts' : 'Personal support throughout your stay' },
+    { icon: Star, title: locale === 'de' ? 'Bestpreis-Garantie' : 'Best Price Direct', desc: locale === 'de' ? 'Keine Buchungsgebühren' : 'No booking fees, ever' },
   ]
 
   const experiences = [
-    { icon: Car, title: 'Luxury Transport', desc: 'Premium vehicle service', href: '/services/luxury-transport' },
-    { icon: Anchor, title: 'Yacht Charter', desc: 'Explore the Mediterranean', href: '/services/yacht-charter' },
-    { icon: Wine, title: 'Table Reservations', desc: 'Exclusive dining access', href: '/services/table-reservations' },
-    { icon: Utensils, title: 'Private Chef', desc: 'Michelin-quality dining', href: '/services/private-chef' },
+    { icon: Car, title: locale === 'de' ? 'Luxus-Transport' : 'Luxury Transport', desc: locale === 'de' ? 'Premium-Fahrzeugservice' : 'Premium vehicle service', href: '/services/luxury-transport' },
+    { icon: Anchor, title: locale === 'de' ? 'Yachtcharter' : 'Yacht Charter', desc: locale === 'de' ? 'Entdecken Sie das Mittelmeer' : 'Explore the Mediterranean', href: '/services/yacht-charter' },
+    { icon: Wine, title: locale === 'de' ? 'Tischreservierungen' : 'Table Reservations', desc: locale === 'de' ? 'Exklusiver Zugang zu Restaurants' : 'Exclusive dining access', href: '/services/table-reservations' },
+    { icon: Utensils, title: locale === 'de' ? 'Privatkoch' : 'Private Chef', desc: locale === 'de' ? 'Sterne-Küche zu Hause' : 'Michelin-quality dining', href: '/services/private-chef' },
   ]
 
   const nextImage = () => setCurrentImageIndex((prev) => (prev + 1) % galleryImages.length)
@@ -637,13 +637,15 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
               
               <div className="relative">
                 <span className="text-gold-400 font-semibold tracking-wide uppercase text-sm mb-4 block">
-                  Concierge Services
+                  {locale === 'de' ? 'Concierge-Services' : 'Concierge Services'}
                 </span>
                 <h2 className="font-merriweather text-3xl text-white mb-4">
-                  Curated Experiences
+                  {locale === 'de' ? 'Exklusive Erlebnisse' : 'Curated Experiences'}
                 </h2>
                 <p className="text-white/60 text-lg mb-10 max-w-2xl">
-                  Our concierge team can arrange exclusive experiences to make your stay truly unforgettable.
+                  {locale === 'de' 
+                    ? 'Unser Concierge-Team kann exklusive Erlebnisse arrangieren, um Ihren Aufenthalt unvergesslich zu machen.'
+                    : 'Our concierge team can arrange exclusive experiences to make your stay truly unforgettable.'}
                 </p>
                 
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
@@ -707,10 +709,10 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
               {/* Nearby */}
               <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4">
                 {[
-                  { icon: Waves, label: 'Beach', time: property.distance_beach || '5 min' },
-                  { icon: Utensils, label: 'Restaurants', time: property.distance_restaurants || '10 min' },
-                  { icon: Wine, label: 'Old Town', time: property.distance_old_town || '15 min' },
-                  { icon: Sun, label: 'Airport', time: property.distance_airport || '25 min' },
+                  { icon: Waves, label: locale === 'de' ? 'Strand' : 'Beach', time: property.distance_beach || '5 min' },
+                  { icon: Utensils, label: locale === 'de' ? 'Restaurants' : 'Restaurants', time: property.distance_restaurants || '10 min' },
+                  { icon: Wine, label: locale === 'de' ? 'Altstadt' : 'Old Town', time: property.distance_old_town || '15 min' },
+                  { icon: Sun, label: locale === 'de' ? 'Flughafen' : 'Airport', time: property.distance_airport || '25 min' },
                 ].map((item) => (
                   <div key={item.label} className="bg-cream-50 rounded-xl p-4 text-center">
                     <item.icon className="w-6 h-6 text-gold-500 mx-auto mb-2" />
@@ -754,16 +756,18 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
                   /* Price Display for short-term */
                   property.price_per_week && (
                     <div className="text-center mb-6 pb-6 border-b border-gray-100">
-                      <p className="text-charcoal-500 text-sm mb-1">From</p>
+                      <p className="text-charcoal-500 text-sm mb-1">{locale === 'de' ? 'Ab' : 'From'}</p>
                       <div className="flex items-baseline justify-center gap-1">
                         <span className="font-merriweather text-3xl text-charcoal-900">
                           €{Number(property.price_per_week).toLocaleString()}
                         </span>
-                        <span className="text-charcoal-500">/week</span>
+                        <span className="text-charcoal-500">{locale === 'de' ? '/Woche' : '/week'}</span>
                       </div>
                       {property.price_per_week_high && (
                         <p className="text-charcoal-400 text-sm mt-1">
-                          Up to €{Number(property.price_per_week_high).toLocaleString()}/week in peak season
+                          {locale === 'de' 
+                            ? `Bis zu €${Number(property.price_per_week_high).toLocaleString()}/Woche in der Hochsaison`
+                            : `Up to €${Number(property.price_per_week_high).toLocaleString()}/week in peak season`}
                         </p>
                       )}
                     </div>
@@ -774,20 +778,20 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
                 {!property.is_monthly_rental && selectedDates && (
                   <div className="bg-gold-50 border border-gold-200 rounded-xl p-4 mb-6">
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-charcoal-600 text-sm">Check-in</span>
+                      <span className="text-charcoal-600 text-sm">{locale === 'de' ? 'Anreise' : 'Check-in'}</span>
                       <span className="font-semibold text-charcoal-900">
-                        {new Date(selectedDates.checkIn).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                        {new Date(selectedDates.checkIn).toLocaleDateString(locale === 'de' ? 'de-DE' : 'en-US', { month: 'short', day: 'numeric' })}
                       </span>
                     </div>
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-charcoal-600 text-sm">Check-out</span>
+                      <span className="text-charcoal-600 text-sm">{locale === 'de' ? 'Abreise' : 'Check-out'}</span>
                       <span className="font-semibold text-charcoal-900">
-                        {new Date(selectedDates.checkOut).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                        {new Date(selectedDates.checkOut).toLocaleDateString(locale === 'de' ? 'de-DE' : 'en-US', { month: 'short', day: 'numeric' })}
                       </span>
                     </div>
                     {selectedDates.price && (
                       <div className="flex items-center justify-between pt-2 border-t border-gold-200">
-                        <span className="font-semibold text-gold-700">Estimated Total</span>
+                        <span className="font-semibold text-gold-700">{locale === 'de' ? 'Geschätzter Gesamtpreis' : 'Estimated Total'}</span>
                         <span className="font-bold text-gold-700 text-lg">€{selectedDates.price.toLocaleString()}</span>
                       </div>
                     )}
@@ -804,9 +808,13 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
                       <Calendar className="w-5 h-5 text-gold-600" />
                       <div>
                         <p className="font-medium text-charcoal-900">
-                          {selectedDates ? 'Change Dates' : 'Select Dates'}
+                          {selectedDates 
+                            ? (locale === 'de' ? 'Datum ändern' : 'Change Dates') 
+                            : (locale === 'de' ? 'Datum wählen' : 'Select Dates')}
                         </p>
-                        <p className="text-charcoal-500 text-sm">Check availability calendar</p>
+                        <p className="text-charcoal-500 text-sm">
+                          {locale === 'de' ? 'Verfügbarkeitskalender prüfen' : 'Check availability calendar'}
+                        </p>
                       </div>
                     </div>
                   </button>
@@ -836,8 +844,8 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
                   <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 flex items-center gap-3">
                     <Calendar className="w-5 h-5 text-amber-600" />
                     <div>
-                      <p className="font-medium text-amber-800">Minimum Stay</p>
-                      <p className="text-amber-600 text-sm">{property.min_stay_nights} nights</p>
+                      <p className="font-medium text-amber-800">{locale === 'de' ? 'Mindestaufenthalt' : 'Minimum Stay'}</p>
+                      <p className="text-amber-600 text-sm">{property.min_stay_nights} {locale === 'de' ? 'Nächte' : 'nights'}</p>
                     </div>
                   </div>
                 )}
@@ -850,10 +858,10 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
                     locale === 'de' ? 'Monatliche Zahlungsoptionen' : 'Monthly Payment Options',
                     locale === 'de' ? 'Persönlicher Ansprechpartner' : 'Dedicated Account Manager',
                   ] : [
-                    'Verified Luxury Property',
-                    'Dedicated Concierge Support',
-                    'Flexible Booking Options',
-                    'No Hidden Fees',
+                    locale === 'de' ? 'Verifizierte Luxusimmobilie' : 'Verified Luxury Property',
+                    locale === 'de' ? 'Persönlicher Concierge-Service' : 'Dedicated Concierge Support',
+                    locale === 'de' ? 'Flexible Buchungsoptionen' : 'Flexible Booking Options',
+                    locale === 'de' ? 'Keine versteckten Gebühren' : 'No Hidden Fees',
                   ]).map((feature) => (
                     <div key={feature} className="flex items-center gap-3">
                       <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${property.is_monthly_rental ? 'bg-blue-100' : 'bg-green-100'}`}>
@@ -878,7 +886,7 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
                 <p className="text-center text-charcoal-400 text-sm mb-6">
                   {property.is_monthly_rental 
                     ? (locale === 'de' ? 'Wir senden Ihnen Details zu Preisen und Verfügbarkeit' : 'We\'ll send you pricing and availability details')
-                    : 'Our team will respond shortly'}
+                    : (locale === 'de' ? 'Unser Team meldet sich in Kürze' : 'Our team will respond shortly')}
                 </p>
 
                 <div className="border-t border-gray-100 pt-6 space-y-3">
@@ -896,8 +904,12 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
               {/* Trust Badge */}
               <div className="bg-charcoal-900 rounded-2xl p-6 text-center">
                 <Shield className="w-10 h-10 text-gold-400 mx-auto mb-3" />
-                <p className="text-white font-semibold mb-1">Book with Confidence</p>
-                <p className="text-white/60 text-sm">Licensed & Verified Property</p>
+                <p className="text-white font-semibold mb-1">
+                  {locale === 'de' ? 'Mit Vertrauen buchen' : 'Book with Confidence'}
+                </p>
+                <p className="text-white/60 text-sm">
+                  {locale === 'de' ? 'Lizenzierte & verifizierte Immobilie' : 'Licensed & Verified Property'}
+                </p>
               </div>
             </motion.div>
           </div>
