@@ -181,29 +181,29 @@ export default function MallorcaClient({ properties }: MallorcaClientProps) {
                 name: locale === 'de' ? 'West / Südwest' : 'West / Southwest',
                 subtitle: 'Santa Ponsa, Calvià, Bendinat',
                 image: 'https://storage.googleapis.com/primeluxurystays/villa-del-mar/images/1767466932071-Kopie_von_2c3d6789-1a64-492e-895a-1d13fcbd9aea_result_22.48.41.webp',
-                cities: ['Santa Ponsa', 'Calvià', 'Bendinat'],
-                count: properties.filter(p => ['Santa Ponsa', 'Calvià', 'Bendinat'].some(c => p.city?.includes(c))).length
+                zone: 'west-southwest',
+                count: properties.filter(p => p.region_zone === 'west-southwest').length
               },
               {
                 name: "Port d'Andratx",
                 subtitle: locale === 'de' ? 'Luxuriöse Hafenstadt' : 'Luxury Marina Town',
                 image: 'https://storage.googleapis.com/primeluxurystays/sunset-dreams/images/1767546840732-PROTEA32_result_22.48.12.webp',
-                cities: ['Port d\'Andratx', 'Port Andratx'],
-                count: properties.filter(p => p.city?.toLowerCase().includes('andratx')).length
+                zone: 'port-andratx',
+                count: properties.filter(p => p.region_zone === 'port-andratx').length
               },
               {
                 name: locale === 'de' ? 'Nord / Nordwest' : 'North / Northwest',
                 subtitle: 'Pollensa, Alcudia, Sa Pobla',
                 image: 'https://storage.googleapis.com/primeluxurystays/la-salve/images/1766937633626-ls17-602-marcgilsdorf_result_12.40.11.webp',
-                cities: ['Pollensa', 'Alcudia', 'Sa Pobla', 'Santa Margalida'],
-                count: properties.filter(p => ['Pollensa', 'Alcudia', 'Sa Pobla', 'Santa Margalida'].some(c => p.city?.includes(c))).length
+                zone: 'north-northwest',
+                count: properties.filter(p => p.region_zone === 'north-northwest').length
               },
               {
                 name: locale === 'de' ? 'Ost / Südost' : 'East / Southeast',
                 subtitle: 'Canyamel, Ses Salines, S\'Horta',
                 image: 'https://storage.googleapis.com/primeluxurystays/eden-roc/images/1766935948675-MR20230606066_result_12.38.51.webp',
-                cities: ['Canyamel', 'Cas Concos', 'Ses Salines', 'S´Horta', 'S\'Horta'],
-                count: properties.filter(p => ['Canyamel', 'Cas Concos', 'Ses Salines', 'S´Horta', 'S\'Horta'].some(c => p.city?.includes(c))).length
+                zone: 'east-southeast',
+                count: properties.filter(p => p.region_zone === 'east-southeast').length
               },
             ].map((region, index) => (
               <motion.div
