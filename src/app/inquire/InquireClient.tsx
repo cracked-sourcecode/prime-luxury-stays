@@ -190,8 +190,8 @@ export default function InquireClient({
           {/* Form */}
           <div className="lg:col-span-3">
             <div className="bg-white rounded-3xl shadow-xl border border-cream-200 p-7 md:p-10">
-              <div className="flex items-start justify-between gap-6 mb-8">
-                <div>
+              <div className="flex items-start justify-between gap-4 mb-8">
+                <div className="flex-1 min-w-0">
                   <h2 className="font-merriweather text-3xl text-charcoal-900">
                     {locale === 'de' ? 'Ihre Anfrage-Details' : 'Your inquiry details'}
                   </h2>
@@ -201,11 +201,11 @@ export default function InquireClient({
                       : 'The more you share, the better we can tailor your stay.'}
                   </p>
                 </div>
-                <div className="hidden md:block text-right min-w-[140px]">
-                  <div className="text-xs tracking-[0.2em] uppercase text-gold-600 font-semibold whitespace-nowrap">
-                    {locale === 'de' ? 'Concierge Service' : 'Concierge Service'}
+                <div className="hidden lg:block text-right flex-shrink-0">
+                  <div className="text-xs tracking-[0.15em] uppercase text-gold-600 font-semibold">
+                    Concierge Service
                   </div>
-                  <div className="text-charcoal-900 font-semibold mt-1 inline-flex items-center gap-2 whitespace-nowrap">
+                  <div className="text-charcoal-900 font-semibold mt-1 flex items-center justify-end gap-2">
                     <Clock className="w-4 h-4 text-gold-600" />
                     {locale === 'de' ? 'Persönliche Betreuung' : 'Personal attention'}
                   </div>
