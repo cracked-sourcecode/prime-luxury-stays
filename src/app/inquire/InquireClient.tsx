@@ -46,9 +46,9 @@ export default function InquireClient({
   const [showDatePicker, setShowDatePicker] = useState(false)
 
   const formatDisplayDate = (dateStr: string) => {
-    if (!dateStr) return 'Select date'
+    if (!dateStr) return locale === 'de' ? 'Datum wählen' : 'Select date'
     const date = new Date(dateStr)
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+    return date.toLocaleDateString(locale === 'de' ? 'de-DE' : 'en-US', { month: 'short', day: 'numeric', year: 'numeric' })
   }
 
   const heroImage = useMemo(() => {
@@ -58,7 +58,12 @@ export default function InquireClient({
     )
   }, [property])
 
-  const benefits = [
+  const benefits = locale === 'de' ? [
+    { icon: Shield, title: 'Geprüfte Villen', desc: 'Jede Immobilie persönlich besichtigt.' },
+    { icon: Clock, title: 'Schnelle Antwort', desc: 'Unser Team antwortet umgehend.' },
+    { icon: Sparkles, title: 'Concierge-Service', desc: 'Köche, Yachten, Transfers & mehr.' },
+    { icon: Star, title: 'Bester Preis direkt', desc: 'Keine Buchungsplattform-Gebühren.' },
+  ] : [
     { icon: Shield, title: 'Verified homes', desc: 'Every property is personally vetted.' },
     { icon: Clock, title: 'Fast response', desc: 'Our team responds promptly.' },
     { icon: Sparkles, title: 'Concierge service', desc: 'Chefs, yachts, transfers & more.' },
@@ -138,7 +143,9 @@ export default function InquireClient({
             >
               <ArrowLeft className="w-5 h-5" />
               <span className="text-sm font-medium">
-                {property ? 'Back to villa' : 'Back to Mallorca'}
+                {property 
+                  ? (locale === 'de' ? 'Zurück zur Villa' : 'Back to villa')
+                  : (locale === 'de' ? 'Zurück zu Mallorca' : 'Back to Mallorca')}
               </span>
             </Link>
             <a
@@ -146,7 +153,7 @@ export default function InquireClient({
               className="hidden sm:inline-flex items-center gap-2 bg-white/10 border border-white/15 text-white px-4 py-2 rounded-xl hover:bg-white/15 transition-colors"
             >
               <Phone className="w-4 h-4" />
-              <span className="text-sm font-semibold">Call concierge</span>
+              <span className="text-sm font-semibold">{locale === 'de' ? 'Concierge anrufen' : 'Call concierge'}</span>
             </a>
           </div>
 
@@ -154,12 +161,12 @@ export default function InquireClient({
             <div className="inline-flex items-center gap-2 rounded-full bg-gold-500/15 border border-gold-400/25 px-5 py-2 text-gold-200 mb-6">
               <Sparkles className="w-4 h-4" />
               <span className="text-sm font-medium tracking-wide">
-                Direct inquiry • White-glove service
+                {locale === 'de' ? 'Direktanfrage • Exklusiver Service' : 'Direct inquiry • White-glove service'}
               </span>
             </div>
 
             <h1 className="font-merriweather text-4xl md:text-5xl text-white leading-tight">
-              Request to Book
+              {locale === 'de' ? 'Buchungsanfrage' : 'Request to Book'}
               {property ? (
                 <>
                   {' '}
@@ -169,8 +176,9 @@ export default function InquireClient({
             </h1>
 
             <p className="text-white/70 text-lg mt-4 max-w-2xl">
-              Send your dates and preferences. We’ll confirm availability, share a tailored quote, and
-              finalize details with you directly.
+              {locale === 'de' 
+                ? 'Senden Sie uns Ihre Wunschdaten und Präferenzen. Wir bestätigen die Verfügbarkeit, erstellen ein individuelles Angebot und finalisieren die Details direkt mit Ihnen.'
+                : "Send your dates and preferences. We'll confirm availability, share a tailored quote, and finalize details with you directly."}
             </p>
           </div>
         </div>
@@ -185,19 +193,21 @@ export default function InquireClient({
               <div className="flex items-start justify-between gap-6 mb-8">
                 <div>
                   <h2 className="font-merriweather text-3xl text-charcoal-900">
-                    Your inquiry details
+                    {locale === 'de' ? 'Ihre Anfrage-Details' : 'Your inquiry details'}
                   </h2>
                   <p className="text-charcoal-500 mt-2">
-                    The more you share, the better we can tailor your stay.
+                    {locale === 'de' 
+                      ? 'Je mehr Sie uns mitteilen, desto besser können wir Ihren Aufenthalt gestalten.'
+                      : 'The more you share, the better we can tailor your stay.'}
                   </p>
                 </div>
                 <div className="hidden md:block text-right">
                   <div className="text-xs tracking-[0.2em] uppercase text-gold-600 font-semibold">
-                    Concierge Service
+                    {locale === 'de' ? 'Concierge-Service' : 'Concierge Service'}
                   </div>
                   <div className="text-charcoal-900 font-semibold mt-1 inline-flex items-center gap-2">
                     <Clock className="w-4 h-4 text-gold-600" />
-                    Personal attention
+                    {locale === 'de' ? 'Persönliche Betreuung' : 'Personal attention'}
                   </div>
                 </div>
               </div>
@@ -206,10 +216,12 @@ export default function InquireClient({
                 <div className="rounded-3xl border border-gold-200 bg-gold-50 p-8">
                   <div className="flex items-center gap-3 text-gold-700 font-semibold">
                     <Check className="w-5 h-5" />
-                    Inquiry submitted
+                    {locale === 'de' ? 'Anfrage gesendet' : 'Inquiry submitted'}
                   </div>
                   <p className="text-charcoal-700 mt-3">
-                    We’ll reach out shortly to confirm availability and next steps.
+                    {locale === 'de' 
+                      ? 'Wir melden uns in Kürze bei Ihnen, um die Verfügbarkeit zu bestätigen und die nächsten Schritte zu besprechen.'
+                      : "We'll reach out shortly to confirm availability and next steps."}
                   </p>
                   <div className="mt-6 flex flex-col sm:flex-row gap-3">
                     <a
@@ -217,14 +229,14 @@ export default function InquireClient({
                       className="bg-charcoal-900 text-white px-6 py-3 rounded-2xl font-semibold inline-flex items-center justify-center gap-2"
                     >
                       <Phone className="w-4 h-4" />
-                      Call now
+                      {locale === 'de' ? 'Jetzt anrufen' : 'Call now'}
                     </a>
                     <Link
                       href={property ? `/properties/${property.slug}` : '/mallorca'}
                       className="border border-cream-200 px-6 py-3 rounded-2xl font-semibold text-charcoal-700 hover:bg-cream-50 transition-colors inline-flex items-center justify-center gap-2"
                     >
                       <ArrowLeft className="w-4 h-4" />
-                      Back
+                      {locale === 'de' ? 'Zurück' : 'Back'}
                     </Link>
                   </div>
                 </div>
@@ -239,7 +251,7 @@ export default function InquireClient({
                   <div className="grid md:grid-cols-2 gap-5">
                     <div>
                       <label className="block text-sm font-semibold text-charcoal-800 mb-2">
-                        Full name*
+                        {locale === 'de' ? 'Vollständiger Name*' : 'Full name*'}
                       </label>
                       <div className="relative">
                         <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-charcoal-400" />
@@ -247,7 +259,7 @@ export default function InquireClient({
                           value={fullName}
                           onChange={(e) => setFullName(e.target.value)}
                           className="w-full pl-12 pr-4 py-3.5 rounded-2xl border border-cream-200 bg-white focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
-                          placeholder="Your name"
+                          placeholder={locale === 'de' ? 'Ihr Name' : 'Your name'}
                           required
                         />
                       </div>
@@ -255,7 +267,7 @@ export default function InquireClient({
 
                     <div>
                       <label className="block text-sm font-semibold text-charcoal-800 mb-2">
-                        Email*
+                        E-Mail*
                       </label>
                       <div className="relative">
                         <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-charcoal-400" />
@@ -272,7 +284,7 @@ export default function InquireClient({
 
                     <div>
                       <label className="block text-sm font-semibold text-charcoal-800 mb-2">
-                        Phone *
+                        {locale === 'de' ? 'Telefon*' : 'Phone*'}
                       </label>
                       <div className="relative">
                         <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-charcoal-400" />
@@ -282,16 +294,16 @@ export default function InquireClient({
                           value={phone}
                           onChange={(e) => setPhone(e.target.value)}
                           className="w-full pl-12 pr-4 py-3.5 rounded-2xl border border-cream-200 bg-white focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
-                          placeholder="+1 (555) 000-0000"
+                          placeholder="+49 89 123 456 78"
                           pattern="[\+]?[0-9\s\-\(\)]{7,20}"
-                          title="Please enter a valid phone number"
+                          title={locale === 'de' ? 'Bitte geben Sie eine gültige Telefonnummer ein' : 'Please enter a valid phone number'}
                         />
                       </div>
                     </div>
 
                     <div>
                       <label className="block text-sm font-semibold text-charcoal-800 mb-2">
-                        Guests
+                        {locale === 'de' ? 'Gäste' : 'Guests'}
                       </label>
                       <div className="relative">
                         <Users className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-charcoal-400" />
@@ -341,14 +353,16 @@ export default function InquireClient({
 
                   <div className="mt-6">
                     <label className="block text-sm font-semibold text-charcoal-800 mb-2">
-                      Notes / requests
+                      {locale === 'de' ? 'Notizen / Wünsche' : 'Notes / requests'}
                     </label>
                     <textarea
                       value={message}
                       onChange={(e) => setMessage(e.target.value)}
                       rows={5}
                       className="w-full px-4 py-3.5 rounded-2xl border border-cream-200 bg-white focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none resize-none"
-                      placeholder="Anything we should know? (celebrations, chef, yacht, preferred area, flexible dates...)"
+                      placeholder={locale === 'de' 
+                        ? 'Gibt es etwas, das wir wissen sollten? (Feierlichkeiten, Koch, Yacht, bevorzugte Gegend, flexible Daten...)'
+                        : 'Anything we should know? (celebrations, chef, yacht, preferred area, flexible dates...)'}
                     />
                   </div>
 
@@ -358,12 +372,14 @@ export default function InquireClient({
                       disabled={submitting || !fullName || !email}
                       className="btn-gold !rounded-2xl !py-4 !px-8 w-full sm:w-auto disabled:opacity-60 disabled:cursor-not-allowed"
                     >
-                      {submitting ? 'Sending…' : 'Submit inquiry'}
+                      {submitting 
+                        ? (locale === 'de' ? 'Wird gesendet…' : 'Sending…') 
+                        : (locale === 'de' ? 'Anfrage senden' : 'Submit inquiry')}
                     </button>
                     <div className="text-sm text-charcoal-500">
-                      Prefer to talk? Call{' '}
-                      <a className="text-gold-700 font-semibold" href="tel:+12039797309">
-                        +1 (203) 979-7309
+                      {locale === 'de' ? 'Lieber telefonieren? Rufen Sie an:' : 'Prefer to talk? Call'}{' '}
+                      <a className="text-gold-700 font-semibold" href="tel:+4989899300​46">
+                        +49 89 899 300 46
                       </a>
                     </div>
                   </div>
@@ -391,23 +407,23 @@ export default function InquireClient({
                 <div className="grid grid-cols-2 gap-3 text-sm">
                   {property?.bedrooms ? (
                     <div className="rounded-2xl bg-cream-50 border border-cream-200 px-4 py-3">
-                      <div className="text-charcoal-500">Bedrooms</div>
+                      <div className="text-charcoal-500">{locale === 'de' ? 'Schlafzimmer' : 'Bedrooms'}</div>
                       <div className="font-semibold text-charcoal-900">{property.bedrooms}</div>
                     </div>
                   ) : null}
                   {property?.max_guests ? (
                     <div className="rounded-2xl bg-cream-50 border border-cream-200 px-4 py-3">
-                      <div className="text-charcoal-500">Guests</div>
-                      <div className="font-semibold text-charcoal-900">Up to {property.max_guests}</div>
+                      <div className="text-charcoal-500">{locale === 'de' ? 'Gäste' : 'Guests'}</div>
+                      <div className="font-semibold text-charcoal-900">{locale === 'de' ? `Bis zu ${property.max_guests}` : `Up to ${property.max_guests}`}</div>
                     </div>
                   ) : null}
                   <div className="rounded-2xl bg-cream-50 border border-cream-200 px-4 py-3">
-                    <div className="text-charcoal-500">Booking</div>
-                    <div className="font-semibold text-charcoal-900">Direct inquiry</div>
+                    <div className="text-charcoal-500">{locale === 'de' ? 'Buchung' : 'Booking'}</div>
+                    <div className="font-semibold text-charcoal-900">{locale === 'de' ? 'Direktanfrage' : 'Direct inquiry'}</div>
                   </div>
                   <div className="rounded-2xl bg-cream-50 border border-cream-200 px-4 py-3">
-                    <div className="text-charcoal-500">Support</div>
-                    <div className="font-semibold text-charcoal-900">Dedicated concierge</div>
+                    <div className="text-charcoal-500">{locale === 'de' ? 'Betreuung' : 'Support'}</div>
+                    <div className="font-semibold text-charcoal-900">{locale === 'de' ? 'Persönlicher Concierge' : 'Dedicated concierge'}</div>
                   </div>
                 </div>
               </div>
@@ -417,13 +433,15 @@ export default function InquireClient({
               <div className="absolute -top-20 -right-20 w-72 h-72 bg-gold-500/20 rounded-full blur-[90px]" />
               <div className="relative">
                 <div className="text-gold-300 text-xs tracking-[0.25em] uppercase font-semibold">
-                  Why book with us
+                  {locale === 'de' ? 'Warum bei uns buchen' : 'Why book with us'}
                 </div>
                 <h3 className="font-merriweather text-2xl mt-3">
-                  A concierge-led booking experience
+                  {locale === 'de' ? 'Ein persönliches Buchungserlebnis' : 'A concierge-led booking experience'}
                 </h3>
                 <p className="text-white/70 mt-3">
-                  No call centers. No generic responses. We build your stay around your preferences.
+                  {locale === 'de' 
+                    ? 'Keine Call-Center. Keine Standardantworten. Wir gestalten Ihren Aufenthalt nach Ihren Wünschen.'
+                    : 'No call centers. No generic responses. We build your stay around your preferences.'}
                 </p>
 
                 <div className="mt-6 space-y-4">
@@ -455,7 +473,7 @@ export default function InquireClient({
         }}
         initialCheckIn={checkIn}
         initialCheckOut={checkOut}
-        title="Select your dates"
+        title={locale === 'de' ? 'Wählen Sie Ihre Daten' : 'Select your dates'}
       />
     </div>
   )
