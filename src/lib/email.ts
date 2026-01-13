@@ -173,9 +173,12 @@ const responsiveStyles = `
 `
 
 function getAdminEmailTemplate(data: InquiryEmailData): string {
+  const t = getT(data.locale)
+  const isGerman = data.locale === 'de'
+  
   const formatDate = (dateStr: string) => {
     try {
-      return new Date(dateStr).toLocaleDateString('en-US', { 
+      return new Date(dateStr).toLocaleDateString(isGerman ? 'de-DE' : 'en-US', { 
         weekday: 'short', month: 'short', day: 'numeric' 
       })
     } catch { return dateStr }
@@ -189,13 +192,18 @@ function getAdminEmailTemplate(data: InquiryEmailData): string {
     } catch { return null }
   })()
 
+  // Language indicator for admin
+  const langBadge = isGerman 
+    ? '<span style="background:#1a365d;color:#fff;padding:4px 10px;border-radius:12px;font-size:11px;margin-left:8px;">🇩🇪 DE</span>'
+    : '<span style="background:#1a365d;color:#fff;padding:4px 10px;border-radius:12px;font-size:11px;margin-left:8px;">🇺🇸 EN</span>'
+
   return `<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>New Inquiry</title>
+<title>${t.newInquiry}</title>
 ${responsiveStyles}
 </head>
 <body style="margin:0; padding:0; background-color:${CREAM}; font-family:Georgia, 'Times New Roman', serif; -webkit-font-smoothing:antialiased;">
@@ -218,7 +226,7 @@ ${responsiveStyles}
 <tr>
 <td class="content" style="padding:0 40px;">
 <h1 class="heading" style="margin:0 0 24px; font-size:32px; font-weight:normal; color:${CHARCOAL}; line-height:1.2;">
-New inquiry from ${data.fullName}
+${t.newInquiry} ${t.inquiryFrom} ${data.fullName} ${langBadge}
 </h1>
 </td>
 </tr>
@@ -229,7 +237,7 @@ New inquiry from ${data.fullName}
 <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:${CREAM}; border-radius:8px;">
 <tr>
 <td style="padding:20px;">
-<p style="margin:0 0 4px; font-size:12px; color:#888; text-transform:uppercase; letter-spacing:1px;">Contact</p>
+<p style="margin:0 0 4px; font-size:12px; color:#888; text-transform:uppercase; letter-spacing:1px;">${t.contactDetails}</p>
 <p style="margin:0 0 8px; font-size:20px; color:${CHARCOAL}; font-weight:bold;">${data.fullName}</p>
 <p style="margin:0; font-size:15px; line-height:1.6;">
 <a href="mailto:${data.email}" style="color:${GOLD}; text-decoration:none;">${data.email}</a><br>
@@ -245,7 +253,7 @@ ${data.message ? `
 <!-- Message -->
 <tr>
 <td class="content" style="padding:0 40px 24px;">
-<p style="margin:0 0 8px; font-size:12px; color:#888; text-transform:uppercase; letter-spacing:1px;">Message</p>
+<p style="margin:0 0 8px; font-size:12px; color:#888; text-transform:uppercase; letter-spacing:1px;">${t.message}</p>
 <p style="margin:0; font-size:16px; color:${CHARCOAL}; line-height:1.6; white-space:pre-wrap;">${data.message}</p>
 </td>
 </tr>
@@ -257,8 +265,8 @@ ${data.message ? `
 <table cellpadding="0" cellspacing="0" border="0">
 <tr>
 <td style="background-color:${GOLD}; border-radius:6px;">
-<a class="button" href="mailto:${data.email}?subject=Re: Your Prime Luxury Stays Inquiry" style="display:inline-block; padding:16px 32px; font-size:16px; color:#ffffff; text-decoration:none; font-family:Georgia, serif;">
-Reply to ${data.fullName.split(' ')[0]}
+<a class="button" href="mailto:${data.email}?subject=Re: ${isGerman ? 'Ihre Prime Luxury Stays Anfrage' : 'Your Prime Luxury Stays Inquiry'}" style="display:inline-block; padding:16px 32px; font-size:16px; color:#ffffff; text-decoration:none; font-family:Georgia, serif;">
+${isGerman ? 'Antworten an' : 'Reply to'} ${data.fullName.split(' ')[0]}
 </a>
 </td>
 </tr>
@@ -284,7 +292,7 @@ ${data.propertyImage ? `
 ${data.propertyLocation ? `<p class="property-details" style="margin:0 0 8px; font-size:15px; color:#666;">${data.propertyLocation}</p>` : ''}
 ${data.propertyBedrooms || data.propertyBathrooms ? `
 <p class="property-details" style="margin:0; font-size:14px; color:#888;">
-${data.propertyBedrooms ? `${data.propertyBedrooms} beds` : ''}${data.propertyBathrooms ? ` · ${data.propertyBathrooms} baths` : ''}${data.propertyMaxGuests ? ` · ${data.propertyMaxGuests} guests` : ''}
+${data.propertyBedrooms ? `${data.propertyBedrooms} ${t.bedrooms}` : ''}${data.propertyBathrooms ? ` · ${data.propertyBathrooms} ${t.bathrooms}` : ''}${data.propertyMaxGuests ? ` · ${data.propertyMaxGuests} ${t.guests}` : ''}
 </p>
 ` : ''}
 </td>
@@ -304,20 +312,20 @@ ${data.checkIn ? `
 <table width="100%" cellpadding="0" cellspacing="0" border="0">
 <tr>
 <td class="stack" width="48%" valign="top">
-<p class="date-label" style="margin:0 0 4px; font-size:12px; color:#888; text-transform:uppercase;">Check-in</p>
+<p class="date-label" style="margin:0 0 4px; font-size:12px; color:#888; text-transform:uppercase;">${t.checkIn}</p>
 <p class="date-value" style="margin:0; font-size:18px; color:${CHARCOAL}; font-weight:bold;">${formatDate(data.checkIn)}</p>
 </td>
 <td width="4%"></td>
 <td class="stack" width="48%" valign="top">
-<p class="date-label" style="margin:0 0 4px; font-size:12px; color:#888; text-transform:uppercase;">Check-out</p>
+<p class="date-label" style="margin:0 0 4px; font-size:12px; color:#888; text-transform:uppercase;">${t.checkOut}</p>
 <p class="date-value" style="margin:0; font-size:18px; color:${CHARCOAL}; font-weight:bold;">${data.checkOut ? formatDate(data.checkOut) : 'TBD'}</p>
 </td>
 </tr>
 </table>
 ${nights || data.guests ? `
 <p style="margin:16px 0 0; font-size:15px;">
-${nights ? `<strong style="color:${GOLD};">${nights} nights</strong>` : ''}
-${data.guests ? `<span style="color:#666; margin-left:16px;">${data.guests} guests</span>` : ''}
+${nights ? `<strong style="color:${GOLD};">${nights} ${t.nights}</strong>` : ''}
+${data.guests ? `<span style="color:#666; margin-left:16px;">${data.guests} ${t.guests}</span>` : ''}
 </p>
 ` : ''}
 </td>
@@ -331,7 +339,7 @@ ${data.guests ? `<span style="color:#666; margin-left:16px;">${data.guests} gues
 <tr>
 <td class="footer" style="padding:24px 40px; border-top:1px solid #e0e0e0;">
 <p style="margin:0; font-size:13px; color:#888;">
-Prime Luxury Stays · Exclusive Villas & Estates
+Prime Luxury Stays · ${isGerman ? 'Exklusive Villen & Anwesen' : 'Exclusive Villas & Estates'}
 </p>
 </td>
 </tr>
@@ -507,13 +515,15 @@ ${t.browseMore}
 // Service inquiry email template for admin
 function getServiceAdminEmailTemplate(data: InquiryEmailData): string {
   const t = getT(data.locale)
+  const isGerman = data.locale === 'de'
+  
   const serviceName = data.serviceType 
-    ? (serviceNames[data.serviceType]?.en || data.serviceType) 
-    : 'Unknown Service'
+    ? (isGerman ? serviceNames[data.serviceType]?.de : serviceNames[data.serviceType]?.en) || data.serviceType 
+    : (isGerman ? 'Unbekannter Service' : 'Unknown Service')
 
   const formatDate = (dateStr: string) => {
     try {
-      return new Date(dateStr).toLocaleDateString('en-US', { 
+      return new Date(dateStr).toLocaleDateString(isGerman ? 'de-DE' : 'en-US', { 
         weekday: 'short', month: 'short', day: 'numeric' 
       })
     } catch { return dateStr }
@@ -522,13 +532,18 @@ function getServiceAdminEmailTemplate(data: InquiryEmailData): string {
   // Extract the actual message without the service prefix
   const cleanMessage = data.message?.replace(/^\[SERVICE INQUIRY: [^\]]+\]\n\n/, '') || ''
 
+  // Language indicator for admin
+  const langBadge = isGerman 
+    ? '<span style="background:#1a365d;color:#fff;padding:4px 10px;border-radius:12px;font-size:11px;margin-left:8px;">🇩🇪 DE</span>'
+    : '<span style="background:#1a365d;color:#fff;padding:4px 10px;border-radius:12px;font-size:11px;margin-left:8px;">🇺🇸 EN</span>'
+
   return `<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
-<title>New Service Inquiry</title>
+<title>${t.newServiceInquiry}</title>
 ${responsiveStyles}
 </head>
 <body style="margin:0; padding:0; background-color:${CREAM}; font-family:Georgia, 'Times New Roman', serif; -webkit-font-smoothing:antialiased;">
@@ -551,7 +566,7 @@ ${responsiveStyles}
 <tr>
 <td class="content" align="center" style="padding:0 40px 16px;">
 <span style="display:inline-block; background-color:${GOLD}; color:#ffffff; padding:8px 20px; border-radius:20px; font-size:13px; font-weight:bold; text-transform:uppercase; letter-spacing:1px;">
-⭐ Service Inquiry
+⭐ ${t.serviceRequest}
 </span>
 </td>
 </tr>
@@ -560,7 +575,7 @@ ${responsiveStyles}
 <tr>
 <td class="content" style="padding:0 40px;">
 <h1 class="heading" style="margin:0 0 24px; font-size:32px; font-weight:normal; color:${CHARCOAL}; line-height:1.2;">
-New service inquiry from ${data.fullName}
+${t.newServiceInquiry} ${t.inquiryFrom} ${data.fullName} ${langBadge}
 </h1>
 </td>
 </tr>
@@ -571,9 +586,9 @@ New service inquiry from ${data.fullName}
 <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f0f4f8; border-radius:8px; border-left:4px solid ${GOLD};">
 <tr>
 <td style="padding:20px;">
-<p style="margin:0 0 4px; font-size:12px; color:#888; text-transform:uppercase; letter-spacing:1px;">Requested Service</p>
+<p style="margin:0 0 4px; font-size:12px; color:#888; text-transform:uppercase; letter-spacing:1px;">${t.requestedService}</p>
 <p style="margin:0; font-size:24px; color:${CHARCOAL}; font-weight:bold;">${serviceName}</p>
-${data.checkIn ? `<p style="margin:12px 0 0; font-size:15px; color:#666;">📅 Preferred Date: <strong>${formatDate(data.checkIn)}</strong></p>` : ''}
+${data.checkIn ? `<p style="margin:12px 0 0; font-size:15px; color:#666;">📅 ${t.preferredDate}: <strong>${formatDate(data.checkIn)}</strong></p>` : ''}
 </td>
 </tr>
 </table>
@@ -586,7 +601,7 @@ ${data.checkIn ? `<p style="margin:12px 0 0; font-size:15px; color:#666;">📅 P
 <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:${CREAM}; border-radius:8px;">
 <tr>
 <td style="padding:20px;">
-<p style="margin:0 0 4px; font-size:12px; color:#888; text-transform:uppercase; letter-spacing:1px;">Contact</p>
+<p style="margin:0 0 4px; font-size:12px; color:#888; text-transform:uppercase; letter-spacing:1px;">${t.contactDetails}</p>
 <p style="margin:0 0 8px; font-size:20px; color:${CHARCOAL}; font-weight:bold;">${data.fullName}</p>
 <p style="margin:0; font-size:15px; line-height:1.6;">
 <a href="mailto:${data.email}" style="color:${GOLD}; text-decoration:none;">${data.email}</a><br>
@@ -602,7 +617,7 @@ ${cleanMessage ? `
 <!-- Message -->
 <tr>
 <td class="content" style="padding:0 40px 24px;">
-<p style="margin:0 0 8px; font-size:12px; color:#888; text-transform:uppercase; letter-spacing:1px;">Message / Special Requests</p>
+<p style="margin:0 0 8px; font-size:12px; color:#888; text-transform:uppercase; letter-spacing:1px;">${t.message}</p>
 <p style="margin:0; font-size:16px; color:${CHARCOAL}; line-height:1.6; white-space:pre-wrap;">${cleanMessage}</p>
 </td>
 </tr>
@@ -614,8 +629,8 @@ ${cleanMessage ? `
 <table cellpadding="0" cellspacing="0" border="0">
 <tr>
 <td style="background-color:${GOLD}; border-radius:6px;">
-<a class="button" href="mailto:${data.email}?subject=Re: Your ${serviceName} Inquiry - Prime Luxury Stays" style="display:inline-block; padding:16px 32px; font-size:16px; color:#ffffff; text-decoration:none; font-family:Georgia, serif;">
-Reply to ${data.fullName.split(' ')[0]}
+<a class="button" href="mailto:${data.email}?subject=Re: ${isGerman ? `Ihre ${serviceName} Anfrage` : `Your ${serviceName} Inquiry`} - Prime Luxury Stays" style="display:inline-block; padding:16px 32px; font-size:16px; color:#ffffff; text-decoration:none; font-family:Georgia, serif;">
+${isGerman ? 'Antworten an' : 'Reply to'} ${data.fullName.split(' ')[0]}
 </a>
 </td>
 </tr>
@@ -627,7 +642,7 @@ Reply to ${data.fullName.split(' ')[0]}
 <tr>
 <td class="footer" style="padding:24px 40px; border-top:1px solid #e0e0e0;">
 <p style="margin:0; font-size:13px; color:#888;">
-Prime Luxury Stays · Concierge Services
+Prime Luxury Stays · ${isGerman ? 'Concierge-Services' : 'Concierge Services'}
 </p>
 </td>
 </tr>
@@ -799,13 +814,15 @@ export async function sendInquiryNotification(data: InquiryEmailData) {
     ? (serviceNames[data.serviceType]?.en || data.serviceType) 
     : null
 
+  const langIndicator = data.locale === 'de' ? '🇩🇪' : '🇺🇸'
+
   try {
     const { data: emailData, error } = await resend.emails.send({
       from: FROM_EMAIL,
       to: [ADMIN_EMAIL],
       subject: isServiceInquiry 
-        ? `⭐ Service Inquiry: ${serviceName} · ${data.fullName}`
-        : `New inquiry from ${data.fullName}${data.propertyName ? ` · ${data.propertyName}` : ''}`,
+        ? `${langIndicator} ⭐ Service Inquiry: ${serviceName} · ${data.fullName}`
+        : `${langIndicator} New inquiry from ${data.fullName}${data.propertyName ? ` · ${data.propertyName}` : ''}`,
       html: isServiceInquiry ? getServiceAdminEmailTemplate(data) : getAdminEmailTemplate(data),
     })
 
