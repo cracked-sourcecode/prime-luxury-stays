@@ -25,6 +25,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     console.error('Error fetching destinations for sitemap:', error)
   }
 
+  // Service slugs
+  const servicesSlugs = [
+    'private-aviation',
+    'private-chef',
+    'yacht-charter',
+    'luxury-transport',
+    'helicopter',
+    'privacy-security',
+    'table-reservations',
+    'travel-bookings',
+  ]
+
   // Static pages - Core site pages
   const staticPages: MetadataRoute.Sitemap = [
     {
@@ -64,7 +76,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.85,
     },
     {
+      url: `${SITE_URL}/services`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.8,
+    },
+    {
       url: `${SITE_URL}/inquire`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
+    {
+      url: `${SITE_URL}/inquire/services`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.7,
@@ -76,6 +100,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.3,
     },
   ]
+
+  // Service pages
+  const servicePages: MetadataRoute.Sitemap = servicesSlugs.map((slug) => ({
+    url: `${SITE_URL}/services/${slug}`,
+    lastModified: new Date(),
+    changeFrequency: 'monthly' as const,
+    priority: 0.7,
+  }))
 
   // Dynamic property pages - High priority as main content
   const propertyPages: MetadataRoute.Sitemap = properties.map((property) => ({
@@ -93,6 +125,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.75,
   }))
 
-  return [...staticPages, ...propertyPages, ...destinationPages]
+  return [...staticPages, ...propertyPages, ...servicePages, ...destinationPages]
 }
 
