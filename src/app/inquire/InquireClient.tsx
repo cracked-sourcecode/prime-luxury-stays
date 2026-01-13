@@ -149,7 +149,7 @@ export default function InquireClient({
               </span>
             </Link>
             <a
-              href="tel:+12039797309"
+              href={locale === 'de' ? 'tel:+4989899300​46' : 'tel:+12039797309'}
               className="hidden sm:inline-flex items-center gap-2 bg-white/10 border border-white/15 text-white px-4 py-2 rounded-xl hover:bg-white/15 transition-colors"
             >
               <Phone className="w-4 h-4" />
@@ -201,11 +201,11 @@ export default function InquireClient({
                       : 'The more you share, the better we can tailor your stay.'}
                   </p>
                 </div>
-                <div className="hidden md:block text-right">
-                  <div className="text-xs tracking-[0.2em] uppercase text-gold-600 font-semibold">
-                    {locale === 'de' ? 'Concierge-Service' : 'Concierge Service'}
+                <div className="hidden md:block text-right min-w-[140px]">
+                  <div className="text-xs tracking-[0.2em] uppercase text-gold-600 font-semibold whitespace-nowrap">
+                    {locale === 'de' ? 'Concierge Service' : 'Concierge Service'}
                   </div>
-                  <div className="text-charcoal-900 font-semibold mt-1 inline-flex items-center gap-2">
+                  <div className="text-charcoal-900 font-semibold mt-1 inline-flex items-center gap-2 whitespace-nowrap">
                     <Clock className="w-4 h-4 text-gold-600" />
                     {locale === 'de' ? 'Persönliche Betreuung' : 'Personal attention'}
                   </div>
@@ -225,7 +225,7 @@ export default function InquireClient({
                   </p>
                   <div className="mt-6 flex flex-col sm:flex-row gap-3">
                     <a
-                      href="tel:+12039797309"
+                      href={locale === 'de' ? 'tel:+4989899300​46' : 'tel:+12039797309'}
                       className="bg-charcoal-900 text-white px-6 py-3 rounded-2xl font-semibold inline-flex items-center justify-center gap-2"
                     >
                       <Phone className="w-4 h-4" />

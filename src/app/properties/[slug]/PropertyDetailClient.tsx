@@ -425,11 +425,13 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
             >
               <div className="flex items-center gap-3 mb-6">
                 <Sparkles className="w-6 h-6 text-gold-500" />
-                <span className="text-gold-600 font-semibold tracking-wide uppercase text-sm">Your Private Escape</span>
+                <span className="text-gold-600 font-semibold tracking-wide uppercase text-sm">
+                  {locale === 'de' ? 'Ihr Privates Refugium' : 'Your Private Escape'}
+                </span>
               </div>
               
               <h2 className="font-merriweather text-3xl md:text-4xl text-charcoal-900 mb-6 leading-tight">
-                Experience Mediterranean Living at Its Finest
+                {locale === 'de' ? 'Mediterranes Wohnen in Perfektion' : 'Experience Mediterranean Living at Its Finest'}
               </h2>
               
               <p className="text-charcoal-600 text-lg leading-relaxed mb-8">
@@ -711,13 +713,13 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
                 {[
                   { icon: Waves, label: locale === 'de' ? 'Strand' : 'Beach', time: property.distance_beach || '5 min' },
                   { icon: Utensils, label: locale === 'de' ? 'Restaurants' : 'Restaurants', time: property.distance_restaurants || '10 min' },
-                  { icon: Wine, label: locale === 'de' ? 'Altstadt Palma' : 'Palma Old Town', time: property.distance_old_town || '15 min' },
+                  { icon: Wine, label: locale === 'de' ? 'Hauptstadt Palma' : 'Palma Capital', time: property.distance_old_town || '15 min' },
                   { icon: Sun, label: locale === 'de' ? 'Flughafen' : 'Airport', time: property.distance_airport || '25 min' },
                 ].map((item) => (
                   <div key={item.label} className="bg-cream-50 rounded-xl p-4 text-center">
                     <item.icon className="w-6 h-6 text-gold-500 mx-auto mb-2" />
                     <p className="font-medium text-charcoal-900">{item.label}</p>
-                    <p className="text-charcoal-400 text-sm">{item.time}</p>
+                    <p className="text-charcoal-400 text-sm">{item.time} {locale === 'de' ? 'mit Auto' : 'by car'}</p>
                   </div>
                 ))}
               </div>
@@ -1013,7 +1015,7 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
             className="btn-gold flex-shrink-0 flex items-center gap-2 !py-3 !px-6"
           >
             <Calendar className="w-4 h-4" />
-            <span>Inquire</span>
+            <span>{locale === 'de' ? 'Anfragen' : 'Inquire'}</span>
           </Link>
         </div>
       </div>
