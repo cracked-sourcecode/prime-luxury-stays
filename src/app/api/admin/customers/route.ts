@@ -1,7 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { cookies } from 'next/headers'
+import { validateSession } from '@/lib/admin'
 import { sql } from '@/lib/db'
 
+// Auth check
+async function checkAuth() {
+  const cookieStore = await cookies()
+  const token = cookieStore.get('admin_session')?.value
+  if (!token) return null
+  return await validateSession(token)
+}
+
 export async function GET() {
+  const user = await checkAuth()
+  if (!user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
   try {
     const customers = await sql`
       SELECT id, name, email, phone, notes, source, status, created_at
@@ -17,6 +32,11 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
+  const user = await checkAuth()
+  if (!user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
   try {
     const body = await request.json()
     const { name, email, phone, notes } = body
