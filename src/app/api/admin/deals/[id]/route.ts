@@ -81,7 +81,7 @@ export async function PUT(
         `
       }
     } else {
-      // Full update - handle customer_id properly
+      // Full update - handle customer_id and property_id properly
       await sql`
         UPDATE deals SET
           title = COALESCE(${title}, title),
@@ -90,6 +90,7 @@ export async function PUT(
           customer_id = ${customer_id !== undefined ? customer_id : null},
           customer_name = ${customer_name !== undefined ? customer_name : null},
           customer_email = ${customer_email !== undefined ? customer_email : null},
+          property_id = ${property_id !== undefined ? property_id : null},
           property_name = ${property_name !== undefined ? property_name : null},
           check_in = ${check_in !== undefined ? check_in : null},
           check_out = ${check_out !== undefined ? check_out : null},

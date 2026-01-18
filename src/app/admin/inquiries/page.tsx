@@ -11,8 +11,11 @@ import {
   CheckCircle,
   XCircle,
   MessageSquare,
-  ChevronDown
+  ChevronDown,
+  PlusCircle,
+  ArrowRight
 } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import { useAdminLocale } from '@/lib/adminLocale'
 
 interface Inquiry {
@@ -32,9 +35,33 @@ interface Inquiry {
 
 export default function InquiriesPage() {
   const { t, locale } = useAdminLocale()
+  const router = useRouter()
   const [inquiries, setInquiries] = useState<Inquiry[]>([])
   const [loading, setLoading] = useState(true)
   const [filter, setFilter] = useState<'all' | 'new' | 'contacted' | 'booked' | 'closed'>('all')
+
+  // Create deal from inquiry - navigates to deals page with pre-filled data
+  function createDealFromInquiry(inquiry: Inquiry) {
+    // Store inquiry data in sessionStorage for the deals page to pick up
+    const dealData = {
+      title: inquiry.property_name 
+        ? `Booking: ${inquiry.property_name}` 
+        : `Inquiry from ${inquiry.full_name}`,
+      customer_name: inquiry.full_name,
+      customer_email: inquiry.email,
+      customer_phone: inquiry.phone || '',
+      property_name: inquiry.property_name || '',
+      property_slug: inquiry.property_slug || '',
+      check_in: inquiry.check_in || '',
+      check_out: inquiry.check_out || '',
+      guests: inquiry.guests?.toString() || '',
+      notes: inquiry.message || '',
+      source: 'website_inquiry',
+      inquiry_id: inquiry.id
+    }
+    sessionStorage.setItem('createDealFromInquiry', JSON.stringify(dealData))
+    router.push('/admin/deals?create=true')
+  }
 
   useEffect(() => {
     fetchInquiries()
@@ -210,6 +237,13 @@ export default function InquiriesPage() {
                         <option value="booked">Booked</option>
                         <option value="closed">Closed</option>
                       </select>
+                      <button
+                        onClick={() => createDealFromInquiry(inquiry)}
+                        className="px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg flex items-center justify-center gap-1.5 transition-colors"
+                      >
+                        <PlusCircle className="w-4 h-4" />
+                        Create Deal
+                      </button>
                       <a
                         href={`mailto:${inquiry.email}?subject=Re: Your inquiry for ${inquiry.property_name || 'Prime Luxury Stays'}`}
                         className="px-3 py-2 bg-gold-500 hover:bg-gold-600 text-white text-sm font-medium rounded-lg text-center transition-colors"

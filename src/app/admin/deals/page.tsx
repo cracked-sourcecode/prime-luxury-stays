@@ -1,6 +1,7 @@
 'use client'
 
-import { useEffect, useState, DragEvent } from 'react'
+import { useEffect, useState, DragEvent, useCallback } from 'react'
+import { useSearchParams, useRouter } from 'next/navigation'
 import { 
   Plus, 
   LayoutGrid,
@@ -65,11 +66,23 @@ interface Contact {
   phone: string | null
 }
 
+interface Property {
+  id: number
+  name: string
+  slug: string
+  price_per_week: number | null
+  price_per_week_high: number | null
+  region: string | null
+}
+
 export default function DealsPage() {
   const { t, locale } = useAdminLocale()
+  const searchParams = useSearchParams()
+  const router = useRouter()
   const STAGES = getStages(locale)
   const [deals, setDeals] = useState<Deal[]>([])
   const [contacts, setContacts] = useState<Contact[]>([])
+  const [properties, setProperties] = useState<Property[]>([])
   const [loading, setLoading] = useState(true)
   const [view, setView] = useState<'kanban' | 'table'>('kanban')
   const [showAddModal, setShowAddModal] = useState(false)
@@ -92,7 +105,11 @@ export default function DealsPage() {
     customer_name: '',
     customer_email: '',
     customer_phone: '',
+    property_id: '' as string | number,
     property_name: '',
+    check_in: '',
+    check_out: '',
+    guests: '',
     notes: ''
   })
   const [contactMode, setContactMode] = useState<'existing' | 'new'>('existing')
@@ -107,6 +124,7 @@ export default function DealsPage() {
     customer_id: '' as string | number,
     customer_name: '',
     customer_email: '',
+    property_id: '' as string | number,
     property_name: '',
     notes: '',
     check_in: '',
@@ -119,7 +137,80 @@ export default function DealsPage() {
   useEffect(() => {
     fetchDeals()
     fetchContacts()
+    fetchProperties()
   }, [])
+
+  // Check if we're creating a deal from an inquiry
+  useEffect(() => {
+    if (searchParams.get('create') === 'true') {
+      const inquiryData = sessionStorage.getItem('createDealFromInquiry')
+      if (inquiryData) {
+        try {
+          const data = JSON.parse(inquiryData)
+          
+          // Find matching property by slug or name
+          let matchedPropertyId = ''
+          if (data.property_slug && properties.length > 0) {
+            const matchedProp = properties.find(p => p.slug === data.property_slug)
+            if (matchedProp) {
+              matchedPropertyId = matchedProp.id.toString()
+            }
+          }
+          
+          // Find matching customer by email
+          let matchedCustomerId = ''
+          if (data.customer_email && contacts.length > 0) {
+            const matchedContact = contacts.find(c => c.email === data.customer_email)
+            if (matchedContact) {
+              matchedCustomerId = matchedContact.id.toString()
+              setContactMode('existing')
+              setContactSearch(matchedContact.name)
+            } else {
+              setContactMode('new')
+            }
+          }
+          
+          setNewDeal({
+            title: data.title || '',
+            value: '',
+            stage: 'lead',
+            customer_id: matchedCustomerId,
+            customer_name: data.customer_name || '',
+            customer_email: data.customer_email || '',
+            customer_phone: data.customer_phone || '',
+            property_id: matchedPropertyId,
+            property_name: data.property_name || '',
+            check_in: data.check_in ? data.check_in.split('T')[0] : '',
+            check_out: data.check_out ? data.check_out.split('T')[0] : '',
+            guests: data.guests || '',
+            notes: data.notes || ''
+          })
+          
+          setShowAddModal(true)
+          
+          // Clear the sessionStorage and URL param
+          sessionStorage.removeItem('createDealFromInquiry')
+          router.replace('/admin/deals', { scroll: false })
+        } catch (e) {
+          console.error('Error parsing inquiry data:', e)
+        }
+      } else {
+        // No inquiry data, just open the modal
+        setShowAddModal(true)
+        router.replace('/admin/deals', { scroll: false })
+      }
+    }
+  }, [searchParams, properties, contacts, router])
+
+  async function fetchProperties() {
+    try {
+      const res = await fetch('/api/admin/properties/list')
+      const data = await res.json()
+      setProperties(data.properties || [])
+    } catch (error) {
+      console.error('Error fetching properties:', error)
+    }
+  }
 
   async function fetchDeals() {
     try {
@@ -174,6 +265,17 @@ export default function DealsPage() {
         }
       }
 
+      // Get property details if selected
+      let propertyName = newDeal.property_name
+      let propertyId = newDeal.property_id
+      if (newDeal.property_id) {
+        const selectedProperty = properties.find(p => p.id === Number(newDeal.property_id))
+        if (selectedProperty) {
+          propertyName = selectedProperty.name
+          propertyId = selectedProperty.id
+        }
+      }
+
       const res = await fetch('/api/admin/deals', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -184,13 +286,17 @@ export default function DealsPage() {
           customer_id: customerId || null,
           customer_name: customerName || null,
           customer_email: customerEmail || null,
-          property_name: newDeal.property_name || null,
+          property_id: propertyId || null,
+          property_name: propertyName || null,
+          check_in: newDeal.check_in || null,
+          check_out: newDeal.check_out || null,
+          guests: newDeal.guests ? parseInt(newDeal.guests) : null,
           notes: newDeal.notes || null
         })
       })
       if (res.ok) {
         setShowAddModal(false)
-        setNewDeal({ title: '', value: '', stage: 'lead', customer_id: '', customer_name: '', customer_email: '', customer_phone: '', property_name: '', notes: '' })
+        setNewDeal({ title: '', value: '', stage: 'lead', customer_id: '', customer_name: '', customer_email: '', customer_phone: '', property_id: '', property_name: '', check_in: '', check_out: '', guests: '', notes: '' })
         setContactMode('existing')
         setContactSearch('')
         fetchDeals()
@@ -210,10 +316,11 @@ export default function DealsPage() {
       customer_id: deal.customer_id || '',
       customer_name: deal.customer_name || '',
       customer_email: deal.customer_email || '',
+      property_id: deal.property_id || '',
       property_name: deal.property_name || '',
       notes: deal.notes || '',
-      check_in: deal.check_in || '',
-      check_out: deal.check_out || '',
+      check_in: deal.check_in ? deal.check_in.split('T')[0] : '',
+      check_out: deal.check_out ? deal.check_out.split('T')[0] : '',
       guests: deal.guests?.toString() || ''
     })
     setEditContactSearch(deal.customer_name || '')
@@ -237,6 +344,17 @@ export default function DealsPage() {
         }
       }
 
+      // Get property details if changed
+      let propertyName = editForm.property_name
+      let propertyId = editForm.property_id
+      if (editForm.property_id) {
+        const selectedProperty = properties.find(p => p.id === Number(editForm.property_id))
+        if (selectedProperty) {
+          propertyName = selectedProperty.name
+          propertyId = selectedProperty.id
+        }
+      }
+
       const res = await fetch(`/api/admin/deals/${editingDeal.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
@@ -247,7 +365,8 @@ export default function DealsPage() {
           customer_id: editForm.customer_id || null,
           customer_name: customerName || null,
           customer_email: customerEmail || null,
-          property_name: editForm.property_name || null,
+          property_id: propertyId || null,
+          property_name: propertyName || null,
           notes: editForm.notes || null,
           check_in: editForm.check_in || null,
           check_out: editForm.check_out || null,
@@ -914,13 +1033,74 @@ export default function DealsPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Property</label>
-                <input
-                  type="text"
-                  value={newDeal.property_name}
-                  onChange={(e) => setNewDeal({ ...newDeal, property_name: e.target.value })}
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <Home className="w-4 h-4 inline mr-1" />
+                  Property
+                </label>
+                <select
+                  value={newDeal.property_id}
+                  onChange={(e) => {
+                    const propId = e.target.value
+                    const prop = properties.find(p => p.id === Number(propId))
+                    setNewDeal({ 
+                      ...newDeal, 
+                      property_id: propId,
+                      property_name: prop?.name || '',
+                      // Auto-suggest deal value based on property price
+                      value: newDeal.value || (prop?.price_per_week?.toString() || '')
+                    })
+                  }}
                   className="w-full px-3 py-2 border border-gray-200 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                  placeholder="Property name"
+                >
+                  <option value="">Select a property...</option>
+                  {properties.map(prop => (
+                    <option key={prop.id} value={prop.id}>
+                      {prop.name} ({prop.region}) {prop.price_per_week ? `· €${prop.price_per_week.toLocaleString()}/week` : ''}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Check-in/Check-out Dates */}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <Calendar className="w-4 h-4 inline mr-1" />
+                    Check-in
+                  </label>
+                  <input
+                    type="date"
+                    value={newDeal.check_in}
+                    onChange={(e) => setNewDeal({ ...newDeal, check_in: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <Calendar className="w-4 h-4 inline mr-1" />
+                    Check-out
+                  </label>
+                  <input
+                    type="date"
+                    value={newDeal.check_out}
+                    onChange={(e) => setNewDeal({ ...newDeal, check_out: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <User className="w-4 h-4 inline mr-1" />
+                  Guests
+                </label>
+                <input
+                  type="number"
+                  value={newDeal.guests}
+                  onChange={(e) => setNewDeal({ ...newDeal, guests: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-200 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                  placeholder="Number of guests"
+                  min="1"
                 />
               </div>
 
@@ -1076,13 +1256,29 @@ export default function DealsPage() {
                   <Home className="w-4 h-4 inline mr-1" />
                   Property
                 </label>
-                <input
-                  type="text"
-                  value={editForm.property_name}
-                  onChange={(e) => setEditForm({ ...editForm, property_name: e.target.value })}
+                <select
+                  value={editForm.property_id}
+                  onChange={(e) => {
+                    const propId = e.target.value
+                    const prop = properties.find(p => p.id === Number(propId))
+                    setEditForm({ 
+                      ...editForm, 
+                      property_id: propId,
+                      property_name: prop?.name || ''
+                    })
+                  }}
                   className="w-full px-3 py-2 border border-gray-200 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                  placeholder="Property name"
-                />
+                >
+                  <option value="">Select a property...</option>
+                  {properties.map(prop => (
+                    <option key={prop.id} value={prop.id}>
+                      {prop.name} ({prop.region}) {prop.price_per_week ? `· €${prop.price_per_week.toLocaleString()}/week` : ''}
+                    </option>
+                  ))}
+                </select>
+                {editForm.property_name && !editForm.property_id && (
+                  <p className="text-xs text-amber-600 mt-1">Current: {editForm.property_name} (not linked)</p>
+                )}
               </div>
 
               <div className="grid grid-cols-2 gap-4">
@@ -1113,13 +1309,17 @@ export default function DealsPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Guests</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <User className="w-4 h-4 inline mr-1" />
+                  Guests
+                </label>
                 <input
                   type="number"
                   value={editForm.guests}
                   onChange={(e) => setEditForm({ ...editForm, guests: e.target.value })}
                   className="w-full px-3 py-2 border border-gray-200 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
                   placeholder="Number of guests"
+                  min="1"
                 />
               </div>
 
