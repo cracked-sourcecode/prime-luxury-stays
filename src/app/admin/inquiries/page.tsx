@@ -43,10 +43,11 @@ export default function InquiriesPage() {
   // Create deal from inquiry - navigates to deals page with pre-filled data
   function createDealFromInquiry(inquiry: Inquiry) {
     // Store inquiry data in sessionStorage for the deals page to pick up
+    // Title format: "Client Name, Villa Name" or just "Client Name" if no property
     const dealData = {
       title: inquiry.property_name 
-        ? `Booking: ${inquiry.property_name}` 
-        : `Inquiry from ${inquiry.full_name}`,
+        ? `${inquiry.full_name}, ${inquiry.property_name}` 
+        : inquiry.full_name,
       customer_name: inquiry.full_name,
       customer_email: inquiry.email,
       customer_phone: inquiry.phone || '',

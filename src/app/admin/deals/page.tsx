@@ -669,11 +669,19 @@ function DealsPageContent() {
                             </div>
 
                             {/* Deal Details */}
-                            <div className="text-xs text-gray-600 space-y-1 ml-6">
+                            <div className="text-xs text-gray-600 space-y-1.5 ml-6">
                               <p className="font-semibold text-gray-900">{deal.value ? formatCurrency(deal.value) : '—'}</p>
                               {deal.property_name && (
                                 <p className="truncate flex items-center gap-1">
                                   <Home className="w-3 h-3" /> {deal.property_name}
+                                </p>
+                              )}
+                              {(deal.check_in || deal.check_out) && (
+                                <p className="flex items-center gap-1 text-gray-500">
+                                  <Calendar className="w-3 h-3" />
+                                  {deal.check_in ? new Date(deal.check_in).toLocaleDateString('de-DE', { day: '2-digit', month: 'short' }) : '?'}
+                                  {' → '}
+                                  {deal.check_out ? new Date(deal.check_out).toLocaleDateString('de-DE', { day: '2-digit', month: 'short' }) : '?'}
                                 </p>
                               )}
                             </div>
