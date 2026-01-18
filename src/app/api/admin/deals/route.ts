@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
       ) VALUES (
         ${title},
         ${value || null},
-        ${stage || 'lead'},
+        ${stage || 'interested'},
         ${customer_id || null},
         ${customer_name || null},
         ${customer_email || null},

@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, DragEvent, useCallback } from 'react'
+import { useEffect, useState, DragEvent, useCallback, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { 
   Plus, 
@@ -51,8 +51,8 @@ interface Deal {
 }
 
 const getStages = (locale: string) => [
-  { id: 'lead', name: locale === 'de' ? 'Lead' : 'Lead', color: '#94a3b8', bgColor: 'bg-slate-50', borderColor: 'border-slate-200' },
-  { id: 'qualified', name: locale === 'de' ? 'Qualifiziert' : 'Qualified', color: '#3b82f6', bgColor: 'bg-blue-50', borderColor: 'border-blue-200' },
+  { id: 'interested', name: locale === 'de' ? 'Interessiert' : 'Interested', color: '#94a3b8', bgColor: 'bg-slate-50', borderColor: 'border-slate-200' },
+  { id: 'demo', name: locale === 'de' ? 'Demo geplant' : 'Demo Scheduled', color: '#3b82f6', bgColor: 'bg-blue-50', borderColor: 'border-blue-200' },
   { id: 'proposal', name: locale === 'de' ? 'Angebot gesendet' : 'Proposal Sent', color: '#f59e0b', bgColor: 'bg-amber-50', borderColor: 'border-amber-200' },
   { id: 'negotiation', name: locale === 'de' ? 'Verhandlung begonnen' : 'Negotiations Started', color: '#8b5cf6', bgColor: 'bg-purple-50', borderColor: 'border-purple-200' },
   { id: 'won', name: locale === 'de' ? 'Deal gewonnen' : 'Deal Won', color: '#10b981', bgColor: 'bg-emerald-50', borderColor: 'border-emerald-200' },
@@ -75,7 +75,16 @@ interface Property {
   region: string | null
 }
 
+// Wrapper component to handle Suspense for useSearchParams
 export default function DealsPage() {
+  return (
+    <Suspense fallback={<div className="p-6 lg:p-8 flex items-center justify-center min-h-[50vh]"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div></div>}>
+      <DealsPageContent />
+    </Suspense>
+  )
+}
+
+function DealsPageContent() {
   const { t, locale } = useAdminLocale()
   const searchParams = useSearchParams()
   const router = useRouter()
@@ -100,7 +109,7 @@ export default function DealsPage() {
   const [newDeal, setNewDeal] = useState({
     title: '',
     value: '',
-    stage: 'lead',
+    stage: 'interested',
     customer_id: '' as string | number,
     customer_name: '',
     customer_email: '',
@@ -120,7 +129,7 @@ export default function DealsPage() {
   const [editForm, setEditForm] = useState({
     title: '',
     value: '',
-    stage: 'lead',
+    stage: 'interested',
     customer_id: '' as string | number,
     customer_name: '',
     customer_email: '',
@@ -173,7 +182,7 @@ export default function DealsPage() {
           setNewDeal({
             title: data.title || '',
             value: '',
-            stage: 'lead',
+            stage: 'interested',
             customer_id: matchedCustomerId,
             customer_name: data.customer_name || '',
             customer_email: data.customer_email || '',
@@ -296,7 +305,7 @@ export default function DealsPage() {
       })
       if (res.ok) {
         setShowAddModal(false)
-        setNewDeal({ title: '', value: '', stage: 'lead', customer_id: '', customer_name: '', customer_email: '', customer_phone: '', property_id: '', property_name: '', check_in: '', check_out: '', guests: '', notes: '' })
+        setNewDeal({ title: '', value: '', stage: 'interested', customer_id: '', customer_name: '', customer_email: '', customer_phone: '', property_id: '', property_name: '', check_in: '', check_out: '', guests: '', notes: '' })
         setContactMode('existing')
         setContactSearch('')
         fetchDeals()
