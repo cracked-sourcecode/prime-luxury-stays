@@ -1,12 +1,11 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, DragEvent } from 'react'
 import { 
   Plus, 
   LayoutGrid,
   List,
   Search,
-  Filter,
   SlidersHorizontal,
   ChevronLeft,
   ChevronRight,
@@ -17,12 +16,14 @@ import {
   Mail,
   ExternalLink,
   X,
-  Calendar,
+  GripVertical,
+  Pencil,
+  Trash2,
+  Check,
   User,
-  UserPlus,
   Home,
   DollarSign,
-  Check
+  Calendar
 } from 'lucide-react'
 import { useAdminLocale } from '@/lib/adminLocale'
 
@@ -72,10 +73,14 @@ export default function DealsPage() {
   const [loading, setLoading] = useState(true)
   const [view, setView] = useState<'kanban' | 'table'>('kanban')
   const [showAddModal, setShowAddModal] = useState(false)
+  const [showEditModal, setShowEditModal] = useState(false)
+  const [editingDeal, setEditingDeal] = useState<Deal | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedDeals, setSelectedDeals] = useState<number[]>([])
   const [currentPage, setCurrentPage] = useState(1)
   const [collapsedColumns, setCollapsedColumns] = useState<string[]>([])
+  const [draggedDeal, setDraggedDeal] = useState<Deal | null>(null)
+  const [dragOverStage, setDragOverStage] = useState<string | null>(null)
   const itemsPerPage = 25
 
   // Form state for new deal
@@ -93,6 +98,23 @@ export default function DealsPage() {
   const [contactMode, setContactMode] = useState<'existing' | 'new'>('existing')
   const [contactSearch, setContactSearch] = useState('')
   const [showContactDropdown, setShowContactDropdown] = useState(false)
+
+  // Edit form state
+  const [editForm, setEditForm] = useState({
+    title: '',
+    value: '',
+    stage: 'lead',
+    customer_id: '' as string | number,
+    customer_name: '',
+    customer_email: '',
+    property_name: '',
+    notes: '',
+    check_in: '',
+    check_out: '',
+    guests: ''
+  })
+  const [editContactSearch, setEditContactSearch] = useState('')
+  const [showEditContactDropdown, setShowEditContactDropdown] = useState(false)
 
   useEffect(() => {
     fetchDeals()
@@ -142,11 +164,9 @@ export default function DealsPage() {
         const contactData = await contactRes.json()
         if (contactData.id) {
           customerId = contactData.id
-          // Refresh contacts list
           fetchContacts()
         }
       } else if (contactMode === 'existing' && newDeal.customer_id) {
-        // Get contact details from selected contact
         const selectedContact = contacts.find(c => c.id === Number(newDeal.customer_id))
         if (selectedContact) {
           customerName = selectedContact.name
@@ -180,22 +200,146 @@ export default function DealsPage() {
     }
   }
 
+  // Open edit modal
+  function openEditModal(deal: Deal) {
+    setEditingDeal(deal)
+    setEditForm({
+      title: deal.title || '',
+      value: deal.value?.toString() || '',
+      stage: deal.stage || 'lead',
+      customer_id: deal.customer_id || '',
+      customer_name: deal.customer_name || '',
+      customer_email: deal.customer_email || '',
+      property_name: deal.property_name || '',
+      notes: deal.notes || '',
+      check_in: deal.check_in || '',
+      check_out: deal.check_out || '',
+      guests: deal.guests?.toString() || ''
+    })
+    setEditContactSearch(deal.customer_name || '')
+    setShowEditModal(true)
+  }
+
+  // Update deal
+  async function updateDeal() {
+    if (!editingDeal) return
+    
+    try {
+      // Get customer details if changed
+      let customerName = editForm.customer_name
+      let customerEmail = editForm.customer_email
+      
+      if (editForm.customer_id) {
+        const selectedContact = contacts.find(c => c.id === Number(editForm.customer_id))
+        if (selectedContact) {
+          customerName = selectedContact.name
+          customerEmail = selectedContact.email || ''
+        }
+      }
+
+      const res = await fetch(`/api/admin/deals/${editingDeal.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: editForm.title,
+          value: editForm.value ? parseFloat(editForm.value) : null,
+          stage: editForm.stage,
+          customer_id: editForm.customer_id || null,
+          customer_name: customerName || null,
+          customer_email: customerEmail || null,
+          property_name: editForm.property_name || null,
+          notes: editForm.notes || null,
+          check_in: editForm.check_in || null,
+          check_out: editForm.check_out || null,
+          guests: editForm.guests ? parseInt(editForm.guests) : null
+        })
+      })
+      
+      if (res.ok) {
+        setShowEditModal(false)
+        setEditingDeal(null)
+        fetchDeals()
+      }
+    } catch (error) {
+      console.error('Error updating deal:', error)
+    }
+  }
+
   // Filter contacts for dropdown
   const filteredContacts = contacts.filter(c => 
     c.name.toLowerCase().includes(contactSearch.toLowerCase()) ||
     (c.email && c.email.toLowerCase().includes(contactSearch.toLowerCase()))
   ).slice(0, 10)
 
+  const editFilteredContacts = contacts.filter(c => 
+    c.name.toLowerCase().includes(editContactSearch.toLowerCase()) ||
+    (c.email && c.email.toLowerCase().includes(editContactSearch.toLowerCase()))
+  ).slice(0, 10)
+
+  // Drag and drop handlers for Kanban
+  function handleDragStart(e: DragEvent<HTMLDivElement>, deal: Deal) {
+    setDraggedDeal(deal)
+    e.dataTransfer.effectAllowed = 'move'
+    e.dataTransfer.setData('text/plain', deal.id.toString())
+    // Add visual feedback
+    const target = e.target as HTMLElement
+    setTimeout(() => target.classList.add('opacity-50'), 0)
+  }
+
+  function handleDragEnd(e: DragEvent<HTMLDivElement>) {
+    const target = e.target as HTMLElement
+    target.classList.remove('opacity-50')
+    setDraggedDeal(null)
+    setDragOverStage(null)
+  }
+
+  function handleDragOver(e: DragEvent<HTMLDivElement>, stageId: string) {
+    e.preventDefault()
+    e.dataTransfer.dropEffect = 'move'
+    setDragOverStage(stageId)
+  }
+
+  function handleDragLeave() {
+    setDragOverStage(null)
+  }
+
+  async function handleDrop(e: DragEvent<HTMLDivElement>, newStage: string) {
+    e.preventDefault()
+    setDragOverStage(null)
+    
+    if (!draggedDeal || draggedDeal.stage === newStage) return
+    
+    // Optimistic update
+    setDeals(deals.map(d => d.id === draggedDeal.id ? { ...d, stage: newStage } : d))
+    
+    try {
+      await fetch(`/api/admin/deals/${draggedDeal.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ stage: newStage })
+      })
+    } catch (error) {
+      console.error('Error updating deal stage:', error)
+      // Revert on error
+      fetchDeals()
+    }
+    
+    setDraggedDeal(null)
+  }
+
   async function updateDealStage(dealId: number, newStage: string) {
+    // Optimistic update
+    setDeals(deals.map(d => d.id === dealId ? { ...d, stage: newStage } : d))
+    
     try {
       await fetch(`/api/admin/deals/${dealId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ stage: newStage })
       })
-      setDeals(deals.map(d => d.id === dealId ? { ...d, stage: newStage } : d))
     } catch (error) {
       console.error('Error updating deal:', error)
+      fetchDeals()
     }
   }
 
@@ -217,7 +361,6 @@ export default function DealsPage() {
 
   const getStageDeals = (stageId: string) => filteredDeals.filter(d => d.stage === stageId)
   const getStageTotal = (stageId: string) => getStageDeals(stageId).reduce((sum, d) => sum + (d.value || 0), 0)
-  const totalPipelineValue = deals.filter(d => d.stage !== 'lost').reduce((sum, d) => sum + (d.value || 0), 0)
 
   const toggleColumn = (stageId: string) => {
     setCollapsedColumns(prev => 
@@ -295,12 +438,6 @@ export default function DealsPage() {
               </button>
             </div>
 
-            {/* Filters */}
-            <button className="flex items-center gap-2 px-3 py-2 border border-gray-200 rounded-md text-sm text-gray-700 hover:bg-gray-50">
-              <SlidersHorizontal className="w-4 h-4" />
-              {t('filters')}
-            </button>
-
             {/* Add Deal */}
             <button
               onClick={() => setShowAddModal(true)}
@@ -311,48 +448,34 @@ export default function DealsPage() {
             </button>
           </div>
         </div>
-
-        {/* Filter Pills */}
-        <div className="flex items-center gap-3 mt-3 text-sm">
-          <button className="flex items-center gap-1 text-gray-700 hover:text-gray-900">
-            {t('dealOwner')} <ChevronDown className="w-3 h-3" />
-          </button>
-          <button className="flex items-center gap-1 text-gray-700 hover:text-gray-900">
-            {t('createDate')} <ChevronDown className="w-3 h-3" />
-          </button>
-          <button className="flex items-center gap-1 text-gray-700 hover:text-gray-900">
-            {t('lastActivityDate')} <ChevronDown className="w-3 h-3" />
-          </button>
-          <button className="flex items-center gap-1 text-gray-700 hover:text-gray-900">
-            {t('closeDate')} <ChevronDown className="w-3 h-3" />
-          </button>
-          <button className="flex items-center gap-1 text-blue-600 hover:text-blue-700">
-            <Plus className="w-3 h-3" /> {t('more')}
-          </button>
-          <button className="flex items-center gap-1 text-blue-600 hover:text-blue-700 ml-4">
-            <SlidersHorizontal className="w-3 h-3" /> {t('advancedFilters')}
-          </button>
-        </div>
       </div>
 
       {/* Content */}
       <div className="flex-1 overflow-hidden bg-gray-50">
         {view === 'kanban' ? (
-          /* Kanban View */
+          /* Kanban View with Drag & Drop */
           <div className="flex gap-0 h-full overflow-x-auto">
             {STAGES.map((stage) => {
               const stageDeals = getStageDeals(stage.id)
               const stageTotal = getStageTotal(stage.id)
               const isCollapsed = collapsedColumns.includes(stage.id)
+              const isDragOver = dragOverStage === stage.id
               
               return (
                 <div 
                   key={stage.id} 
-                  className={`flex-shrink-0 ${isCollapsed ? 'w-12' : 'w-72'} border-r border-gray-200 bg-gray-50 flex flex-col transition-all`}
+                  className={`flex-shrink-0 ${isCollapsed ? 'w-12' : 'w-72'} border-r border-gray-200 bg-gray-50 flex flex-col transition-all ${
+                    isDragOver ? 'bg-blue-50' : ''
+                  }`}
+                  onDragOver={(e) => handleDragOver(e, stage.id)}
+                  onDragLeave={handleDragLeave}
+                  onDrop={(e) => handleDrop(e, stage.id)}
                 >
                   {/* Column Header */}
                   <div 
-                    className="px-3 py-3 bg-white border-b border-gray-200 flex items-center justify-between cursor-pointer hover:bg-gray-50"
+                    className={`px-3 py-3 bg-white border-b border-gray-200 flex items-center justify-between cursor-pointer hover:bg-gray-50 ${
+                      isDragOver ? 'bg-blue-100' : ''
+                    }`}
                     onClick={() => toggleColumn(stage.id)}
                   >
                     {isCollapsed ? (
@@ -366,6 +489,7 @@ export default function DealsPage() {
                     ) : (
                       <>
                         <div className="flex items-center gap-2">
+                          <div className="w-3 h-3 rounded-full" style={{ backgroundColor: stage.color }} />
                           <span className="font-medium text-gray-900 text-sm">{stage.name}</span>
                           <span className="text-gray-500 text-sm">{stageDeals.length}</span>
                         </div>
@@ -377,72 +501,80 @@ export default function DealsPage() {
                   {/* Cards */}
                   {!isCollapsed && (
                     <>
-                      <div className="flex-1 overflow-y-auto p-2 space-y-2">
+                      <div className={`flex-1 overflow-y-auto p-2 space-y-2 min-h-[200px] ${
+                        isDragOver ? 'ring-2 ring-blue-400 ring-inset' : ''
+                      }`}>
                         {stageDeals.map((deal) => (
                           <div 
                             key={deal.id} 
-                            className={`bg-white rounded-md border ${stage.borderColor} p-3 hover:shadow-md transition-shadow cursor-pointer`}
+                            draggable
+                            onDragStart={(e) => handleDragStart(e, deal)}
+                            onDragEnd={handleDragEnd}
+                            className={`bg-white rounded-md border ${stage.borderColor} p-3 hover:shadow-md transition-all cursor-grab active:cursor-grabbing group`}
                           >
-                            {/* Deal Title */}
-                            <a 
-                              href="#" 
-                              className="font-medium text-[#0091ae] hover:underline text-sm block mb-2"
-                              onClick={(e) => e.preventDefault()}
-                            >
-                              {deal.title}
-                            </a>
+                            {/* Drag Handle */}
+                            <div className="flex items-start justify-between mb-2">
+                              <GripVertical className="w-4 h-4 text-gray-300 group-hover:text-gray-400 flex-shrink-0 mt-0.5" />
+                              <a 
+                                href="#" 
+                                onClick={(e) => { e.preventDefault(); openEditModal(deal) }}
+                                className="font-medium text-[#0091ae] hover:underline text-sm flex-1 ml-2"
+                              >
+                                {deal.title}
+                              </a>
+                              <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <button 
+                                  onClick={() => openEditModal(deal)}
+                                  className="p-1 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded"
+                                  title="Edit"
+                                >
+                                  <Pencil className="w-3 h-3" />
+                                </button>
+                                <button 
+                                  onClick={() => deleteDeal(deal.id)}
+                                  className="p-1 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded"
+                                  title="Delete"
+                                >
+                                  <Trash2 className="w-3 h-3" />
+                                </button>
+                              </div>
+                            </div>
 
                             {/* Deal Details */}
-                            <div className="text-xs text-gray-600 space-y-1">
-                              <p>Amount: {deal.value ? formatCurrency(deal.value) : '—'}</p>
-                              <p className="truncate">Deal stage: {stage.name}</p>
+                            <div className="text-xs text-gray-600 space-y-1 ml-6">
+                              <p className="font-semibold text-gray-900">{deal.value ? formatCurrency(deal.value) : '—'}</p>
                               {deal.property_name && (
-                                <p className="truncate">Property: {deal.property_name}</p>
+                                <p className="truncate flex items-center gap-1">
+                                  <Home className="w-3 h-3" /> {deal.property_name}
+                                </p>
                               )}
                             </div>
 
                             {/* Contact */}
                             {deal.customer_name && (
-                              <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100">
-                                <div className="w-6 h-6 rounded-full bg-gray-200 flex items-center justify-center text-xs font-medium text-gray-600">
+                              <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-100 ml-6">
+                                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-xs font-medium text-white">
                                   {deal.customer_name.charAt(0).toUpperCase()}
                                 </div>
-                                <span className="text-xs text-gray-700 truncate">{deal.customer_name}</span>
+                                <div className="flex-1 min-w-0">
+                                  <span className="text-xs text-gray-700 truncate block">{deal.customer_name}</span>
+                                  {deal.customer_email && (
+                                    <span className="text-xs text-gray-400 truncate block">{deal.customer_email}</span>
+                                  )}
+                                </div>
                               </div>
                             )}
-
-                            {/* Actions */}
-                            <div className="flex items-center justify-end gap-1 mt-3 pt-2 border-t border-gray-100">
-                              <button 
-                                className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded"
-                                title="Copy"
-                              >
-                                <Copy className="w-3.5 h-3.5" />
-                              </button>
-                              <button 
-                                className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded"
-                                title="Move"
-                              >
-                                <ArrowRight className="w-3.5 h-3.5" />
-                              </button>
-                              {deal.customer_email && (
-                                <a 
-                                  href={`mailto:${deal.customer_email}`}
-                                  className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded"
-                                  title="Email"
-                                >
-                                  <Mail className="w-3.5 h-3.5" />
-                                </a>
-                              )}
-                              <button 
-                                className="p-1.5 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded"
-                                title="Open"
-                              >
-                                <ExternalLink className="w-3.5 h-3.5" />
-                              </button>
-                            </div>
                           </div>
                         ))}
+                        
+                        {/* Drop zone indicator when empty */}
+                        {stageDeals.length === 0 && (
+                          <div className={`h-32 border-2 border-dashed rounded-lg flex items-center justify-center text-sm text-gray-400 ${
+                            isDragOver ? 'border-blue-400 bg-blue-50 text-blue-600' : 'border-gray-200'
+                          }`}>
+                            {isDragOver ? 'Drop here' : 'No deals'}
+                          </div>
+                        )}
                       </div>
 
                       {/* Column Footer */}
@@ -456,7 +588,7 @@ export default function DealsPage() {
             })}
           </div>
         ) : (
-          /* Table View */
+          /* Table View with Inline Editing */
           <div className="h-full flex flex-col">
             <div className="flex-1 overflow-auto">
               <table className="w-full">
@@ -476,43 +608,30 @@ export default function DealsPage() {
                       />
                     </th>
                     <th className="px-3 py-2 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                      <div className="flex items-center gap-1">
-                        Deal Name
-                        <MoreHorizontal className="w-3 h-3 text-gray-400" />
-                      </div>
+                      Deal Name
                     </th>
                     <th className="px-3 py-2 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                      <div className="flex items-center gap-1">
-                        Deal → Contacts
-                        <MoreHorizontal className="w-3 h-3 text-gray-400" />
-                      </div>
+                      Contact
                     </th>
                     <th className="px-3 py-2 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                      <div className="flex items-center gap-1">
-                        Deal Stage
-                        <MoreHorizontal className="w-3 h-3 text-gray-400" />
-                      </div>
+                      Stage
                     </th>
                     <th className="px-3 py-2 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                      <div className="flex items-center gap-1">
-                        Property
-                        <MoreHorizontal className="w-3 h-3 text-gray-400" />
-                      </div>
+                      Property
                     </th>
                     <th className="px-3 py-2 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">
-                      <div className="flex items-center gap-1 justify-end">
-                        Amount
-                        <MoreHorizontal className="w-3 h-3 text-gray-400" />
-                      </div>
+                      Amount
                     </th>
-                    <th className="w-10"></th>
+                    <th className="w-24 px-3 py-2 text-center text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                      Actions
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-100">
                   {paginatedDeals.map((deal) => {
                     const stage = STAGES.find(s => s.id === deal.stage)
                     return (
-                      <tr key={deal.id} className="hover:bg-blue-50/30">
+                      <tr key={deal.id} className="hover:bg-blue-50/30 group">
                         <td className="px-3 py-3">
                           <input 
                             type="checkbox" 
@@ -528,29 +647,44 @@ export default function DealsPage() {
                           />
                         </td>
                         <td className="px-3 py-3">
-                          <a href="#" className="text-[#0091ae] hover:underline font-medium text-sm">
+                          <button 
+                            onClick={() => openEditModal(deal)}
+                            className="text-[#0091ae] hover:underline font-medium text-sm text-left"
+                          >
                             {deal.title}
-                          </a>
+                          </button>
                         </td>
                         <td className="px-3 py-3">
-                          {deal.customer_name && (
+                          {deal.customer_name ? (
                             <div className="flex items-center gap-2">
-                              <div className="w-7 h-7 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center text-xs font-medium text-gray-600">
+                              <div className="w-7 h-7 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-xs font-medium text-white">
                                 {deal.customer_name.charAt(0).toUpperCase()}
                               </div>
                               <div>
-                                <a href="#" className="text-[#0091ae] hover:underline text-sm">
-                                  {deal.customer_name}
-                                </a>
+                                <p className="text-sm text-gray-900">{deal.customer_name}</p>
                                 {deal.customer_email && (
                                   <p className="text-xs text-gray-500 truncate max-w-[150px]">{deal.customer_email}</p>
                                 )}
                               </div>
                             </div>
+                          ) : (
+                            <span className="text-gray-400 text-sm">No contact</span>
                           )}
                         </td>
                         <td className="px-3 py-3">
-                          <span className="text-sm text-gray-700">{stage?.name || deal.stage}</span>
+                          {/* Inline Stage Dropdown */}
+                          <select
+                            value={deal.stage}
+                            onChange={(e) => updateDealStage(deal.id, e.target.value)}
+                            className="text-sm border border-gray-200 rounded-md px-2 py-1.5 bg-white hover:border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none cursor-pointer"
+                            style={{ color: stage?.color }}
+                          >
+                            {STAGES.map(s => (
+                              <option key={s.id} value={s.id} style={{ color: s.color }}>
+                                {s.name}
+                              </option>
+                            ))}
+                          </select>
                         </td>
                         <td className="px-3 py-3">
                           <span className="text-sm text-gray-600">{deal.property_name || '—'}</span>
@@ -561,9 +695,31 @@ export default function DealsPage() {
                           </span>
                         </td>
                         <td className="px-3 py-3">
-                          <button className="p-1 text-gray-400 hover:text-gray-600">
-                            <MoreHorizontal className="w-4 h-4" />
-                          </button>
+                          <div className="flex items-center justify-center gap-1">
+                            <button 
+                              onClick={() => openEditModal(deal)}
+                              className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded"
+                              title="Edit"
+                            >
+                              <Pencil className="w-4 h-4" />
+                            </button>
+                            {deal.customer_email && (
+                              <a 
+                                href={`mailto:${deal.customer_email}`}
+                                className="p-1.5 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded"
+                                title="Email"
+                              >
+                                <Mail className="w-4 h-4" />
+                              </a>
+                            )}
+                            <button 
+                              onClick={() => deleteDeal(deal.id)}
+                              className="p-1.5 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded"
+                              title="Delete"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     )
@@ -583,7 +739,7 @@ export default function DealsPage() {
                   <ChevronLeft className="w-4 h-4" /> Prev
                 </button>
                 
-                {Array.from({ length: Math.min(3, totalPages) }, (_, i) => i + 1).map(page => (
+                {Array.from({ length: Math.min(5, totalPages) }, (_, i) => i + 1).map(page => (
                   <button
                     key={page}
                     onClick={() => setCurrentPage(page)}
@@ -599,16 +755,15 @@ export default function DealsPage() {
                 
                 <button 
                   onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                  disabled={currentPage === totalPages}
+                  disabled={currentPage === totalPages || totalPages === 0}
                   className="flex items-center gap-1 px-2 py-1 hover:bg-gray-100 rounded disabled:opacity-50"
                 >
                   Next <ChevronRight className="w-4 h-4" />
                 </button>
               </div>
 
-              <div className="flex items-center gap-2 text-sm text-gray-600">
-                <span>{itemsPerPage} per page</span>
-                <ChevronDown className="w-4 h-4" />
+              <div className="text-sm text-gray-600">
+                {filteredDeals.length} total deals
               </div>
             </div>
           </div>
@@ -618,8 +773,8 @@ export default function DealsPage() {
       {/* Add Deal Modal */}
       {showAddModal && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg shadow-xl max-w-md w-full">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 sticky top-0 bg-white">
               <h2 className="text-lg font-semibold text-gray-900">Create Deal</h2>
               <button onClick={() => setShowAddModal(false)} className="text-gray-400 hover:text-gray-600">
                 <X className="w-5 h-5" />
@@ -781,7 +936,7 @@ export default function DealsPage() {
               </div>
             </div>
 
-            <div className="flex justify-end gap-3 px-6 py-4 border-t border-gray-200 bg-gray-50">
+            <div className="flex justify-end gap-3 px-6 py-4 border-t border-gray-200 bg-gray-50 sticky bottom-0">
               <button
                 onClick={() => setShowAddModal(false)}
                 className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md font-medium"
@@ -795,6 +950,214 @@ export default function DealsPage() {
               >
                 Create deal
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Deal Modal */}
+      {showEditModal && editingDeal && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 sticky top-0 bg-white">
+              <h2 className="text-lg font-semibold text-gray-900">Edit Deal</h2>
+              <button onClick={() => { setShowEditModal(false); setEditingDeal(null) }} className="text-gray-400 hover:text-gray-600">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="p-6 space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Deal Name *</label>
+                <input
+                  type="text"
+                  value={editForm.title}
+                  onChange={(e) => setEditForm({ ...editForm, title: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-200 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Amount</label>
+                  <div className="relative">
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">€</span>
+                    <input
+                      type="number"
+                      value={editForm.value}
+                      onChange={(e) => setEditForm({ ...editForm, value: e.target.value })}
+                      className="w-full pl-7 pr-3 py-2 border border-gray-200 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Stage</label>
+                  <select
+                    value={editForm.stage}
+                    onChange={(e) => setEditForm({ ...editForm, stage: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                  >
+                    {STAGES.map(s => (
+                      <option key={s.id} value={s.id}>{s.name}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              {/* Contact Assignment */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <User className="w-4 h-4 inline mr-1" />
+                  Assign to Contact
+                </label>
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={editContactSearch}
+                    onChange={(e) => { setEditContactSearch(e.target.value); setShowEditContactDropdown(true) }}
+                    onFocus={() => setShowEditContactDropdown(true)}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                    placeholder="Search contacts..."
+                  />
+                  {showEditContactDropdown && editFilteredContacts.length > 0 && (
+                    <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg max-h-48 overflow-y-auto">
+                      {editFilteredContacts.map(contact => (
+                        <button
+                          key={contact.id}
+                          type="button"
+                          onClick={() => {
+                            setEditForm({ 
+                              ...editForm, 
+                              customer_id: contact.id, 
+                              customer_name: contact.name, 
+                              customer_email: contact.email || '' 
+                            })
+                            setEditContactSearch(contact.name)
+                            setShowEditContactDropdown(false)
+                          }}
+                          className="w-full px-3 py-2 text-left hover:bg-gray-50 flex items-center justify-between"
+                        >
+                          <div className="flex items-center gap-2">
+                            <div className="w-7 h-7 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-xs font-medium text-white">
+                              {contact.name.charAt(0).toUpperCase()}
+                            </div>
+                            <div>
+                              <p className="text-sm font-medium text-gray-900">{contact.name}</p>
+                              {contact.email && <p className="text-xs text-gray-500">{contact.email}</p>}
+                            </div>
+                          </div>
+                          {editForm.customer_id === contact.id && <Check className="w-4 h-4 text-blue-600" />}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                  {editForm.customer_id && (
+                    <div className="flex items-center justify-between mt-2 p-2 bg-blue-50 rounded-md">
+                      <p className="text-sm text-blue-700">
+                        ✓ Assigned to: <strong>{contacts.find(c => c.id === Number(editForm.customer_id))?.name || editForm.customer_name}</strong>
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setEditForm({ ...editForm, customer_id: '', customer_name: '', customer_email: '' })
+                          setEditContactSearch('')
+                        }}
+                        className="text-blue-600 hover:text-blue-800 text-sm"
+                      >
+                        Clear
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <Home className="w-4 h-4 inline mr-1" />
+                  Property
+                </label>
+                <input
+                  type="text"
+                  value={editForm.property_name}
+                  onChange={(e) => setEditForm({ ...editForm, property_name: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-200 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                  placeholder="Property name"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <Calendar className="w-4 h-4 inline mr-1" />
+                    Check-in
+                  </label>
+                  <input
+                    type="date"
+                    value={editForm.check_in}
+                    onChange={(e) => setEditForm({ ...editForm, check_in: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <Calendar className="w-4 h-4 inline mr-1" />
+                    Check-out
+                  </label>
+                  <input
+                    type="date"
+                    value={editForm.check_out}
+                    onChange={(e) => setEditForm({ ...editForm, check_out: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Guests</label>
+                <input
+                  type="number"
+                  value={editForm.guests}
+                  onChange={(e) => setEditForm({ ...editForm, guests: e.target.value })}
+                  className="w-full px-3 py-2 border border-gray-200 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                  placeholder="Number of guests"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+                <textarea
+                  value={editForm.notes}
+                  onChange={(e) => setEditForm({ ...editForm, notes: e.target.value })}
+                  rows={3}
+                  className="w-full px-3 py-2 border border-gray-200 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                  placeholder="Additional notes..."
+                />
+              </div>
+            </div>
+
+            <div className="flex justify-between gap-3 px-6 py-4 border-t border-gray-200 bg-gray-50 sticky bottom-0">
+              <button
+                onClick={() => deleteDeal(editingDeal.id)}
+                className="px-4 py-2 text-red-600 hover:bg-red-50 rounded-md font-medium flex items-center gap-2"
+              >
+                <Trash2 className="w-4 h-4" />
+                Delete
+              </button>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => { setShowEditModal(false); setEditingDeal(null) }}
+                  className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-md font-medium"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={updateDeal}
+                  disabled={!editForm.title}
+                  className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md font-medium disabled:opacity-50"
+                >
+                  Save Changes
+                </button>
+              </div>
             </div>
           </div>
         </div>

@@ -67,26 +67,34 @@ export async function PUT(
 
     // Simple update for stage changes (most common)
     if (stage !== undefined && Object.keys(body).length === 1) {
-      await sql`
-        UPDATE deals 
-        SET stage = ${stage}, updated_at = NOW()
-        ${stage === 'won' || stage === 'lost' ? sql`, closed_at = NOW()` : sql``}
-        WHERE id = ${id}
-      `
+      if (stage === 'won' || stage === 'lost') {
+        await sql`
+          UPDATE deals 
+          SET stage = ${stage}, updated_at = NOW(), closed_at = NOW()
+          WHERE id = ${id}
+        `
+      } else {
+        await sql`
+          UPDATE deals 
+          SET stage = ${stage}, updated_at = NOW()
+          WHERE id = ${id}
+        `
+      }
     } else {
-      // Full update
+      // Full update - handle customer_id properly
       await sql`
         UPDATE deals SET
           title = COALESCE(${title}, title),
-          value = COALESCE(${value}, value),
+          value = ${value !== undefined ? value : null},
           stage = COALESCE(${stage}, stage),
-          customer_name = COALESCE(${customer_name}, customer_name),
-          customer_email = COALESCE(${customer_email}, customer_email),
-          property_name = COALESCE(${property_name}, property_name),
-          check_in = COALESCE(${check_in}::date, check_in),
-          check_out = COALESCE(${check_out}::date, check_out),
-          guests = COALESCE(${guests}, guests),
-          notes = COALESCE(${notes}, notes),
+          customer_id = ${customer_id !== undefined ? customer_id : null},
+          customer_name = ${customer_name !== undefined ? customer_name : null},
+          customer_email = ${customer_email !== undefined ? customer_email : null},
+          property_name = ${property_name !== undefined ? property_name : null},
+          check_in = ${check_in !== undefined ? check_in : null},
+          check_out = ${check_out !== undefined ? check_out : null},
+          guests = ${guests !== undefined ? guests : null},
+          notes = ${notes !== undefined ? notes : null},
           probability = COALESCE(${probability}, probability),
           updated_at = NOW()
         WHERE id = ${id}
