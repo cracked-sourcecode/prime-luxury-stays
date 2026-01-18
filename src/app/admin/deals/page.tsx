@@ -488,7 +488,10 @@ function DealsPageContent() {
   )
 
   const getStageDeals = (stageId: string) => filteredDeals.filter(d => d.stage === stageId)
-  const getStageTotal = (stageId: string) => getStageDeals(stageId).reduce((sum, d) => sum + (d.value || 0), 0)
+  const getStageTotal = (stageId: string) => getStageDeals(stageId).reduce((sum, d) => {
+    const value = typeof d.value === 'string' ? parseFloat(d.value) : (d.value || 0)
+    return sum + (isNaN(value) ? 0 : value)
+  }, 0)
 
   const toggleColumn = (stageId: string) => {
     setCollapsedColumns(prev => 
@@ -496,7 +499,9 @@ function DealsPageContent() {
     )
   }
 
-  const formatCurrency = (amount: number) => {
+  const formatCurrency = (amount: number | null | undefined) => {
+    const numAmount = typeof amount === 'string' ? parseFloat(amount) : (amount || 0)
+    if (isNaN(numAmount)) return '0 €'
     return new Intl.NumberFormat('de-DE', {
       style: 'currency',
       currency: 'EUR',
