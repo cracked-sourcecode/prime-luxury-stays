@@ -46,7 +46,7 @@ export default function AvailabilityClient() {
   const [activeTab, setActiveTab] = useState<string>('')
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null)
 
-  const SHEET_URL = 'https://docs.google.com/spreadsheets/d/1GnBbMXftJT1kdH_VNCyyz-OU0yOvP6iG/edit'
+  const SHEET_URL = 'https://docs.google.com/spreadsheets/d/1TLIQU2HXq9okBaBNN12ntfVirCg4sFzkatRMZhR-cvI/edit'
 
   const fetchData = async () => {
     setLoading(true)

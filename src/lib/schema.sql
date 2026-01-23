@@ -188,3 +188,29 @@ CREATE INDEX IF NOT EXISTS idx_availability_dates ON property_availability(start
 CREATE INDEX IF NOT EXISTS idx_sessions_token ON admin_sessions(session_token);
 CREATE INDEX IF NOT EXISTS idx_inquiries_created_at ON inquiries(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_inquiries_status ON inquiries(status);
+
+-- =============================================
+-- Sheet Availability (Migrated from Google Sheets)
+-- =============================================
+CREATE TABLE IF NOT EXISTS sheet_availability (
+    id SERIAL PRIMARY KEY,
+    region VARCHAR(100) NOT NULL,           -- e.g., 'N+NO', 'S+ SO', 'SW1', 'IBIZA'
+    week_label VARCHAR(50) NOT NULL,        -- Original format: "27.12.-03.01."
+    week_start DATE,
+    week_end DATE,
+    property_name VARCHAR(255) NOT NULL,
+    property_capacity INTEGER,
+    property_location VARCHAR(255),
+    status VARCHAR(50) NOT NULL DEFAULT 'unknown',  -- 'available', 'booked', 'owner', 'on_request'
+    raw_value TEXT,
+    notes TEXT,
+    imported_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    sheet_row INTEGER,
+    sheet_column INTEGER,
+    UNIQUE(region, week_label, property_name)
+);
+
+CREATE INDEX IF NOT EXISTS idx_sheet_avail_region ON sheet_availability(region);
+CREATE INDEX IF NOT EXISTS idx_sheet_avail_property ON sheet_availability(property_name);
+CREATE INDEX IF NOT EXISTS idx_sheet_avail_status ON sheet_availability(status);
+CREATE INDEX IF NOT EXISTS idx_sheet_avail_week ON sheet_availability(week_start, week_end);
