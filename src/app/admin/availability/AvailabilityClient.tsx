@@ -3,13 +3,16 @@
 import { useState, useEffect } from 'react'
 import { 
   Calendar, 
+  Search,
   RefreshCw, 
   ExternalLink, 
-  X, 
-  Check, 
+  Edit2,
+  Check,
+  X,
   ChevronLeft,
   ChevronRight
 } from 'lucide-react'
+import { useAdminLocale } from '@/lib/adminLocale'
 
 interface AvailabilityRecord {
   id: number
@@ -31,12 +34,12 @@ interface Filters {
   statuses: string[]
 }
 
-const STATUS_COLORS: Record<string, string> = {
-  available: 'bg-emerald-500 hover:bg-emerald-600',
-  on_request: 'bg-amber-400 hover:bg-amber-500',
-  owner: 'bg-rose-500 hover:bg-rose-600',
-  booked: 'bg-violet-500 hover:bg-violet-600',
-  unknown: 'bg-slate-300 hover:bg-slate-400',
+const STATUS_STYLES: Record<string, string> = {
+  available: 'bg-green-100 text-green-700',
+  on_request: 'bg-amber-100 text-amber-700',
+  owner: 'bg-red-100 text-red-700',
+  booked: 'bg-purple-100 text-purple-700',
+  unknown: 'bg-gray-100 text-gray-600',
 }
 
 const STATUS_LABELS: Record<string, string> = {
@@ -44,25 +47,21 @@ const STATUS_LABELS: Record<string, string> = {
   on_request: 'On Request',
   owner: 'Owner',
   booked: 'Booked',
-  unknown: '?',
-}
-
-const STATUS_SHORT: Record<string, string> = {
-  available: 'Avail',
-  on_request: 'a.A.',
-  owner: 'Owner',
-  booked: 'Book',
-  unknown: '-',
+  unknown: 'Unknown',
 }
 
 export default function AvailabilityClient() {
+  const { t, locale } = useAdminLocale()
   const [loading, setLoading] = useState(true)
   const [data, setData] = useState<AvailabilityRecord[]>([])
   const [filters, setFilters] = useState<Filters | null>(null)
   const [activeRegion, setActiveRegion] = useState<string>('')
-  const [editingCell, setEditingCell] = useState<number | null>(null)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [editingId, setEditingId] = useState<number | null>(null)
   const [editStatus, setEditStatus] = useState<string>('')
   const [saving, setSaving] = useState(false)
+  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 50
 
   const SHEET_URL = 'https://docs.google.com/spreadsheets/d/1TLIQU2HXq9okBaBNN12ntfVirCg4sFzkatRMZhR-cvI/edit'
 
@@ -79,7 +78,6 @@ export default function AvailabilityClient() {
         setData(json.data)
         if (json.filters) {
           setFilters(json.filters)
-          // Set first region as active if not set
           if (!activeRegion && json.filters.regions.length > 0) {
             setActiveRegion(json.filters.regions[0])
           }
@@ -99,26 +97,26 @@ export default function AvailabilityClient() {
   useEffect(() => {
     if (activeRegion) {
       fetchData(activeRegion)
+      setCurrentPage(1)
     }
   }, [activeRegion])
 
-  const handleCellClick = (record: AvailabilityRecord) => {
-    setEditingCell(record.id)
+  const handleEdit = (record: AvailabilityRecord) => {
+    setEditingId(record.id)
     setEditStatus(record.status)
   }
 
-  const handleSave = async () => {
-    if (!editingCell) return
+  const handleSave = async (id: number) => {
     setSaving(true)
     try {
       const res = await fetch('/api/admin/availability', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: editingCell, status: editStatus })
+        body: JSON.stringify({ id, status: editStatus })
       })
       
       if (res.ok) {
-        setEditingCell(null)
+        setEditingId(null)
         fetchData(activeRegion)
       }
     } catch (e) {
@@ -129,69 +127,62 @@ export default function AvailabilityClient() {
   }
 
   const handleCancel = () => {
-    setEditingCell(null)
+    setEditingId(null)
     setEditStatus('')
   }
 
-  // Build matrix: get unique weeks and properties for current region
-  const regionData = data.filter(d => d.region === activeRegion)
-  
-  const weeks = [...new Set(regionData.map(d => d.week_label))].sort((a, b) => {
-    // Sort by week_start if available
-    const recordA = regionData.find(r => r.week_label === a)
-    const recordB = regionData.find(r => r.week_label === b)
-    if (recordA?.week_start && recordB?.week_start) {
-      return new Date(recordA.week_start).getTime() - new Date(recordB.week_start).getTime()
-    }
-    return 0
-  })
-  
-  const properties = [...new Set(regionData.map(d => d.property_name))].sort()
-  
-  // Create lookup map for quick cell access
-  const cellMap = new Map<string, AvailabilityRecord>()
-  regionData.forEach(record => {
-    cellMap.set(`${record.week_label}|${record.property_name}`, record)
+  // Filter by search
+  const filteredData = data.filter(record => {
+    if (!searchQuery) return true
+    const q = searchQuery.toLowerCase()
+    return (
+      record.property_name.toLowerCase().includes(q) ||
+      record.week_label.toLowerCase().includes(q) ||
+      record.property_location?.toLowerCase().includes(q)
+    )
   })
 
-  // Get property details
-  const propertyDetails = properties.map(p => {
-    const record = regionData.find(r => r.property_name === p)
-    return {
-      name: p,
-      capacity: record?.property_capacity,
-      location: record?.property_location
-    }
-  })
+  // Pagination
+  const totalPages = Math.ceil(filteredData.length / itemsPerPage)
+  const paginatedData = filteredData.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  )
+
+  if (loading && !data.length) {
+    return (
+      <div className="p-6 lg:p-8 flex items-center justify-center min-h-[50vh]">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gold-600"></div>
+      </div>
+    )
+  }
 
   return (
-    <div className="p-4 lg:p-6 min-h-screen bg-slate-50">
+    <div className="p-6 lg:p-8">
       {/* Header */}
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
+      <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-800 flex items-center gap-3">
-            <Calendar className="w-7 h-7 text-gold-600" />
-            Property Availability
+          <h1 className="text-2xl font-semibold text-charcoal-900">
+            {locale === 'de' ? 'Verfügbarkeit' : 'Availability'}
           </h1>
-          <p className="text-slate-500 mt-1">
-            {regionData.length} weeks across {properties.length} properties
+          <p className="text-charcoal-500">
+            {filteredData.length.toLocaleString()} {locale === 'de' ? 'Einträge' : 'records'}
           </p>
         </div>
-        
         <div className="flex items-center gap-3">
           <button
             onClick={() => fetchData(activeRegion)}
             disabled={loading}
-            className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors disabled:opacity-50 shadow-sm"
+            className="flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-            Refresh
+            {locale === 'de' ? 'Aktualisieren' : 'Refresh'}
           </button>
           <a
             href={SHEET_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors shadow-sm"
+            className="flex items-center gap-2 px-4 py-2 bg-gold-500 hover:bg-gold-600 text-white rounded-lg font-medium transition-colors"
           >
             <ExternalLink className="w-4 h-4" />
             Google Sheet
@@ -199,159 +190,176 @@ export default function AvailabilityClient() {
         </div>
       </div>
 
-      {/* Legend */}
-      <div className="bg-white rounded-xl border border-slate-200 p-4 mb-4 shadow-sm">
-        <div className="flex flex-wrap items-center gap-4">
-          <span className="text-sm font-medium text-slate-600">Legend:</span>
-          {Object.entries(STATUS_LABELS).map(([key, label]) => (
-            <div key={key} className="flex items-center gap-2">
-              <div className={`w-4 h-4 rounded ${STATUS_COLORS[key]}`}></div>
-              <span className="text-sm text-slate-600">{label}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
       {/* Region Tabs */}
-      <div className="bg-white rounded-t-xl border border-b-0 border-slate-200 shadow-sm">
-        <div className="flex overflow-x-auto">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 mb-6">
+        <div className="flex overflow-x-auto border-b border-gray-100">
           {filters?.regions.map(region => (
             <button
               key={region}
               onClick={() => setActiveRegion(region)}
-              className={`px-6 py-4 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${
+              className={`px-6 py-3 text-sm font-medium whitespace-nowrap border-b-2 -mb-px transition-colors ${
                 activeRegion === region
-                  ? 'border-gold-600 text-gold-700 bg-gold-50'
-                  : 'border-transparent text-slate-600 hover:text-slate-800 hover:bg-slate-50'
+                  ? 'border-gold-500 text-gold-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
               {region}
             </button>
           ))}
         </div>
+
+        {/* Search */}
+        <div className="p-4 flex items-center gap-4">
+          <div className="flex-1 relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <input
+              type="text"
+              placeholder={locale === 'de' ? 'Suche nach Immobilie oder Woche...' : 'Search by property or week...'}
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value)
+                setCurrentPage(1)
+              }}
+              className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
+            />
+          </div>
+          <div className="text-sm text-gray-500">
+            {paginatedData.length} of {filteredData.length}
+          </div>
+        </div>
       </div>
 
-      {/* Matrix Grid */}
-      <div className="bg-white rounded-b-xl border border-slate-200 shadow-sm overflow-hidden">
-        {loading ? (
-          <div className="p-12 text-center">
-            <RefreshCw className="w-8 h-8 text-gold-600 animate-spin mx-auto mb-4" />
-            <p className="text-slate-600">Loading availability...</p>
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="bg-slate-800 text-white">
-                  <th className="px-3 py-3 text-left font-semibold sticky left-0 bg-slate-800 z-10 min-w-[120px]">
-                    Week
-                  </th>
-                  {propertyDetails.map(prop => (
-                    <th 
-                      key={prop.name} 
-                      className="px-2 py-3 text-center font-semibold min-w-[100px]"
-                    >
-                      <div className="text-xs leading-tight">
-                        <div className="font-bold">{prop.name}</div>
-                        {prop.capacity && (
-                          <div className="text-slate-400 font-normal">({prop.capacity})</div>
-                        )}
-                      </div>
-                    </th>
-                  ))}
+      {/* Table */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-gray-50 border-b border-gray-100">
+              <tr>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  {locale === 'de' ? 'Woche' : 'Week'}
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  {locale === 'de' ? 'Immobilie' : 'Property'}
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  {locale === 'de' ? 'Standort' : 'Location'}
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  Status
+                </th>
+                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  {locale === 'de' ? 'Originalwert' : 'Original'}
+                </th>
+                <th className="px-6 py-4 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                  {locale === 'de' ? 'Aktionen' : 'Actions'}
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-50">
+              {paginatedData.map((record) => (
+                <tr key={record.id} className="hover:bg-gray-50 transition-colors">
+                  <td className="px-6 py-4">
+                    <div className="font-medium text-gray-900">{record.week_label}</div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="font-medium text-gray-900">{record.property_name}</div>
+                    {record.property_capacity && (
+                      <div className="text-sm text-gray-500">{record.property_capacity} guests</div>
+                    )}
+                  </td>
+                  <td className="px-6 py-4 text-gray-600">
+                    {record.property_location || '—'}
+                  </td>
+                  <td className="px-6 py-4">
+                    {editingId === record.id ? (
+                      <select
+                        value={editStatus}
+                        onChange={(e) => setEditStatus(e.target.value)}
+                        className="px-2 py-1 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-gold-500"
+                        autoFocus
+                      >
+                        {filters?.statuses.map(s => (
+                          <option key={s} value={s}>{STATUS_LABELS[s]}</option>
+                        ))}
+                      </select>
+                    ) : (
+                      <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${STATUS_STYLES[record.status] || STATUS_STYLES.unknown}`}>
+                        {STATUS_LABELS[record.status] || record.status}
+                      </span>
+                    )}
+                  </td>
+                  <td className="px-6 py-4 text-sm text-gray-500 max-w-[200px] truncate" title={record.raw_value || ''}>
+                    {record.raw_value || '—'}
+                  </td>
+                  <td className="px-6 py-4 text-right">
+                    <div className="flex items-center justify-end gap-2">
+                      {editingId === record.id ? (
+                        <>
+                          <button
+                            onClick={() => handleSave(record.id)}
+                            disabled={saving}
+                            className="p-2 text-green-600 hover:bg-green-50 rounded transition-colors"
+                          >
+                            <Check className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={handleCancel}
+                            className="p-2 text-red-600 hover:bg-red-50 rounded transition-colors"
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
+                        </>
+                      ) : (
+                        <button
+                          onClick={() => handleEdit(record)}
+                          className="p-2 text-gray-400 hover:text-gold-600 transition-colors"
+                        >
+                          <Edit2 className="w-4 h-4" />
+                        </button>
+                      )}
+                    </div>
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {weeks.map((week, weekIdx) => (
-                  <tr 
-                    key={week}
-                    className={weekIdx % 2 === 0 ? 'bg-white' : 'bg-slate-50'}
-                  >
-                    <td className="px-3 py-2 font-medium text-slate-700 sticky left-0 bg-inherit z-10 border-r border-slate-200">
-                      {week}
-                    </td>
-                    {properties.map(property => {
-                      const record = cellMap.get(`${week}|${property}`)
-                      if (!record) return <td key={property} className="px-1 py-1">-</td>
-                      
-                      const isEditing = editingCell === record.id
-                      
-                      return (
-                        <td key={property} className="px-1 py-1">
-                          {isEditing ? (
-                            <div className="flex items-center gap-1 p-1 bg-white border-2 border-gold-500 rounded">
-                              <select
-                                value={editStatus}
-                                onChange={(e) => setEditStatus(e.target.value)}
-                                className="flex-1 text-xs px-1 py-1 border-0 focus:ring-0"
-                                autoFocus
-                              >
-                                {filters?.statuses.map(s => (
-                                  <option key={s} value={s}>{STATUS_LABELS[s]}</option>
-                                ))}
-                              </select>
-                              <button
-                                onClick={handleSave}
-                                disabled={saving}
-                                className="p-1 text-emerald-600 hover:bg-emerald-50 rounded"
-                              >
-                                <Check className="w-3 h-3" />
-                              </button>
-                              <button
-                                onClick={handleCancel}
-                                className="p-1 text-rose-600 hover:bg-rose-50 rounded"
-                              >
-                                <X className="w-3 h-3" />
-                              </button>
-                            </div>
-                          ) : (
-                            <button
-                              onClick={() => handleCellClick(record)}
-                              className={`w-full px-2 py-2 rounded text-white text-xs font-medium transition-colors ${STATUS_COLORS[record.status]}`}
-                              title={`${STATUS_LABELS[record.status]}${record.notes ? ` - ${record.notes}` : ''}`}
-                            >
-                              {STATUS_SHORT[record.status] || record.status}
-                            </button>
-                          )}
-                        </td>
-                      )
-                    })}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between">
+            <div className="text-sm text-gray-500">
+              Page {currentPage} of {totalPages}
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
+                className="p-2 rounded-lg border border-gray-200 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+              <button
+                onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                disabled={currentPage === totalPages}
+                className="p-2 rounded-lg border border-gray-200 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
           </div>
         )}
 
-        {/* Footer Stats */}
-        {!loading && regionData.length > 0 && (
-          <div className="border-t border-slate-200 bg-slate-50 px-4 py-3">
-            <div className="flex flex-wrap gap-6 text-sm">
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded bg-emerald-500"></div>
-                <span className="text-slate-600">
-                  Available: {regionData.filter(r => r.status === 'available').length}
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded bg-amber-400"></div>
-                <span className="text-slate-600">
-                  On Request: {regionData.filter(r => r.status === 'on_request').length}
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded bg-rose-500"></div>
-                <span className="text-slate-600">
-                  Owner: {regionData.filter(r => r.status === 'owner').length}
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded bg-violet-500"></div>
-                <span className="text-slate-600">
-                  Booked: {regionData.filter(r => r.status === 'booked').length}
-                </span>
-              </div>
-            </div>
+        {/* Empty State */}
+        {paginatedData.length === 0 && !loading && (
+          <div className="p-12 text-center">
+            <Calendar className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+            <h3 className="font-medium text-gray-700 mb-2">
+              {locale === 'de' ? 'Keine Daten gefunden' : 'No data found'}
+            </h3>
+            <p className="text-gray-500">
+              {locale === 'de' ? 'Versuchen Sie eine andere Suche' : 'Try a different search'}
+            </p>
           </div>
         )}
       </div>
