@@ -90,7 +90,6 @@ export default function AvailabilityClient() {
   useEffect(() => {
     if (activeRegion) {
       fetchData(activeRegion)
-      setCurrentPage(1)
     }
   }, [activeRegion])
 
@@ -199,15 +198,12 @@ export default function AvailabilityClient() {
               type="text"
               placeholder={locale === 'de' ? 'Suche nach Immobilie oder Woche...' : 'Search by property or week...'}
               value={searchQuery}
-              onChange={(e) => {
-                setSearchQuery(e.target.value)
-                setCurrentPage(1)
-              }}
+              onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
             />
           </div>
           <div className="text-sm text-gray-500">
-            {paginatedData.length} of {filteredData.length}
+            {properties.length} {locale === 'de' ? 'Immobilien' : 'properties'}
           </div>
         </div>
       </div>
