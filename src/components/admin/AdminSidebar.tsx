@@ -22,7 +22,8 @@ import {
   UserPlus,
   Mail,
   BarChart3,
-  Globe
+  Globe,
+  CalendarDays
 } from 'lucide-react'
 import { useAdminLocale } from '@/lib/adminLocale'
 
@@ -83,6 +84,11 @@ export default function AdminSidebar({ userName, userEmail }: AdminSidebarProps)
       name: t('inquiries'), 
       href: '/admin/inquiries', 
       icon: MessageSquare 
+    },
+    { 
+      name: locale === 'de' ? 'Verfügbarkeit' : 'Availability', 
+      href: '/admin/availability', 
+      icon: CalendarDays 
     },
   ]
 
