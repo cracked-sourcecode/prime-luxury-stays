@@ -4,13 +4,10 @@ import { useState, useEffect } from 'react'
 import { 
   Calendar, 
   Search,
-  RefreshCw, 
-  ExternalLink, 
   Edit2,
   Check,
   X,
-  ChevronLeft,
-  ChevronRight
+  Home
 } from 'lucide-react'
 import { useAdminLocale } from '@/lib/adminLocale'
 
@@ -60,10 +57,6 @@ export default function AvailabilityClient() {
   const [editingId, setEditingId] = useState<number | null>(null)
   const [editStatus, setEditStatus] = useState<string>('')
   const [saving, setSaving] = useState(false)
-  const [currentPage, setCurrentPage] = useState(1)
-  const itemsPerPage = 50
-
-  const SHEET_URL = 'https://docs.google.com/spreadsheets/d/1TLIQU2HXq9okBaBNN12ntfVirCg4sFzkatRMZhR-cvI/edit'
 
   const fetchData = async (region?: string) => {
     setLoading(true)
@@ -142,12 +135,21 @@ export default function AvailabilityClient() {
     )
   })
 
-  // Pagination
-  const totalPages = Math.ceil(filteredData.length / itemsPerPage)
-  const paginatedData = filteredData.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  )
+  // Group by property
+  const groupedByProperty = filteredData.reduce((acc, record) => {
+    if (!acc[record.property_name]) {
+      acc[record.property_name] = {
+        name: record.property_name,
+        capacity: record.property_capacity,
+        location: record.property_location,
+        weeks: []
+      }
+    }
+    acc[record.property_name].weeks.push(record)
+    return acc
+  }, {} as Record<string, { name: string; capacity: number | null; location: string | null; weeks: AvailabilityRecord[] }>)
+
+  const properties = Object.values(groupedByProperty).sort((a, b) => a.name.localeCompare(b.name))
 
   if (loading && !data.length) {
     return (
@@ -168,25 +170,6 @@ export default function AvailabilityClient() {
           <p className="text-charcoal-500">
             {filteredData.length.toLocaleString()} {locale === 'de' ? 'Einträge' : 'records'}
           </p>
-        </div>
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => fetchData(activeRegion)}
-            disabled={loading}
-            className="flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
-          >
-            <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-            {locale === 'de' ? 'Aktualisieren' : 'Refresh'}
-          </button>
-          <a
-            href={SHEET_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-2 px-4 py-2 bg-gold-500 hover:bg-gold-600 text-white rounded-lg font-medium transition-colors"
-          >
-            <ExternalLink className="w-4 h-4" />
-            Google Sheet
-          </a>
         </div>
       </div>
 
@@ -229,130 +212,105 @@ export default function AvailabilityClient() {
         </div>
       </div>
 
-      {/* Table */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gray-50 border-b border-gray-100">
-              <tr>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                  {locale === 'de' ? 'Woche' : 'Week'}
-                </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                  {locale === 'de' ? 'Immobilie' : 'Property'}
-                </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                  {locale === 'de' ? 'Standort' : 'Location'}
-                </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                  Status
-                </th>
-                <th className="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                  {locale === 'de' ? 'Originalwert' : 'Original'}
-                </th>
-                <th className="px-6 py-4 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                  {locale === 'de' ? 'Aktionen' : 'Actions'}
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-50">
-              {paginatedData.map((record) => (
-                <tr key={record.id} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-6 py-4">
-                    <div className="font-medium text-gray-900">{record.week_label}</div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="font-medium text-gray-900">{record.property_name}</div>
-                    {record.property_capacity && (
-                      <div className="text-sm text-gray-500">{record.property_capacity} guests</div>
-                    )}
-                  </td>
-                  <td className="px-6 py-4 text-gray-600">
-                    {record.property_location || '—'}
-                  </td>
-                  <td className="px-6 py-4">
-                    {editingId === record.id ? (
-                      <select
-                        value={editStatus}
-                        onChange={(e) => setEditStatus(e.target.value)}
-                        className="px-2 py-1 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-gold-500"
-                        autoFocus
-                      >
-                        {filters?.statuses.map(s => (
-                          <option key={s} value={s}>{STATUS_LABELS[s]}</option>
-                        ))}
-                      </select>
-                    ) : (
-                      <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${STATUS_STYLES[record.status] || STATUS_STYLES.unknown}`}>
-                        {STATUS_LABELS[record.status] || record.status}
-                      </span>
-                    )}
-                  </td>
-                  <td className="px-6 py-4 text-sm text-gray-500 max-w-[200px] truncate" title={record.raw_value || ''}>
-                    {record.raw_value || '—'}
-                  </td>
-                  <td className="px-6 py-4 text-right">
-                    <div className="flex items-center justify-end gap-2">
-                      {editingId === record.id ? (
-                        <>
-                          <button
-                            onClick={() => handleSave(record.id)}
-                            disabled={saving}
-                            className="p-2 text-green-600 hover:bg-green-50 rounded transition-colors"
-                          >
-                            <Check className="w-4 h-4" />
-                          </button>
-                          <button
-                            onClick={handleCancel}
-                            className="p-2 text-red-600 hover:bg-red-50 rounded transition-colors"
-                          >
-                            <X className="w-4 h-4" />
-                          </button>
-                        </>
-                      ) : (
-                        <button
-                          onClick={() => handleEdit(record)}
-                          className="p-2 text-gray-400 hover:text-gold-600 transition-colors"
-                        >
-                          <Edit2 className="w-4 h-4" />
-                        </button>
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Pagination */}
-        {totalPages > 1 && (
-          <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between">
-            <div className="text-sm text-gray-500">
-              Page {currentPage} of {totalPages}
+      {/* Properties */}
+      <div className="space-y-4">
+        {properties.map(prop => (
+          <div key={prop.name} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            {/* Property Header */}
+            <div className="px-6 py-4 bg-gray-50 border-b border-gray-100 flex items-center gap-3">
+              <Home className="w-5 h-5 text-gold-600" />
+              <div>
+                <h3 className="font-semibold text-charcoal-900">{prop.name}</h3>
+                <p className="text-sm text-gray-500">
+                  {prop.location || 'Location unknown'}
+                  {prop.capacity && ` · ${prop.capacity} guests`}
+                </p>
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                disabled={currentPage === 1}
-                className="p-2 rounded-lg border border-gray-200 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <ChevronLeft className="w-4 h-4" />
-              </button>
-              <button
-                onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                disabled={currentPage === totalPages}
-                className="p-2 rounded-lg border border-gray-200 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                <ChevronRight className="w-4 h-4" />
-              </button>
+            
+            {/* Weeks Table */}
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-gray-50 border-b border-gray-100">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      {locale === 'de' ? 'Woche' : 'Week'}
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      Status
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      {locale === 'de' ? 'Details' : 'Details'}
+                    </th>
+                    <th className="px-6 py-3 text-right text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                      {locale === 'de' ? 'Bearbeiten' : 'Edit'}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-50">
+                  {prop.weeks.map((record) => (
+                    <tr key={record.id} className="hover:bg-gray-50 transition-colors">
+                      <td className="px-6 py-3">
+                        <div className="font-medium text-gray-900">{record.week_label}</div>
+                      </td>
+                      <td className="px-6 py-3">
+                        {editingId === record.id ? (
+                          <select
+                            value={editStatus}
+                            onChange={(e) => setEditStatus(e.target.value)}
+                            className="px-2 py-1 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-gold-500"
+                            autoFocus
+                          >
+                            {filters?.statuses.map(s => (
+                              <option key={s} value={s}>{STATUS_LABELS[s]}</option>
+                            ))}
+                          </select>
+                        ) : (
+                          <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${STATUS_STYLES[record.status] || STATUS_STYLES.unknown}`}>
+                            {STATUS_LABELS[record.status] || record.status}
+                          </span>
+                        )}
+                      </td>
+                      <td className="px-6 py-3 text-sm text-gray-500 max-w-[300px] truncate" title={record.raw_value || ''}>
+                        {record.raw_value || '—'}
+                      </td>
+                      <td className="px-6 py-3 text-right">
+                        {editingId === record.id ? (
+                          <div className="flex items-center justify-end gap-1">
+                            <button
+                              onClick={() => handleSave(record.id)}
+                              disabled={saving}
+                              className="p-1.5 text-green-600 hover:bg-green-50 rounded transition-colors"
+                            >
+                              <Check className="w-4 h-4" />
+                            </button>
+                            <button
+                              onClick={handleCancel}
+                              className="p-1.5 text-red-600 hover:bg-red-50 rounded transition-colors"
+                            >
+                              <X className="w-4 h-4" />
+                            </button>
+                          </div>
+                        ) : (
+                          <button
+                            onClick={() => handleEdit(record)}
+                            className="p-1.5 text-gray-400 hover:text-gold-600 transition-colors"
+                          >
+                            <Edit2 className="w-4 h-4" />
+                          </button>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
-        )}
+        ))}
 
         {/* Empty State */}
-        {paginatedData.length === 0 && !loading && (
-          <div className="p-12 text-center">
+        {properties.length === 0 && !loading && (
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-12 text-center">
             <Calendar className="w-12 h-12 text-gray-300 mx-auto mb-4" />
             <h3 className="font-medium text-gray-700 mb-2">
               {locale === 'de' ? 'Keine Daten gefunden' : 'No data found'}
