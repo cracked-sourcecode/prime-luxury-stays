@@ -5,15 +5,10 @@ import {
   Calendar, 
   RefreshCw, 
   ExternalLink, 
-  Filter, 
   X, 
   Check, 
-  Edit2, 
-  Save,
-  ChevronDown,
-  Home,
-  MapPin,
-  Users
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react'
 
 interface AvailabilityRecord {
@@ -28,7 +23,6 @@ interface AvailabilityRecord {
   status: string
   raw_value: string | null
   notes: string | null
-  imported_at: string
 }
 
 interface Filters {
@@ -38,49 +32,58 @@ interface Filters {
 }
 
 const STATUS_COLORS: Record<string, string> = {
-  available: 'bg-green-100 text-green-800 border-green-300',
-  on_request: 'bg-amber-100 text-amber-800 border-amber-300',
-  owner: 'bg-red-100 text-red-800 border-red-300',
-  booked: 'bg-purple-100 text-purple-800 border-purple-300',
-  unknown: 'bg-gray-100 text-gray-600 border-gray-300',
+  available: 'bg-emerald-500 hover:bg-emerald-600',
+  on_request: 'bg-amber-400 hover:bg-amber-500',
+  owner: 'bg-rose-500 hover:bg-rose-600',
+  booked: 'bg-violet-500 hover:bg-violet-600',
+  unknown: 'bg-slate-300 hover:bg-slate-400',
 }
 
 const STATUS_LABELS: Record<string, string> = {
   available: 'Available',
   on_request: 'On Request',
-  owner: 'Owner/Blocked',
+  owner: 'Owner',
   booked: 'Booked',
-  unknown: 'Unknown',
+  unknown: '?',
+}
+
+const STATUS_SHORT: Record<string, string> = {
+  available: 'Avail',
+  on_request: 'a.A.',
+  owner: 'Owner',
+  booked: 'Book',
+  unknown: '-',
 }
 
 export default function AvailabilityClient() {
   const [loading, setLoading] = useState(true)
   const [data, setData] = useState<AvailabilityRecord[]>([])
   const [filters, setFilters] = useState<Filters | null>(null)
-  const [selectedRegion, setSelectedRegion] = useState<string>('')
-  const [selectedProperty, setSelectedProperty] = useState<string>('')
-  const [selectedStatus, setSelectedStatus] = useState<string>('')
-  const [editingId, setEditingId] = useState<number | null>(null)
+  const [activeRegion, setActiveRegion] = useState<string>('')
+  const [editingCell, setEditingCell] = useState<number | null>(null)
   const [editStatus, setEditStatus] = useState<string>('')
-  const [editNotes, setEditNotes] = useState<string>('')
   const [saving, setSaving] = useState(false)
 
   const SHEET_URL = 'https://docs.google.com/spreadsheets/d/1TLIQU2HXq9okBaBNN12ntfVirCg4sFzkatRMZhR-cvI/edit'
 
-  const fetchData = async () => {
+  const fetchData = async (region?: string) => {
     setLoading(true)
     try {
       const params = new URLSearchParams()
-      if (selectedRegion) params.set('region', selectedRegion)
-      if (selectedProperty) params.set('property', selectedProperty)
-      if (selectedStatus) params.set('status', selectedStatus)
+      if (region) params.set('region', region)
       
       const res = await fetch(`/api/admin/availability?${params}`)
       const json = await res.json()
       
       if (json.success) {
         setData(json.data)
-        if (json.filters) setFilters(json.filters)
+        if (json.filters) {
+          setFilters(json.filters)
+          // Set first region as active if not set
+          if (!activeRegion && json.filters.regions.length > 0) {
+            setActiveRegion(json.filters.regions[0])
+          }
+        }
       }
     } catch (e) {
       console.error('Error fetching:', e)
@@ -91,26 +94,32 @@ export default function AvailabilityClient() {
 
   useEffect(() => {
     fetchData()
-  }, [selectedRegion, selectedProperty, selectedStatus])
+  }, [])
 
-  const handleEdit = (record: AvailabilityRecord) => {
-    setEditingId(record.id)
+  useEffect(() => {
+    if (activeRegion) {
+      fetchData(activeRegion)
+    }
+  }, [activeRegion])
+
+  const handleCellClick = (record: AvailabilityRecord) => {
+    setEditingCell(record.id)
     setEditStatus(record.status)
-    setEditNotes(record.notes || '')
   }
 
-  const handleSave = async (id: number) => {
+  const handleSave = async () => {
+    if (!editingCell) return
     setSaving(true)
     try {
       const res = await fetch('/api/admin/availability', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, status: editStatus, notes: editNotes })
+        body: JSON.stringify({ id: editingCell, status: editStatus })
       })
       
       if (res.ok) {
-        setEditingId(null)
-        fetchData()
+        setEditingCell(null)
+        fetchData(activeRegion)
       }
     } catch (e) {
       console.error('Error saving:', e)
@@ -120,53 +129,60 @@ export default function AvailabilityClient() {
   }
 
   const handleCancel = () => {
-    setEditingId(null)
+    setEditingCell(null)
     setEditStatus('')
-    setEditNotes('')
   }
 
-  const clearFilters = () => {
-    setSelectedRegion('')
-    setSelectedProperty('')
-    setSelectedStatus('')
-  }
-
-  // Group data by property for a better view
-  const groupedByProperty = data.reduce((acc, record) => {
-    if (!acc[record.property_name]) {
-      acc[record.property_name] = {
-        property: record.property_name,
-        capacity: record.property_capacity,
-        location: record.property_location,
-        region: record.region,
-        weeks: []
-      }
+  // Build matrix: get unique weeks and properties for current region
+  const regionData = data.filter(d => d.region === activeRegion)
+  
+  const weeks = [...new Set(regionData.map(d => d.week_label))].sort((a, b) => {
+    // Sort by week_start if available
+    const recordA = regionData.find(r => r.week_label === a)
+    const recordB = regionData.find(r => r.week_label === b)
+    if (recordA?.week_start && recordB?.week_start) {
+      return new Date(recordA.week_start).getTime() - new Date(recordB.week_start).getTime()
     }
-    acc[record.property_name].weeks.push(record)
-    return acc
-  }, {} as Record<string, { property: string; capacity: number | null; location: string | null; region: string; weeks: AvailabilityRecord[] }>)
+    return 0
+  })
+  
+  const properties = [...new Set(regionData.map(d => d.property_name))].sort()
+  
+  // Create lookup map for quick cell access
+  const cellMap = new Map<string, AvailabilityRecord>()
+  regionData.forEach(record => {
+    cellMap.set(`${record.week_label}|${record.property_name}`, record)
+  })
 
-  const properties = Object.values(groupedByProperty)
+  // Get property details
+  const propertyDetails = properties.map(p => {
+    const record = regionData.find(r => r.property_name === p)
+    return {
+      name: p,
+      capacity: record?.property_capacity,
+      location: record?.property_location
+    }
+  })
 
   return (
-    <div className="p-6 lg:p-8">
+    <div className="p-4 lg:p-6 min-h-screen bg-slate-50">
       {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-charcoal-900 flex items-center gap-3">
+          <h1 className="text-2xl font-bold text-slate-800 flex items-center gap-3">
             <Calendar className="w-7 h-7 text-gold-600" />
             Property Availability
           </h1>
-          <p className="text-charcoal-500 mt-1">
-            {data.length} records across {properties.length} properties
+          <p className="text-slate-500 mt-1">
+            {regionData.length} weeks across {properties.length} properties
           </p>
         </div>
         
         <div className="flex items-center gap-3">
           <button
-            onClick={fetchData}
+            onClick={() => fetchData(activeRegion)}
             disabled={loading}
-            className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
+            className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-lg hover:bg-slate-50 transition-colors disabled:opacity-50 shadow-sm"
           >
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
             Refresh
@@ -175,7 +191,7 @@ export default function AvailabilityClient() {
             href={SHEET_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 px-4 py-2 bg-gold-600 text-white rounded-lg hover:bg-gold-700 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors shadow-sm"
           >
             <ExternalLink className="w-4 h-4" />
             Google Sheet
@@ -183,207 +199,162 @@ export default function AvailabilityClient() {
         </div>
       </div>
 
-      {/* Filters */}
-      <div className="bg-white rounded-xl border border-gray-200 p-4 mb-6">
-        <div className="flex items-center gap-2 mb-3">
-          <Filter className="w-4 h-4 text-charcoal-500" />
-          <span className="font-medium text-charcoal-700">Filters</span>
-          {(selectedRegion || selectedProperty || selectedStatus) && (
-            <button 
-              onClick={clearFilters}
-              className="ml-auto text-sm text-gold-600 hover:text-gold-700"
-            >
-              Clear all
-            </button>
-          )}
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {/* Region Filter */}
-          <div>
-            <label className="block text-sm text-charcoal-500 mb-1">Region</label>
-            <select
-              value={selectedRegion}
-              onChange={(e) => setSelectedRegion(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-transparent"
-            >
-              <option value="">All Regions</option>
-              {filters?.regions.map(r => (
-                <option key={r} value={r}>{r}</option>
-              ))}
-            </select>
-          </div>
-          
-          {/* Property Filter */}
-          <div>
-            <label className="block text-sm text-charcoal-500 mb-1">Property</label>
-            <select
-              value={selectedProperty}
-              onChange={(e) => setSelectedProperty(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-transparent"
-            >
-              <option value="">All Properties</option>
-              {filters?.properties.map(p => (
-                <option key={p} value={p}>{p}</option>
-              ))}
-            </select>
-          </div>
-          
-          {/* Status Filter */}
-          <div>
-            <label className="block text-sm text-charcoal-500 mb-1">Status</label>
-            <select
-              value={selectedStatus}
-              onChange={(e) => setSelectedStatus(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-transparent"
-            >
-              <option value="">All Statuses</option>
-              {filters?.statuses.map(s => (
-                <option key={s} value={s}>{STATUS_LABELS[s] || s}</option>
-              ))}
-            </select>
-          </div>
+      {/* Legend */}
+      <div className="bg-white rounded-xl border border-slate-200 p-4 mb-4 shadow-sm">
+        <div className="flex flex-wrap items-center gap-4">
+          <span className="text-sm font-medium text-slate-600">Legend:</span>
+          {Object.entries(STATUS_LABELS).map(([key, label]) => (
+            <div key={key} className="flex items-center gap-2">
+              <div className={`w-4 h-4 rounded ${STATUS_COLORS[key]}`}></div>
+              <span className="text-sm text-slate-600">{label}</span>
+            </div>
+          ))}
         </div>
       </div>
 
-      {/* Loading */}
-      {loading && (
-        <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
-          <RefreshCw className="w-8 h-8 text-gold-600 animate-spin mx-auto mb-4" />
-          <p className="text-charcoal-600">Loading availability data...</p>
+      {/* Region Tabs */}
+      <div className="bg-white rounded-t-xl border border-b-0 border-slate-200 shadow-sm">
+        <div className="flex overflow-x-auto">
+          {filters?.regions.map(region => (
+            <button
+              key={region}
+              onClick={() => setActiveRegion(region)}
+              className={`px-6 py-4 text-sm font-medium whitespace-nowrap border-b-2 transition-colors ${
+                activeRegion === region
+                  ? 'border-gold-600 text-gold-700 bg-gold-50'
+                  : 'border-transparent text-slate-600 hover:text-slate-800 hover:bg-slate-50'
+              }`}
+            >
+              {region}
+            </button>
+          ))}
         </div>
-      )}
+      </div>
 
-      {/* Properties Grid */}
-      {!loading && properties.length > 0 && (
-        <div className="space-y-6">
-          {properties.map(prop => (
-            <div key={prop.property} className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-              {/* Property Header */}
-              <div className="bg-charcoal-800 text-white px-6 py-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <Home className="w-5 h-5 text-gold-400" />
-                    <div>
-                      <h3 className="font-semibold text-lg">{prop.property}</h3>
-                      <div className="flex items-center gap-4 text-sm text-gray-300">
-                        <span className="flex items-center gap-1">
-                          <MapPin className="w-3 h-3" />
-                          {prop.location || 'Unknown location'}
-                        </span>
+      {/* Matrix Grid */}
+      <div className="bg-white rounded-b-xl border border-slate-200 shadow-sm overflow-hidden">
+        {loading ? (
+          <div className="p-12 text-center">
+            <RefreshCw className="w-8 h-8 text-gold-600 animate-spin mx-auto mb-4" />
+            <p className="text-slate-600">Loading availability...</p>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="bg-slate-800 text-white">
+                  <th className="px-3 py-3 text-left font-semibold sticky left-0 bg-slate-800 z-10 min-w-[120px]">
+                    Week
+                  </th>
+                  {propertyDetails.map(prop => (
+                    <th 
+                      key={prop.name} 
+                      className="px-2 py-3 text-center font-semibold min-w-[100px]"
+                    >
+                      <div className="text-xs leading-tight">
+                        <div className="font-bold">{prop.name}</div>
                         {prop.capacity && (
-                          <span className="flex items-center gap-1">
-                            <Users className="w-3 h-3" />
-                            {prop.capacity} guests
-                          </span>
+                          <div className="text-slate-400 font-normal">({prop.capacity})</div>
                         )}
-                        <span className="px-2 py-0.5 bg-charcoal-700 rounded text-xs">
-                          {prop.region}
-                        </span>
                       </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Weeks Table */}
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="bg-gray-50 border-b border-gray-200">
-                      <th className="px-4 py-3 text-left font-medium text-charcoal-600">Week</th>
-                      <th className="px-4 py-3 text-left font-medium text-charcoal-600">Status</th>
-                      <th className="px-4 py-3 text-left font-medium text-charcoal-600">Original Value</th>
-                      <th className="px-4 py-3 text-left font-medium text-charcoal-600">Notes</th>
-                      <th className="px-4 py-3 text-right font-medium text-charcoal-600">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {prop.weeks.map((week, idx) => (
-                      <tr 
-                        key={week.id}
-                        className={`border-b border-gray-100 ${idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'}`}
-                      >
-                        <td className="px-4 py-3 font-medium text-charcoal-900">
-                          {week.week_label}
-                        </td>
-                        <td className="px-4 py-3">
-                          {editingId === week.id ? (
-                            <select
-                              value={editStatus}
-                              onChange={(e) => setEditStatus(e.target.value)}
-                              className="px-2 py-1 border border-gray-300 rounded text-sm"
-                            >
-                              {filters?.statuses.map(s => (
-                                <option key={s} value={s}>{STATUS_LABELS[s]}</option>
-                              ))}
-                            </select>
-                          ) : (
-                            <span className={`inline-flex px-2 py-1 rounded-full text-xs font-medium border ${STATUS_COLORS[week.status] || STATUS_COLORS.unknown}`}>
-                              {STATUS_LABELS[week.status] || week.status}
-                            </span>
-                          )}
-                        </td>
-                        <td className="px-4 py-3 text-charcoal-600 max-w-[200px] truncate" title={week.raw_value || ''}>
-                          {week.raw_value || '-'}
-                        </td>
-                        <td className="px-4 py-3">
-                          {editingId === week.id ? (
-                            <input
-                              type="text"
-                              value={editNotes}
-                              onChange={(e) => setEditNotes(e.target.value)}
-                              placeholder="Add notes..."
-                              className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
-                            />
-                          ) : (
-                            <span className="text-charcoal-500">{week.notes || '-'}</span>
-                          )}
-                        </td>
-                        <td className="px-4 py-3 text-right">
-                          {editingId === week.id ? (
-                            <div className="flex items-center justify-end gap-2">
-                              <button
-                                onClick={() => handleSave(week.id)}
-                                disabled={saving}
-                                className="p-1 text-green-600 hover:bg-green-50 rounded"
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {weeks.map((week, weekIdx) => (
+                  <tr 
+                    key={week}
+                    className={weekIdx % 2 === 0 ? 'bg-white' : 'bg-slate-50'}
+                  >
+                    <td className="px-3 py-2 font-medium text-slate-700 sticky left-0 bg-inherit z-10 border-r border-slate-200">
+                      {week}
+                    </td>
+                    {properties.map(property => {
+                      const record = cellMap.get(`${week}|${property}`)
+                      if (!record) return <td key={property} className="px-1 py-1">-</td>
+                      
+                      const isEditing = editingCell === record.id
+                      
+                      return (
+                        <td key={property} className="px-1 py-1">
+                          {isEditing ? (
+                            <div className="flex items-center gap-1 p-1 bg-white border-2 border-gold-500 rounded">
+                              <select
+                                value={editStatus}
+                                onChange={(e) => setEditStatus(e.target.value)}
+                                className="flex-1 text-xs px-1 py-1 border-0 focus:ring-0"
+                                autoFocus
                               >
-                                <Check className="w-4 h-4" />
+                                {filters?.statuses.map(s => (
+                                  <option key={s} value={s}>{STATUS_LABELS[s]}</option>
+                                ))}
+                              </select>
+                              <button
+                                onClick={handleSave}
+                                disabled={saving}
+                                className="p-1 text-emerald-600 hover:bg-emerald-50 rounded"
+                              >
+                                <Check className="w-3 h-3" />
                               </button>
                               <button
                                 onClick={handleCancel}
-                                className="p-1 text-red-600 hover:bg-red-50 rounded"
+                                className="p-1 text-rose-600 hover:bg-rose-50 rounded"
                               >
-                                <X className="w-4 h-4" />
+                                <X className="w-3 h-3" />
                               </button>
                             </div>
                           ) : (
                             <button
-                              onClick={() => handleEdit(week)}
-                              className="p-1 text-charcoal-400 hover:text-gold-600 hover:bg-gold-50 rounded"
+                              onClick={() => handleCellClick(record)}
+                              className={`w-full px-2 py-2 rounded text-white text-xs font-medium transition-colors ${STATUS_COLORS[record.status]}`}
+                              title={`${STATUS_LABELS[record.status]}${record.notes ? ` - ${record.notes}` : ''}`}
                             >
-                              <Edit2 className="w-4 h-4" />
+                              {STATUS_SHORT[record.status] || record.status}
                             </button>
                           )}
                         </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                      )
+                    })}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {/* Footer Stats */}
+        {!loading && regionData.length > 0 && (
+          <div className="border-t border-slate-200 bg-slate-50 px-4 py-3">
+            <div className="flex flex-wrap gap-6 text-sm">
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded bg-emerald-500"></div>
+                <span className="text-slate-600">
+                  Available: {regionData.filter(r => r.status === 'available').length}
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded bg-amber-400"></div>
+                <span className="text-slate-600">
+                  On Request: {regionData.filter(r => r.status === 'on_request').length}
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded bg-rose-500"></div>
+                <span className="text-slate-600">
+                  Owner: {regionData.filter(r => r.status === 'owner').length}
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded bg-violet-500"></div>
+                <span className="text-slate-600">
+                  Booked: {regionData.filter(r => r.status === 'booked').length}
+                </span>
               </div>
             </div>
-          ))}
-        </div>
-      )}
-
-      {/* Empty State */}
-      {!loading && data.length === 0 && (
-        <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
-          <Calendar className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-          <h3 className="font-medium text-charcoal-700 mb-2">No availability data found</h3>
-          <p className="text-charcoal-500">Try adjusting your filters or run the migration script.</p>
-        </div>
-      )}
+          </div>
+        )}
+      </div>
     </div>
   )
 }
