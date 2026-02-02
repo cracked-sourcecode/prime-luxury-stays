@@ -88,10 +88,13 @@ export async function PUT(
       sendWipTaskNotification({
         taskId: task.id,
         title: task.title,
+        title_de: task.title_de,
         nextStep: task.next_step,
+        nextStep_de: task.next_step_de,
         priority: task.priority,
         assignedTo: task.assigned_to,
         notes: task.notes,
+        notes_de: task.notes_de,
         createdBy: user.name || user.email
       }).catch(err => console.error('Failed to send WIP notification:', err))
     }

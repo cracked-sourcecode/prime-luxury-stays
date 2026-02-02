@@ -12,6 +12,13 @@ const TEAM_EMAILS: Record<string, string> = {
   'ben': 'ben@rubiconprgroup.com',
 }
 
+// Team member language preference (for email notifications)
+const TEAM_LANGUAGE: Record<string, 'en' | 'de'> = {
+  'gh@primeluxurystays.com': 'de',
+  'aj@primeluxurystays.com': 'de', 
+  'ben@rubiconprgroup.com': 'en',
+}
+
 interface InquiryEmailData {
   fullName: string
   email: string
@@ -901,30 +908,76 @@ export async function sendInquiryConfirmation(data: InquiryEmailData) {
 interface WipTaskEmailData {
   taskId: number
   title: string
+  title_de?: string | null
   nextStep: string | null
+  nextStep_de?: string | null
   priority: 'critical' | 'high' | 'medium' | 'low'
   assignedTo: string
   notes: string | null
+  notes_de?: string | null
   createdBy?: string
 }
 
-const priorityLabels: Record<string, { label: string; emoji: string; color: string }> = {
-  critical: { label: 'Critical', emoji: '🔴', color: '#dc2626' },
-  high: { label: 'High', emoji: '🟠', color: '#ea580c' },
-  medium: { label: 'Medium', emoji: '🟡', color: '#d97706' },
-  low: { label: 'Low', emoji: '🟢', color: '#16a34a' },
+// Priority labels in both languages
+const priorityLabelsLocalized: Record<string, Record<'en' | 'de', { label: string; emoji: string; color: string }>> = {
+  critical: { 
+    en: { label: 'Critical', emoji: '🔴', color: '#dc2626' },
+    de: { label: 'Kritisch', emoji: '🔴', color: '#dc2626' }
+  },
+  high: { 
+    en: { label: 'High', emoji: '🟠', color: '#ea580c' },
+    de: { label: 'Hoch', emoji: '🟠', color: '#ea580c' }
+  },
+  medium: { 
+    en: { label: 'Medium', emoji: '🟡', color: '#d97706' },
+    de: { label: 'Mittel', emoji: '🟡', color: '#d97706' }
+  },
+  low: { 
+    en: { label: 'Low', emoji: '🟢', color: '#16a34a' },
+    de: { label: 'Niedrig', emoji: '🟢', color: '#16a34a' }
+  },
 }
 
-function getWipTaskEmailTemplate(data: WipTaskEmailData): string {
-  const priority = priorityLabels[data.priority] || priorityLabels.medium
+// WIP email translations
+const wipEmailTranslations = {
+  en: {
+    newTaskAssigned: 'New Task Assigned',
+    assignedTo: 'Assigned to',
+    priority: 'Priority',
+    nextStep: 'Next Step',
+    notes: 'Notes',
+    viewWipList: 'View WIP List',
+    internalTaskManagement: 'Internal Task Management',
+    newTask: 'New Task',
+  },
+  de: {
+    newTaskAssigned: 'Neue Aufgabe zugewiesen',
+    assignedTo: 'Zugewiesen an',
+    priority: 'Priorität',
+    nextStep: 'Nächster Schritt',
+    notes: 'Notizen',
+    viewWipList: 'Aufgabenliste öffnen',
+    internalTaskManagement: 'Interne Aufgabenverwaltung',
+    newTask: 'Neue Aufgabe',
+  }
+}
+
+function getWipTaskEmailTemplate(data: WipTaskEmailData, locale: 'en' | 'de' = 'en'): string {
+  const t = wipEmailTranslations[locale]
+  const priorityInfo = priorityLabelsLocalized[data.priority]?.[locale] || priorityLabelsLocalized.medium[locale]
   const adminUrl = 'https://primeluxurystays.com/admin/wip'
+  
+  // Use localized content if available
+  const title = (locale === 'de' && data.title_de) ? data.title_de : data.title
+  const nextStep = (locale === 'de' && data.nextStep_de) ? data.nextStep_de : data.nextStep
+  const notes = (locale === 'de' && data.notes_de) ? data.notes_de : data.notes
 
   return `<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>New Task Assigned</title>
+<title>${t.newTaskAssigned}</title>
 ${responsiveStyles}
 </head>
 <body style="margin:0; padding:0; background-color:${CREAM}; font-family:Georgia, 'Times New Roman', serif; -webkit-font-smoothing:antialiased;">
@@ -947,7 +1000,7 @@ ${responsiveStyles}
 <tr>
 <td class="content" align="center" style="padding:0 40px 16px;">
 <span style="display:inline-block; background-color:${GOLD}; color:#ffffff; padding:8px 20px; border-radius:20px; font-size:13px; font-weight:bold; text-transform:uppercase; letter-spacing:1px;">
-📋 New Task Assigned
+📋 ${t.newTaskAssigned}
 </span>
 </td>
 </tr>
@@ -956,10 +1009,10 @@ ${responsiveStyles}
 <tr>
 <td class="content" style="padding:0 40px;">
 <h1 class="heading" style="margin:0 0 8px; font-size:28px; font-weight:normal; color:${CHARCOAL}; line-height:1.3;">
-${data.title}
+${title}
 </h1>
 <p style="margin:0 0 24px; font-size:14px; color:#666;">
-Assigned to: <strong>${data.assignedTo}</strong>
+${t.assignedTo}: <strong>${data.assignedTo}</strong>
 </p>
 </td>
 </tr>
@@ -967,21 +1020,21 @@ Assigned to: <strong>${data.assignedTo}</strong>
 <!-- Priority & Details Card -->
 <tr>
 <td class="content" style="padding:0 40px 24px;">
-<table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:${CREAM}; border-radius:8px; border-left:4px solid ${priority.color};">
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:${CREAM}; border-radius:8px; border-left:4px solid ${priorityInfo.color};">
 <tr>
 <td style="padding:20px;">
 <table width="100%" cellpadding="0" cellspacing="0" border="0">
 <tr>
 <td>
-<p style="margin:0 0 4px; font-size:12px; color:#888; text-transform:uppercase; letter-spacing:1px;">Priority</p>
-<p style="margin:0 0 16px; font-size:18px; color:${priority.color}; font-weight:bold;">${priority.emoji} ${priority.label}</p>
+<p style="margin:0 0 4px; font-size:12px; color:#888; text-transform:uppercase; letter-spacing:1px;">${t.priority}</p>
+<p style="margin:0 0 16px; font-size:18px; color:${priorityInfo.color}; font-weight:bold;">${priorityInfo.emoji} ${priorityInfo.label}</p>
 </td>
 </tr>
-${data.nextStep ? `
+${nextStep ? `
 <tr>
 <td>
-<p style="margin:0 0 4px; font-size:12px; color:#888; text-transform:uppercase; letter-spacing:1px;">Next Step</p>
-<p style="margin:0; font-size:16px; color:${CHARCOAL}; line-height:1.5;">${data.nextStep}</p>
+<p style="margin:0 0 4px; font-size:12px; color:#888; text-transform:uppercase; letter-spacing:1px;">${t.nextStep}</p>
+<p style="margin:0; font-size:16px; color:${CHARCOAL}; line-height:1.5;">${nextStep}</p>
 </td>
 </tr>
 ` : ''}
@@ -992,12 +1045,12 @@ ${data.nextStep ? `
 </td>
 </tr>
 
-${data.notes ? `
+${notes ? `
 <!-- Notes -->
 <tr>
 <td class="content" style="padding:0 40px 24px;">
-<p style="margin:0 0 8px; font-size:12px; color:#888; text-transform:uppercase; letter-spacing:1px;">Notes</p>
-<p style="margin:0; font-size:15px; color:#666; line-height:1.6; white-space:pre-wrap;">${data.notes}</p>
+<p style="margin:0 0 8px; font-size:12px; color:#888; text-transform:uppercase; letter-spacing:1px;">${t.notes}</p>
+<p style="margin:0; font-size:15px; color:#666; line-height:1.6; white-space:pre-wrap;">${notes}</p>
 </td>
 </tr>
 ` : ''}
@@ -1009,7 +1062,7 @@ ${data.notes ? `
 <tr>
 <td style="background-color:${GOLD}; border-radius:6px;">
 <a class="button" href="${adminUrl}" style="display:inline-block; padding:16px 32px; font-size:16px; color:#ffffff; text-decoration:none; font-family:Georgia, serif;">
-View WIP List →
+${t.viewWipList} →
 </a>
 </td>
 </tr>
@@ -1021,7 +1074,7 @@ View WIP List →
 <tr>
 <td class="footer" style="padding:24px 40px; border-top:1px solid #e0e0e0;">
 <p style="margin:0; font-size:13px; color:#888;">
-Prime Luxury Stays · Internal Task Management
+Prime Luxury Stays · ${t.internalTaskManagement}
 </p>
 </td>
 </tr>
@@ -1056,6 +1109,7 @@ function getTeamEmails(assignedTo: string): string[] {
 
 /**
  * Send email notification when a WIP task is assigned to someone
+ * Sends email in each recipient's preferred language
  */
 export async function sendWipTaskNotification(data: WipTaskEmailData) {
   if (!process.env.RESEND_API_KEY) {
@@ -1075,23 +1129,41 @@ export async function sendWipTaskNotification(data: WipTaskEmailData) {
     return { success: false, error: 'No email for assignee' }
   }
 
-  const priority = priorityLabels[data.priority] || priorityLabels.medium
+  // Group recipients by language preference
+  const emailsByLocale: Record<'en' | 'de', string[]> = { en: [], de: [] }
+  for (const email of recipientEmails) {
+    const locale = TEAM_LANGUAGE[email] || 'en'
+    emailsByLocale[locale].push(email)
+  }
+
+  const results: { success: boolean; id?: string; recipients?: string[] }[] = []
 
   try {
-    const { data: emailData, error } = await resend.emails.send({
-      from: FROM_EMAIL,
-      to: recipientEmails,
-      subject: `${priority.emoji} New Task: ${data.title}`,
-      html: getWipTaskEmailTemplate(data),
-    })
+    // Send emails in each language
+    for (const locale of ['en', 'de'] as const) {
+      const recipients = emailsByLocale[locale]
+      if (recipients.length === 0) continue
 
-    if (error) {
-      console.error('Resend WIP notification error:', error)
-      return { success: false, error: error.message }
+      const priorityInfo = priorityLabelsLocalized[data.priority]?.[locale] || priorityLabelsLocalized.medium[locale]
+      const t = wipEmailTranslations[locale]
+      const title = (locale === 'de' && data.title_de) ? data.title_de : data.title
+
+      const { data: emailData, error } = await resend.emails.send({
+        from: FROM_EMAIL,
+        to: recipients,
+        subject: `${priorityInfo.emoji} ${t.newTask}: ${title}`,
+        html: getWipTaskEmailTemplate(data, locale),
+      })
+
+      if (error) {
+        console.error(`Resend WIP notification error (${locale}):`, error)
+      } else {
+        console.log(`WIP task notification sent (${locale}) to ${recipients.join(', ')}:`, emailData?.id)
+        results.push({ success: true, id: emailData?.id, recipients })
+      }
     }
 
-    console.log(`WIP task notification sent to ${recipientEmails.join(', ')}:`, emailData?.id)
-    return { success: true, id: emailData?.id, recipients: recipientEmails }
+    return { success: results.length > 0, results, recipients: recipientEmails }
   } catch (err) {
     console.error('Failed to send WIP task notification:', err)
     return { success: false, error: String(err) }

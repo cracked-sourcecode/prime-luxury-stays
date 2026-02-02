@@ -24,7 +24,8 @@ import {
   BarChart3,
   Globe,
   CalendarDays,
-  ClipboardList
+  ClipboardList,
+  Anchor
 } from 'lucide-react'
 import { useAdminLocale } from '@/lib/adminLocale'
 
@@ -95,6 +96,11 @@ export default function AdminSidebar({ userName, userEmail }: AdminSidebarProps)
       name: 'WIP', 
       href: '/admin/wip', 
       icon: ClipboardList 
+    },
+    { 
+      name: locale === 'de' ? 'Yachten' : 'Yachts', 
+      href: '/admin/yachts', 
+      icon: Anchor 
     },
   ]
 
