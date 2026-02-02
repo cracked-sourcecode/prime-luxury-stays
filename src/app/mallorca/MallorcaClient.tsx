@@ -17,6 +17,7 @@ import {
   Users,
   Calendar,
   ChevronDown,
+  ChevronRight,
   Sparkles,
   Shield,
   Clock,
