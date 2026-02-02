@@ -26,6 +26,7 @@ export default function Navigation() {
     { name: t('nav.contact'), href: localizeHref('/#contact') },
     { name: t('nav.destinations'), href: localizeHref('/destinations') },
     { name: t('nav.properties'), href: localizeHref('/properties') },
+    { name: locale === 'de' ? 'Yachten' : 'Yachts', href: localizeHref('/yachts') },
     { name: t('nav.services'), href: localizeHref('/services') },
   ]
 
