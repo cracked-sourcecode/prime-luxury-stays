@@ -45,11 +45,13 @@ export default async function InquirePage({
   const checkInRaw = searchParams?.checkIn
   const checkOutRaw = searchParams?.checkOut
   const guestsRaw = searchParams?.guests
+  const addYachtRaw = searchParams?.addYacht
 
   const check_in = Array.isArray(checkInRaw) ? checkInRaw[0] : checkInRaw
   const check_out = Array.isArray(checkOutRaw) ? checkOutRaw[0] : checkOutRaw
   const guestsStr = Array.isArray(guestsRaw) ? guestsRaw[0] : guestsRaw
   const guests = guestsStr ? Number(guestsStr) : null
+  const addYacht = Array.isArray(addYachtRaw) ? addYachtRaw[0] === 'true' : addYachtRaw === 'true'
 
   const property = propertySlug ? await getPropertyBySlug(propertySlug) : null
 
@@ -65,6 +67,7 @@ export default async function InquirePage({
               check_in: check_in ?? null,
               check_out: check_out ?? null,
               guests: Number.isFinite(guests as number) ? (guests as number) : null,
+              add_yacht: addYacht,
             }}
           />
         </Suspense>

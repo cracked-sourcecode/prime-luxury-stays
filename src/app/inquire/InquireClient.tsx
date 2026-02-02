@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import {
+  Anchor,
   ArrowLeft,
   Calendar,
   Check,
@@ -30,6 +31,7 @@ export default function InquireClient({
     check_in: string | null
     check_out: string | null
     guests: number | null
+    add_yacht?: boolean
   }
 }) {
   const { t, locale } = useLocale()
@@ -40,6 +42,7 @@ export default function InquireClient({
   const [checkOut, setCheckOut] = useState(prefill.check_out ?? '')
   const [guests, setGuests] = useState(prefill.guests ?? (property?.max_guests ?? 2))
   const [message, setMessage] = useState('')
+  const [wantsYacht, setWantsYacht] = useState(prefill.add_yacht ?? false)
   const [submitting, setSubmitting] = useState(false)
   const [done, setDone] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -111,6 +114,7 @@ export default function InquireClient({
           message: message || null,
           source_url: typeof window !== 'undefined' ? window.location.href : null,
           locale: locale,
+          wants_yacht: wantsYacht,
         }),
       })
       const data = await res.json()
@@ -316,6 +320,42 @@ export default function InquireClient({
                           className="w-full pl-12 pr-4 py-3.5 rounded-2xl border border-cream-200 bg-white focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
                         />
                       </div>
+                    </div>
+
+                    {/* Yacht Add-on Option */}
+                    <div className="md:col-span-2">
+                      <button
+                        type="button"
+                        onClick={() => setWantsYacht(!wantsYacht)}
+                        className={`w-full p-4 rounded-2xl border-2 transition-all flex items-center gap-4 ${
+                          wantsYacht 
+                            ? 'border-gold-500 bg-gold-50' 
+                            : 'border-cream-200 bg-white hover:border-gold-300'
+                        }`}
+                      >
+                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 ${
+                          wantsYacht ? 'bg-gold-500 text-white' : 'bg-cream-100 text-charcoal-400'
+                        }`}>
+                          <Anchor className="w-6 h-6" />
+                        </div>
+                        <div className="text-left flex-1">
+                          <div className="font-semibold text-charcoal-900">
+                            {locale === 'de' ? 'Yacht-Charter hinzufügen' : 'Add Yacht Charter'}
+                          </div>
+                          <div className="text-sm text-charcoal-500">
+                            {locale === 'de' 
+                              ? 'Erkunden Sie die Küste mit einer Luxusyacht'
+                              : 'Explore the coast with a luxury yacht'}
+                          </div>
+                        </div>
+                        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
+                          wantsYacht 
+                            ? 'border-gold-500 bg-gold-500' 
+                            : 'border-charcoal-300'
+                        }`}>
+                          {wantsYacht && <Check className="w-4 h-4 text-white" />}
+                        </div>
+                      </button>
                     </div>
 
                     <div>

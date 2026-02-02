@@ -37,6 +37,7 @@ interface InquiryEmailData {
   sourceUrl?: string | null
   locale?: string
   serviceType?: string | null  // For service inquiries
+  wantsYacht?: boolean  // Yacht charter add-on
 }
 
 // Service name mappings
@@ -349,6 +350,37 @@ ${data.guests ? `<span style="color:#666; margin-left:16px;">${data.guests} ${t.
 </tr>
 ` : ''}
 
+${data.wantsYacht ? `
+<!-- Yacht Add-on -->
+<tr>
+<td class="content" style="padding:0 40px 24px;">
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#1a365d; border-radius:8px;">
+<tr>
+<td style="padding:20px;">
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td width="50" valign="top">
+<div style="width:40px; height:40px; background-color:${GOLD}; border-radius:8px; text-align:center; line-height:40px;">
+<span style="font-size:20px;">⚓</span>
+</div>
+</td>
+<td valign="middle" style="padding-left:12px;">
+<p style="margin:0 0 4px; font-size:18px; color:#fff; font-weight:bold; font-family:Georgia, serif;">
+${isGerman ? '🛥️ Yacht-Charter gewünscht' : '🛥️ Yacht Charter Requested'}
+</p>
+<p style="margin:0; font-size:14px; color:#a0aec0;">
+${isGerman ? 'Dieser Gast möchte eine Yacht zu seinem Aufenthalt hinzubuchen.' : 'This guest wants to add a yacht charter to their stay.'}
+</p>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+` : ''}
+
 <!-- Footer -->
 <tr>
 <td class="footer" style="padding:24px 40px; border-top:1px solid #e0e0e0;">
@@ -486,6 +518,37 @@ ${nights ? `<strong style="color:${GOLD};">${nights} ${t.nights}</strong>` : ''}
 ${data.guests ? `<span style="color:#666; margin-left:14px;">${data.guests} ${t.guests}</span>` : ''}
 </p>
 ` : ''}
+</td>
+</tr>
+</table>
+</td>
+</tr>
+` : ''}
+
+${data.wantsYacht ? `
+<!-- Yacht Add-on Confirmation -->
+<tr>
+<td class="content" style="padding:0 40px 24px;">
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#1a365d; border-radius:8px;">
+<tr>
+<td style="padding:20px;">
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td width="50" valign="top">
+<div style="width:40px; height:40px; background-color:${GOLD}; border-radius:8px; text-align:center; line-height:40px;">
+<span style="font-size:20px;">🛥️</span>
+</div>
+</td>
+<td valign="middle" style="padding-left:12px;">
+<p style="margin:0 0 4px; font-size:16px; color:#fff; font-weight:bold; font-family:Georgia, serif;">
+${isGerman ? 'Yacht-Charter angefragt' : 'Yacht Charter Included'}
+</p>
+<p style="margin:0; font-size:13px; color:#a0aec0;">
+${isGerman ? 'Unser Team wird Ihnen Yacht-Optionen für Ihren Aufenthalt zusenden.' : 'Our team will send you yacht options for your stay.'}
+</p>
+</td>
+</tr>
+</table>
 </td>
 </tr>
 </table>
