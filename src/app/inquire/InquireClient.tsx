@@ -11,23 +11,46 @@ import {
   Clock,
   Mail,
   Phone,
+  Ruler,
   Shield,
+  Ship,
   Sparkles,
   Star,
   User,
   Users,
 } from 'lucide-react'
 import type { Property } from '@/lib/properties'
+
+interface Yacht {
+  id: number
+  name: string
+  slug: string
+  manufacturer: string
+  model: string
+  yacht_type: string
+  year_built: number
+  length_meters: number
+  max_guests: number
+  guest_cabins: number
+  short_description: string
+  featured_image: string
+  region: string
+}
 import DatePickerModal from '@/components/DatePickerModal'
 import { useLocale } from '@/i18n/LocaleProvider'
 
 export default function InquireClient({
   property,
+  yacht,
+  inquiryType,
   prefill,
 }: {
   property: Property | null
+  yacht?: Yacht | null
+  inquiryType?: string
   prefill: {
     property_slug: string | null
+    yacht_slug?: string | null
     check_in: string | null
     check_out: string | null
     guests: number | null
@@ -56,10 +79,13 @@ export default function InquireClient({
 
   const heroImage = useMemo(() => {
     return (
+      yacht?.featured_image ||
       property?.featured_image ||
       'https://storage.googleapis.com/primeluxurystays/Mallorca%20page%20Hero%20Section.png'
     )
-  }, [property])
+  }, [property, yacht])
+  
+  const isYachtInquiry = inquiryType === 'yacht' || !!yacht
 
   const benefits = locale === 'de' ? [
     { icon: Shield, title: 'Geprüfte Villen', desc: 'Jede Immobilie persönlich besichtigt.' },
@@ -105,6 +131,8 @@ export default function InquireClient({
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           property_slug: property?.slug ?? prefill.property_slug,
+          yacht_slug: yacht?.slug ?? prefill.yacht_slug,
+          inquiry_type: isYachtInquiry ? 'yacht' : 'property',
           check_in: checkIn || null,
           check_out: checkOut || null,
           guests: guests ? Number(guests) : null,
@@ -114,7 +142,7 @@ export default function InquireClient({
           message: message || null,
           source_url: typeof window !== 'undefined' ? window.location.href : null,
           locale: locale,
-          wants_yacht: wantsYacht,
+          wants_yacht: wantsYacht || isYachtInquiry,
         }),
       })
       const data = await res.json()
@@ -142,14 +170,16 @@ export default function InquireClient({
         <div className="relative max-w-7xl mx-auto px-6 lg:px-8 pt-28 pb-16">
           <div className="flex items-center justify-between mb-10">
             <Link
-              href={property ? `/properties/${property.slug}` : '/mallorca'}
+              href={yacht ? `/yachts/${yacht.slug}` : property ? `/properties/${property.slug}` : '/mallorca'}
               className="inline-flex items-center gap-2 text-white/80 hover:text-white transition-colors"
             >
               <ArrowLeft className="w-5 h-5" />
               <span className="text-sm font-medium">
-                {property 
-                  ? (locale === 'de' ? 'Zurück zur Villa' : 'Back to villa')
-                  : (locale === 'de' ? 'Zurück zu Mallorca' : 'Back to Mallorca')}
+                {yacht
+                  ? (locale === 'de' ? 'Zurück zur Yacht' : 'Back to yacht')
+                  : property 
+                    ? (locale === 'de' ? 'Zurück zur Villa' : 'Back to villa')
+                    : (locale === 'de' ? 'Zurück zu Mallorca' : 'Back to Mallorca')}
               </span>
             </Link>
             <a
@@ -170,8 +200,15 @@ export default function InquireClient({
             </div>
 
             <h1 className="font-merriweather text-4xl md:text-5xl text-white leading-tight">
-              {locale === 'de' ? 'Buchungsanfrage' : 'Request to Book'}
-              {property ? (
+              {isYachtInquiry 
+                ? (locale === 'de' ? 'Yachtcharter-Anfrage' : 'Yacht Charter Inquiry')
+                : (locale === 'de' ? 'Buchungsanfrage' : 'Request to Book')}
+              {yacht ? (
+                <>
+                  {' '}
+                  <span className="text-gold-300">{yacht.name}</span>
+                </>
+              ) : property ? (
                 <>
                   {' '}
                   <span className="text-gold-300">{property.name}</span>
@@ -434,7 +471,20 @@ export default function InquireClient({
               <div className="relative aspect-[16/10]">
                 <img src={heroImage} alt="" className="w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                {property ? (
+                {yacht ? (
+                  <div className="absolute bottom-4 left-4 right-4 text-white">
+                    <div className="flex items-center gap-2 mb-1">
+                      <Anchor className="w-4 h-4 text-gold-400" />
+                      <span className="text-gold-300 text-sm font-medium">
+                        {locale === 'de' ? 'Yachtcharter' : 'Yacht Charter'}
+                      </span>
+                    </div>
+                    <div className="font-merriweather text-2xl">{yacht.name}</div>
+                    <div className="text-white/80 mt-1">
+                      {yacht.manufacturer} {yacht.model} • {yacht.year_built}
+                    </div>
+                  </div>
+                ) : property ? (
                   <div className="absolute bottom-4 left-4 right-4 text-white">
                     <div className="font-merriweather text-2xl">{property.name}</div>
                     <div className="text-white/80 mt-1">
@@ -445,18 +495,52 @@ export default function InquireClient({
               </div>
               <div className="p-6">
                 <div className="grid grid-cols-2 gap-3 text-sm">
-                  {property?.bedrooms ? (
-                    <div className="rounded-2xl bg-cream-50 border border-cream-200 px-4 py-3">
-                      <div className="text-charcoal-500">{locale === 'de' ? 'Schlafzimmer' : 'Bedrooms'}</div>
-                      <div className="font-semibold text-charcoal-900">{property.bedrooms}</div>
-                    </div>
-                  ) : null}
-                  {property?.max_guests ? (
-                    <div className="rounded-2xl bg-cream-50 border border-cream-200 px-4 py-3">
-                      <div className="text-charcoal-500">{locale === 'de' ? 'Gäste' : 'Guests'}</div>
-                      <div className="font-semibold text-charcoal-900">{locale === 'de' ? `Bis zu ${property.max_guests}` : `Up to ${property.max_guests}`}</div>
-                    </div>
-                  ) : null}
+                  {/* Yacht-specific stats */}
+                  {yacht ? (
+                    <>
+                      <div className="rounded-2xl bg-cream-50 border border-cream-200 px-4 py-3">
+                        <div className="text-charcoal-500 flex items-center gap-1">
+                          <Ruler className="w-3 h-3" />
+                          {locale === 'de' ? 'Länge' : 'Length'}
+                        </div>
+                        <div className="font-semibold text-charcoal-900">{yacht.length_meters}m</div>
+                      </div>
+                      <div className="rounded-2xl bg-cream-50 border border-cream-200 px-4 py-3">
+                        <div className="text-charcoal-500 flex items-center gap-1">
+                          <Users className="w-3 h-3" />
+                          {locale === 'de' ? 'Gäste' : 'Guests'}
+                        </div>
+                        <div className="font-semibold text-charcoal-900">{locale === 'de' ? `Bis zu ${yacht.max_guests}` : `Up to ${yacht.max_guests}`}</div>
+                      </div>
+                      <div className="rounded-2xl bg-cream-50 border border-cream-200 px-4 py-3">
+                        <div className="text-charcoal-500 flex items-center gap-1">
+                          <Ship className="w-3 h-3" />
+                          {locale === 'de' ? 'Kabinen' : 'Cabins'}
+                        </div>
+                        <div className="font-semibold text-charcoal-900">{yacht.guest_cabins} {locale === 'de' ? 'en-suite' : 'en-suite'}</div>
+                      </div>
+                      <div className="rounded-2xl bg-cream-50 border border-cream-200 px-4 py-3">
+                        <div className="text-charcoal-500">{locale === 'de' ? 'Region' : 'Region'}</div>
+                        <div className="font-semibold text-charcoal-900">{yacht.region || 'Mallorca'}</div>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      {/* Property-specific stats */}
+                      {property?.bedrooms ? (
+                        <div className="rounded-2xl bg-cream-50 border border-cream-200 px-4 py-3">
+                          <div className="text-charcoal-500">{locale === 'de' ? 'Schlafzimmer' : 'Bedrooms'}</div>
+                          <div className="font-semibold text-charcoal-900">{property.bedrooms}</div>
+                        </div>
+                      ) : null}
+                      {property?.max_guests ? (
+                        <div className="rounded-2xl bg-cream-50 border border-cream-200 px-4 py-3">
+                          <div className="text-charcoal-500">{locale === 'de' ? 'Gäste' : 'Guests'}</div>
+                          <div className="font-semibold text-charcoal-900">{locale === 'de' ? `Bis zu ${property.max_guests}` : `Up to ${property.max_guests}`}</div>
+                        </div>
+                      ) : null}
+                    </>
+                  )}
                   <div className="rounded-2xl bg-cream-50 border border-cream-200 px-4 py-3">
                     <div className="text-charcoal-500">{locale === 'de' ? 'Buchung' : 'Booking'}</div>
                     <div className="font-semibold text-charcoal-900">{locale === 'de' ? 'Direktanfrage' : 'Direct inquiry'}</div>

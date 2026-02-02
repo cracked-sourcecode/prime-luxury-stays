@@ -31,6 +31,17 @@ interface InquiryEmailData {
   propertyBedrooms?: number | null
   propertyBathrooms?: number | null
   propertyMaxGuests?: number | null
+  // Yacht fields
+  yachtName?: string | null
+  yachtImage?: string | null
+  yachtSlug?: string | null
+  yachtModel?: string | null
+  yachtLength?: number | null
+  yachtGuests?: number | null
+  yachtCabins?: number | null
+  yachtRegion?: string | null
+  isYachtInquiry?: boolean
+  // Common fields
   checkIn?: string | null
   checkOut?: string | null
   guests?: number | null
@@ -289,7 +300,32 @@ ${isGerman ? 'Antworten an' : 'Reply to'} ${data.fullName.split(' ')[0]}
 </td>
 </tr>
 
-${data.propertyName ? `
+${data.yachtName ? `
+<!-- Yacht -->
+<tr>
+<td class="content" style="padding:0 40px 24px;">
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="border:2px solid #1a365d; border-radius:8px; overflow:hidden;">
+${data.yachtImage ? `
+<tr>
+<td>
+<img src="${data.yachtImage}" alt="${data.yachtName}" width="600" style="display:block; width:100%; height:auto;">
+</td>
+</tr>
+` : ''}
+<tr>
+<td style="padding:20px; background:linear-gradient(135deg, #1a365d 0%, #0f172a 100%);">
+<p style="margin:0 0 4px; font-size:12px; color:${GOLD}; text-transform:uppercase; letter-spacing:1px;">⚓ ${isGerman ? 'Yachtcharter-Anfrage' : 'Yacht Charter Inquiry'}</p>
+<p class="property-title" style="margin:0 0 6px; font-size:22px; color:#ffffff; font-weight:bold; font-family:Georgia, serif;">${data.yachtName}</p>
+${data.yachtModel ? `<p style="margin:0 0 8px; font-size:15px; color:#a0aec0;">${data.yachtModel}</p>` : ''}
+<p style="margin:0; font-size:14px; color:#cbd5e0;">
+${data.yachtLength ? `${data.yachtLength}m` : ''}${data.yachtGuests ? ` · ${data.yachtGuests} ${t.guests}` : ''}${data.yachtCabins ? ` · ${data.yachtCabins} ${isGerman ? 'Kabinen' : 'cabins'}` : ''}${data.yachtRegion ? ` · ${data.yachtRegion}` : ''}
+</p>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+` : data.propertyName ? `
 <!-- Property -->
 <tr>
 <td class="content" style="padding:0 40px 24px;">

@@ -9,6 +9,8 @@ export async function POST(req: NextRequest) {
     const body = await req.json()
     const {
       property_slug,
+      yacht_slug,
+      inquiry_type,
       check_in,
       check_out,
       guests,
@@ -34,6 +36,21 @@ export async function POST(req: NextRequest) {
     } catch (propErr) {
       console.error('Failed to get property:', propErr)
       // Continue without property - not critical
+    }
+
+    // Fetch yacht if yacht_slug provided
+    let yacht = null
+    if (yacht_slug) {
+      try {
+        const yachts = await sql`
+          SELECT id, name, slug, manufacturer, model, year_built, 
+                 length_meters, max_guests, guest_cabins, featured_image, region
+          FROM yachts WHERE slug = ${yacht_slug} LIMIT 1
+        `
+        yacht = yachts[0] || null
+      } catch (yachtErr) {
+        console.error('Failed to get yacht:', yachtErr)
+      }
     }
 
     // Save to database
@@ -95,6 +112,7 @@ export async function POST(req: NextRequest) {
       email,
       phone: phone ?? null,
       message: message ?? null,
+      // Property info (if property inquiry)
       propertyName: property?.name ?? null,
       propertyImage: property?.featured_image ?? null,
       propertySlug: property?.slug ?? null,
@@ -102,6 +120,17 @@ export async function POST(req: NextRequest) {
       propertyBedrooms: property?.bedrooms ?? null,
       propertyBathrooms: property?.bathrooms ?? null,
       propertyMaxGuests: property?.max_guests ?? null,
+      // Yacht info (if yacht inquiry)
+      yachtName: yacht?.name ?? null,
+      yachtImage: yacht?.featured_image ?? null,
+      yachtSlug: yacht?.slug ?? null,
+      yachtModel: yacht ? `${yacht.manufacturer} ${yacht.model}` : null,
+      yachtLength: yacht?.length_meters ?? null,
+      yachtGuests: yacht?.max_guests ?? null,
+      yachtCabins: yacht?.guest_cabins ?? null,
+      yachtRegion: yacht?.region ?? null,
+      isYachtInquiry: inquiry_type === 'yacht' || !!yacht,
+      // Common fields
       checkIn: check_in ?? null,
       checkOut: check_out ?? null,
       guests: typeof guests === 'number' ? guests : null,
