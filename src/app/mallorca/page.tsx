@@ -2,6 +2,7 @@ import { Suspense } from 'react'
 import { Metadata } from 'next'
 import Script from 'next/script'
 import { getActiveProperties } from '@/lib/properties'
+import { sql } from '@/lib/db'
 import MallorcaClient from './MallorcaClient'
 import Navigation from '@/components/Navigation'
 import Footer from '@/components/Footer'
@@ -67,8 +68,29 @@ async function getMallorcaProperties() {
   )
 }
 
+// Get yachts available in Mallorca
+async function getMallorcaYachts() {
+  try {
+    const yachts = await sql`
+      SELECT id, name, slug, manufacturer, model, year_built, length_meters, 
+             max_guests, guest_cabins, short_description, featured_image, is_featured
+      FROM yachts 
+      WHERE is_active = true AND region = 'Mallorca'
+      ORDER BY is_featured DESC, name ASC
+      LIMIT 6
+    `
+    return yachts
+  } catch (error) {
+    console.error('Error fetching yachts:', error)
+    return []
+  }
+}
+
 export default async function MallorcaPage() {
-  const properties = await getMallorcaProperties()
+  const [properties, yachts] = await Promise.all([
+    getMallorcaProperties(),
+    getMallorcaYachts()
+  ])
 
   return (
     <>
@@ -80,7 +102,7 @@ export default async function MallorcaPage() {
       <Navigation />
       <main className="min-h-screen bg-cream-50">
         <Suspense fallback={<div className="h-screen flex items-center justify-center">Loading...</div>}>
-          <MallorcaClient properties={properties} />
+          <MallorcaClient properties={properties} yachts={yachts as any} />
         </Suspense>
       </main>
       <Footer />
