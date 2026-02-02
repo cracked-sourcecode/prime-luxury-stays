@@ -9,7 +9,7 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import AdminLayout from '@/components/admin/AdminLayout'
+import AdminNav from '@/components/admin/AdminNav'
 import { useAdminLocale } from '@/lib/adminLocale'
 
 interface YachtImage {
@@ -254,8 +254,9 @@ export default function YachtsAdminClient({ user, initialYachts, stats }: Yachts
   }
 
   return (
-    <AdminLayout user={user} currentPage="yachts">
-      <div className="p-6 md:p-8">
+    <div className="min-h-screen bg-cream-50">
+      <AdminNav userName={user.name} userEmail={user.email} />
+      <main className="max-w-7xl mx-auto px-6 py-8">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
           <div>
@@ -419,9 +420,8 @@ export default function YachtsAdminClient({ user, initialYachts, stats }: Yachts
             </button>
           </div>
         )}
-      </div>
 
-      {/* Add/Edit Modal */}
+        {/* Add/Edit Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4 overflow-y-auto">
           <motion.div
@@ -723,6 +723,7 @@ export default function YachtsAdminClient({ user, initialYachts, stats }: Yachts
           </motion.div>
         </div>
       )}
-    </AdminLayout>
+      </main>
+    </div>
   )
 }

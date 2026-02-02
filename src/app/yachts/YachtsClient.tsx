@@ -7,7 +7,7 @@ import {
   Waves, Sparkles, Play, Volume2, VolumeX, ArrowRight
 } from 'lucide-react'
 import Link from 'next/link'
-import { useLocale } from '@/lib/locale'
+import { useLocale } from '@/i18n/LocaleProvider'
 
 interface Yacht {
   id: number

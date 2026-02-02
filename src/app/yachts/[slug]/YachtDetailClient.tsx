@@ -7,7 +7,7 @@ import {
   Waves, Sparkles, ArrowRight, X, Check, Gauge, Settings, Droplets
 } from 'lucide-react'
 import Link from 'next/link'
-import { useLocale } from '@/lib/locale'
+import { useLocale } from '@/i18n/LocaleProvider'
 
 interface YachtImage {
   id: number
