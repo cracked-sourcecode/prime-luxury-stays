@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { 
   Search, 
   Plus, 
@@ -19,7 +19,9 @@ import {
   RotateCcw,
   Zap,
   Target,
-  Clock
+  Clock,
+  Loader2,
+  Sparkles
 } from 'lucide-react'
 import AdminNav from '@/components/admin/AdminNav'
 import type { AdminUser } from '@/lib/admin'
@@ -28,7 +30,9 @@ import { useAdminLocale } from '@/lib/adminLocale'
 interface WIPTask {
   id: number
   title: string
+  title_de: string | null
   next_step: string | null
+  next_step_de: string | null
   priority: 'critical' | 'high' | 'medium' | 'low'
   assigned_to: string | null
   status: string
@@ -36,6 +40,7 @@ interface WIPTask {
   completed_at: string | null
   category: string | null
   notes: string | null
+  notes_de: string | null
   created_at: string
   updated_at: string
 }
@@ -107,14 +112,110 @@ export default function WIPClient({
   
   // Undo toast state
   const [undoToast, setUndoToast] = useState<{ task: WIPTask; timeoutId: NodeJS.Timeout } | null>(null)
+  
+  // Translation state
+  const [translating, setTranslating] = useState<string | null>(null)
+  const translateTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  
+  // Auto-translate function using OpenAI
+  const translateText = async (
+    text: string,
+    targetLanguage: 'en' | 'de',
+    fieldType: string
+  ): Promise<string | null> => {
+    if (!text?.trim()) return null
+
+    try {
+      const res = await fetch('/api/admin/translate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          text,
+          targetLanguage,
+          fieldType
+        })
+      })
+      const data = await res.json()
+      return data.translatedText || null
+    } catch (err) {
+      console.error('Translation error:', err)
+      return null
+    }
+  }
+
+  // Auto-translate English to German (with debounce)
+  const handleTranslatableEnglishChange = (
+    field: 'title' | 'next_step' | 'notes',
+    value: string
+  ) => {
+    const germanField = `${field}_de` as keyof typeof formData
+    
+    setFormData(prev => ({ ...prev, [field]: value }))
+
+    // Clear previous timeout
+    if (translateTimeoutRef.current) {
+      clearTimeout(translateTimeoutRef.current)
+    }
+
+    // Auto-translate after user stops typing (800ms)
+    if (value.trim()) {
+      translateTimeoutRef.current = setTimeout(async () => {
+        setTranslating(germanField)
+        const translated = await translateText(value, 'de', field === 'title' ? 'name' : 'description')
+        if (translated) {
+          setFormData(prev => ({ ...prev, [germanField]: translated }))
+        }
+        setTranslating(null)
+      }, 800)
+    }
+  }
+
+  // Auto-translate German to English (with debounce)
+  const handleTranslatableGermanChange = (
+    field: 'title_de' | 'next_step_de' | 'notes_de',
+    value: string
+  ) => {
+    const englishField = field.replace('_de', '') as 'title' | 'next_step' | 'notes'
+    
+    setFormData(prev => ({ ...prev, [field]: value }))
+
+    // Clear previous timeout
+    if (translateTimeoutRef.current) {
+      clearTimeout(translateTimeoutRef.current)
+    }
+
+    // Only auto-translate if English field is empty
+    if (value.trim() && !formData[englishField]) {
+      translateTimeoutRef.current = setTimeout(async () => {
+        setTranslating(englishField)
+        const translated = await translateText(value, 'en', field === 'title_de' ? 'name' : 'description')
+        if (translated) {
+          setFormData(prev => ({ ...prev, [englishField]: translated }))
+        }
+        setTranslating(null)
+      }, 800)
+    }
+  }
+  
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (translateTimeoutRef.current) {
+        clearTimeout(translateTimeoutRef.current)
+      }
+    }
+  }, [])
 
   // Form state
   const [formData, setFormData] = useState({
     title: '',
+    title_de: '',
     next_step: '',
+    next_step_de: '',
     priority: 'medium' as 'critical' | 'high' | 'medium' | 'low',
     assigned_to: '',
-    notes: ''
+    notes: '',
+    notes_de: ''
   })
 
   // Get unique assignees from tasks
@@ -137,10 +238,13 @@ export default function WIPClient({
   const resetForm = () => {
     setFormData({ 
       title: '', 
+      title_de: '',
       next_step: '', 
+      next_step_de: '',
       priority: 'medium', 
       assigned_to: '', 
-      notes: '' 
+      notes: '',
+      notes_de: ''
     })
   }
 
@@ -153,10 +257,13 @@ export default function WIPClient({
   const openEditModal = (task: WIPTask) => {
     setFormData({
       title: task.title,
+      title_de: task.title_de || '',
       next_step: task.next_step || '',
+      next_step_de: task.next_step_de || '',
       priority: task.priority,
       assigned_to: task.assigned_to || '',
-      notes: task.notes || ''
+      notes: task.notes || '',
+      notes_de: task.notes_de || ''
     })
     setEditingTask(task)
     setShowAddModal(true)
@@ -477,14 +584,20 @@ export default function WIPClient({
                           </button>
                         </td>
                         <td className="px-4 py-4">
-                          <div className="font-medium text-charcoal-900">{task.title}</div>
-                          {task.notes && (
-                            <div className="text-xs text-charcoal-500 mt-1 truncate max-w-xs">{task.notes}</div>
+                          <div className="font-medium text-charcoal-900">
+                            {locale === 'de' && task.title_de ? task.title_de : task.title}
+                          </div>
+                          {(locale === 'de' ? task.notes_de || task.notes : task.notes) && (
+                            <div className="text-xs text-charcoal-500 mt-1 truncate max-w-xs">
+                              {locale === 'de' && task.notes_de ? task.notes_de : task.notes}
+                            </div>
                           )}
                         </td>
                         <td className="px-4 py-4">
-                          {task.next_step ? (
-                            <span className="text-charcoal-600 text-sm">{task.next_step}</span>
+                          {(locale === 'de' ? task.next_step_de || task.next_step : task.next_step) ? (
+                            <span className="text-charcoal-600 text-sm">
+                              {locale === 'de' && task.next_step_de ? task.next_step_de : task.next_step}
+                            </span>
                           ) : (
                             <span className="text-charcoal-400">—</span>
                           )}
@@ -562,7 +675,9 @@ export default function WIPClient({
                     <div className="flex items-center gap-4">
                       <CheckCircle2 className="w-5 h-5 text-green-500" />
                       <div>
-                        <p className="text-charcoal-500 line-through">{task.title}</p>
+                        <p className="text-charcoal-500 line-through">
+                          {locale === 'de' && task.title_de ? task.title_de : task.title}
+                        </p>
                         {task.completed_at && (
                           <p className="text-xs text-charcoal-400 mt-0.5">
                             {locale === 'de' ? 'Erledigt am' : 'Completed'} {new Date(task.completed_at).toLocaleDateString(locale === 'de' ? 'de-DE' : 'en-US')}
@@ -655,29 +770,96 @@ export default function WIPClient({
               </button>
             </div>
 
-            <div className="p-6 space-y-4">
-              <div>
-                <label className="block text-sm font-semibold text-charcoal-700 mb-2">{t('taskTitle')} *</label>
-                <input
-                  type="text"
-                  value={formData.title}
-                  onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
-                  className="w-full px-4 py-3 border border-cream-200 rounded-xl focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
-                  placeholder={t('whatNeedsToBeDone')}
-                />
+            <div className="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
+              {/* Task Title - Both Languages with AI Sync */}
+              <div className="bg-cream-50 rounded-xl p-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-xs font-semibold text-charcoal-500 uppercase tracking-wide">
+                    <span>📝</span>
+                    {t('taskTitle')}
+                  </div>
+                  <div className="flex items-center gap-1 text-xs text-gold-600">
+                    <Sparkles className="w-3 h-3" />
+                    <span>AI Sync</span>
+                  </div>
+                </div>
+                <div className="relative">
+                  <label className="block text-sm font-medium text-charcoal-600 mb-1.5">
+                    🇬🇧 English *
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.title}
+                    onChange={(e) => handleTranslatableEnglishChange('title', e.target.value)}
+                    className="w-full px-4 py-3 border border-cream-200 rounded-xl focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none bg-white"
+                    placeholder="What needs to be done?"
+                  />
+                </div>
+                <div className="relative">
+                  <label className="block text-sm font-medium text-charcoal-600 mb-1.5">
+                    🇩🇪 Deutsch
+                    {translating === 'title_de' && (
+                      <span className="ml-2 inline-flex items-center gap-1 text-gold-600">
+                        <Loader2 className="w-3 h-3 animate-spin" />
+                        <span className="text-xs">translating...</span>
+                      </span>
+                    )}
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.title_de}
+                    onChange={(e) => handleTranslatableGermanChange('title_de', e.target.value)}
+                    className={`w-full px-4 py-3 border border-cream-200 rounded-xl focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none bg-white ${translating === 'title_de' ? 'opacity-60' : ''}`}
+                    placeholder="Was muss getan werden?"
+                  />
+                </div>
               </div>
 
-              <div>
-                <label className="block text-sm font-semibold text-charcoal-700 mb-2">{t('nextStep')}</label>
-                <input
-                  type="text"
-                  value={formData.next_step}
-                  onChange={(e) => setFormData(prev => ({ ...prev, next_step: e.target.value }))}
-                  className="w-full px-4 py-3 border border-cream-200 rounded-xl focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
-                  placeholder={t('immediateNextAction')}
-                />
+              {/* Next Step - Both Languages with AI Sync */}
+              <div className="bg-cream-50 rounded-xl p-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-xs font-semibold text-charcoal-500 uppercase tracking-wide">
+                    <span>➡️</span>
+                    {t('nextStep')}
+                  </div>
+                  <div className="flex items-center gap-1 text-xs text-gold-600">
+                    <Sparkles className="w-3 h-3" />
+                    <span>AI Sync</span>
+                  </div>
+                </div>
+                <div className="relative">
+                  <label className="block text-sm font-medium text-charcoal-600 mb-1.5">
+                    🇬🇧 English
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.next_step}
+                    onChange={(e) => handleTranslatableEnglishChange('next_step', e.target.value)}
+                    className="w-full px-4 py-3 border border-cream-200 rounded-xl focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none bg-white"
+                    placeholder="What's the immediate next action?"
+                  />
+                </div>
+                <div className="relative">
+                  <label className="block text-sm font-medium text-charcoal-600 mb-1.5">
+                    🇩🇪 Deutsch
+                    {translating === 'next_step_de' && (
+                      <span className="ml-2 inline-flex items-center gap-1 text-gold-600">
+                        <Loader2 className="w-3 h-3 animate-spin" />
+                        <span className="text-xs">translating...</span>
+                      </span>
+                    )}
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.next_step_de}
+                    onChange={(e) => handleTranslatableGermanChange('next_step_de', e.target.value)}
+                    className={`w-full px-4 py-3 border border-cream-200 rounded-xl focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none bg-white ${translating === 'next_step_de' ? 'opacity-60' : ''}`}
+                    placeholder="Was ist der nächste Schritt?"
+                  />
+                </div>
               </div>
 
+              {/* Priority & Assignment */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-semibold text-charcoal-700 mb-2">{t('priority')}</label>
@@ -712,15 +894,48 @@ export default function WIPClient({
                 </div>
               </div>
 
-              <div>
-                <label className="block text-sm font-semibold text-charcoal-700 mb-2">{t('notes')}</label>
-                <textarea
-                  value={formData.notes}
-                  onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
-                  rows={3}
-                  className="w-full px-4 py-3 border border-cream-200 rounded-xl focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none resize-none"
-                  placeholder={t('anyAdditionalContext')}
-                />
+              {/* Notes - Both Languages with AI Sync */}
+              <div className="bg-cream-50 rounded-xl p-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 text-xs font-semibold text-charcoal-500 uppercase tracking-wide">
+                    <span>📋</span>
+                    {t('notes')}
+                  </div>
+                  <div className="flex items-center gap-1 text-xs text-gold-600">
+                    <Sparkles className="w-3 h-3" />
+                    <span>AI Sync</span>
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-charcoal-600 mb-1.5">
+                    🇬🇧 English
+                  </label>
+                  <textarea
+                    value={formData.notes}
+                    onChange={(e) => handleTranslatableEnglishChange('notes', e.target.value)}
+                    rows={2}
+                    className="w-full px-4 py-3 border border-cream-200 rounded-xl focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none resize-none bg-white"
+                    placeholder="Any additional context..."
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-charcoal-600 mb-1.5">
+                    🇩🇪 Deutsch
+                    {translating === 'notes_de' && (
+                      <span className="ml-2 inline-flex items-center gap-1 text-gold-600">
+                        <Loader2 className="w-3 h-3 animate-spin" />
+                        <span className="text-xs">translating...</span>
+                      </span>
+                    )}
+                  </label>
+                  <textarea
+                    value={formData.notes_de}
+                    onChange={(e) => handleTranslatableGermanChange('notes_de', e.target.value)}
+                    rows={2}
+                    className={`w-full px-4 py-3 border border-cream-200 rounded-xl focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none resize-none bg-white ${translating === 'notes_de' ? 'opacity-60' : ''}`}
+                    placeholder="Zusätzlicher Kontext..."
+                  />
+                </div>
               </div>
             </div>
 

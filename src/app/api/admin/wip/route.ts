@@ -75,7 +75,7 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json()
-    const { title, next_step, priority, assigned_to, category, notes } = body
+    const { title, title_de, next_step, next_step_de, priority, assigned_to, category, notes, notes_de } = body
 
     if (!title) {
       return NextResponse.json({ error: 'Title is required' }, { status: 400 })
@@ -83,14 +83,17 @@ export async function POST(request: NextRequest) {
 
     const result = await sql`
       INSERT INTO wip_tasks (
-        title, next_step, priority, assigned_to, category, notes
+        title, title_de, next_step, next_step_de, priority, assigned_to, category, notes, notes_de
       ) VALUES (
         ${title},
+        ${title_de || null},
         ${next_step || null},
+        ${next_step_de || null},
         ${priority || 'medium'},
         ${assigned_to || null},
         ${category || null},
-        ${notes || null}
+        ${notes || null},
+        ${notes_de || null}
       )
       RETURNING *
     `

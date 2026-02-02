@@ -52,7 +52,7 @@ export async function PUT(
   try {
     const { id } = await params
     const body = await request.json()
-    const { title, next_step, priority, assigned_to, category, notes } = body
+    const { title, title_de, next_step, next_step_de, priority, assigned_to, category, notes, notes_de } = body
 
     // Get the current task to check if assignee changed
     const currentTask = await sql`
@@ -64,11 +64,14 @@ export async function PUT(
       UPDATE wip_tasks 
       SET 
         title = COALESCE(${title}, title),
+        title_de = ${title_de ?? null},
         next_step = ${next_step ?? null},
+        next_step_de = ${next_step_de ?? null},
         priority = COALESCE(${priority}, priority),
         assigned_to = ${assigned_to ?? null},
         category = ${category ?? null},
         notes = ${notes ?? null},
+        notes_de = ${notes_de ?? null},
         updated_at = NOW()
       WHERE id = ${parseInt(id)}
       RETURNING *
