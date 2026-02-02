@@ -207,14 +207,6 @@ export default function YachtsClient({ yachts }: YachtsClientProps) {
             </div>
             <div className="text-center">
               <div className="text-3xl md:text-4xl font-merriweather text-gold-400 mb-2">
-                24/7
-              </div>
-              <div className="text-white/60 text-sm">
-                {locale === 'de' ? 'Crew-Service' : 'Crew Service'}
-              </div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl md:text-4xl font-merriweather text-gold-400 mb-2">
                 100%
               </div>
               <div className="text-white/60 text-sm">

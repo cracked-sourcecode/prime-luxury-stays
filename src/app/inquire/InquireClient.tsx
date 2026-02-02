@@ -195,7 +195,7 @@ export default function InquireClient({
             <div className="inline-flex items-center gap-2 rounded-full bg-gold-500/15 border border-gold-400/25 px-5 py-2 text-gold-200 mb-6">
               <Sparkles className="w-4 h-4" />
               <span className="text-sm font-medium tracking-wide">
-                {locale === 'de' ? 'Direktanfrage • Exklusiver Service' : 'Direct inquiry • White-glove service'}
+                {locale === 'de' ? 'Direktanfrage • Persönlicher Service' : 'Direct inquiry • Personal service'}
               </span>
             </div>
 
