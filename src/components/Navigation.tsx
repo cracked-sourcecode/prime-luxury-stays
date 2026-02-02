@@ -64,12 +64,12 @@ export default function Navigation() {
             </a>
 
             {/* Desktop Navigation */}
-            <div className="hidden lg:flex items-center gap-8">
+            <div className="hidden xl:flex items-center gap-6">
               {navLinks.map((link) => (
                 <a
                   key={link.name}
                   href={link.href}
-                  className="link-underline text-charcoal-700 hover:text-gold-600 text-sm font-medium tracking-wide transition-colors duration-300 py-2 relative z-10"
+                  className="link-underline text-charcoal-700 hover:text-gold-600 text-[13px] font-medium tracking-wide transition-colors duration-300 py-2 relative z-10 whitespace-nowrap"
                 >
                   {link.name}
                 </a>
@@ -79,10 +79,10 @@ export default function Navigation() {
               <div className="relative">
                 <button
                   onClick={() => setShowLangMenu(!showLangMenu)}
-                  className="flex items-center gap-1.5 text-charcoal-700 hover:text-gold-600 transition-colors py-2 px-2"
+                  className="flex items-center gap-1 text-charcoal-700 hover:text-gold-600 transition-colors py-2 px-1"
                 >
-                  <Globe size={18} />
-                  <span className="text-sm font-medium uppercase">{locale}</span>
+                  <Globe size={16} />
+                  <span className="text-[13px] font-medium uppercase">{locale}</span>
                 </button>
                 
                 <AnimatePresence>
@@ -113,15 +113,15 @@ export default function Navigation() {
               </div>
               
               {/* CTA Button - inline with nav */}
-              <a href={localizeHref('/destinations')} className="btn-gold ml-4 relative z-10">
+              <a href={localizeHref('/destinations')} className="btn-gold ml-2 relative z-10 text-[13px] px-4 py-2.5 whitespace-nowrap">
                 {t('nav.viewDestinations')}
               </a>
             </div>
-
-            {/* Mobile Menu Button */}
+            
+            {/* Mobile/Tablet Menu Button - show on everything below xl */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden p-2 text-charcoal-900 hover:text-gold-600 transition-colors"
+              className="xl:hidden p-2 text-charcoal-900 hover:text-gold-600 transition-colors"
             >
               {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
@@ -137,7 +137,7 @@ export default function Navigation() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-40 lg:hidden"
+            className="fixed inset-0 z-40 xl:hidden"
           >
             {/* Full screen white overlay */}
             <motion.div
