@@ -23,6 +23,7 @@ import {
 } from 'lucide-react'
 import AdminNav from '@/components/admin/AdminNav'
 import type { AdminUser } from '@/lib/admin'
+import { useAdminLocale } from '@/lib/adminLocale'
 
 interface WIPTask {
   id: number
@@ -53,27 +54,23 @@ interface WIPClientProps {
   stats: Stats
 }
 
-const priorityConfig = {
+const priorityStyles = {
   critical: { 
-    label: 'Critical', 
     color: 'bg-red-100 text-red-700 border-red-200',
     dot: 'bg-red-500',
     icon: Zap
   },
   high: { 
-    label: 'High', 
     color: 'bg-orange-100 text-orange-700 border-orange-200',
     dot: 'bg-orange-500',
     icon: ArrowUp
   },
   medium: { 
-    label: 'Medium', 
     color: 'bg-amber-100 text-amber-700 border-amber-200',
     dot: 'bg-amber-500',
     icon: Target
   },
   low: { 
-    label: 'Low', 
     color: 'bg-emerald-100 text-emerald-700 border-emerald-200',
     dot: 'bg-emerald-500',
     icon: Clock
@@ -88,6 +85,15 @@ export default function WIPClient({
   initialCompletedTasks,
   stats: initialStats 
 }: WIPClientProps) {
+  const { locale, t } = useAdminLocale()
+  
+  // Localized priority labels
+  const priorityLabels = {
+    critical: t('priorityCritical'),
+    high: t('priorityHigh'),
+    medium: t('priorityMedium'),
+    low: t('priorityLow')
+  }
   const [activeTasks, setActiveTasks] = useState<WIPTask[]>(initialActiveTasks)
   const [completedTasks, setCompletedTasks] = useState<WIPTask[]>(initialCompletedTasks)
   const [stats, setStats] = useState(initialStats)
@@ -233,7 +239,10 @@ export default function WIPClient({
   }
 
   const handleDelete = async (id: number) => {
-    if (!confirm('Are you sure you want to delete this task?')) return
+    const confirmMsg = locale === 'de' 
+      ? 'Sind Sie sicher, dass Sie diese Aufgabe löschen möchten?' 
+      : 'Are you sure you want to delete this task?'
+    if (!confirm(confirmMsg)) return
 
     try {
       const res = await fetch(`/api/admin/wip/${id}`, { method: 'DELETE' })
@@ -268,7 +277,7 @@ export default function WIPClient({
               </div>
               <div>
                 <p className="text-3xl font-semibold text-charcoal-900">{stats.activeCount}</p>
-                <p className="text-charcoal-500 text-sm">Active Tasks</p>
+                <p className="text-charcoal-500 text-sm">{t('activeTasks')}</p>
               </div>
             </div>
           </div>
@@ -280,7 +289,7 @@ export default function WIPClient({
               </div>
               <div>
                 <p className="text-3xl font-semibold text-charcoal-900">{stats.criticalCount}</p>
-                <p className="text-charcoal-500 text-sm">Critical</p>
+                <p className="text-charcoal-500 text-sm">{t('critical')}</p>
               </div>
             </div>
           </div>
@@ -292,7 +301,7 @@ export default function WIPClient({
               </div>
               <div>
                 <p className="text-3xl font-semibold text-charcoal-900">{stats.highPriorityCount}</p>
-                <p className="text-charcoal-500 text-sm">High Priority</p>
+                <p className="text-charcoal-500 text-sm">{t('highPriority')}</p>
               </div>
             </div>
           </div>
@@ -304,7 +313,7 @@ export default function WIPClient({
               </div>
               <div>
                 <p className="text-3xl font-semibold text-charcoal-900">{stats.completedCount}</p>
-                <p className="text-charcoal-500 text-sm">Completed</p>
+                <p className="text-charcoal-500 text-sm">{t('completed')}</p>
               </div>
             </div>
           </div>
@@ -316,9 +325,9 @@ export default function WIPClient({
           <div className="p-6 border-b border-cream-200 bg-cream-50/60">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
-                <h2 className="font-merriweather text-2xl text-charcoal-900">Work In Progress</h2>
+                <h2 className="font-merriweather text-2xl text-charcoal-900">{t('wipTitle')}</h2>
                 <p className="text-sm text-charcoal-500 mt-1">
-                  Track tasks, priorities, and team assignments
+                  {t('wipSubtitle')}
                 </p>
               </div>
               
@@ -328,7 +337,7 @@ export default function WIPClient({
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-charcoal-400" />
                   <input
                     type="text"
-                    placeholder="Search tasks..."
+                    placeholder={t('searchTasks')}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="pl-10 pr-4 py-2.5 border border-cream-200 rounded-xl w-full sm:w-64 focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none bg-white"
@@ -343,11 +352,11 @@ export default function WIPClient({
                     onChange={(e) => setPriorityFilter(e.target.value as any)}
                     className="border border-cream-200 rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none bg-white"
                   >
-                    <option value="all">All Priorities</option>
-                    <option value="critical">Critical</option>
-                    <option value="high">High</option>
-                    <option value="medium">Medium</option>
-                    <option value="low">Low</option>
+                    <option value="all">{t('allPriorities')}</option>
+                    <option value="critical">{t('priorityCritical')}</option>
+                    <option value="high">{t('priorityHigh')}</option>
+                    <option value="medium">{t('priorityMedium')}</option>
+                    <option value="low">{t('priorityLow')}</option>
                   </select>
                 </div>
 
@@ -357,7 +366,7 @@ export default function WIPClient({
                   onChange={(e) => setAssigneeFilter(e.target.value)}
                   className="border border-cream-200 rounded-xl px-3 py-2.5 focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none bg-white"
                 >
-                  <option value="all">All Assignees</option>
+                  <option value="all">{t('allAssignees')}</option>
                   {uniqueAssignees.map(assignee => (
                     <option key={assignee} value={assignee}>{assignee}</option>
                   ))}
@@ -369,7 +378,7 @@ export default function WIPClient({
                   className="bg-gradient-to-r from-gold-500 to-gold-400 text-white px-4 py-2.5 rounded-xl font-semibold hover:from-gold-400 hover:to-gold-300 transition-all flex items-center justify-center gap-2 shadow-gold"
                 >
                   <Plus className="w-5 h-5" />
-                  Add Task
+                  {t('addTask')}
                 </button>
               </div>
             </div>
@@ -381,11 +390,11 @@ export default function WIPClient({
               <thead className="bg-cream-50 border-b border-cream-200">
                 <tr>
                   <th className="w-12 px-4 py-4"></th>
-                  <th className="text-left px-4 py-4 text-sm font-semibold text-charcoal-700">Task</th>
-                  <th className="text-left px-4 py-4 text-sm font-semibold text-charcoal-700">Next Step</th>
-                  <th className="text-left px-4 py-4 text-sm font-semibold text-charcoal-700">Priority</th>
-                  <th className="text-left px-4 py-4 text-sm font-semibold text-charcoal-700">Assigned To</th>
-                  <th className="text-right px-6 py-4 text-sm font-semibold text-charcoal-700">Actions</th>
+                  <th className="text-left px-4 py-4 text-sm font-semibold text-charcoal-700">{t('task')}</th>
+                  <th className="text-left px-4 py-4 text-sm font-semibold text-charcoal-700">{t('nextStep')}</th>
+                  <th className="text-left px-4 py-4 text-sm font-semibold text-charcoal-700">{t('priority')}</th>
+                  <th className="text-left px-4 py-4 text-sm font-semibold text-charcoal-700">{t('assignedTo')}</th>
+                  <th className="text-right px-6 py-4 text-sm font-semibold text-charcoal-700">{t('actions')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-cream-100">
@@ -393,25 +402,25 @@ export default function WIPClient({
                   <tr>
                     <td colSpan={6} className="px-6 py-12 text-center">
                       <ClipboardList className="w-12 h-12 text-charcoal-300 mx-auto mb-4" />
-                      <p className="text-charcoal-500">No tasks found</p>
+                      <p className="text-charcoal-500">{t('noTasksFound')}</p>
                       <button 
                         onClick={openAddModal}
                         className="mt-4 text-gold-600 hover:text-gold-700 font-medium"
                       >
-                        Add your first task
+                        {t('addFirstTask')}
                       </button>
                     </td>
                   </tr>
                 ) : (
                   filteredTasks.map((task) => {
-                    const PriorityIcon = priorityConfig[task.priority].icon
+                    const PriorityIcon = priorityStyles[task.priority].icon
                     return (
                       <tr key={task.id} className="hover:bg-cream-50/50 transition-colors group">
                         <td className="px-4 py-4">
                           <button
                             onClick={() => handleComplete(task)}
                             className="p-1 rounded-full hover:bg-gold-100 transition-colors"
-                            title="Mark as complete"
+                            title={t('markComplete')}
                           >
                             <Circle className="w-5 h-5 text-charcoal-300 hover:text-gold-500" />
                           </button>
@@ -430,9 +439,9 @@ export default function WIPClient({
                           )}
                         </td>
                         <td className="px-4 py-4">
-                          <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border ${priorityConfig[task.priority].color}`}>
+                          <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border ${priorityStyles[task.priority].color}`}>
                             <PriorityIcon className="w-3 h-3" />
-                            {priorityConfig[task.priority].label}
+                            {priorityLabels[task.priority]}
                           </span>
                         </td>
                         <td className="px-4 py-4">
@@ -473,7 +482,7 @@ export default function WIPClient({
 
           {/* Pagination info */}
           <div className="p-4 border-t border-cream-200 bg-cream-50/40 text-sm text-charcoal-500">
-            Showing {filteredTasks.length} of {activeTasks.length} active tasks
+            {t('showingOf')} {filteredTasks.length} {t('ofActive')} {activeTasks.length} {t('activeTasksLabel')}
           </div>
         </div>
 
@@ -486,7 +495,7 @@ export default function WIPClient({
             >
               <div className="flex items-center gap-3">
                 <CheckCircle2 className="w-5 h-5 text-green-600" />
-                <span className="font-medium text-charcoal-700">Completed Tasks ({completedTasks.length})</span>
+                <span className="font-medium text-charcoal-700">{t('completedTasks')} ({completedTasks.length})</span>
               </div>
               {showCompleted ? (
                 <ChevronDown className="w-5 h-5 text-charcoal-500" />
@@ -505,7 +514,7 @@ export default function WIPClient({
                         <p className="text-charcoal-500 line-through">{task.title}</p>
                         {task.completed_at && (
                           <p className="text-xs text-charcoal-400 mt-0.5">
-                            Completed {new Date(task.completed_at).toLocaleDateString()}
+                            {locale === 'de' ? 'Erledigt am' : 'Completed'} {new Date(task.completed_at).toLocaleDateString(locale === 'de' ? 'de-DE' : 'en-US')}
                           </p>
                         )}
                       </div>
@@ -514,10 +523,10 @@ export default function WIPClient({
                       <button
                         onClick={() => handleReopen(task)}
                         className="p-2 text-charcoal-500 hover:text-gold-600 hover:bg-gold-50 rounded-lg transition-colors flex items-center gap-1"
-                        title="Reopen task"
+                        title={t('reopen')}
                       >
                         <RotateCcw className="w-4 h-4" />
-                        <span className="text-sm">Reopen</span>
+                        <span className="text-sm">{t('reopen')}</span>
                       </button>
                       <button
                         onClick={() => handleDelete(task.id)}
@@ -540,7 +549,7 @@ export default function WIPClient({
           <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden">
             <div className="flex items-center justify-between px-6 py-4 border-b border-cream-200">
               <h2 className="font-merriweather text-xl text-charcoal-900">
-                {editingTask ? 'Edit Task' : 'Add Task'}
+                {editingTask ? t('editTask') : t('addTask')}
               </h2>
               <button onClick={closeModal} className="p-2 hover:bg-cream-100 rounded-lg transition-colors">
                 <X className="w-5 h-5 text-charcoal-500" />
@@ -549,69 +558,69 @@ export default function WIPClient({
 
             <div className="p-6 space-y-4">
               <div>
-                <label className="block text-sm font-semibold text-charcoal-700 mb-2">Task Title *</label>
+                <label className="block text-sm font-semibold text-charcoal-700 mb-2">{t('taskTitle')} *</label>
                 <input
                   type="text"
                   value={formData.title}
                   onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
                   className="w-full px-4 py-3 border border-cream-200 rounded-xl focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
-                  placeholder="What needs to be done?"
+                  placeholder={t('whatNeedsToBeDone')}
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-charcoal-700 mb-2">Next Step</label>
+                <label className="block text-sm font-semibold text-charcoal-700 mb-2">{t('nextStep')}</label>
                 <input
                   type="text"
                   value={formData.next_step}
                   onChange={(e) => setFormData(prev => ({ ...prev, next_step: e.target.value }))}
                   className="w-full px-4 py-3 border border-cream-200 rounded-xl focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
-                  placeholder="What's the immediate next action?"
+                  placeholder={t('immediateNextAction')}
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-semibold text-charcoal-700 mb-2">Priority</label>
+                  <label className="block text-sm font-semibold text-charcoal-700 mb-2">{t('priority')}</label>
                   <select
                     value={formData.priority}
                     onChange={(e) => setFormData(prev => ({ ...prev, priority: e.target.value as any }))}
                     className="w-full px-4 py-3 border border-cream-200 rounded-xl focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
                   >
-                    <option value="critical">🔴 Critical</option>
-                    <option value="high">🟠 High</option>
-                    <option value="medium">🟡 Medium</option>
-                    <option value="low">🟢 Low</option>
+                    <option value="critical">🔴 {t('priorityCritical')}</option>
+                    <option value="high">🟠 {t('priorityHigh')}</option>
+                    <option value="medium">🟡 {t('priorityMedium')}</option>
+                    <option value="low">🟢 {t('priorityLow')}</option>
                   </select>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-charcoal-700 mb-2">Assigned To</label>
+                  <label className="block text-sm font-semibold text-charcoal-700 mb-2">{t('assignedTo')}</label>
                   <select
                     value={formData.assigned_to}
                     onChange={(e) => setFormData(prev => ({ ...prev, assigned_to: e.target.value }))}
                     className="w-full px-4 py-3 border border-cream-200 rounded-xl focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
                   >
-                    <option value="">Unassigned</option>
+                    <option value="">{t('unassigned')}</option>
                     {teamMembers.map(member => (
                       <option key={member} value={member}>{member}</option>
                     ))}
                     <option value="Ben, Gundula">Ben, Gundula</option>
                     <option value="Gundula, Andrea">Gundula, Andrea</option>
                     <option value="Andrea, Ben">Andrea, Ben</option>
-                    <option value="Ben, Gundula, Andrea">Everyone</option>
+                    <option value="Ben, Gundula, Andrea">{t('everyone')}</option>
                   </select>
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-charcoal-700 mb-2">Notes</label>
+                <label className="block text-sm font-semibold text-charcoal-700 mb-2">{t('notes')}</label>
                 <textarea
                   value={formData.notes}
                   onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
                   rows={3}
                   className="w-full px-4 py-3 border border-cream-200 rounded-xl focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none resize-none"
-                  placeholder="Any additional context..."
+                  placeholder={t('anyAdditionalContext')}
                 />
               </div>
             </div>
@@ -621,7 +630,7 @@ export default function WIPClient({
                 onClick={closeModal}
                 className="px-4 py-2.5 border border-cream-200 rounded-xl font-semibold text-charcoal-700 hover:bg-cream-100 transition-colors"
               >
-                Cancel
+                {t('cancel')}
               </button>
               <button
                 onClick={handleSave}
@@ -629,7 +638,7 @@ export default function WIPClient({
                 className="bg-gold-500 hover:bg-gold-600 text-white px-4 py-2.5 rounded-xl font-semibold transition-colors disabled:opacity-50 flex items-center gap-2"
               >
                 <Save className="w-4 h-4" />
-                {saving ? 'Saving...' : editingTask ? 'Update Task' : 'Add Task'}
+                {saving ? (locale === 'de' ? 'Speichern...' : 'Saving...') : editingTask ? t('updateTask') : t('addTask')}
               </button>
             </div>
           </div>
