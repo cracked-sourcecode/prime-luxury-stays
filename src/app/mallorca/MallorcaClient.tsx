@@ -21,10 +21,8 @@ import {
   Shield,
   Clock,
   Heart,
-  Anchor,
   Ship,
-  Ruler,
-  Users
+  Ruler
 } from 'lucide-react'
 import PropertyMap from '@/components/PropertyMap'
 import OtherDestinations from '@/components/OtherDestinations'

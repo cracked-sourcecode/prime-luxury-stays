@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion'
 import { Anchor, Users, Ruler, Ship, ChevronRight, Sparkles, ArrowRight, Waves } from 'lucide-react'
 import Link from 'next/link'
-import { useLocale } from '@/lib/locale'
+import { useLocale } from '@/i18n/LocaleProvider'
 
 interface Yacht {
   id: number
