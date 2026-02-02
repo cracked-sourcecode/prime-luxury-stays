@@ -30,6 +30,22 @@ async function getPropertyImages(propertyId: number) {
   return images
 }
 
+// Fetch yachts for the region (currently all yachts are in Mallorca)
+async function getYachtsForRegion() {
+  noStore();
+  const yachts = await sql`
+    SELECT 
+      id, name, slug, manufacturer, model, yacht_type,
+      year_built, length_meters, max_guests, guest_cabins,
+      short_description, featured_image, is_featured, region
+    FROM yachts 
+    WHERE is_active = true
+    ORDER BY is_featured DESC, name ASC
+    LIMIT 3
+  `
+  return yachts
+}
+
 export async function generateMetadata({ params }: PropertyPageProps): Promise<Metadata> {
   const { slug } = await params
   const property = await getPropertyBySlug(slug)
@@ -116,6 +132,9 @@ export default async function PropertyPage({ params }: PropertyPageProps) {
 
   // Fetch gallery images from database
   const galleryImages = await getPropertyImages(property.id)
+  
+  // Fetch yachts for the region
+  const yachts = await getYachtsForRegion()
 
   // Map and filter out any with missing URLs
   const mappedImages = galleryImages
@@ -148,6 +167,7 @@ export default async function PropertyPage({ params }: PropertyPageProps) {
         <PropertyDetailClient 
           property={property} 
           galleryImages={mappedImages}
+          yachts={yachts as any[]}
         />
       </main>
       <Footer />

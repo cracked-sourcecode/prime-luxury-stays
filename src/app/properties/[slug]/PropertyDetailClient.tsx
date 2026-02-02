@@ -113,9 +113,27 @@ interface GalleryImage {
   is_featured: boolean;
 }
 
+interface Yacht {
+  id: number;
+  name: string;
+  slug: string;
+  manufacturer: string;
+  model: string;
+  yacht_type: string;
+  year_built: number;
+  length_meters: number;
+  max_guests: number;
+  guest_cabins: number;
+  short_description: string;
+  featured_image: string;
+  is_featured: boolean;
+  region: string;
+}
+
 interface PropertyDetailClientProps {
   property: Property;
   galleryImages: GalleryImage[];
+  yachts?: Yacht[];
 }
 
 // Helper to get localized property field
@@ -127,7 +145,7 @@ function getLocalizedField(property: Property, field: 'name' | 'short_descriptio
   return (property[field] as string) || ''
 }
 
-export default function PropertyDetailClient({ property, galleryImages: dbImages }: PropertyDetailClientProps) {
+export default function PropertyDetailClient({ property, galleryImages: dbImages, yachts = [] }: PropertyDetailClientProps) {
   const { t, locale, setLocale } = useLocale()
   const [showShareModal, setShowShareModal] = useState(false)
   const [showLangMenu, setShowLangMenu] = useState(false)
@@ -724,6 +742,109 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
                 ))}
               </div>
             </motion.section>
+
+            {/* ===== YACHT CHARTER ADD-ON ===== */}
+            {yachts.length > 0 && (
+              <motion.section
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="bg-gradient-to-br from-charcoal-900 via-charcoal-800 to-charcoal-900 rounded-3xl p-8 md:p-12 relative overflow-hidden"
+              >
+                <div className="absolute inset-0 opacity-20">
+                  <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-gold-500 rounded-full blur-[150px]" />
+                  <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-blue-500 rounded-full blur-[120px]" />
+                </div>
+                
+                <div className="relative">
+                  <div className="flex items-center gap-3 mb-6">
+                    <div className="w-12 h-12 rounded-2xl bg-gold-500/20 flex items-center justify-center">
+                      <Anchor className="w-6 h-6 text-gold-400" />
+                    </div>
+                    <div>
+                      <span className="text-gold-400 font-semibold tracking-wide uppercase text-sm block">
+                        {locale === 'de' ? 'Villa + Yacht Erlebnis' : 'Villa + Yacht Experience'}
+                      </span>
+                      <h2 className="font-merriweather text-2xl text-white">
+                        {locale === 'de' ? 'Ergänzen Sie Ihren Aufenthalt' : 'Complete Your Stay'}
+                      </h2>
+                    </div>
+                  </div>
+                  
+                  <p className="text-white/70 text-lg mb-8 max-w-2xl">
+                    {locale === 'de' 
+                      ? 'Kombinieren Sie Ihren Villenaufenthalt mit einem exklusiven Yachtcharter. Erkunden Sie die Küste Mallorcas vom Wasser aus.'
+                      : 'Combine your villa stay with an exclusive yacht charter. Explore the Mallorcan coast from the water.'}
+                  </p>
+                  
+                  <div className="grid md:grid-cols-3 gap-4 mb-8">
+                    {yachts.map((yacht) => (
+                      <Link
+                        key={yacht.id}
+                        href={`/yachts/${yacht.slug}`}
+                        className="group block"
+                      >
+                        <div className="relative aspect-[4/3] rounded-xl overflow-hidden mb-3">
+                          <img
+                            src={yacht.featured_image || 'https://images.unsplash.com/photo-1540946485063-a40da27545f8?w=800'}
+                            alt={yacht.name}
+                            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                          {yacht.is_featured && (
+                            <div className="absolute top-2 left-2 bg-gold-500 text-white px-2 py-0.5 rounded-full text-xs font-medium flex items-center gap-1">
+                              <Sparkles className="w-3 h-3" />
+                              {locale === 'de' ? 'Top' : 'Featured'}
+                            </div>
+                          )}
+                          <div className="absolute bottom-2 left-2 right-2">
+                            <h4 className="font-semibold text-white text-sm group-hover:text-gold-300 transition-colors">
+                              {yacht.name}
+                            </h4>
+                            <p className="text-white/70 text-xs">{yacht.manufacturer} {yacht.model}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-3 text-white/60 text-xs">
+                          <span className="flex items-center gap-1">
+                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                            </svg>
+                            {yacht.length_meters}m
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <Users className="w-3 h-3" />
+                            {yacht.max_guests}
+                          </span>
+                          {yacht.guest_cabins && (
+                            <span className="flex items-center gap-1">
+                              <Home className="w-3 h-3" />
+                              {yacht.guest_cabins} {locale === 'de' ? 'Kabinen' : 'cabins'}
+                            </span>
+                          )}
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                  
+                  <div className="flex flex-col sm:flex-row gap-4">
+                    <Link
+                      href="/yachts"
+                      className="inline-flex items-center justify-center gap-2 bg-gold-500 hover:bg-gold-600 text-white px-6 py-3 rounded-xl font-medium transition-all"
+                    >
+                      <Anchor className="w-5 h-5" />
+                      {locale === 'de' ? 'Alle Yachten ansehen' : 'View All Yachts'}
+                    </Link>
+                    <Link
+                      href={`/inquire?property=${property.slug}&addYacht=true`}
+                      className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white px-6 py-3 rounded-xl font-medium transition-all border border-white/20"
+                    >
+                      {locale === 'de' ? 'Villa + Yacht anfragen' : 'Inquire Villa + Yacht'}
+                      <ChevronRight className="w-4 h-4" />
+                    </Link>
+                  </div>
+                </div>
+              </motion.section>
+            )}
 
           </div>
 
