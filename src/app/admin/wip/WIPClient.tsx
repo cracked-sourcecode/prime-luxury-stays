@@ -104,6 +104,9 @@ export default function WIPClient({
   const [editingTask, setEditingTask] = useState<WIPTask | null>(null)
   const [saving, setSaving] = useState(false)
   const [showCompleted, setShowCompleted] = useState(false)
+  
+  // Undo toast state
+  const [undoToast, setUndoToast] = useState<{ task: WIPTask; timeoutId: NodeJS.Timeout } | null>(null)
 
   // Form state
   const [formData, setFormData] = useState({
@@ -199,24 +202,72 @@ export default function WIPClient({
   }
 
   const handleComplete = async (task: WIPTask) => {
+    // Clear any existing undo toast
+    if (undoToast) {
+      clearTimeout(undoToast.timeoutId)
+      // Complete the previous task for real
+      await finalizeComplete(undoToast.task)
+    }
+    
+    // Optimistically update UI
+    setActiveTasks(prev => prev.filter(t => t.id !== task.id))
+    setStats(prev => ({
+      ...prev,
+      activeCount: prev.activeCount - 1,
+      highPriorityCount: task.priority === 'high' ? prev.highPriorityCount - 1 : prev.highPriorityCount,
+      criticalCount: task.priority === 'critical' ? prev.criticalCount - 1 : prev.criticalCount
+    }))
+    
+    // Set up undo toast with 5 second timeout
+    const timeoutId = setTimeout(async () => {
+      await finalizeComplete(task)
+      setUndoToast(null)
+    }, 5000)
+    
+    setUndoToast({ task, timeoutId })
+  }
+  
+  const finalizeComplete = async (task: WIPTask) => {
     try {
       const res = await fetch(`/api/admin/wip/${task.id}/complete`, { method: 'POST' })
       const data = await res.json()
       
       if (data.success) {
-        setActiveTasks(prev => prev.filter(t => t.id !== task.id))
         setCompletedTasks(prev => [data.task, ...prev])
         setStats(prev => ({
           ...prev,
-          activeCount: prev.activeCount - 1,
-          completedCount: prev.completedCount + 1,
-          highPriorityCount: task.priority === 'high' ? prev.highPriorityCount - 1 : prev.highPriorityCount,
-          criticalCount: task.priority === 'critical' ? prev.criticalCount - 1 : prev.criticalCount
+          completedCount: prev.completedCount + 1
         }))
       }
     } catch (error) {
       console.error('Error completing task:', error)
+      // Restore task on error
+      setActiveTasks(prev => [task, ...prev])
+      setStats(prev => ({
+        ...prev,
+        activeCount: prev.activeCount + 1,
+        highPriorityCount: task.priority === 'high' ? prev.highPriorityCount + 1 : prev.highPriorityCount,
+        criticalCount: task.priority === 'critical' ? prev.criticalCount + 1 : prev.criticalCount
+      }))
     }
+  }
+  
+  const handleUndo = () => {
+    if (!undoToast) return
+    
+    // Clear the timeout
+    clearTimeout(undoToast.timeoutId)
+    
+    // Restore the task
+    setActiveTasks(prev => [undoToast.task, ...prev])
+    setStats(prev => ({
+      ...prev,
+      activeCount: prev.activeCount + 1,
+      highPriorityCount: undoToast.task.priority === 'high' ? prev.highPriorityCount + 1 : prev.highPriorityCount,
+      criticalCount: undoToast.task.priority === 'critical' ? prev.criticalCount + 1 : prev.criticalCount
+    }))
+    
+    setUndoToast(null)
   }
 
   const handleReopen = async (task: WIPTask) => {
@@ -542,6 +593,54 @@ export default function WIPClient({
           </div>
         )}
       </main>
+
+      {/* Undo Toast */}
+      {undoToast && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 animate-in slide-in-from-bottom-4 fade-in duration-300">
+          <div className="bg-charcoal-900 text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-4">
+            <CheckCircle2 className="w-5 h-5 text-green-400 flex-shrink-0" />
+            <div className="flex-1">
+              <p className="font-medium">
+                {locale === 'de' ? 'Aufgabe erledigt' : 'Task completed'}
+              </p>
+              <p className="text-sm text-charcoal-300 truncate max-w-xs">
+                {undoToast.task.title}
+              </p>
+            </div>
+            <button
+              onClick={handleUndo}
+              className="px-4 py-2 bg-gold-500 hover:bg-gold-400 text-white font-semibold rounded-xl transition-colors flex-shrink-0"
+            >
+              {locale === 'de' ? 'Rückgängig' : 'Undo'}
+            </button>
+            <button
+              onClick={() => {
+                clearTimeout(undoToast.timeoutId)
+                finalizeComplete(undoToast.task)
+                setUndoToast(null)
+              }}
+              className="p-1 hover:bg-charcoal-700 rounded-lg transition-colors"
+            >
+              <X className="w-4 h-4 text-charcoal-400" />
+            </button>
+          </div>
+          {/* Progress bar */}
+          <div className="mt-2 h-1 bg-charcoal-700 rounded-full overflow-hidden">
+            <div 
+              className="h-full bg-gold-500 rounded-full animate-shrink-width"
+              style={{ 
+                animation: 'shrink-width 5s linear forwards'
+              }}
+            />
+          </div>
+          <style jsx>{`
+            @keyframes shrink-width {
+              from { width: 100%; }
+              to { width: 0%; }
+            }
+          `}</style>
+        </div>
+      )}
 
       {/* Add/Edit Modal */}
       {showAddModal && (
