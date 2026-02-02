@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
 import { validateSession } from '@/lib/admin'
 import { sql } from '@/lib/db'
+import { sendWipTaskNotification } from '@/lib/email'
 
 // Auth check
 async function checkAuth() {
@@ -94,7 +95,22 @@ export async function POST(request: NextRequest) {
       RETURNING *
     `
 
-    return NextResponse.json({ success: true, task: result[0] })
+    const task = result[0]
+
+    // Send email notification if task is assigned to someone
+    if (assigned_to) {
+      sendWipTaskNotification({
+        taskId: task.id,
+        title: task.title,
+        nextStep: task.next_step,
+        priority: task.priority,
+        assignedTo: task.assigned_to,
+        notes: task.notes,
+        createdBy: user.name || user.email
+      }).catch(err => console.error('Failed to send WIP notification:', err))
+    }
+
+    return NextResponse.json({ success: true, task })
   } catch (error) {
     console.error('Error creating WIP task:', error)
     return NextResponse.json({ error: 'Failed to create WIP task' }, { status: 500 })

@@ -5,6 +5,13 @@ const resend = new Resend(process.env.RESEND_API_KEY)
 const FROM_EMAIL = 'Prime Luxury Stays <info@primeluxurystays.com>'
 const ADMIN_EMAIL = 'admin@primeluxurystays.com'
 
+// Team member email mapping for WIP notifications
+const TEAM_EMAILS: Record<string, string> = {
+  'gundula': 'gh@primeluxurystays.com',
+  'andrea': 'aj@primeluxurystays.com',
+  'ben': 'ben@rubiconprgroup.com',
+}
+
 interface InquiryEmailData {
   fullName: string
   email: string
@@ -883,6 +890,210 @@ export async function sendInquiryConfirmation(data: InquiryEmailData) {
     return { success: true, id: emailData?.id }
   } catch (err) {
     console.error('Failed to send confirmation email:', err)
+    return { success: false, error: String(err) }
+  }
+}
+
+// =============================================
+// WIP Task Notification Emails
+// =============================================
+
+interface WipTaskEmailData {
+  taskId: number
+  title: string
+  nextStep: string | null
+  priority: 'critical' | 'high' | 'medium' | 'low'
+  assignedTo: string
+  notes: string | null
+  createdBy?: string
+}
+
+const priorityLabels: Record<string, { label: string; emoji: string; color: string }> = {
+  critical: { label: 'Critical', emoji: '🔴', color: '#dc2626' },
+  high: { label: 'High', emoji: '🟠', color: '#ea580c' },
+  medium: { label: 'Medium', emoji: '🟡', color: '#d97706' },
+  low: { label: 'Low', emoji: '🟢', color: '#16a34a' },
+}
+
+function getWipTaskEmailTemplate(data: WipTaskEmailData): string {
+  const priority = priorityLabels[data.priority] || priorityLabels.medium
+  const adminUrl = 'https://primeluxurystays.com/admin/wip'
+
+  return `<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>New Task Assigned</title>
+${responsiveStyles}
+</head>
+<body style="margin:0; padding:0; background-color:${CREAM}; font-family:Georgia, 'Times New Roman', serif; -webkit-font-smoothing:antialiased;">
+
+<table class="wrapper" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:${CREAM};">
+<tr>
+<td align="center" style="padding:24px 16px;">
+
+<table class="container" cellpadding="0" cellspacing="0" border="0" style="width:600px; max-width:600px; background-color:#ffffff; border:1px solid #e0e0e0; border-radius:8px;">
+
+<!-- Header -->
+<tr>
+<td class="header" align="center" style="padding:32px 40px 24px;">
+<img class="logo" src="${LOGO_URL}" alt="Prime Luxury Stays" width="200" style="display:block; border:0; max-width:100%;">
+<div style="margin-top:20px; border-top:2px solid ${GOLD}; width:60px;"></div>
+</td>
+</tr>
+
+<!-- Task Badge -->
+<tr>
+<td class="content" align="center" style="padding:0 40px 16px;">
+<span style="display:inline-block; background-color:${GOLD}; color:#ffffff; padding:8px 20px; border-radius:20px; font-size:13px; font-weight:bold; text-transform:uppercase; letter-spacing:1px;">
+📋 New Task Assigned
+</span>
+</td>
+</tr>
+
+<!-- Heading -->
+<tr>
+<td class="content" style="padding:0 40px;">
+<h1 class="heading" style="margin:0 0 8px; font-size:28px; font-weight:normal; color:${CHARCOAL}; line-height:1.3;">
+${data.title}
+</h1>
+<p style="margin:0 0 24px; font-size:14px; color:#666;">
+Assigned to: <strong>${data.assignedTo}</strong>
+</p>
+</td>
+</tr>
+
+<!-- Priority & Details Card -->
+<tr>
+<td class="content" style="padding:0 40px 24px;">
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:${CREAM}; border-radius:8px; border-left:4px solid ${priority.color};">
+<tr>
+<td style="padding:20px;">
+<table width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td>
+<p style="margin:0 0 4px; font-size:12px; color:#888; text-transform:uppercase; letter-spacing:1px;">Priority</p>
+<p style="margin:0 0 16px; font-size:18px; color:${priority.color}; font-weight:bold;">${priority.emoji} ${priority.label}</p>
+</td>
+</tr>
+${data.nextStep ? `
+<tr>
+<td>
+<p style="margin:0 0 4px; font-size:12px; color:#888; text-transform:uppercase; letter-spacing:1px;">Next Step</p>
+<p style="margin:0; font-size:16px; color:${CHARCOAL}; line-height:1.5;">${data.nextStep}</p>
+</td>
+</tr>
+` : ''}
+</table>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+
+${data.notes ? `
+<!-- Notes -->
+<tr>
+<td class="content" style="padding:0 40px 24px;">
+<p style="margin:0 0 8px; font-size:12px; color:#888; text-transform:uppercase; letter-spacing:1px;">Notes</p>
+<p style="margin:0; font-size:15px; color:#666; line-height:1.6; white-space:pre-wrap;">${data.notes}</p>
+</td>
+</tr>
+` : ''}
+
+<!-- CTA Button -->
+<tr>
+<td class="content" style="padding:0 40px 32px;">
+<table cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td style="background-color:${GOLD}; border-radius:6px;">
+<a class="button" href="${adminUrl}" style="display:inline-block; padding:16px 32px; font-size:16px; color:#ffffff; text-decoration:none; font-family:Georgia, serif;">
+View WIP List →
+</a>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+
+<!-- Footer -->
+<tr>
+<td class="footer" style="padding:24px 40px; border-top:1px solid #e0e0e0;">
+<p style="margin:0; font-size:13px; color:#888;">
+Prime Luxury Stays · Internal Task Management
+</p>
+</td>
+</tr>
+
+</table>
+
+</td>
+</tr>
+</table>
+
+</body>
+</html>`
+}
+
+/**
+ * Get email addresses for assigned team members
+ * Handles single names and comma-separated lists like "Ben, Gundula"
+ */
+function getTeamEmails(assignedTo: string): string[] {
+  const names = assignedTo.split(',').map(n => n.trim().toLowerCase())
+  const emails: string[] = []
+  
+  for (const name of names) {
+    const email = TEAM_EMAILS[name]
+    if (email) {
+      emails.push(email)
+    }
+  }
+  
+  return emails
+}
+
+/**
+ * Send email notification when a WIP task is assigned to someone
+ */
+export async function sendWipTaskNotification(data: WipTaskEmailData) {
+  if (!process.env.RESEND_API_KEY) {
+    console.log('RESEND_API_KEY not set, skipping WIP task notification')
+    return { success: false, error: 'Email not configured' }
+  }
+
+  if (!data.assignedTo) {
+    console.log('No assignee for WIP task, skipping notification')
+    return { success: false, error: 'No assignee' }
+  }
+
+  const recipientEmails = getTeamEmails(data.assignedTo)
+  
+  if (recipientEmails.length === 0) {
+    console.log(`No email found for assignee: ${data.assignedTo}`)
+    return { success: false, error: 'No email for assignee' }
+  }
+
+  const priority = priorityLabels[data.priority] || priorityLabels.medium
+
+  try {
+    const { data: emailData, error } = await resend.emails.send({
+      from: FROM_EMAIL,
+      to: recipientEmails,
+      subject: `${priority.emoji} New Task: ${data.title}`,
+      html: getWipTaskEmailTemplate(data),
+    })
+
+    if (error) {
+      console.error('Resend WIP notification error:', error)
+      return { success: false, error: error.message }
+    }
+
+    console.log(`WIP task notification sent to ${recipientEmails.join(', ')}:`, emailData?.id)
+    return { success: true, id: emailData?.id, recipients: recipientEmails }
+  } catch (err) {
+    console.error('Failed to send WIP task notification:', err)
     return { success: false, error: String(err) }
   }
 }

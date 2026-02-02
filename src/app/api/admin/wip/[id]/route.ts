@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
 import { validateSession } from '@/lib/admin'
 import { sql } from '@/lib/db'
+import { sendWipTaskNotification } from '@/lib/email'
 
 // Auth check
 async function checkAuth() {
@@ -53,6 +54,12 @@ export async function PUT(
     const body = await request.json()
     const { title, next_step, priority, assigned_to, category, notes } = body
 
+    // Get the current task to check if assignee changed
+    const currentTask = await sql`
+      SELECT assigned_to FROM wip_tasks WHERE id = ${parseInt(id)}
+    `
+    const previousAssignee = currentTask[0]?.assigned_to
+
     const result = await sql`
       UPDATE wip_tasks 
       SET 
@@ -70,8 +77,23 @@ export async function PUT(
     if (result.length === 0) {
       return NextResponse.json({ error: 'Task not found' }, { status: 404 })
     }
+
+    const task = result[0]
     
-    return NextResponse.json({ success: true, task: result[0] })
+    // Send email notification if assignee changed to someone new
+    if (assigned_to && assigned_to !== previousAssignee) {
+      sendWipTaskNotification({
+        taskId: task.id,
+        title: task.title,
+        nextStep: task.next_step,
+        priority: task.priority,
+        assignedTo: task.assigned_to,
+        notes: task.notes,
+        createdBy: user.name || user.email
+      }).catch(err => console.error('Failed to send WIP notification:', err))
+    }
+    
+    return NextResponse.json({ success: true, task })
   } catch (error) {
     console.error('Error updating WIP task:', error)
     return NextResponse.json({ error: 'Failed to update WIP task' }, { status: 500 })
