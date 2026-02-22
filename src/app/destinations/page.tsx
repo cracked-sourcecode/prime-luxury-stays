@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     type: 'website',
     images: [
       {
-        url: 'https://storage.googleapis.com/primeluxurystays/Mallorca%20Global%20Hero%20Section%20Image',
+        url: 'https://storage.googleapis.com/primeluxurystays-rpr/Mallorca%20Global%20Hero%20Section%20Image',
         width: 1200,
         height: 630,
         alt: 'Prime Luxury Stays Destinations',
@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Luxury Vacation Destinations | Prime Luxury Stays',
     description: 'Explore our exclusive collection of luxury properties across the world\'s most desirable destinations.',
-    images: ['https://storage.googleapis.com/primeluxurystays/Mallorca%20Global%20Hero%20Section%20Image'],
+    images: ['https://storage.googleapis.com/primeluxurystays-rpr/Mallorca%20Global%20Hero%20Section%20Image'],
   },
   alternates: {
     canonical: `${SITE_URL}/destinations`,
@@ -56,14 +56,14 @@ const locationData: Record<string, {
     region: 'Balearic Islands',
     country: 'Spain',
     description: 'The jewel of the Mediterranean. Discover stunning villas, historic fincas, and exclusive beachfront properties on this beautiful island.',
-    image: 'https://storage.googleapis.com/primeluxurystays/Mallorca%20Global%20Hero%20Section%20Image',
+    image: 'https://storage.googleapis.com/primeluxurystays-rpr/Mallorca%20Global%20Hero%20Section%20Image',
   },
   'ibiza': {
     name: 'Ibiza',
     region: 'Balearic Islands',
     country: 'Spain',
     description: 'Where luxury meets vibrant energy. Experience world-class properties on the island of endless summer.',
-    image: 'https://storage.googleapis.com/primeluxurystays/Ibiza%20Photo.png',
+    image: 'https://storage.googleapis.com/primeluxurystays-rpr/Ibiza%20Photo.png',
     comingSoon: true,
   },
   'south-of-france': {

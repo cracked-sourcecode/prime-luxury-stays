@@ -471,7 +471,7 @@ const RECIPIENTS = [
 const WEBSITE_URL = 'https://www.primeluxurystays.com/?lang=de';
 const FOUR_ELEMENTS_URL = 'https://www.primeluxurystays.com/properties/4-elements?lang=de';
 const VILLA_DEL_MAR_URL = 'https://www.primeluxurystays.com/properties/villa-del-mar?lang=de';
-const LOGO_URL = 'https://storage.googleapis.com/primeluxurystays/Company%20Logo';
+const LOGO_URL = 'https://storage.googleapis.com/primeluxurystays-rpr/Company%20Logo';
 
 // Email content
 const SUBJECT = 'Private Villen + Yachten | Mallorca & Ibiza Sommer 2026';

@@ -15,19 +15,19 @@ interface DestinationsProps {
 const regionZones = [
   {
     id: 'west-southwest',
-    image: 'https://storage.googleapis.com/primeluxurystays/villa-del-mar/images/1767466932071-Kopie_von_2c3d6789-1a64-492e-895a-1d13fcbd9aea_result_22.48.41.webp',
+    image: 'https://storage.googleapis.com/primeluxurystays-rpr/villa-del-mar/images/1767466932071-Kopie_von_2c3d6789-1a64-492e-895a-1d13fcbd9aea_result_22.48.41.webp',
   },
   {
-    id: 'port-andratx',
-    image: 'https://storage.googleapis.com/primeluxurystays/sunset-dreams/images/1767546840732-PROTEA32_result_22.48.12.webp',
-  },
-  {
-    id: 'north-northwest',
-    image: 'https://storage.googleapis.com/primeluxurystays/la-salve/images/1766937633626-ls17-602-marcgilsdorf_result_12.40.11.webp',
+    id: 'north-northeast',
+    image: 'https://storage.googleapis.com/primeluxurystays-rpr/la-salve/images/1766937633626-ls17-602-marcgilsdorf_result_12.40.11.webp',
   },
   {
     id: 'east-southeast',
-    image: 'https://storage.googleapis.com/primeluxurystays/eden-roc/images/1766935948675-MR20230606066_result_12.38.51.webp',
+    image: 'https://storage.googleapis.com/primeluxurystays-rpr/eden-roc/images/1766935948675-MR20230606066_result_12.38.51.webp',
+  },
+  {
+    id: 'palma',
+    image: 'https://storage.googleapis.com/primeluxurystays-rpr/sa-fita/images/1768759511261-1.jpeg',
   },
 ]
 
@@ -42,28 +42,32 @@ const getMallorcaRegions = (t: (key: string) => string, propertyCounts: Record<s
     slug: 'west-southwest',
   },
   {
-    name: t('destinations.mallorca.regions.portAndratx.name'),
-    subtitle: t('destinations.mallorca.regions.portAndratx.subtitle'),
+    name: t('destinations.mallorca.regions.northNorthwest.name') !== 'destinations.mallorca.regions.northNorthwest.name'
+      ? t('destinations.mallorca.regions.northNorthwest.name').replace('Northwest', 'Northeast').replace('Nordwest', 'Nordost')
+      : 'North / Northeast',
+    subtitle: 'Pollensa, Alcudia, Sa Pobla',
     image: regionZones[1].image,
-    description: t('destinations.mallorca.regions.portAndratx.description'),
-    properties: propertyCounts['port-andratx'] || 0,
-    slug: 'port-andratx',
-  },
-  {
-    name: t('destinations.mallorca.regions.northNorthwest.name'),
-    subtitle: t('destinations.mallorca.regions.northNorthwest.subtitle'),
-    image: regionZones[2].image,
-    description: t('destinations.mallorca.regions.northNorthwest.description'),
-    properties: propertyCounts['north-northwest'] || 0,
-    slug: 'north-northwest',
+    description: t('destinations.mallorca.regions.northNorthwest.description') !== 'destinations.mallorca.regions.northNorthwest.description'
+      ? t('destinations.mallorca.regions.northNorthwest.description')
+      : 'The stunning north and northeast of Mallorca with charming old towns, pristine beaches, and mountain backdrops.',
+    properties: propertyCounts['north-northeast'] || 0,
+    slug: 'north-northeast',
   },
   {
     name: t('destinations.mallorca.regions.eastSoutheast.name'),
     subtitle: t('destinations.mallorca.regions.eastSoutheast.subtitle'),
-    image: regionZones[3].image,
+    image: regionZones[2].image,
     description: t('destinations.mallorca.regions.eastSoutheast.description'),
     properties: propertyCounts['east-southeast'] || 0,
     slug: 'east-southeast',
+  },
+  {
+    name: 'Palma & Region',
+    subtitle: 'Capital, Alaró',
+    image: regionZones[3].image,
+    description: 'The vibrant capital of Mallorca with its iconic cathedral, charming old town, and world-class dining.',
+    properties: propertyCounts['palma'] || 0,
+    slug: 'palma',
   },
 ]
 
@@ -72,14 +76,14 @@ const getIbizaHighlights = (t: (key: string) => string) => [
   {
     name: 'Es Cubells',
     subtitle: t('destinations.ibiza.highlights.esCubells.subtitle'),
-    image: 'https://storage.googleapis.com/primeluxurystays/Ibiza%20Photo.png',
+    image: 'https://storage.googleapis.com/primeluxurystays-rpr/Ibiza%20Photo.png',
     description: t('destinations.ibiza.highlights.esCubells.description'),
     isArea: true,
   },
   {
     name: 'Villa Dos Torres',
     subtitle: t('destinations.ibiza.highlights.villaDostorres.subtitle'),
-    image: 'https://storage.googleapis.com/primeluxurystays/villa-dos-torres/images/1766504261465-Outdoor1.jpg',
+    image: 'https://storage.googleapis.com/primeluxurystays-rpr/villa-dos-torres/images/1766504261465-Outdoor1.jpg',
     description: t('destinations.ibiza.highlights.villaDostorres.description'),
     isArea: false,
     slug: 'villa-dos-torres',
@@ -148,7 +152,7 @@ export default function Destinations({ properties = [] }: DestinationsProps) {
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.6, delay: index * 0.1 }}
             >
-              <Link href="/mallorca" className="group block">
+              <Link href={`/mallorca?zone=${region.slug}`} className="group block">
                 {/* Image Container */}
                 <div className="relative aspect-[4/5] rounded-2xl overflow-hidden mb-4 shadow-lg">
                   <img

@@ -13,14 +13,14 @@ const destinations = [
   {
     id: 'mallorca',
     name: 'Mallorca',
-    image: 'https://storage.googleapis.com/primeluxurystays/Mallorca%20page%20Hero%20Section.png',
+    image: 'https://storage.googleapis.com/primeluxurystays-rpr/Mallorca%20page%20Hero%20Section.png',
     href: '/mallorca',
     comingSoon: false,
   },
   {
     id: 'ibiza',
     name: 'Ibiza',
-    image: 'https://storage.googleapis.com/primeluxurystays/Ibiza%20Photo.png',
+    image: 'https://storage.googleapis.com/primeluxurystays-rpr/Ibiza%20Photo.png',
     href: '/ibiza',
     comingSoon: false,
   },

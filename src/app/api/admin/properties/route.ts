@@ -43,7 +43,9 @@ export async function POST(request: NextRequest) {
         has_pool, has_sea_view, has_ac,
         has_heating, has_wifi, is_beachfront, is_active, is_featured, min_stay_nights,
         distance_beach, distance_restaurants, distance_old_town, distance_airport,
-        name_de, short_description_de, description_de, house_type_de
+        name_de, short_description_de, description_de, house_type_de,
+        cleaning_fee, deposit_amount, pool_heating_fee, notes, notes_de,
+        key_features, key_features_de
       ) VALUES (
         ${data.name}, ${data.slug}, ${data.house_type || 'Villa'}, ${data.license_number || null}, ${data.registry_number || null},
         ${data.address || null}, ${data.city || null}, ${data.region || 'Mallorca'}, ${data.country || 'Spain'},
@@ -56,7 +58,10 @@ export async function POST(request: NextRequest) {
         ${data.has_heating || false}, ${data.has_wifi || false}, ${data.is_beachfront || false},
         ${data.is_active ?? true}, ${data.is_featured || false}, ${data.min_stay_nights || 7},
         ${data.distance_beach || null}, ${data.distance_restaurants || null}, ${data.distance_old_town || null}, ${data.distance_airport || null},
-        ${data.name_de || null}, ${data.short_description_de || null}, ${data.description_de || null}, ${data.house_type_de || null}
+        ${data.name_de || null}, ${data.short_description_de || null}, ${data.description_de || null}, ${data.house_type_de || null},
+        ${data.cleaning_fee || null}, ${data.deposit_amount || null}, ${data.pool_heating_fee || null},
+        ${data.notes || null}, ${data.notes_de || null},
+        ${data.key_features || null}, ${data.key_features_de || null}
       )
       RETURNING id
     `;

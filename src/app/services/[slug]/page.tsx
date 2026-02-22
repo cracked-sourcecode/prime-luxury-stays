@@ -1,5 +1,5 @@
 import { Metadata } from 'next'
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 import Navigation from '@/components/Navigation'
 import Footer from '@/components/Footer'
 import ServicePageClient from './ServicePageClient'
@@ -16,6 +16,7 @@ const servicesData: Record<string, {
   features: string[]
   featuresDe: string[]
   benefits: { title: string; titleDe: string; description: string; descriptionDe: string }[]
+  redirectTo?: string
 }> = {
   'private-aviation': {
     title: 'Private Aviation',
@@ -24,7 +25,7 @@ const servicesData: Record<string, {
     subtitleDe: 'Nahtlose Privatjet-Reisen',
     description: 'Arrive in style with our private aviation services. From light jets for quick island hops to long-range aircraft for intercontinental travel, we arrange every detail of your journey.',
     descriptionDe: 'Kommen Sie mit Stil an mit unseren Privatflug-Services. Von leichten Jets für schnelle Inselsprünge bis hin zu Langstreckenflugzeugen für interkontinentale Reisen – wir arrangieren jedes Detail Ihrer Reise.',
-    heroImage: 'https://storage.googleapis.com/primeluxurystays/4-elements/images/1766934297408-New_built_villa_Alcudia_ref_7724_-_night_shots_-_-21_result_12.32.15.webp',
+    heroImage: 'https://storage.googleapis.com/primeluxurystays-rpr/4-elements/images/1766934297408-New_built_villa_Alcudia_ref_7724_-_night_shots_-_-21_result_12.32.15.webp',
     features: [
       'Access to 5,000+ private aircraft worldwide',
       'Flexible scheduling on your timeline',
@@ -54,7 +55,7 @@ const servicesData: Record<string, {
     subtitleDe: 'Kulinarische Exzellenz in Ihrer Residenz',
     description: 'Indulge in world-class cuisine without leaving your villa. Our network of Michelin-trained private chefs create bespoke dining experiences tailored to your tastes and dietary requirements.',
     descriptionDe: 'Genießen Sie Weltklasse-Küche, ohne Ihre Villa zu verlassen. Unser Netzwerk von Michelin-ausgebildeten Privatköchen kreiert maßgeschneiderte Genusserlebnisse, abgestimmt auf Ihren Geschmack und Ihre Ernährungsanforderungen.',
-    heroImage: 'https://storage.googleapis.com/primeluxurystays/la-salve/images/1766937633626-ls17-602-marcgilsdorf_result_12.40.11.webp',
+    heroImage: 'https://storage.googleapis.com/primeluxurystays-rpr/la-salve/images/1766937633626-ls17-602-marcgilsdorf_result_12.40.11.webp',
     features: [
       'Michelin-trained private chefs',
       'Customized menus to your preferences',
@@ -84,7 +85,7 @@ const servicesData: Record<string, {
     subtitleDe: 'Premium-Fahrzeuge & Chauffeurservice',
     description: 'Travel in style with our fleet of luxury vehicles. From supercars for coastal drives to chauffeur-driven limousines for elegant arrivals, we ensure every journey is exceptional.',
     descriptionDe: 'Reisen Sie stilvoll mit unserer Flotte von Luxusfahrzeugen. Von Supersportwagen für Küstenfahrten bis hin zu Limousinen mit Chauffeur für elegante Ankünfte – wir sorgen dafür, dass jede Fahrt außergewöhnlich ist.',
-    heroImage: 'https://storage.googleapis.com/primeluxurystays/villa-del-mar/images/1767466932071-Kopie_von_2c3d6789-1a64-492e-895a-1d13fcbd9aea_result_22.48.41.webp',
+    heroImage: 'https://storage.googleapis.com/primeluxurystays-rpr/villa-del-mar/images/1767466932071-Kopie_von_2c3d6789-1a64-492e-895a-1d13fcbd9aea_result_22.48.41.webp',
     features: [
       'Ferrari, Lamborghini, Porsche available',
       'Professional chauffeur services',
@@ -114,7 +115,7 @@ const servicesData: Record<string, {
     subtitleDe: 'Diskrete Sicherheit für Ihren Seelenfrieden',
     description: 'Your privacy is paramount. Our security services ensure complete confidentiality and peace of mind, with discreet protection arrangements tailored to your requirements.',
     descriptionDe: 'Ihre Privatsphäre ist uns wichtig. Unsere Sicherheitsdienste gewährleisten vollständige Vertraulichkeit und Seelenfrieden mit diskreten Schutzarrangements, die auf Ihre Anforderungen zugeschnitten sind.',
-    heroImage: 'https://storage.googleapis.com/primeluxurystays/sunset-dreams/images/1767546840732-PROTEA32_result_22.48.12.webp',
+    heroImage: 'https://storage.googleapis.com/primeluxurystays-rpr/sunset-dreams/images/1767546840732-PROTEA32_result_22.48.12.webp',
     features: [
       'Vetted security personnel',
       'Secure transportation arrangements',
@@ -144,7 +145,7 @@ const servicesData: Record<string, {
     subtitleDe: 'Luxuriöse Segelerlebnisse',
     description: 'Set sail on the Mediterranean aboard a luxury yacht. From intimate day sails to week-long voyages, explore hidden coves, pristine beaches, and coastal gems in ultimate style.',
     descriptionDe: 'Setzen Sie die Segel auf dem Mittelmeer an Bord einer Luxusyacht. Von intimen Tagesausflügen bis hin zu wochenlangen Reisen – erkunden Sie versteckte Buchten, unberührte Strände und Küstenjuwelen im ultimativen Stil.',
-    heroImage: 'https://storage.googleapis.com/primeluxurystays/villa-dos-torres/images/1766504261465-Outdoor1.jpg',
+    heroImage: 'https://storage.googleapis.com/primeluxurystays-rpr/villa-dos-torres/images/1766504261465-Outdoor1.jpg',
     features: [
       'Motor yachts and sailing vessels',
       'Professional captain and crew',
@@ -166,6 +167,7 @@ const servicesData: Record<string, {
       { title: 'Full Service', titleDe: 'Vollständiger Service', description: 'Captain, crew, and chef included', descriptionDe: 'Kapitän, Crew und Koch inklusive' },
       { title: 'Bespoke Journeys', titleDe: 'Maßgeschneiderte Reisen', description: 'Every voyage tailored to you', descriptionDe: 'Jede Reise auf Sie zugeschnitten' },
     ],
+    redirectTo: '/yachts', // Redirect to actual yacht inventory
   },
   'helicopter': {
     title: 'Helicopter Transport',
@@ -174,7 +176,7 @@ const servicesData: Record<string, {
     subtitleDe: 'Schnelle Transfers & malerische Touren',
     description: 'Experience the islands from above with our helicopter services. Whether for swift airport transfers or breathtaking scenic tours, see the Mediterranean from an exclusive perspective.',
     descriptionDe: 'Erleben Sie die Inseln von oben mit unserem Helikopterservice. Ob für schnelle Flughafentransfers oder atemberaubende Panoramaflüge – sehen Sie das Mittelmeer aus einer exklusiven Perspektive.',
-    heroImage: 'https://storage.googleapis.com/primeluxurystays/vista-malgrat/images/1765716787066-_DSC4726.jpg',
+    heroImage: 'https://storage.googleapis.com/primeluxurystays-rpr/vista-malgrat/images/1765716787066-_DSC4726.jpg',
     features: [
       'Airport and inter-island transfers',
       'Scenic coastal and mountain tours',
@@ -204,7 +206,7 @@ const servicesData: Record<string, {
     subtitleDe: 'Prioritätszugang zu den besten Restaurants',
     description: 'Secure tables at the most sought-after restaurants and exclusive dining venues. Our relationships with top establishments ensure priority bookings, even at fully-booked locations.',
     descriptionDe: 'Sichern Sie sich Tische in den gefragtesten Restaurants und exklusiven Dinner-Locations. Unsere Beziehungen zu Top-Restaurants gewährleisten Prioritätsbuchungen, auch bei ausgebuchten Locations.',
-    heroImage: 'https://storage.googleapis.com/primeluxurystays/eden-roc/images/1766935867677-MR20230606017_result_12.38.51.webp',
+    heroImage: 'https://storage.googleapis.com/primeluxurystays-rpr/eden-roc/images/1766935867677-MR20230606017_result_12.38.51.webp',
     features: [
       'Priority bookings at Michelin-starred restaurants',
       'Exclusive chef\'s table experiences',
@@ -227,6 +229,66 @@ const servicesData: Record<string, {
       { title: 'Seamless Planning', titleDe: 'Nahtlose Planung', description: 'All details handled for you', descriptionDe: 'Alle Details werden für Sie erledigt' },
     ],
   },
+  'tennis-santa-ponsa': {
+    title: 'Tennis Center Santa Ponsa',
+    titleDe: 'Tenniscenter Santa Ponsa',
+    subtitle: 'World-Class Tennis in Mallorca',
+    subtitleDe: 'Weltklasse-Tennis auf Mallorca',
+    description: 'Enjoy premium tennis facilities at the renowned Santa Ponsa Tennis Center. Whether you\'re looking for private lessons, court hire, or competitive matches, we arrange everything for your perfect tennis experience in Mallorca.',
+    descriptionDe: 'Genießen Sie erstklassige Tennisanlagen im renommierten Tenniscenter Santa Ponsa. Ob Privatunterricht, Platzmiete oder Wettkampfspiele – wir arrangieren alles für Ihr perfektes Tennis-Erlebnis auf Mallorca.',
+    heroImage: 'https://images.unsplash.com/photo-1554068865-24cecd4e34b8?w=1600&q=80',
+    features: [
+      'Professional coaching available',
+      'Court reservations on your schedule',
+      'Equipment rental if needed',
+      'Group lessons for families',
+      'Tournament and match arrangements',
+      'Transport to and from the club',
+    ],
+    featuresDe: [
+      'Professionelles Coaching verfügbar',
+      'Platzreservierungen nach Ihrem Zeitplan',
+      'Ausrüstungsverleih bei Bedarf',
+      'Gruppenunterricht für Familien',
+      'Turnier- und Spielorganisation',
+      'Transport zum und vom Club',
+    ],
+    benefits: [
+      { title: 'Premium Facilities', titleDe: 'Premium-Anlagen', description: 'Top-quality courts and amenities', descriptionDe: 'Erstklassige Plätze und Einrichtungen' },
+      { title: 'Expert Coaching', titleDe: 'Experten-Coaching', description: 'Certified tennis professionals', descriptionDe: 'Zertifizierte Tennisprofis' },
+      { title: 'Concierge Arranged', titleDe: 'Vom Concierge organisiert', description: 'We handle all bookings for you', descriptionDe: 'Wir übernehmen alle Buchungen für Sie' },
+    ],
+  },
+  'wedding-planner': {
+    title: 'Wedding Planning',
+    titleDe: 'Hochzeitsplanung',
+    subtitle: 'Dream Weddings in Mediterranean Paradise',
+    subtitleDe: 'Traumhochzeiten im mediterranen Paradies',
+    description: 'Create unforgettable wedding celebrations in the stunning backdrop of Mallorca. Our expert wedding planners coordinate every detail — from intimate villa ceremonies to grand estate celebrations — ensuring your special day is absolutely perfect.',
+    descriptionDe: 'Schaffen Sie unvergessliche Hochzeitsfeiern vor der atemberaubenden Kulisse Mallorcas. Unsere erfahrenen Hochzeitsplaner koordinieren jedes Detail – von intimen Villen-Zeremonien bis hin zu großen Anwesen-Feiern – damit Ihr besonderer Tag absolut perfekt wird.',
+    heroImage: 'https://images.unsplash.com/photo-1519741497674-611481863552?w=1600&q=80',
+    features: [
+      'Full-service wedding coordination',
+      'Venue selection and decoration',
+      'Catering and private chef arrangements',
+      'Photography and videography teams',
+      'Floral design and styling',
+      'Entertainment and music booking',
+    ],
+    featuresDe: [
+      'Full-Service Hochzeitskoordination',
+      'Venue-Auswahl und Dekoration',
+      'Catering und Privatkoch-Arrangements',
+      'Fotografie- und Videografie-Teams',
+      'Floristik und Styling',
+      'Entertainment und Musikbuchung',
+    ],
+    benefits: [
+      { title: 'Bespoke Planning', titleDe: 'Maßgeschneiderte Planung', description: 'Every detail tailored to your vision', descriptionDe: 'Jedes Detail nach Ihrer Vorstellung gestaltet' },
+      { title: 'Local Expertise', titleDe: 'Lokale Expertise', description: 'Deep relationships with the best vendors', descriptionDe: 'Tiefe Beziehungen zu den besten Anbietern' },
+      { title: 'Stress-Free Experience', titleDe: 'Stressfreies Erlebnis', description: 'You celebrate, we coordinate', descriptionDe: 'Sie feiern, wir koordinieren' },
+    ],
+  },
   'travel-bookings': {
     title: 'Travel Bookings',
     titleDe: 'Reisebuchungen',
@@ -234,7 +296,7 @@ const servicesData: Record<string, {
     subtitleDe: 'Luxusunterkünfte über Ihre Villa hinaus',
     description: 'Extend your journey with seamless hotel and travel arrangements. Whether you\'re island hopping or exploring the mainland, we coordinate luxury accommodations and travel logistics worldwide.',
     descriptionDe: 'Verlängern Sie Ihre Reise mit nahtlosen Hotel- und Reisearrangements. Ob Inselhopping oder Erkundung des Festlands – wir koordinieren Luxusunterkünfte und Reiselogistik weltweit.',
-    heroImage: 'https://storage.googleapis.com/primeluxurystays/sa-vinya/images/1765721341526-Sa_Vinya.jpg',
+    heroImage: 'https://storage.googleapis.com/primeluxurystays-rpr/sa-vinya/images/1765721341526-Sa_Vinya.jpg',
     features: [
       'Luxury hotel reservations worldwide',
       'Multi-destination itinerary planning',
@@ -280,10 +342,21 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 
 export default function ServicePage({ params }: { params: { slug: string } }) {
   const { slug } = params
+  
+  // Redirect yacht-charter to the dedicated yachts page
+  if (slug === 'yacht-charter') {
+    redirect('/yachts')
+  }
+  
   const service = servicesData[slug]
 
   if (!service) {
     notFound()
+  }
+
+  // Redirect yacht-charter to actual yachts inventory
+  if (service.redirectTo) {
+    redirect(service.redirectTo)
   }
 
   return (

@@ -525,10 +525,10 @@ export default function NewPropertyPage() {
                   className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
                 >
                   <option value="">-- Select Zone --</option>
-                  <option value="west-southwest">West / Southwest</option>
-                  <option value="port-andratx">Port d'Andratx</option>
-                  <option value="north-northwest">North / Northwest</option>
-                  <option value="east-southeast">East / Southeast</option>
+                  <option value="palma">Palma & Region (Mitte)</option>
+                  <option value="west-southwest">West / Southwest (Santa Ponsa, Calvià, Port Andratx, Bendinat)</option>
+                  <option value="north-northeast">North / Northeast (Pollensa, Alcudia, Sa Pobla)</option>
+                  <option value="east-southeast">East / Southeast (Ses Salines, Campos, Felanitx)</option>
                 </select>
               </div>
             )}

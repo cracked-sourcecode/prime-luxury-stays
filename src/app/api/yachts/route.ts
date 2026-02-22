@@ -11,20 +11,46 @@ export async function GET(request: NextRequest) {
     let yachts
     if (featured === 'true') {
       yachts = await sql`
-        SELECT * FROM yachts 
+        SELECT 
+          id, name, slug, manufacturer, model, yacht_type, year_built,
+          length_meters, beam_meters, draft_meters, guest_cabins, max_guests, crew_members,
+          long_description AS description, short_description,
+          cruising_speed_knots, max_speed_knots, has_stabilizers,
+          water_toys_list, has_jacuzzi, has_gym, has_wifi, has_air_conditioning,
+          amenities, featured_image, home_port, region, cruising_area,
+          price_per_day, price_per_week, is_active, is_featured,
+          has_jet_ski, has_tender, has_water_toys
+        FROM yachts 
         WHERE is_active = true AND is_featured = true
         ORDER BY name ASC
       `
     } else if (destination) {
       yachts = await sql`
-        SELECT * FROM yachts 
-        WHERE is_active = true 
-        AND (destination = ${destination} OR available_destinations ? ${destination})
+        SELECT 
+          id, name, slug, manufacturer, model, yacht_type, year_built,
+          length_meters, beam_meters, draft_meters, guest_cabins, max_guests, crew_members,
+          long_description AS description, short_description,
+          cruising_speed_knots, max_speed_knots, has_stabilizers,
+          water_toys_list, has_jacuzzi, has_gym, has_wifi, has_air_conditioning,
+          amenities, featured_image, home_port, region, cruising_area,
+          price_per_day, price_per_week, is_active, is_featured,
+          has_jet_ski, has_tender, has_water_toys
+        FROM yachts 
+        WHERE is_active = true AND region = ${destination}
         ORDER BY name ASC
       `
     } else {
       yachts = await sql`
-        SELECT * FROM yachts 
+        SELECT 
+          id, name, slug, manufacturer, model, yacht_type, year_built,
+          length_meters, beam_meters, draft_meters, guest_cabins, max_guests, crew_members,
+          long_description AS description, short_description,
+          cruising_speed_knots, max_speed_knots, has_stabilizers,
+          water_toys_list, has_jacuzzi, has_gym, has_wifi, has_air_conditioning,
+          amenities, featured_image, home_port, region, cruising_area,
+          price_per_day, price_per_week, is_active, is_featured,
+          has_jet_ski, has_tender, has_water_toys
+        FROM yachts 
         WHERE is_active = true
         ORDER BY name ASC
       `

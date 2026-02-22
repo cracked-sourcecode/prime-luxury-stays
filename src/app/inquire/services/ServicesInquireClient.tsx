@@ -52,7 +52,7 @@ export default function ServicesInquireClient({
   const [done, setDone] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const heroImage = 'https://storage.googleapis.com/primeluxurystays/eden-roc/images/1766935948675-MR20230606066_result_12.38.51.webp'
+  const heroImage = 'https://storage.googleapis.com/primeluxurystays-rpr/eden-roc/images/1766935948675-MR20230606066_result_12.38.51.webp'
 
   const benefits = [
     { 

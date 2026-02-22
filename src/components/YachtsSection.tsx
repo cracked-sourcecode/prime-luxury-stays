@@ -45,9 +45,6 @@ export default function YachtsSection({ yachts }: YachtsSectionProps) {
         backgroundSize: '100px 20px'
       }} />
       
-      {/* Top gradient fade from previous section */}
-      <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-cream-50 to-transparent" />
-      
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         {/* Header */}
         <motion.div

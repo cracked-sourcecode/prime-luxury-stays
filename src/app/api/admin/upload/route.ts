@@ -3,7 +3,7 @@ import { cookies } from 'next/headers';
 import { validateSession } from '@/lib/admin';
 import { Storage } from '@google-cloud/storage';
 
-const BUCKET_NAME = 'primeluxurystays';
+const BUCKET_NAME = 'primeluxurystays-rpr';
 
 // Initialize GCS client
 function getStorageClient() {
@@ -39,15 +39,21 @@ export async function POST(request: NextRequest) {
     const formData = await request.formData();
     const file = formData.get('file') as File;
     const propertySlug = formData.get('propertySlug') as string;
+    const yachtSlug = formData.get('yachtSlug') as string;
     const propertyId = formData.get('propertyId') as string;
+    const yachtId = formData.get('yachtId') as string;
     const fileType = formData.get('fileType') as string || 'image'; // 'image' or 'video'
+    
+    // Support both properties and yachts
+    const entitySlug = propertySlug || yachtSlug;
+    const entityType = yachtSlug ? 'yachts' : 'properties';
     
     if (!file) {
       return NextResponse.json({ success: false, error: 'No file provided' }, { status: 400 });
     }
 
-    if (!propertySlug) {
-      return NextResponse.json({ success: false, error: 'Property slug required' }, { status: 400 });
+    if (!entitySlug) {
+      return NextResponse.json({ success: false, error: 'Property or yacht slug required' }, { status: 400 });
     }
 
     // Validate file type
@@ -62,7 +68,7 @@ export async function POST(request: NextRequest) {
     const timestamp = Date.now();
     const safeName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
     const subfolder = isVideo ? 'videos' : 'images';
-    const storagePath = `${propertySlug}/${subfolder}/${timestamp}-${safeName}`;
+    const storagePath = `${entityType}/${entitySlug}/${subfolder}/${timestamp}-${safeName}`;
     
     // Get file buffer
     const bytes = await file.arrayBuffer();

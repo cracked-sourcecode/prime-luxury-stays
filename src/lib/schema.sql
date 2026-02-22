@@ -70,7 +70,7 @@ CREATE TABLE IF NOT EXISTS property_images (
     
     -- Cloud Storage Info
     image_url TEXT NOT NULL,           -- Full GCS URL: https://storage.googleapis.com/bucket/path
-    storage_bucket VARCHAR(255),        -- e.g., 'primeluxurystays'
+    storage_bucket VARCHAR(255),        -- e.g., 'primeluxurystays-rpr'
     storage_path VARCHAR(500),          -- e.g., 'properties/villa-malgrat/hero.jpg'
     
     -- Image metadata

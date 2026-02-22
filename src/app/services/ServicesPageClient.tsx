@@ -12,7 +12,9 @@ import {
   Navigation,
   Phone,
   Mail,
-  Building
+  Building,
+  Heart,
+  Trophy
 } from 'lucide-react'
 import { useLocale } from '@/i18n/LocaleProvider'
 
@@ -117,6 +119,32 @@ export default function ServicesPageClient() {
             ? 'Luxus-Yachterlebnisse von intimen Tagesausflügen bis zu mehrtägigen Mittelmeerreisen.'
             : 'Luxury yacht experiences from intimate day sails to multi-day Mediterranean voyages.',
           slug: 'yacht-charter',
+          href: '/yachts',
+        },
+      ],
+    },
+    {
+      title: locale === 'de' ? 'Aktivitäten & Events' : 'Activities & Events',
+      subtitle: locale === 'de' ? 'Freizeit & Feiern' : 'Leisure & Celebrations',
+      description: locale === 'de'
+        ? 'Sport, Freizeit und besondere Anlässe auf Mallorca.'
+        : 'Sports, leisure, and special occasions in Mallorca.',
+      services: [
+        {
+          icon: Trophy,
+          title: locale === 'de' ? 'Tenniscenter Santa Ponsa' : 'Tennis Center Santa Ponsa',
+          description: locale === 'de'
+            ? 'Erstklassige Tennisanlagen mit professionellem Coaching und Platzreservierungen.'
+            : 'Premium tennis facilities with professional coaching and court reservations.',
+          slug: 'tennis-santa-ponsa',
+        },
+        {
+          icon: Heart,
+          title: locale === 'de' ? 'Hochzeitsplanung' : 'Wedding Planning',
+          description: locale === 'de'
+            ? 'Traumhochzeiten im mediterranen Paradies – von intimen Feiern bis zu großen Events.'
+            : 'Dream weddings in Mediterranean paradise — from intimate ceremonies to grand celebrations.',
+          slug: 'wedding-planner',
         },
       ],
     },
@@ -128,7 +156,7 @@ export default function ServicesPageClient() {
       <section className="relative h-[75vh] min-h-[550px] overflow-hidden">
         <div className="absolute inset-0">
           <img
-            src="https://storage.googleapis.com/primeluxurystays/eden-roc/images/1766935948675-MR20230606066_result_12.38.51.webp"
+            src="https://storage.googleapis.com/primeluxurystays-rpr/eden-roc/images/1766935948675-MR20230606066_result_12.38.51.webp"
             alt={locale === 'de' ? 'Luxus-Services' : 'Luxury Services'}
             className="w-full h-full object-cover object-center"
           />
@@ -184,18 +212,18 @@ export default function ServicesPageClient() {
 
             {/* Services Grid */}
             <div className={`grid gap-8 ${category.services.length === 1 ? 'md:grid-cols-1 max-w-2xl' : category.services.length === 2 ? 'md:grid-cols-2' : 'md:grid-cols-3'}`}>
-              {category.services.map((service, serviceIndex) => (
-                <motion.div
-                  key={service.slug}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: serviceIndex * 0.1 }}
-                >
-                  <Link 
-                    href={`/services/${service.slug}`}
-                    className="group block h-full"
+                {category.services.map((service, serviceIndex) => (
+                  <motion.div
+                    key={service.slug}
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: serviceIndex * 0.1 }}
                   >
+                    <Link 
+                      href={(service as any).href || `/services/${service.slug}`}
+                      className="group block h-full"
+                    >
                     <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 h-full border border-gray-100 group-hover:border-gold-200">
                       {/* Icon */}
                       <div className="mb-6">

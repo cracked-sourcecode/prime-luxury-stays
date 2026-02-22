@@ -11,6 +11,13 @@ async function checkAuth() {
   return await validateSession(token)
 }
 
+// Normalize DB row to client-expected field names
+function normalizeYacht(row: any) {
+  if (!row) return row
+  const { long_description, ...rest } = row
+  return { ...rest, description: long_description ?? rest.description }
+}
+
 // GET - Fetch all yachts (admin)
 export async function GET(request: NextRequest) {
   const user = await checkAuth()
@@ -25,11 +32,31 @@ export async function GET(request: NextRequest) {
     let yachts
     if (includeInactive) {
       yachts = await sql`
-        SELECT * FROM yachts ORDER BY created_at DESC
+        SELECT 
+          id, name, slug, manufacturer, model, yacht_type, year_built,
+          length_meters, beam_meters, draft_meters, guest_cabins, max_guests, crew_members,
+          long_description AS description, short_description,
+          cruising_speed_knots, max_speed_knots, has_stabilizers,
+          water_toys_list, has_jacuzzi, has_gym, has_wifi, has_air_conditioning,
+          amenities, featured_image, home_port, region, cruising_area,
+          price_per_day, price_per_week, is_active, is_featured,
+          has_jet_ski, has_tender, has_water_toys,
+          created_at, updated_at
+        FROM yachts ORDER BY created_at DESC
       `
     } else {
       yachts = await sql`
-        SELECT * FROM yachts WHERE is_active = true ORDER BY name ASC
+        SELECT 
+          id, name, slug, manufacturer, model, yacht_type, year_built,
+          length_meters, beam_meters, draft_meters, guest_cabins, max_guests, crew_members,
+          long_description AS description, short_description,
+          cruising_speed_knots, max_speed_knots, has_stabilizers,
+          water_toys_list, has_jacuzzi, has_gym, has_wifi, has_air_conditioning,
+          amenities, featured_image, home_port, region, cruising_area,
+          price_per_day, price_per_week, is_active, is_featured,
+          has_jet_ski, has_tender, has_water_toys,
+          created_at, updated_at
+        FROM yachts WHERE is_active = true ORDER BY name ASC
       `
     }
     
@@ -124,7 +151,7 @@ export async function POST(request: NextRequest) {
       RETURNING *
     `
 
-    return NextResponse.json({ success: true, yacht: result[0] })
+    return NextResponse.json({ success: true, yacht: normalizeYacht(result[0]) })
   } catch (error: any) {
     console.error('Error creating yacht:', error)
     if (error.message?.includes('unique constraint')) {

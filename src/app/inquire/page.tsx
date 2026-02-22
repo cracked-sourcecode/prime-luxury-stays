@@ -85,7 +85,7 @@ export default async function InquirePage({
           <InquireClient
             property={property}
             yacht={yacht as any}
-            inquiryType={inquiryType || (yacht ? 'yacht' : undefined)}
+            inquiryType={inquiryType || (property && yacht ? 'combined' : (yacht ? 'yacht' : undefined))}
             prefill={{
               property_slug: propertySlug ?? null,
               yacht_slug: yachtSlug ?? null,

@@ -9,7 +9,7 @@ const socialLinks = [
 ]
 import { useLocale } from '@/i18n/LocaleProvider'
 
-const LOGO_URL = 'https://storage.googleapis.com/primeluxurystays/Logo%20no%20text%20(global%20header).png'
+const LOGO_URL = 'https://storage.googleapis.com/primeluxurystays-rpr/Logo%20no%20text%20(global%20header).png'
 
 // Footer links with translation keys
 const getFooterLinks = (t: (key: string) => string) => ({
@@ -220,9 +220,14 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="py-4 md:py-6 border-t border-gray-100">
           <div className="flex flex-col md:flex-row items-center justify-between gap-3 text-center md:text-left">
-            <p className="text-charcoal-400 text-sm">
-              {t('footer.copyright').replace('{year}', currentYear.toString())}
-            </p>
+            <div>
+              <p className="text-charcoal-400 text-sm">
+                {t('footer.copyright').replace('{year}', currentYear.toString())}
+              </p>
+              <p className="text-charcoal-400 text-xs mt-1">
+                USt-IdNr. / VAT ID: DE460001928
+              </p>
+            </div>
             <div className="flex items-center gap-4 md:gap-6 flex-wrap justify-center md:justify-end">
               <a href="#" className="text-charcoal-400 hover:text-gold-600 text-sm transition-colors">{t('footer.privacy')}</a>
               <a href="#" className="text-charcoal-400 hover:text-gold-600 text-sm transition-colors">{t('footer.terms')}</a>

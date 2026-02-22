@@ -5,7 +5,7 @@ import { useRef } from 'react'
 import { Award, Users, Globe, Heart } from 'lucide-react'
 import { useLocale } from '@/i18n/LocaleProvider'
 
-const LOGO_URL = 'https://storage.googleapis.com/primeluxurystays/Logo%20no%20text%20(global%20header).png'
+const LOGO_URL = 'https://storage.googleapis.com/primeluxurystays-rpr/Logo%20no%20text%20(global%20header).png'
 
 export default function About() {
   const ref = useRef(null)
@@ -42,7 +42,7 @@ export default function About() {
                 <div
                   className="absolute inset-0 bg-cover bg-center"
                   style={{
-                    backgroundImage: `url('https://storage.googleapis.com/primeluxurystays/4-elements/images/1766934271401-New_built_villa_Alcudia_ref_7724_-_night_shots_-_-2_result_12.32.15.webp')`,
+                    backgroundImage: `url('https://storage.googleapis.com/primeluxurystays-rpr/4-elements/images/1766934271401-New_built_villa_Alcudia_ref_7724_-_night_shots_-_-2_result_12.32.15.webp')`,
                   }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-white/20 to-transparent" />

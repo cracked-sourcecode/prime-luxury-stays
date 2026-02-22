@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Luxury Yacht Charters | Prime Luxury Stays',
     description: 'Exclusive yacht charters in Mallorca. Day trips, week-long adventures, and bespoke experiences.',
-    images: ['https://storage.googleapis.com/primeluxurystays/YACHTS/yacht-og.jpg'],
+    images: ['https://storage.googleapis.com/primeluxurystays-rpr/Company%20Logo'],
   },
 }
 

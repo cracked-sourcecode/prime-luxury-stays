@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
 import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
 import { 
   MapPin, 
   Sun, 
@@ -23,7 +24,8 @@ import {
   Clock,
   Heart,
   Ship,
-  Ruler
+  Ruler,
+  X
 } from 'lucide-react'
 import PropertyMap from '@/components/PropertyMap'
 import OtherDestinations from '@/components/OtherDestinations'
@@ -59,15 +61,117 @@ function getLocalizedField(property: Property, field: 'name' | 'short_descriptio
   return (property[field] as string) || ''
 }
 
+function PropertyCard({ property, locale }: { property: Property; locale: string }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+    >
+      <Link href={`/properties/${property.slug}`} className="group block">
+        <div className="relative aspect-[4/3] rounded-2xl overflow-hidden mb-6 shadow-xl">
+          <img
+            src={property.featured_image || ''}
+            alt={getLocalizedField(property, 'name', locale)}
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+          
+          {property.is_featured && (
+            <div className="absolute top-5 left-5 bg-gold-500 text-white px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-2 shadow-lg">
+              <Star className="w-4 h-4 fill-white" />
+              {locale === 'de' ? 'Empfohlen' : 'Featured'}
+            </div>
+          )}
+
+          <div className="absolute top-5 right-5 bg-white/95 backdrop-blur-sm text-charcoal-900 px-4 py-2 rounded-full text-sm font-semibold shadow-lg">
+            {getLocalizedField(property, 'house_type', locale)}
+          </div>
+
+          <div className="absolute bottom-5 left-5 right-5 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-4 group-hover:translate-y-0">
+            <div className="bg-white/95 backdrop-blur-sm rounded-xl px-5 py-4 flex items-center justify-between">
+              <div className="flex items-center gap-5 text-charcoal-700">
+                <span className="flex items-center gap-2">
+                  <Bed className="w-5 h-5" /> {property.bedrooms}
+                </span>
+                <span className="flex items-center gap-2">
+                  <Bath className="w-5 h-5" /> {property.bathrooms}
+                </span>
+                <span className="flex items-center gap-2">
+                  <Users className="w-5 h-5" /> {property.max_guests}
+                </span>
+              </div>
+              <ArrowRight className="w-5 h-5 text-gold-500" />
+            </div>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2 text-charcoal-500 text-sm mb-3">
+          <MapPin className="w-4 h-4 text-gold-500" />
+          <span>{property.city}, Mallorca</span>
+        </div>
+
+        <h3 className="font-merriweather text-2xl text-charcoal-900 mb-3 group-hover:text-gold-600 transition-colors">
+          {getLocalizedField(property, 'name', locale)}
+        </h3>
+
+        <p className="text-charcoal-500 leading-relaxed mb-3">
+          {getLocalizedField(property, 'short_description', locale)}
+        </p>
+
+        {property.is_monthly_rental ? (
+          <div className="inline-flex items-center gap-2 bg-blue-50 border border-blue-200 rounded-lg px-3 py-1.5">
+            <Calendar className="w-4 h-4 text-blue-600" />
+            <span className="text-blue-700 font-semibold text-sm">
+              {locale === 'de' ? 'Monatliche Vermietung' : 'Monthly Rental'}
+            </span>
+          </div>
+        ) : (property as any).price_per_week ? (
+          <div className="inline-flex items-baseline gap-1 bg-cream-100 border border-cream-200 rounded-lg px-3 py-1.5">
+            <span className="text-gold-700 font-semibold">
+              €{Number((property as any).price_per_week).toLocaleString()}
+              {(property as any).price_per_week_high && (
+                <span> - €{Number((property as any).price_per_week_high).toLocaleString()}</span>
+              )}
+            </span>
+            <span className="text-charcoal-500 text-sm">{locale === 'de' ? '/Woche' : '/week'}</span>
+          </div>
+        ) : null}
+      </Link>
+    </motion.div>
+  )
+}
+
+const REGION_ZONES: Record<string, { en: string; de: string; subtitle: string }> = {
+  'west-southwest': { en: 'West / Southwest', de: 'West / Südwest', subtitle: 'Santa Ponsa, Calvià, Bendinat, Port Andratx' },
+  'north-northeast': { en: 'North / Northeast', de: 'Nord / Nordost', subtitle: 'Pollensa, Alcudia, Sa Pobla' },
+  'east-southeast': { en: 'East / Southeast', de: 'Ost / Südost', subtitle: 'Ses Salines, Campos, Felanitx' },
+  'palma': { en: 'Palma & Region', de: 'Palma & Region', subtitle: 'Capital, Alaró' },
+}
+
 export default function MallorcaClient({ properties, yachts = [] }: MallorcaClientProps) {
   const { t, locale } = useLocale()
+  const searchParams = useSearchParams()
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null)
+  const [activeZone, setActiveZone] = useState<string | null>(searchParams.get('zone'))
+  const villasRef = useRef<HTMLElement>(null)
   
+  // Auto-scroll to villas section when zone is in URL
+  useEffect(() => {
+    const zone = searchParams.get('zone')
+    if (zone) {
+      setActiveZone(zone)
+      setTimeout(() => {
+        villasRef.current?.scrollIntoView({ behavior: 'smooth' })
+      }, 500)
+    }
+  }, [searchParams])
+
   // Separate short-term and monthly rentals
   const shortTermProperties = properties.filter(p => !p.is_monthly_rental)
   const monthlyRentals = properties.filter(p => p.is_monthly_rental)
   const heroCandidates = [
-    'https://storage.googleapis.com/primeluxurystays/Mallorca%20page%20Hero%20Section.png',
+    'https://storage.googleapis.com/primeluxurystays-rpr/Mallorca%20page%20Hero%20Section.png',
   ]
   const [heroImageUrl, setHeroImageUrl] = useState(heroCandidates[0])
   const [heroTryIndex, setHeroTryIndex] = useState(0)
@@ -198,31 +302,31 @@ export default function MallorcaClient({ properties, yachts = [] }: MallorcaClie
             {[
               {
                 name: locale === 'de' ? 'West / Südwest' : 'West / Southwest',
-                subtitle: 'Santa Ponsa, Calvià, Bendinat',
-                image: 'https://storage.googleapis.com/primeluxurystays/villa-del-mar/images/1767466932071-Kopie_von_2c3d6789-1a64-492e-895a-1d13fcbd9aea_result_22.48.41.webp',
+                subtitle: 'Santa Ponsa, Calvià, Bendinat, Port Andratx',
+                image: 'https://storage.googleapis.com/primeluxurystays-rpr/villa-del-mar/images/1767466932071-Kopie_von_2c3d6789-1a64-492e-895a-1d13fcbd9aea_result_22.48.41.webp',
                 zone: 'west-southwest',
                 count: properties.filter(p => p.region_zone === 'west-southwest').length
               },
               {
-                name: "Port d'Andratx",
-                subtitle: locale === 'de' ? 'Luxuriöse Hafenstadt' : 'Luxury Marina Town',
-                image: 'https://storage.googleapis.com/primeluxurystays/sunset-dreams/images/1767546840732-PROTEA32_result_22.48.12.webp',
-                zone: 'port-andratx',
-                count: properties.filter(p => p.region_zone === 'port-andratx').length
-              },
-              {
-                name: locale === 'de' ? 'Nord / Nordwest' : 'North / Northwest',
+                name: locale === 'de' ? 'Nord / Nordost' : 'North / Northeast',
                 subtitle: 'Pollensa, Alcudia, Sa Pobla',
-                image: 'https://storage.googleapis.com/primeluxurystays/la-salve/images/1766937633626-ls17-602-marcgilsdorf_result_12.40.11.webp',
-                zone: 'north-northwest',
-                count: properties.filter(p => p.region_zone === 'north-northwest').length
+                image: 'https://storage.googleapis.com/primeluxurystays-rpr/la-salve/images/1766937633626-ls17-602-marcgilsdorf_result_12.40.11.webp',
+                zone: 'north-northeast',
+                count: properties.filter(p => p.region_zone === 'north-northeast').length
               },
               {
                 name: locale === 'de' ? 'Ost / Südost' : 'East / Southeast',
-                subtitle: 'Canyamel, Ses Salines, S\'Horta',
-                image: 'https://storage.googleapis.com/primeluxurystays/eden-roc/images/1766935948675-MR20230606066_result_12.38.51.webp',
+                subtitle: 'Ses Salines, Campos, Felanitx',
+                image: 'https://storage.googleapis.com/primeluxurystays-rpr/eden-roc/images/1766935948675-MR20230606066_result_12.38.51.webp',
                 zone: 'east-southeast',
                 count: properties.filter(p => p.region_zone === 'east-southeast').length
+              },
+              {
+                name: locale === 'de' ? 'Palma & Region' : 'Palma & Region',
+                subtitle: locale === 'de' ? 'Hauptstadt, Alaró' : 'Capital, Alaró',
+                image: 'https://storage.googleapis.com/primeluxurystays-rpr/sa-fita/images/1768759511261-1.jpeg',
+                zone: 'palma',
+                count: properties.filter(p => p.region_zone === 'palma').length
               },
             ].map((region, index) => (
               <motion.div
@@ -231,10 +335,12 @@ export default function MallorcaClient({ properties, yachts = [] }: MallorcaClie
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                className="group cursor-pointer"
+                className={`group cursor-pointer transition-all ${activeZone === region.zone ? 'ring-4 ring-gold-500 ring-offset-2 rounded-2xl' : ''}`}
                 onClick={() => {
-                  const villasSection = document.getElementById('villas')
-                  villasSection?.scrollIntoView({ behavior: 'smooth' })
+                  setActiveZone(activeZone === region.zone ? null : region.zone)
+                  setTimeout(() => {
+                    villasRef.current?.scrollIntoView({ behavior: 'smooth' })
+                  }, 100)
                 }}
               >
                 <div className="relative aspect-[3/4] rounded-2xl overflow-hidden shadow-lg">
@@ -358,7 +464,7 @@ export default function MallorcaClient({ properties, yachts = [] }: MallorcaClie
             {/* Large Feature - Beaches */}
             <div className="col-span-12 md:col-span-8 row-span-2 relative rounded-3xl overflow-hidden group cursor-pointer">
               <img 
-                src="https://storage.googleapis.com/primeluxurystays/eden-roc/images/1766935948675-MR20230606066_result_12.38.51.webp"
+                src="https://storage.googleapis.com/primeluxurystays-rpr/eden-roc/images/1766935948675-MR20230606066_result_12.38.51.webp"
                 alt="Luxury Villa with Mediterranean Views"
                 className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
               />
@@ -382,7 +488,7 @@ export default function MallorcaClient({ properties, yachts = [] }: MallorcaClie
             {/* Mountains */}
             <div className="col-span-12 md:col-span-4 row-span-1 relative rounded-3xl overflow-hidden group cursor-pointer">
               <img 
-                src="https://storage.googleapis.com/primeluxurystays/la-salve/images/1766937633626-ls17-602-marcgilsdorf_result_12.40.11.webp"
+                src="https://storage.googleapis.com/primeluxurystays-rpr/la-salve/images/1766937633626-ls17-602-marcgilsdorf_result_12.40.11.webp"
                 alt="Serra de Tramuntana Views"
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
               />
@@ -401,7 +507,7 @@ export default function MallorcaClient({ properties, yachts = [] }: MallorcaClie
             {/* Gastronomy */}
             <div className="col-span-6 md:col-span-4 row-span-1 relative rounded-3xl overflow-hidden group cursor-pointer">
               <img 
-                src="https://storage.googleapis.com/primeluxurystays/finca-es-boscarro/images/1767026970427-Finca_Can_Lau_Santa_Margalida_Web-47.jpg"
+                src="https://storage.googleapis.com/primeluxurystays-rpr/finca-es-boscarro/images/1767026970427-Finca_Can_Lau_Santa_Margalida_Web-47.jpg"
                 alt="Outdoor Dining Experience"
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
               />
@@ -420,7 +526,7 @@ export default function MallorcaClient({ properties, yachts = [] }: MallorcaClie
             {/* Yachts */}
             <div className="col-span-6 md:col-span-4 row-span-1 relative rounded-3xl overflow-hidden group cursor-pointer">
               <img 
-                src="https://storage.googleapis.com/primeluxurystays/vista-malgrat/images/1765716769743-_DSC4663.jpg"
+                src="https://storage.googleapis.com/primeluxurystays-rpr/vista-malgrat/images/1765716769743-_DSC4663.jpg"
                 alt="Coastal Living"
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
               />
@@ -439,7 +545,7 @@ export default function MallorcaClient({ properties, yachts = [] }: MallorcaClie
             {/* Sunshine */}
             <div className="col-span-12 md:col-span-4 row-span-1 relative rounded-3xl overflow-hidden group cursor-pointer">
               <img 
-                src="https://storage.googleapis.com/primeluxurystays/4-elements/images/1766934271401-New_built_villa_Alcudia_ref_7724_-_night_shots_-_-2_result_12.32.15.webp"
+                src="https://storage.googleapis.com/primeluxurystays-rpr/4-elements/images/1766934271401-New_built_villa_Alcudia_ref_7724_-_night_shots_-_-2_result_12.32.15.webp"
                 alt="Villa at Sunset"
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
               />
@@ -459,9 +565,9 @@ export default function MallorcaClient({ properties, yachts = [] }: MallorcaClie
       </section>
 
       {/* ========== PROPERTIES SHOWCASE ========== */}
-      <section id="villas" className="relative z-20 bg-cream-50 pt-32 pb-28 scroll-mt-28">
+      <section id="villas" ref={villasRef} className="relative z-20 bg-cream-50 pt-32 pb-28 scroll-mt-28">
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="text-center mb-20">
+          <div className="text-center mb-12">
             <p className="text-gold-600 text-sm font-semibold tracking-[0.3em] uppercase mb-5">
               {locale === 'de' ? 'Unsere Kollektion' : 'Our Collection'}
             </p>
@@ -470,82 +576,105 @@ export default function MallorcaClient({ properties, yachts = [] }: MallorcaClie
             </h2>
             <p className="text-charcoal-500 text-xl max-w-3xl mx-auto">
               {locale === 'de' 
-                ? 'Jede Immobilie wird persönlich geprüft, um sicherzustellen, dass sie unseren hohen Standards entspricht. Dies sind nicht nur Häuser – es sind Erlebnisse, die darauf warten, entdeckt zu werden.'
-                : 'Each property personally vetted to ensure it meets our exacting standards. These aren\'t just houses—they\'re experiences waiting to unfold.'}
+                ? 'Jede Immobilie wird persönlich geprüft, um sicherzustellen, dass sie unseren hohen Standards entspricht.'
+                : 'Each property personally vetted to ensure it meets our exacting standards.'}
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-            {shortTermProperties.map((property) => (
-              <div key={property.id}>
-                <Link href={`/properties/${property.slug}`} className="group block">
-                  <div className="relative aspect-[4/3] rounded-2xl overflow-hidden mb-6 shadow-xl">
-                    <img
-                      src={property.featured_image || ''}
-                      alt={getLocalizedField(property, 'name', locale)}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                    
-                    {property.is_featured && (
-                      <div className="absolute top-5 left-5 bg-gold-500 text-white px-4 py-2 rounded-full text-sm font-semibold flex items-center gap-2 shadow-lg">
-                        <Star className="w-4 h-4 fill-white" />
-                        {locale === 'de' ? 'Empfohlen' : 'Featured'}
-                      </div>
-                    )}
-
-                    <div className="absolute top-5 right-5 bg-white/95 backdrop-blur-sm text-charcoal-900 px-4 py-2 rounded-full text-sm font-semibold shadow-lg">
-                      {getLocalizedField(property, 'house_type', locale)}
-                    </div>
-
-                    {/* Quick stats on hover */}
-                    <div className="absolute bottom-5 left-5 right-5 opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-4 group-hover:translate-y-0">
-                      <div className="bg-white/95 backdrop-blur-sm rounded-xl px-5 py-4 flex items-center justify-between">
-                        <div className="flex items-center gap-5 text-charcoal-700">
-                          <span className="flex items-center gap-2">
-                            <Bed className="w-5 h-5" /> {property.bedrooms}
-                          </span>
-                          <span className="flex items-center gap-2">
-                            <Bath className="w-5 h-5" /> {property.bathrooms}
-                          </span>
-                          <span className="flex items-center gap-2">
-                            <Users className="w-5 h-5" /> {property.max_guests}
-                          </span>
-                        </div>
-                        <ArrowRight className="w-5 h-5 text-gold-500" />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-2 text-charcoal-500 text-sm mb-3">
-                    <MapPin className="w-4 h-4 text-gold-500" />
-                    <span>{property.city}, Mallorca</span>
-                  </div>
-
-                  <h3 className="font-merriweather text-2xl text-charcoal-900 mb-3 group-hover:text-gold-600 transition-colors">
-                    {getLocalizedField(property, 'name', locale)}
-                  </h3>
-
-                  <p className="text-charcoal-500 leading-relaxed mb-3">
-                    {getLocalizedField(property, 'short_description', locale)}
-                  </p>
-
-                  {/* Price */}
-                  {(property as any).price_per_week && (
-                    <div className="inline-flex items-baseline gap-1 bg-cream-100 border border-cream-200 rounded-lg px-3 py-1.5">
-                      <span className="text-gold-700 font-semibold">
-                        €{Number((property as any).price_per_week).toLocaleString()}
-                        {(property as any).price_per_week_high && (
-                          <span> - €{Number((property as any).price_per_week_high).toLocaleString()}</span>
-                        )}
-                      </span>
-                      <span className="text-charcoal-500 text-sm">{locale === 'de' ? '/Woche' : '/week'}</span>
-                    </div>
-                  )}
-                </Link>
-              </div>
-            ))}
+          {/* Region Filter Tabs */}
+          <div className="flex flex-wrap items-center justify-center gap-3 mb-16">
+            <button
+              onClick={() => setActiveZone(null)}
+              className={`px-5 py-2.5 rounded-full text-sm font-semibold transition-all ${
+                !activeZone 
+                  ? 'bg-charcoal-900 text-white shadow-lg' 
+                  : 'bg-white text-charcoal-600 border border-cream-200 hover:border-gold-300 hover:text-gold-600'
+              }`}
+            >
+              {locale === 'de' ? 'Alle Regionen' : 'All Regions'} ({shortTermProperties.length})
+            </button>
+            {Object.entries(REGION_ZONES).map(([zone, labels]) => {
+              const count = shortTermProperties.filter(p => p.region_zone === zone).length
+              if (count === 0) return null
+              return (
+                <button
+                  key={zone}
+                  onClick={() => setActiveZone(activeZone === zone ? null : zone)}
+                  className={`px-5 py-2.5 rounded-full text-sm font-semibold transition-all ${
+                    activeZone === zone
+                      ? 'bg-gold-500 text-white shadow-lg'
+                      : 'bg-white text-charcoal-600 border border-cream-200 hover:border-gold-300 hover:text-gold-600'
+                  }`}
+                >
+                  {locale === 'de' ? labels.de : labels.en} ({count})
+                </button>
+              )
+            })}
           </div>
+
+          {/* Active Zone Header */}
+          {activeZone && REGION_ZONES[activeZone] && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex items-center justify-between bg-white rounded-2xl p-6 mb-10 shadow-sm border border-cream-200"
+            >
+              <div>
+                <h3 className="font-merriweather text-2xl text-charcoal-900">
+                  {locale === 'de' ? REGION_ZONES[activeZone].de : REGION_ZONES[activeZone].en}
+                </h3>
+                <p className="text-charcoal-500 text-sm mt-1">{REGION_ZONES[activeZone].subtitle}</p>
+              </div>
+              <button
+                onClick={() => setActiveZone(null)}
+                className="p-2 hover:bg-cream-100 rounded-lg transition-colors"
+              >
+                <X className="w-5 h-5 text-charcoal-400" />
+              </button>
+            </motion.div>
+          )}
+
+          {/* Properties grouped by region */}
+          {activeZone ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+              {shortTermProperties
+                .filter(p => p.region_zone === activeZone)
+                .map((property) => (
+                  <PropertyCard key={property.id} property={property} locale={locale} />
+                ))}
+            </div>
+          ) : (
+            <div className="space-y-20">
+              {Object.entries(REGION_ZONES).map(([zone, labels]) => {
+                const zoneProperties = shortTermProperties.filter(p => p.region_zone === zone)
+                if (zoneProperties.length === 0) return null
+                return (
+                  <div key={zone}>
+                    <div className="flex items-center justify-between mb-8">
+                      <div>
+                        <h3 className="font-merriweather text-2xl md:text-3xl text-charcoal-900">
+                          {locale === 'de' ? labels.de : labels.en}
+                        </h3>
+                        <p className="text-charcoal-500 text-sm mt-1">{labels.subtitle} — {zoneProperties.length} {zoneProperties.length === 1 ? (locale === 'de' ? 'Immobilie' : 'property') : (locale === 'de' ? 'Immobilien' : 'properties')}</p>
+                      </div>
+                      <button
+                        onClick={() => setActiveZone(zone)}
+                        className="text-gold-600 hover:text-gold-700 text-sm font-semibold flex items-center gap-1 transition-colors"
+                      >
+                        {locale === 'de' ? 'Nur diese Region' : 'View only'}
+                        <ArrowRight className="w-4 h-4" />
+                      </button>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                      {zoneProperties.map((property) => (
+                        <PropertyCard key={property.id} property={property} locale={locale} />
+                      ))}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          )}
         </div>
       </section>
 
@@ -831,7 +960,7 @@ export default function MallorcaClient({ properties, yachts = [] }: MallorcaClie
         <div 
           className="absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage: `url('https://storage.googleapis.com/primeluxurystays/Mallorca%20page%20Hero%20Section.png')`,
+            backgroundImage: `url('https://storage.googleapis.com/primeluxurystays-rpr/Mallorca%20page%20Hero%20Section.png')`,
           }}
         />
         <div className="absolute inset-0 bg-charcoal-900/80" />

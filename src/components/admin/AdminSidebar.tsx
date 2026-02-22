@@ -34,7 +34,7 @@ interface AdminSidebarProps {
   userEmail?: string
 }
 
-const LOGO_URL = 'https://storage.googleapis.com/primeluxurystays/Logo%20no%20text%20(global%20header).png'
+const LOGO_URL = 'https://storage.googleapis.com/primeluxurystays-rpr/Logo%20no%20text%20(global%20header).png'
 
 interface NavSection {
   name: string

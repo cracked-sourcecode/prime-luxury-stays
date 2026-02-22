@@ -1,7 +1,7 @@
 import Link from 'next/link'
 
 const LOGO_URL =
-  'https://storage.googleapis.com/primeluxurystays/Logo%20no%20text%20(global%20header).png'
+  'https://storage.googleapis.com/primeluxurystays-rpr/Logo%20no%20text%20(global%20header).png'
 
 export function AdminBrand({
   subtitle = 'Admin Portal',

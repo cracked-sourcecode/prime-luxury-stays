@@ -148,6 +148,7 @@ function getLocalizedField(property: Property, field: 'name' | 'short_descriptio
 export default function PropertyDetailClient({ property, galleryImages: dbImages, yachts = [] }: PropertyDetailClientProps) {
   const { t, locale, setLocale } = useLocale()
   const [showShareModal, setShowShareModal] = useState(false)
+  const [selectedYacht, setSelectedYacht] = useState<Yacht | null>(null)
   const [showLangMenu, setShowLangMenu] = useState(false)
   const [showGallery, setShowGallery] = useState(false)
   const [showCalendar, setShowCalendar] = useState(false)
@@ -224,7 +225,7 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
             <div className="flex items-center gap-6">
               <Link href="/" className="flex items-center gap-3">
                 <img
-                  src="https://storage.googleapis.com/primeluxurystays/Logo%20no%20text%20(global%20header).png"
+                  src="https://storage.googleapis.com/primeluxurystays-rpr/Logo%20no%20text%20(global%20header).png"
                   alt="Prime Luxury Stays"
                   className="w-14 h-14 lg:w-16 lg:h-16 object-contain"
                 />
@@ -332,10 +333,13 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
                 <div className="bg-white/20 backdrop-blur-md text-white px-4 py-2 rounded-full text-sm font-medium">
                   {getLocalizedField(property, 'house_type', locale)}
                 </div>
-                {property.license_number && (
+                {(property.license_number || property.registry_number) && (
                   <div className="bg-white/20 backdrop-blur-md text-white px-4 py-2 rounded-full text-sm font-medium flex items-center gap-2">
                     <Shield className="w-4 h-4" />
-                    {locale === 'de' ? 'Lizenziert' : 'Licensed'}: {property.license_number}
+                    {property.license_number 
+                      ? `${locale === 'de' ? 'Lizenz' : 'License'}: ${property.license_number}`
+                      : `${locale === 'de' ? 'Reg.' : 'Reg.'}: ${property.registry_number}`
+                    }
                   </div>
                 )}
               </div>
@@ -611,6 +615,78 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
               </motion.section>
             )}
 
+            {/* ===== KEY FEATURES (Bullet Points) ===== */}
+            {property.key_features && property.key_features.length > 0 && (
+              <motion.section
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="bg-white rounded-3xl p-8 md:p-12 shadow-xl"
+              >
+                <h2 className="font-merriweather text-3xl text-charcoal-900 mb-8">
+                  {locale === 'de' ? 'Highlights' : 'Key Features'}
+                </h2>
+                <div className="grid md:grid-cols-2 gap-4">
+                  {((locale === 'de' && property.key_features_de?.length ? property.key_features_de : property.key_features) || []).map((feature, i) => (
+                    <div key={i} className="flex items-start gap-3 p-4 bg-gold-50 rounded-xl">
+                      <div className="w-6 h-6 rounded-full bg-gold-500 flex items-center justify-center flex-shrink-0 mt-0.5">
+                        <Check className="w-4 h-4 text-white" />
+                      </div>
+                      <span className="text-charcoal-800 font-medium">{feature}</span>
+                    </div>
+                  ))}
+                </div>
+              </motion.section>
+            )}
+
+            {/* ===== EXTRAS & FEES ===== */}
+            {(property.cleaning_fee || property.deposit_amount || property.pool_heating_fee) && (
+              <motion.section
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="bg-white rounded-3xl p-8 md:p-12 shadow-xl"
+              >
+                <h2 className="font-merriweather text-2xl text-charcoal-900 mb-6">
+                  {locale === 'de' ? 'Zusatzkosten & Extras' : 'Additional Costs & Extras'}
+                </h2>
+                <div className="space-y-4">
+                  {property.deposit_amount && (
+                    <div className="flex items-center justify-between py-3 border-b border-cream-200">
+                      <div className="flex items-center gap-3">
+                        <Shield className="w-5 h-5 text-charcoal-400" />
+                        <span className="text-charcoal-700">{locale === 'de' ? 'Kaution' : 'Security Deposit'}</span>
+                      </div>
+                      <span className="font-semibold text-charcoal-900">€{Number(property.deposit_amount).toLocaleString()}</span>
+                    </div>
+                  )}
+                  {property.cleaning_fee && (
+                    <div className="flex items-center justify-between py-3 border-b border-cream-200">
+                      <div className="flex items-center gap-3">
+                        <Sparkles className="w-5 h-5 text-charcoal-400" />
+                        <span className="text-charcoal-700">{locale === 'de' ? 'Endreinigung' : 'Cleaning Fee'}</span>
+                      </div>
+                      <span className="font-semibold text-charcoal-900">€{Number(property.cleaning_fee).toLocaleString()}</span>
+                    </div>
+                  )}
+                  {property.pool_heating_fee && (
+                    <div className="flex items-center justify-between py-3 border-b border-cream-200">
+                      <div className="flex items-center gap-3">
+                        <Flame className="w-5 h-5 text-charcoal-400" />
+                        <span className="text-charcoal-700">{locale === 'de' ? 'Poolheizung' : 'Pool Heating'}</span>
+                      </div>
+                      <span className="font-semibold text-charcoal-900">€{Number(property.pool_heating_fee).toLocaleString()}{locale === 'de' ? '/Woche' : '/week'}</span>
+                    </div>
+                  )}
+                </div>
+                <p className="text-charcoal-400 text-sm mt-4">
+                  {locale === 'de' 
+                    ? 'Alle Preise verstehen sich zzgl. der oben genannten Nebenkosten.' 
+                    : 'All prices are subject to the additional costs listed above.'}
+                </p>
+              </motion.section>
+            )}
+
             {/* ===== AMENITIES ===== */}
             <motion.section
               initial={{ opacity: 0, y: 30 }}
@@ -777,12 +853,16 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
                       : 'Combine your villa stay with an exclusive yacht charter. Explore the Mallorcan coast from the water.'}
                   </p>
                   
+                  <p className="text-white/50 text-sm mb-4">
+                    {locale === 'de' ? 'Wählen Sie eine Yacht für Ihren Aufenthalt:' : 'Select a yacht for your stay:'}
+                  </p>
+                  
                   <div className="grid md:grid-cols-3 gap-4 mb-8">
                     {yachts.map((yacht) => (
-                      <Link
+                      <div
                         key={yacht.id}
-                        href={`/yachts/${yacht.slug}`}
-                        className="group block"
+                        onClick={() => setSelectedYacht(selectedYacht?.id === yacht.id ? null : yacht)}
+                        className={`group cursor-pointer transition-all ${selectedYacht?.id === yacht.id ? 'ring-2 ring-gold-500 rounded-xl' : ''}`}
                       >
                         <div className="relative aspect-[4/3] rounded-xl overflow-hidden mb-3">
                           <img
@@ -791,6 +871,12 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
                             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                           />
                           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                          
+                          {/* Selection indicator */}
+                          <div className={`absolute top-2 right-2 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${selectedYacht?.id === yacht.id ? 'bg-gold-500 border-gold-500' : 'border-white/50 bg-black/20'}`}>
+                            {selectedYacht?.id === yacht.id && <Check className="w-4 h-4 text-white" />}
+                          </div>
+                          
                           {yacht.is_featured && (
                             <div className="absolute top-2 left-2 bg-gold-500 text-white px-2 py-0.5 rounded-full text-xs font-medium flex items-center gap-1">
                               <Sparkles className="w-3 h-3" />
@@ -822,23 +908,46 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
                             </span>
                           )}
                         </div>
-                      </Link>
+                      </div>
                     ))}
                   </div>
+                  
+                  {/* Selected yacht summary */}
+                  {selectedYacht && (
+                    <div className="bg-gold-500/20 border border-gold-500/40 rounded-xl p-4 mb-6">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-gold-400 text-xs font-medium uppercase tracking-wide mb-1">
+                            {locale === 'de' ? 'Ausgewählte Yacht' : 'Selected Yacht'}
+                          </p>
+                          <p className="text-white font-semibold">{selectedYacht.name}</p>
+                          <p className="text-white/60 text-sm">{selectedYacht.length_meters}m · {selectedYacht.max_guests} {locale === 'de' ? 'Gäste' : 'guests'}</p>
+                        </div>
+                        <button
+                          onClick={() => setSelectedYacht(null)}
+                          className="text-white/60 hover:text-white transition-colors p-1"
+                        >
+                          <X className="w-5 h-5" />
+                        </button>
+                      </div>
+                    </div>
+                  )}
                   
                   <div className="flex flex-col sm:flex-row gap-4">
                     <Link
                       href="/yachts"
-                      className="inline-flex items-center justify-center gap-2 bg-gold-500 hover:bg-gold-600 text-white px-6 py-3 rounded-xl font-medium transition-all"
+                      className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white px-6 py-3 rounded-xl font-medium transition-all border border-white/20"
                     >
                       <Anchor className="w-5 h-5" />
                       {locale === 'de' ? 'Alle Yachten ansehen' : 'View All Yachts'}
                     </Link>
                     <Link
-                      href={`/inquire?property=${property.slug}&addYacht=true`}
-                      className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white px-6 py-3 rounded-xl font-medium transition-all border border-white/20"
+                      href={`/inquire?type=combined&property=${property.slug}${selectedYacht ? `&yacht=${selectedYacht.slug}` : ''}`}
+                      className={`inline-flex items-center justify-center gap-2 text-white px-6 py-3 rounded-xl font-medium transition-all ${selectedYacht ? 'bg-gold-500 hover:bg-gold-600' : 'bg-white/10 hover:bg-white/20 border border-white/20'}`}
                     >
-                      {locale === 'de' ? 'Villa + Yacht anfragen' : 'Inquire Villa + Yacht'}
+                      {selectedYacht 
+                        ? (locale === 'de' ? `Villa + ${selectedYacht.name} buchen` : `Book Villa + ${selectedYacht.name}`)
+                        : (locale === 'de' ? 'Villa + Yacht anfragen' : 'Inquire Villa + Yacht')}
                       <ChevronRight className="w-4 h-4" />
                     </Link>
                   </div>
@@ -1011,6 +1120,45 @@ export default function PropertyDetailClient({ property, galleryImages: dbImages
                     ? (locale === 'de' ? 'Wir senden Ihnen Details zu Preisen und Verfügbarkeit' : 'We\'ll send you pricing and availability details')
                     : (locale === 'de' ? 'Unser Team meldet sich in Kürze' : 'Our team will respond shortly')}
                 </p>
+
+                {/* Extras Summary */}
+                {(property.cleaning_fee || property.deposit_amount || property.pool_heating_fee) && (
+                  <div className="border-t border-gray-100 pt-4 mb-4">
+                    <p className="text-charcoal-500 text-xs font-semibold uppercase tracking-wide mb-3">
+                      {locale === 'de' ? 'Nebenkosten' : 'Additional Costs'}
+                    </p>
+                    <div className="space-y-2 text-sm">
+                      {property.deposit_amount && (
+                        <div className="flex justify-between text-charcoal-600">
+                          <span>{locale === 'de' ? 'Kaution' : 'Deposit'}</span>
+                          <span className="font-medium">€{Number(property.deposit_amount).toLocaleString()}</span>
+                        </div>
+                      )}
+                      {property.cleaning_fee && (
+                        <div className="flex justify-between text-charcoal-600">
+                          <span>{locale === 'de' ? 'Reinigung' : 'Cleaning'}</span>
+                          <span className="font-medium">€{Number(property.cleaning_fee).toLocaleString()}</span>
+                        </div>
+                      )}
+                      {property.pool_heating_fee && (
+                        <div className="flex justify-between text-charcoal-600">
+                          <span>{locale === 'de' ? 'Poolheizung' : 'Pool Heating'}</span>
+                          <span className="font-medium">€{Number(property.pool_heating_fee).toLocaleString()}/{locale === 'de' ? 'Wo.' : 'wk'}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* Registration Info */}
+                {property.registry_number && (
+                  <div className="border-t border-gray-100 pt-4 mb-4">
+                    <div className="flex items-center gap-2 text-charcoal-400 text-xs">
+                      <Shield className="w-3.5 h-3.5" />
+                      <span>{locale === 'de' ? 'Reg.-Nr.' : 'Reg. No.'}: {property.registry_number}</span>
+                    </div>
+                  </div>
+                )}
 
                 <div className="border-t border-gray-100 pt-6 space-y-3">
                   <a href="tel:+34634306076" className="flex items-center gap-3 text-charcoal-600 hover:text-gold-600 transition-colors">

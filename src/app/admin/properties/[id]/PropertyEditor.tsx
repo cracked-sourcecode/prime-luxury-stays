@@ -30,7 +30,8 @@ import {
   Upload,
   CloudUpload,
   Languages,
-  Sparkles
+  Sparkles,
+  Pencil
 } from 'lucide-react'
 import type { Property } from '@/lib/properties'
 import type { PropertyImage, PropertyAvailability } from '@/lib/admin'
@@ -145,6 +146,16 @@ export default function PropertyEditor({ property, images: initialImages, availa
     short_description_de: property?.short_description_de || '',
     description_de: property?.description_de || '',
     house_type_de: property?.house_type_de || '',
+    // Extras & Fees
+    cleaning_fee: (property as any)?.cleaning_fee?.toString() || '',
+    deposit_amount: (property as any)?.deposit_amount?.toString() || '',
+    pool_heating_fee: (property as any)?.pool_heating_fee?.toString() || '',
+    // Notes
+    notes: (property as any)?.notes || '',
+    notes_de: (property as any)?.notes_de || '',
+    // Key features
+    key_features: (property as any)?.key_features || [],
+    key_features_de: (property as any)?.key_features_de || [],
   })
 
   const translateTimeoutRef = useRef<NodeJS.Timeout | null>(null)
@@ -350,6 +361,11 @@ export default function PropertyEditor({ property, images: initialImages, availa
         min_stay_nights: parseInt(formData.min_stay_nights) || 7,
         price_per_week: formData.price_per_week ? parseFloat(formData.price_per_week) : null,
         price_per_week_high: formData.price_per_week_high ? parseFloat(formData.price_per_week_high) : null,
+        cleaning_fee: formData.cleaning_fee ? parseFloat(formData.cleaning_fee) : null,
+        deposit_amount: formData.deposit_amount ? parseFloat(formData.deposit_amount) : null,
+        pool_heating_fee: formData.pool_heating_fee ? parseFloat(formData.pool_heating_fee) : null,
+        key_features: formData.key_features?.length ? formData.key_features : null,
+        key_features_de: formData.key_features_de?.length ? formData.key_features_de : null,
       }
 
       const res = await fetch(`/api/admin/properties${isNew ? '' : `/${property?.id}`}`, {
@@ -770,6 +786,59 @@ export default function PropertyEditor({ property, images: initialImages, availa
     }
   }
 
+  const [editingAvailId, setEditingAvailId] = useState<number | null>(null)
+  const [editAvailData, setEditAvailData] = useState({
+    start_date: '', end_date: '', price_per_week: '', price_per_night: '', min_nights: '7', status: 'available', notes: ''
+  })
+
+  const startEditAvailability = (period: PropertyAvailability) => {
+    setEditingAvailId(period.id)
+    const parseDate = (d: string) => {
+      if (!d) return ''
+      const date = new Date(d)
+      return date.toISOString().split('T')[0]
+    }
+    setEditAvailData({
+      start_date: parseDate(period.start_date),
+      end_date: parseDate(period.end_date),
+      price_per_week: period.price_per_week?.toString() || '',
+      price_per_night: period.price_per_night?.toString() || '',
+      min_nights: period.min_nights?.toString() || '7',
+      status: period.status || 'available',
+      notes: period.notes || '',
+    })
+  }
+
+  const handleUpdateAvailability = async () => {
+    if (!editingAvailId || !property?.id) return
+    try {
+      const res = await fetch(`/api/admin/properties/${property.id}/availability/${editingAvailId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...editAvailData,
+          price_per_week: parseFloat(editAvailData.price_per_week),
+          price_per_night: editAvailData.price_per_night ? parseFloat(editAvailData.price_per_night) : null,
+          min_nights: parseInt(editAvailData.min_nights) || 7,
+        }),
+      })
+      const data = await res.json()
+      if (data.success) {
+        setAvailability(prev => prev.map(a => a.id === editingAvailId ? {
+          ...a,
+          ...editAvailData,
+          price_per_week: parseFloat(editAvailData.price_per_week),
+          price_per_night: editAvailData.price_per_night ? parseFloat(editAvailData.price_per_night) : null,
+          min_nights: parseInt(editAvailData.min_nights) || 7,
+        } : a))
+        setEditingAvailId(null)
+        setSuccess('Period updated!')
+      }
+    } catch (err) {
+      setError('Failed to update availability')
+    }
+  }
+
   const handleDeleteAvailability = async (availId: number) => {
     if (!confirm('Delete this availability period?')) return
 
@@ -1110,6 +1179,106 @@ export default function PropertyEditor({ property, images: initialImages, availa
                 </div>
               </section>
 
+              {/* Extras & Fees */}
+              <section>
+                <h3 className="font-semibold text-charcoal-900 mb-4">Extras & Fees</h3>
+                <p className="text-sm text-charcoal-500 mb-4">Additional costs shown to guests on the property page (Kaution, Reinigung, Poolheizung).</p>
+                <div className="grid md:grid-cols-3 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-charcoal-700 mb-2">Security Deposit / Kaution (€)</label>
+                    <input
+                      type="number"
+                      value={formData.deposit_amount || ''}
+                      onChange={(e) => setFormData(prev => ({ ...prev, deposit_amount: e.target.value }))}
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
+                      placeholder="e.g. 2000"
+                      min="0"
+                      step="100"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-charcoal-700 mb-2">Cleaning Fee / Reinigung (€)</label>
+                    <input
+                      type="number"
+                      value={formData.cleaning_fee || ''}
+                      onChange={(e) => setFormData(prev => ({ ...prev, cleaning_fee: e.target.value }))}
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
+                      placeholder="e.g. 350"
+                      min="0"
+                      step="50"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-charcoal-700 mb-2">Pool Heating / Poolheizung (€/week)</label>
+                    <input
+                      type="number"
+                      value={formData.pool_heating_fee || ''}
+                      onChange={(e) => setFormData(prev => ({ ...prev, pool_heating_fee: e.target.value }))}
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
+                      placeholder="e.g. 500"
+                      min="0"
+                      step="50"
+                    />
+                  </div>
+                </div>
+              </section>
+
+              {/* Key Features (Bullet Points) */}
+              <section>
+                <h3 className="font-semibold text-charcoal-900 mb-4">Key Features / Highlights</h3>
+                <p className="text-sm text-charcoal-500 mb-4">Important selling points shown as bullet points on the property page. One per line.</p>
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-charcoal-700 mb-2">🇬🇧 Key Features (English)</label>
+                    <textarea
+                      value={(formData.key_features || []).join('\n')}
+                      onChange={(e) => setFormData(prev => ({ ...prev, key_features: e.target.value.split('\n').filter(Boolean) }))}
+                      rows={5}
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none resize-none"
+                      placeholder={"Heated infinity pool\nPanoramic sea views\nPrivate parking for 3 cars\n5 min walk to beach"}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-charcoal-700 mb-2">🇩🇪 Highlights (Deutsch)</label>
+                    <textarea
+                      value={(formData.key_features_de || []).join('\n')}
+                      onChange={(e) => setFormData(prev => ({ ...prev, key_features_de: e.target.value.split('\n').filter(Boolean) }))}
+                      rows={5}
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none resize-none"
+                      placeholder={"Beheizter Infinity-Pool\nPanorama-Meerblick\nPrivater Parkplatz für 3 Autos\n5 Min. zum Strand"}
+                    />
+                  </div>
+                </div>
+              </section>
+
+              {/* Notes */}
+              <section>
+                <h3 className="font-semibold text-charcoal-900 mb-4">Notes / Notizen</h3>
+                <p className="text-sm text-charcoal-500 mb-4">Internal or additional property notes (shown on property page if filled).</p>
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-charcoal-700 mb-2">🇬🇧 Notes (English)</label>
+                    <textarea
+                      value={formData.notes || ''}
+                      onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
+                      rows={3}
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none resize-none"
+                      placeholder="Additional information..."
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-charcoal-700 mb-2">🇩🇪 Notizen (Deutsch)</label>
+                    <textarea
+                      value={formData.notes_de || ''}
+                      onChange={(e) => setFormData(prev => ({ ...prev, notes_de: e.target.value }))}
+                      rows={3}
+                      className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none resize-none"
+                      placeholder="Zusätzliche Informationen..."
+                    />
+                  </div>
+                </div>
+              </section>
+
               {/* Description - Both Languages Side by Side */}
               <section>
                 <div className="flex items-center justify-between mb-4">
@@ -1428,10 +1597,10 @@ export default function PropertyEditor({ property, images: initialImages, availa
                     className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-gold-500 focus:border-transparent"
                   >
                     <option value="">-- Select Region Zone --</option>
-                    <option value="west-southwest">West / Southwest</option>
-                    <option value="port-andratx">Port d'Andratx</option>
-                    <option value="north-northwest">North / Northwest</option>
-                    <option value="east-southeast">East / Southeast</option>
+                    <option value="palma">Palma & Region (Mitte)</option>
+                    <option value="west-southwest">West / Southwest (Santa Ponsa, Calvià, Port Andratx, Bendinat)</option>
+                    <option value="north-northeast">North / Northeast (Pollensa, Alcudia, Sa Pobla)</option>
+                    <option value="east-southeast">East / Southeast (Ses Salines, Campos, Felanitx)</option>
                   </select>
                   <p className="text-xs text-charcoal-500 mt-2">
                     This determines how the property is categorized in the "Explore the Island" widget on the Mallorca page.
@@ -1569,7 +1738,7 @@ export default function PropertyEditor({ property, images: initialImages, availa
                   value={newImageUrl}
                   onChange={(e) => setNewImageUrl(e.target.value)}
                   className="flex-1 px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gold-500 focus:border-gold-500 outline-none"
-                  placeholder="https://storage.googleapis.com/primeluxurystays/..."
+                  placeholder="https://storage.googleapis.com/primeluxurystays-rpr/..."
                 />
                 <input
                   type="text"
@@ -1914,38 +2083,86 @@ export default function PropertyEditor({ property, images: initialImages, availa
                     </thead>
                     <tbody>
                       {availability.map((period) => (
-                        <tr key={period.id} className="border-b border-gray-50 hover:bg-gray-50">
-                          <td className="py-4 px-4">
-                            <div className="font-medium text-charcoal-900">
-                              {new Date(period.start_date).toLocaleDateString()} - {new Date(period.end_date).toLocaleDateString()}
-                            </div>
-                            {period.notes && (
-                              <div className="text-sm text-charcoal-400">{period.notes}</div>
-                            )}
-                          </td>
-                          <td className="py-4 px-4 font-medium text-charcoal-900">€{period.price_per_week}</td>
-                          <td className="py-4 px-4 text-charcoal-600">
-                            {period.price_per_night ? `€${period.price_per_night}` : '-'}
-                          </td>
-                          <td className="py-4 px-4 text-charcoal-600">{period.min_nights}</td>
-                          <td className="py-4 px-4">
-                            <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                              period.status === 'available' ? 'bg-green-100 text-green-700' :
-                              period.status === 'booked' ? 'bg-blue-100 text-blue-700' :
-                              'bg-gray-100 text-gray-700'
-                            }`}>
-                              {period.status}
-                            </span>
-                          </td>
-                          <td className="py-4 px-4 text-right">
-                            <button
-                              onClick={() => handleDeleteAvailability(period.id)}
-                              className="text-red-500 hover:text-red-700 transition-colors"
-                            >
-                              <Trash2 className="w-5 h-5" />
-                            </button>
-                          </td>
-                        </tr>
+                        editingAvailId === period.id ? (
+                          <tr key={period.id} className="border-b border-gold-200 bg-gold-50/50">
+                            <td className="py-3 px-4">
+                              <div className="flex gap-2">
+                                <input type="date" value={editAvailData.start_date} onChange={(e) => setEditAvailData(prev => ({ ...prev, start_date: e.target.value }))} className="px-2 py-1.5 border border-gray-200 rounded-lg text-sm w-[130px] focus:ring-2 focus:ring-gold-500 outline-none" />
+                                <input type="date" value={editAvailData.end_date} onChange={(e) => setEditAvailData(prev => ({ ...prev, end_date: e.target.value }))} className="px-2 py-1.5 border border-gray-200 rounded-lg text-sm w-[130px] focus:ring-2 focus:ring-gold-500 outline-none" />
+                              </div>
+                              <input type="text" value={editAvailData.notes} onChange={(e) => setEditAvailData(prev => ({ ...prev, notes: e.target.value }))} placeholder="Notes..." className="mt-2 px-2 py-1.5 border border-gray-200 rounded-lg text-sm w-full focus:ring-2 focus:ring-gold-500 outline-none" />
+                            </td>
+                            <td className="py-3 px-4">
+                              <input type="number" value={editAvailData.price_per_week} onChange={(e) => setEditAvailData(prev => ({ ...prev, price_per_week: e.target.value }))} className="px-2 py-1.5 border border-gray-200 rounded-lg text-sm w-24 focus:ring-2 focus:ring-gold-500 outline-none" />
+                            </td>
+                            <td className="py-3 px-4">
+                              <input type="number" value={editAvailData.price_per_night} onChange={(e) => setEditAvailData(prev => ({ ...prev, price_per_night: e.target.value }))} className="px-2 py-1.5 border border-gray-200 rounded-lg text-sm w-24 focus:ring-2 focus:ring-gold-500 outline-none" />
+                            </td>
+                            <td className="py-3 px-4">
+                              <input type="number" value={editAvailData.min_nights} onChange={(e) => setEditAvailData(prev => ({ ...prev, min_nights: e.target.value }))} className="px-2 py-1.5 border border-gray-200 rounded-lg text-sm w-16 focus:ring-2 focus:ring-gold-500 outline-none" />
+                            </td>
+                            <td className="py-3 px-4">
+                              <select value={editAvailData.status} onChange={(e) => setEditAvailData(prev => ({ ...prev, status: e.target.value }))} className="px-2 py-1.5 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-gold-500 outline-none">
+                                <option value="available">Available</option>
+                                <option value="booked">Booked</option>
+                                <option value="blocked">Blocked</option>
+                              </select>
+                            </td>
+                            <td className="py-3 px-4 text-right">
+                              <div className="flex items-center justify-end gap-2">
+                                <button onClick={handleUpdateAvailability} className="bg-gold-500 text-white px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-gold-600 transition-colors">
+                                  Save
+                                </button>
+                                <button onClick={() => setEditingAvailId(null)} className="text-charcoal-400 hover:text-charcoal-600 px-2 py-1.5 text-sm">
+                                  Cancel
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ) : (
+                          <tr key={period.id} className="border-b border-gray-50 hover:bg-gray-50">
+                            <td className="py-4 px-4">
+                              <div className="font-medium text-charcoal-900">
+                                {new Date(period.start_date).toLocaleDateString()} - {new Date(period.end_date).toLocaleDateString()}
+                              </div>
+                              {period.notes && (
+                                <div className="text-sm text-charcoal-400">{period.notes}</div>
+                              )}
+                            </td>
+                            <td className="py-4 px-4 font-medium text-charcoal-900">€{Number(period.price_per_week).toLocaleString()}</td>
+                            <td className="py-4 px-4 text-charcoal-600">
+                              {period.price_per_night ? `€${Number(period.price_per_night).toLocaleString()}` : '-'}
+                            </td>
+                            <td className="py-4 px-4 text-charcoal-600">{period.min_nights}</td>
+                            <td className="py-4 px-4">
+                              <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                                period.status === 'available' ? 'bg-green-100 text-green-700' :
+                                period.status === 'booked' ? 'bg-blue-100 text-blue-700' :
+                                'bg-gray-100 text-gray-700'
+                              }`}>
+                                {period.status}
+                              </span>
+                            </td>
+                            <td className="py-4 px-4 text-right">
+                              <div className="flex items-center justify-end gap-2">
+                                <button
+                                  onClick={() => startEditAvailability(period)}
+                                  className="text-gold-500 hover:text-gold-700 transition-colors"
+                                  title="Edit"
+                                >
+                                  <Pencil className="w-4 h-4" />
+                                </button>
+                                <button
+                                  onClick={() => handleDeleteAvailability(period.id)}
+                                  className="text-red-500 hover:text-red-700 transition-colors"
+                                  title="Delete"
+                                >
+                                  <Trash2 className="w-5 h-5" />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        )
                       ))}
                     </tbody>
                   </table>

@@ -22,7 +22,8 @@ import {
   ArrowRight,
   Sparkles,
   Grid3X3,
-  Map
+  Map,
+  Calendar
 } from 'lucide-react'
 import PropertyMap from '@/components/PropertyMap'
 import DatePickerModal from '@/components/DatePickerModal'
@@ -131,10 +132,9 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
 
   // Filter properties based on guest-focused criteria
   const filteredProperties = properties.filter(property => {
-    // Filter out monthly-only rentals unless booking for a month or more
-    if (property.is_monthly_rental) {
-      // If no dates selected or stay is less than 28 days, hide monthly rentals
-      if (!isMonthlyStay) return false
+    // When dates are selected for a short stay, hide monthly-only rentals
+    if (property.is_monthly_rental && stayDuration > 0 && !isMonthlyStay) {
+      return false
     }
     
     // Filter by region (destination)
@@ -780,7 +780,14 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
                               <span className="flex items-center gap-1"><Users className="w-4 h-4" /> {property.max_guests}</span>
                             </div>
                             {/* Price */}
-                            {property.price_per_week && (
+                            {property.is_monthly_rental ? (
+                              <div className="inline-flex items-center gap-2 bg-blue-50 border border-blue-200 rounded-lg px-3 py-1.5">
+                                <Calendar className="w-4 h-4 text-blue-600" />
+                                <span className="text-blue-700 font-semibold text-sm">
+                                  {locale === 'de' ? 'Monatliche Vermietung' : 'Monthly Rental'}
+                                </span>
+                              </div>
+                            ) : property.price_per_week ? (
                               <div className="inline-flex items-baseline gap-1 bg-cream-100 border border-cream-200 rounded-lg px-3 py-1.5">
                                 <span className="text-gold-700 font-semibold">
                                   €{Number(property.price_per_week).toLocaleString()}
@@ -790,7 +797,7 @@ export default function PropertiesClient({ properties }: PropertiesClientProps) 
                                 </span>
                                 <span className="text-charcoal-500 text-sm">{t('pages.properties.perWeek')}</span>
                               </div>
-                            )}
+                            ) : null}
                           </Link>
                         </motion.div>
                       ))}

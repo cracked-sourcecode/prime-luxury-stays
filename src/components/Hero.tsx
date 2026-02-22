@@ -10,7 +10,7 @@ import { useLocale } from '@/i18n/LocaleProvider'
 import DatePickerModal from '@/components/DatePickerModal'
 
 const featuredDestinations = [
-  { name: 'Mallorca', href: '/mallorca', image: 'https://storage.googleapis.com/primeluxurystays/Mallorca%20Global%20Hero%20Section%20Image' },
+  { name: 'Mallorca', href: '/mallorca', image: 'https://storage.googleapis.com/primeluxurystays-rpr/Mallorca%20Global%20Hero%20Section%20Image' },
   { name: 'South of France', href: '/destinations', image: 'https://images.unsplash.com/photo-1533104816931-20fa691ff6ca?w=600&q=80' },
 ]
 

@@ -160,7 +160,7 @@ const getT = (locale: string = 'en') => {
 const GOLD = '#B8954C'
 const CREAM = '#FAF8F4'
 const CHARCOAL = '#1A1A1A'
-const LOGO_URL = 'https://storage.googleapis.com/primeluxurystays/Company%20Logo'
+const LOGO_URL = 'https://storage.googleapis.com/primeluxurystays-rpr/Company%20Logo'
 
 // Responsive styles for both desktop and mobile
 const responsiveStyles = `

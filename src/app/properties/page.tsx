@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     type: 'website',
     images: [
       {
-        url: 'https://storage.googleapis.com/primeluxurystays/Company%20Logo',
+        url: 'https://storage.googleapis.com/primeluxurystays-rpr/Company%20Logo',
         width: 1200,
         height: 630,
         alt: 'Prime Luxury Stays Properties',
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Luxury Villas & Estates For Rent | Prime Luxury Stays',
     description: 'Browse our exclusive collection of luxury villas and premium vacation rentals.',
-    images: ['https://storage.googleapis.com/primeluxurystays/Company%20Logo'],
+    images: ['https://storage.googleapis.com/primeluxurystays-rpr/Company%20Logo'],
   },
   alternates: {
     canonical: `${SITE_URL}/properties`,

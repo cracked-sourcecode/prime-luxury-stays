@@ -7,11 +7,11 @@ import './globals.css'
 
 const SITE_URL = 'https://primeluxurystays.com'
 // Used for link previews (iMessage/SMS/social)
-const SHARE_IMAGE = 'https://storage.googleapis.com/primeluxurystays/Company%20Logo'
+const SHARE_IMAGE = 'https://storage.googleapis.com/primeluxurystays-rpr/Company%20Logo'
 // Logo URL for structured data (favicon handled by icon.png in src/app/)
-const LOGO_IMAGE = 'https://storage.googleapis.com/primeluxurystays/Logo%20no%20text%20(global%20header).png'
+const LOGO_IMAGE = 'https://storage.googleapis.com/primeluxurystays-rpr/Logo%20no%20text%20(global%20header).png'
 // Hero image for structured data
-const HERO_IMAGE = 'https://storage.googleapis.com/primeluxurystays/hero-luxury-villa.jpg'
+const HERO_IMAGE = 'https://storage.googleapis.com/primeluxurystays-rpr/Mallorca%20page%20Hero%20Section.png'
 
 export const metadata: Metadata = {
   title: 'Prime Luxury Stays | Exclusive Villas & Estates',

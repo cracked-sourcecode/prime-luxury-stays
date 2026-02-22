@@ -58,7 +58,7 @@ export default function SouthOfFranceClient({ properties }: SouthOfFranceClientP
         <motion.div style={{ y: heroY }} className="absolute inset-0">
           {/* Background image */}
           <img
-            src="https://storage.googleapis.com/primeluxurystays/SOF%20header%20photo.png"
+            src="https://storage.googleapis.com/primeluxurystays-rpr/SOF%20header%20photo.png"
             alt="South of France"
             className="absolute inset-0 w-full h-full object-cover"
             loading="eager"

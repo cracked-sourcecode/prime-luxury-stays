@@ -23,7 +23,7 @@ interface Yacht {
   max_guests: number
   crew_members: number
   short_description: string
-  long_description: string
+  description: string
   cruising_speed_knots: number
   has_stabilizers: boolean
   water_toys_list: string[]
@@ -38,7 +38,7 @@ interface YachtsClientProps {
   yachts: Yacht[]
 }
 
-const HERO_VIDEO_URL = 'https://storage.googleapis.com/primeluxurystays/YACHTS/www.yates-mallorca.com-ym-video%20(1).mp4'
+const HERO_VIDEO_URL = 'https://storage.googleapis.com/primeluxurystays-rpr/YACHTS/www.yates-mallorca.com-ym-video%20(1).mp4'
 
 export default function YachtsClient({ yachts }: YachtsClientProps) {
   const { t, locale } = useLocale()
@@ -72,7 +72,7 @@ export default function YachtsClient({ yachts }: YachtsClientProps) {
     }
   }
 
-  const getLocalizedField = (yacht: Yacht, field: 'long_description' | 'short_description') => {
+  const getLocalizedField = (yacht: Yacht, field: 'description' | 'short_description') => {
     // For now, yacht descriptions are in English only
     return yacht[field] || ''
   }
@@ -93,7 +93,7 @@ export default function YachtsClient({ yachts }: YachtsClientProps) {
             muted
             playsInline
             className="absolute inset-0 w-full h-full object-cover"
-            poster="https://storage.googleapis.com/primeluxurystays/YACHTS/yacht-poster.jpg"
+            poster="https://storage.googleapis.com/primeluxurystays-rpr/Mallorca%20page%20Hero%20Section.png"
           >
             <source src={HERO_VIDEO_URL} type="video/mp4" />
           </video>

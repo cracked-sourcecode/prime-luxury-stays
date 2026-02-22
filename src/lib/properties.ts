@@ -52,6 +52,16 @@ export interface Property {
   is_monthly_rental: boolean;
   // Region zone for Mallorca categorization
   region_zone: string | null;
+  // Extras / Fees
+  cleaning_fee: number | null;
+  deposit_amount: number | null;
+  pool_heating_fee: number | null;
+  // Notes
+  notes: string | null;
+  notes_de: string | null;
+  // Key features (bullet points)
+  key_features: string[] | null;
+  key_features_de: string[] | null;
 }
 
 export async function getActiveProperties(): Promise<Property[]> {

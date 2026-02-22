@@ -50,7 +50,7 @@ export async function PUT(request: NextRequest, { params }: Props) {
         max_guests = ${data.max_guests || null},
         description = ${data.description || null},
         short_description = ${data.short_description || null},
-        featured_image = ${data.featured_image || null},
+        featured_image = COALESCE(NULLIF(${data.featured_image || ''}, ''), featured_image),
         website_url = ${data.website_url || null},
         price_per_week = ${data.price_per_week || null},
         price_per_week_high = ${data.price_per_week_high || null},
@@ -76,6 +76,13 @@ export async function PUT(request: NextRequest, { params }: Props) {
         short_description_de = ${data.short_description_de || null},
         description_de = ${data.description_de || null},
         house_type_de = ${data.house_type_de || null},
+        cleaning_fee = ${data.cleaning_fee || null},
+        deposit_amount = ${data.deposit_amount || null},
+        pool_heating_fee = ${data.pool_heating_fee || null},
+        notes = ${data.notes || null},
+        notes_de = ${data.notes_de || null},
+        key_features = ${data.key_features || null},
+        key_features_de = ${data.key_features_de || null},
         updated_at = NOW()
       WHERE id = ${propertyId}
     `;

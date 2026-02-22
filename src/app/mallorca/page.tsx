@@ -8,7 +8,7 @@ import Navigation from '@/components/Navigation'
 import Footer from '@/components/Footer'
 
 const SITE_URL = 'https://primeluxurystays.com'
-const MALLORCA_IMAGE = 'https://storage.googleapis.com/primeluxurystays/Mallorca%20Global%20Hero%20Section%20Image'
+const MALLORCA_IMAGE = 'https://storage.googleapis.com/primeluxurystays-rpr/Mallorca%20Global%20Hero%20Section%20Image'
 
 export const metadata: Metadata = {
   title: 'Luxury Villas in Mallorca | Private Fincas & Estates | Prime Luxury Stays',
