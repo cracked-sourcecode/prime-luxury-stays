@@ -229,9 +229,9 @@ export default function Footer() {
               </p>
             </div>
             <div className="flex items-center gap-4 md:gap-6 flex-wrap justify-center md:justify-end">
-              <a href="#" className="text-charcoal-400 hover:text-gold-600 text-sm transition-colors">{t('footer.privacy')}</a>
-              <a href="#" className="text-charcoal-400 hover:text-gold-600 text-sm transition-colors">{t('footer.terms')}</a>
-              <a href="#" className="text-charcoal-400 hover:text-gold-600 text-sm transition-colors">{t('footer.cookies')}</a>
+              <a href="/privacy" className="text-charcoal-400 hover:text-gold-600 text-sm transition-colors">{t('footer.privacy')}</a>
+              <a href="/terms" className="text-charcoal-400 hover:text-gold-600 text-sm transition-colors">{t('footer.terms')}</a>
+              <a href="/cookies" className="text-charcoal-400 hover:text-gold-600 text-sm transition-colors">{t('footer.cookies')}</a>
               <a href="/legal-notice" className="text-charcoal-400 hover:text-gold-600 text-sm transition-colors">{t('footer.legal')}</a>
             </div>
           </div>

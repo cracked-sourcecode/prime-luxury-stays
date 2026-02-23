@@ -85,6 +85,7 @@ export async function POST(request: NextRequest) {
       has_wifi,
       has_air_conditioning,
       amenities,
+      extras,
       featured_image,
       home_port,
       region,
@@ -108,7 +109,7 @@ export async function POST(request: NextRequest) {
         cruising_speed_knots, max_speed_knots,
         has_stabilizers, has_jet_ski, has_tender, has_water_toys, water_toys_list,
         has_jacuzzi, has_gym, has_wifi, has_air_conditioning, amenities,
-        featured_image, home_port, region, cruising_area,
+        extras, featured_image, home_port, region, cruising_area,
         price_per_day, price_per_week, is_active, is_featured
       ) VALUES (
         ${name}, ${slug}, ${manufacturer || null}, ${model || null}, ${yacht_type || 'Motor Yacht'}, ${year_built || null},
@@ -118,6 +119,7 @@ export async function POST(request: NextRequest) {
         ${cruising_speed_knots || null}, ${max_speed_knots || null},
         ${has_stabilizers || false}, ${has_jet_ski || false}, ${has_tender || false}, ${has_water_toys || false}, ${water_toys_list ? JSON.stringify(water_toys_list) : '[]'}::jsonb,
         ${has_jacuzzi || false}, ${has_gym || false}, ${has_wifi !== false}, ${has_air_conditioning !== false}, ${amenities ? JSON.stringify(amenities) : '[]'}::jsonb,
+        ${extras || null},
         ${featured_image || null}, ${home_port || null}, ${region || 'Mallorca'}, ${cruising_area || null},
         ${price_per_day || null}, ${price_per_week || null}, ${is_active !== false}, ${is_featured || false}
       )

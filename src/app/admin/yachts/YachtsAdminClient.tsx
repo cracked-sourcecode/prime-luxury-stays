@@ -88,6 +88,7 @@ interface Yacht {
   cruising_speed_knots: number
   has_stabilizers: boolean
   water_toys_list: string[]
+  extras: string
   featured_image: string
   region: string
   price_per_day: number
@@ -122,6 +123,7 @@ const emptyFormData = {
   cruising_speed_knots: '',
   has_stabilizers: false,
   water_toys_list: [] as string[],
+  extras: '' as string,
   featured_image: '',
   home_port: 'Palma de Mallorca',
   region: 'Mallorca',
@@ -299,6 +301,7 @@ export default function YachtsAdminClient({ user, initialYachts, stats }: Yachts
       cruising_speed_knots: yacht.cruising_speed_knots?.toString() || '',
       has_stabilizers: yacht.has_stabilizers || false,
       water_toys_list: typeof yacht.water_toys_list === 'string' ? JSON.parse(yacht.water_toys_list) : yacht.water_toys_list || [],
+      extras: yacht.extras || '',
       featured_image: yacht.featured_image || '',
       home_port: 'Palma de Mallorca',
       region: yacht.region || 'Mallorca',
@@ -1073,6 +1076,19 @@ export default function YachtsAdminClient({ user, initialYachts, stats }: Yachts
                     </div>
                   </div>
 
+                  {/* Extras */}
+                  <div className="bg-cream-50 p-5 rounded-xl">
+                    <h3 className="font-medium text-charcoal-700 mb-2">Extras & Add-Ons</h3>
+                    <p className="text-charcoal-400 text-sm mb-3">Technical extras, equipment highlights, and additional amenities that help sell the charter. One per line.</p>
+                    <textarea
+                      value={formData.extras}
+                      onChange={(e) => setFormData(prev => ({ ...prev, extras: e.target.value }))}
+                      className="w-full px-4 py-3 border border-cream-200 rounded-xl focus:ring-2 focus:ring-gold-500 outline-none resize-none"
+                      rows={4}
+                      placeholder={"Flybridge with sun loungers\nUnderwater LED lighting\nBose surround sound system\nSatellite TV in all cabins\nFull catering kitchen"}
+                    />
+                  </div>
+
                   {/* Descriptions - Bilingual */}
                   <div className="space-y-4">
                     <div className="flex items-center justify-between">
@@ -1121,12 +1137,13 @@ export default function YachtsAdminClient({ user, initialYachts, stats }: Yachts
                         <label className="block text-sm font-medium text-charcoal-700 mb-2">
                           🇬🇧 Short Description (English)
                         </label>
+                        <p className="text-xs text-charcoal-400 mb-1">Shown on yacht cards. Write 2–3 sentences: key specs, vibe, and who it suits.</p>
                         <textarea
                           value={formData.short_description}
                           onChange={(e) => handleTranslatableEnglishChange('short_description', e.target.value)}
                           className="w-full px-4 py-3 border border-cream-200 rounded-xl focus:ring-2 focus:ring-gold-500 outline-none resize-none"
-                          rows={3}
-                          placeholder="Brief description for listings..."
+                          rows={4}
+                          placeholder="e.g. Stunning 2024 RIVA Argo 90 motor yacht with 4 en-suite cabins, professional crew, and full water toys. Ideal for families or groups up to 8 seeking luxury and comfort."
                         />
                       </div>
                       <div>
@@ -1145,8 +1162,8 @@ export default function YachtsAdminClient({ user, initialYachts, stats }: Yachts
                           value={formData.short_description_de}
                           onChange={(e) => setFormData(prev => ({ ...prev, short_description_de: e.target.value }))}
                           className="w-full px-4 py-3 border border-cream-200 rounded-xl focus:ring-2 focus:ring-gold-500 outline-none resize-none"
-                          rows={3}
-                          placeholder="Auto-translates from English"
+                          rows={4}
+                          placeholder="Wird aus dem Englischen übersetzt – auf DE-Website sichtbar"
                         />
                       </div>
                     </div>
@@ -1157,12 +1174,13 @@ export default function YachtsAdminClient({ user, initialYachts, stats }: Yachts
                         <label className="block text-sm font-medium text-charcoal-700 mb-2">
                           🇬🇧 Full Description (English)
                         </label>
+                        <p className="text-xs text-charcoal-400 mb-1">Shown on the yacht detail page. Be thorough: layout, amenities, experience, crew, itineraries.</p>
                         <textarea
                           value={formData.long_description}
                           onChange={(e) => handleTranslatableEnglishChange('long_description', e.target.value)}
                           className="w-full px-4 py-3 border border-cream-200 rounded-xl focus:ring-2 focus:ring-gold-500 outline-none resize-none"
-                          rows={5}
-                          placeholder="Detailed yacht description..."
+                          rows={8}
+                          placeholder="Detailed description: deck layout, cabins, salon, outdoor spaces, crew, typical day, what's included..."
                         />
                       </div>
                       <div>
@@ -1181,8 +1199,8 @@ export default function YachtsAdminClient({ user, initialYachts, stats }: Yachts
                           value={formData.long_description_de}
                           onChange={(e) => setFormData(prev => ({ ...prev, long_description_de: e.target.value }))}
                           className="w-full px-4 py-3 border border-cream-200 rounded-xl focus:ring-2 focus:ring-gold-500 outline-none resize-none"
-                          rows={5}
-                          placeholder="Auto-translates from English"
+                          rows={8}
+                          placeholder="Wird aus dem Englischen übersetzt – auf der Yacht-Detailseite (DE) sichtbar"
                         />
                       </div>
                     </div>

@@ -535,9 +535,15 @@ export default function InquireClient({
                     </button>
                     <div className="text-sm text-charcoal-500">
                       {locale === 'de' ? 'Lieber telefonieren? Rufen Sie an:' : 'Prefer to talk? Call'}{' '}
-                      <a className="text-gold-700 font-semibold" href="tel:+34634306076">
-                        +34 634 306 076
-                      </a>
+                      {locale === 'de' ? (
+                        <a className="text-gold-700 font-semibold" href="tel:+498989930046">
+                          +49 89 8993 0046
+                        </a>
+                      ) : (
+                        <a className="text-gold-700 font-semibold" href="tel:+34634306076">
+                          +34 634 306 076
+                        </a>
+                      )}
                     </div>
                   </div>
                 </>

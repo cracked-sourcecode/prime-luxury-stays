@@ -140,7 +140,7 @@ export default function YachtsSection({ yachts }: YachtsSectionProps) {
                       </div>
                     </div>
                     
-                    <p className="text-white/60 text-sm line-clamp-2">
+                    <p className="text-white/60 text-sm line-clamp-4">
                       {locale === 'de' && yacht.short_description_de ? yacht.short_description_de : yacht.short_description}
                     </p>
                   </div>

@@ -45,6 +45,17 @@ export async function POST(request: NextRequest, { params }: Props) {
       `;
     }
 
+    // Update the property's featured_image to match the new first image
+    const firstImage = await sql`
+      SELECT image_url FROM property_images
+      WHERE property_id = ${propertyId}
+      ORDER BY display_order ASC
+      LIMIT 1
+    `;
+    if (firstImage[0]?.image_url) {
+      await sql`UPDATE properties SET featured_image = ${firstImage[0].image_url} WHERE id = ${propertyId}`;
+    }
+
     // Get property slug for revalidation
     const propertyData = await sql`SELECT slug FROM properties WHERE id = ${propertyId}`;
     const slug = propertyData[0]?.slug;

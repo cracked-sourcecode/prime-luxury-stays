@@ -65,6 +65,7 @@ interface Yacht {
   has_wifi: boolean
   has_air_conditioning: boolean
   amenities: string[]
+  extras?: string
   featured_image: string
   home_port: string
   region: string
@@ -553,6 +554,29 @@ export default function YachtDetailClient({ yacht }: YachtDetailClientProps) {
                 )}
               </div>
             </motion.section>
+
+            {/* ===== EXTRAS & ADD-ONS ===== */}
+            {yacht.extras && yacht.extras.trim() && (
+              <motion.section
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="bg-white rounded-3xl p-8 md:p-12 shadow-xl"
+              >
+                <h2 className="font-merriweather text-2xl text-charcoal-900 mb-6 flex items-center gap-3">
+                  <Star className="w-6 h-6 text-gold-500" />
+                  {locale === 'de' ? 'Extras & Ausstattung' : 'Extras & Equipment'}
+                </h2>
+                <div className="grid md:grid-cols-2 gap-4">
+                  {yacht.extras.split('\n').filter((line: string) => line.trim()).map((extra: string, index: number) => (
+                    <div key={index} className="flex items-center gap-3 p-4 bg-cream-50 rounded-xl">
+                      <Check className="w-5 h-5 text-gold-500 flex-shrink-0" />
+                      <span className="text-charcoal-700">{extra.trim()}</span>
+                    </div>
+                  ))}
+                </div>
+              </motion.section>
+            )}
 
           </div>
 
