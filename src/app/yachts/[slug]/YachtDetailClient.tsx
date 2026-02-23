@@ -676,26 +676,27 @@ export default function YachtDetailClient({ yacht }: YachtDetailClientProps) {
         </div>
       </div>
 
-      {/* ========== PAIR WITH A VILLA SECTION ========== */}
-      {yacht.relatedProperties?.length > 0 && (
-        <section className="py-16 bg-charcoal-900">
-          <div className="max-w-7xl mx-auto px-6">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-center mb-12"
-            >
-              <h2 className="font-merriweather text-3xl text-white mb-3">
-                {locale === 'de' ? 'Villa + Yacht Paket' : 'Pair With a Villa'}
-              </h2>
-              <p className="text-white/70 max-w-2xl mx-auto">
-                {locale === 'de' 
-                  ? 'Kombinieren Sie Ihren Yachtcharter mit einem luxuriösen Villenaufenthalt für das ultimative Erlebnis.'
-                  : 'Combine your yacht charter with a luxury villa stay for the ultimate experience.'}
-              </p>
-            </motion.div>
+      {/* ========== PAIR WITH A VILLA SECTION (always visible) ========== */}
+      <section className="py-16 bg-charcoal-900">
+        <div className="max-w-7xl mx-auto px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <h2 className="font-merriweather text-3xl text-white mb-3">
+              {locale === 'de' ? 'Villa + Yacht Paket' : 'Pair With a Villa'}
+            </h2>
+            <p className="text-white/70 max-w-2xl mx-auto">
+              {locale === 'de' 
+                ? 'Kombinieren Sie Ihren Yachtcharter mit einem luxuriösen Villenaufenthalt für das ultimative Erlebnis.'
+                : 'Combine your yacht charter with a luxury villa stay for the ultimate experience.'}
+            </p>
+          </motion.div>
 
+          {yacht.relatedProperties?.length > 0 ? (
+            <>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
               {yacht.relatedProperties.map((property, index) => (
                 <motion.div
@@ -786,9 +787,34 @@ export default function YachtDetailClient({ yacht }: YachtDetailClientProps) {
                 </Link>
               </div>
             )}
-          </div>
-        </section>
-      )}
+            </>
+          ) : (
+            <div className="text-center max-w-xl mx-auto">
+              <p className="text-white/70 mb-6">
+                {locale === 'de' 
+                  ? 'Kombinieren Sie diese Yacht mit einer unserer Luxusvillen für ein unvergessliches Urlaubserlebnis.'
+                  : 'Combine this yacht with one of our luxury villas for an unforgettable holiday.'}
+              </p>
+              <div className="flex flex-wrap items-center justify-center gap-4">
+                <Link
+                  href={`/inquire?type=combined&yacht=${yacht.slug}`}
+                  className="inline-flex items-center gap-2 bg-gold-500 hover:bg-gold-600 text-white px-6 py-3 rounded-xl font-medium transition-all"
+                >
+                  {locale === 'de' ? 'Villa + Yacht anfragen' : 'Request Villa + Yacht'}
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+                <Link
+                  href="/properties"
+                  className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white px-6 py-3 rounded-xl font-medium transition-all border border-white/20"
+                >
+                  {locale === 'de' ? 'Villen entdecken' : 'Explore Villas'}
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
+            </div>
+          )}
+        </div>
+      </section>
 
       {/* ========== MOBILE STICKY CTA ========== */}
       <div className="fixed bottom-0 left-0 right-0 z-50 lg:hidden bg-white border-t border-gray-200 p-4 shadow-2xl">
