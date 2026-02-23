@@ -31,7 +31,8 @@ import {
   CloudUpload,
   Languages,
   Sparkles,
-  Pencil
+  Pencil,
+  Ship
 } from 'lucide-react'
 import type { Property } from '@/lib/properties'
 import type { PropertyImage, PropertyAvailability } from '@/lib/admin'
@@ -94,11 +95,16 @@ interface PropertyEditorProps {
 export default function PropertyEditor({ property, images: initialImages, availability: initialAvailability, isNew }: PropertyEditorProps) {
   const router = useRouter()
   const { t, locale } = useAdminLocale()
-  const [activeTab, setActiveTab] = useState<'details' | 'images' | 'availability'>('details')
+  const [activeTab, setActiveTab] = useState<'details' | 'images' | 'availability' | 'yachts'>('details')
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
   const [translating, setTranslating] = useState<string | null>(null)
+
+  // Pair with yachts (property-yacht options)
+  const [allYachts, setAllYachts] = useState<{ id: number; name: string; slug: string; manufacturer?: string; model?: string; year_built?: number; length_meters?: number; max_guests?: number; region?: string }[]>([])
+  const [pairedYachtIds, setPairedYachtIds] = useState<number[]>([])
+  const [yachtsLoading, setYachtsLoading] = useState(false)
 
   // Form state
   const [formData, setFormData] = useState({
@@ -303,6 +309,23 @@ export default function PropertyEditor({ property, images: initialImages, availa
   const [uploadingVideo, setUploadingVideo] = useState(false)
   const [videoUploadProgress, setVideoUploadProgress] = useState('')
 
+  // Load paired yachts when editing existing property
+  useEffect(() => {
+    if (!property?.id || isNew) return
+    setYachtsLoading(true)
+    fetch(`/api/admin/properties/${property.id}/yachts`)
+      .then((res) => res.json())
+      .then((data) => {
+        setAllYachts(data.yachts || [])
+        setPairedYachtIds(data.linkedYachtIds || [])
+      })
+      .catch(() => {
+        setAllYachts([])
+        setPairedYachtIds([])
+      })
+      .finally(() => setYachtsLoading(false))
+  }, [property?.id, isNew])
+
   // Availability state
   const [availability, setAvailability] = useState<PropertyAvailability[]>(initialAvailability)
   const [isHeroFeatured, setIsHeroFeatured] = useState(property?.is_hero_featured || false)
@@ -377,6 +400,14 @@ export default function PropertyEditor({ property, images: initialImages, availa
       const data = await res.json()
 
       if (data.success) {
+        const savedPropertyId = isNew ? data.id : property?.id
+        if (savedPropertyId && pairedYachtIds.length >= 0) {
+          await fetch(`/api/admin/properties/${savedPropertyId}/yachts`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ yachtIds: pairedYachtIds }),
+          })
+        }
         setSuccess('Property saved successfully!')
         if (isNew && data.id) {
           router.push(`/admin/properties/${data.id}`)
@@ -962,6 +993,7 @@ export default function PropertyEditor({ property, images: initialImages, availa
             { id: 'details', label: t('details'), icon: Bed },
             { id: 'images', label: t('images'), icon: ImageIcon, disabled: isNew },
             { id: 'availability', label: t('availability'), icon: Calendar, disabled: isNew },
+            { id: 'yachts', label: 'Pair with yachts', icon: Ship, disabled: isNew },
           ].map((tab) => (
             <button
               key={tab.id}
@@ -2169,6 +2201,67 @@ export default function PropertyEditor({ property, images: initialImages, availa
                 </div>
               )}
             </div>
+          </div>
+        )}
+
+        {/* Pair with yachts Tab */}
+        {activeTab === 'yachts' && !isNew && property?.id && (
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
+            <p className="text-charcoal-600 text-sm mb-6">
+              Select yachts to offer as add-ons on this villa&apos;s page. Guests can combine a stay with a charter from the property detail page.
+            </p>
+            {yachtsLoading ? (
+              <div className="flex items-center justify-center py-12 gap-2 text-charcoal-500">
+                <Loader2 className="w-5 h-5 animate-spin" />
+                Loading yachts...
+              </div>
+            ) : allYachts.length === 0 ? (
+              <p className="text-charcoal-500 py-6">No active yachts found. Add yachts in the Yachts admin first.</p>
+            ) : (
+              <div className="max-h-80 overflow-y-auto border border-gray-200 rounded-xl divide-y divide-gray-100">
+                {allYachts.map((yacht) => {
+                  const isPaired = pairedYachtIds.includes(yacht.id)
+                  return (
+                    <label
+                      key={yacht.id}
+                      className={`flex items-center gap-4 p-4 cursor-pointer hover:bg-gray-50 transition-colors ${isPaired ? 'bg-gold-50/50' : ''}`}
+                    >
+                      <div className={`w-6 h-6 rounded border-2 flex items-center justify-center flex-shrink-0 ${isPaired ? 'border-gold-500 bg-gold-500 text-white' : 'border-gray-300'}`}>
+                        {isPaired ? <Check className="w-4 h-4" /> : null}
+                      </div>
+                      <input
+                        type="checkbox"
+                        checked={isPaired}
+                        onChange={() => {
+                          setPairedYachtIds((prev) =>
+                            isPaired ? prev.filter((id) => id !== yacht.id) : [...prev, yacht.id]
+                          )
+                        }}
+                        className="sr-only"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <span className="font-medium text-charcoal-900">{yacht.name}</span>
+                        <span className="text-charcoal-400 ml-2">
+                          {yacht.manufacturer} {yacht.model}
+                          {yacht.year_built ? ` · ${yacht.year_built}` : ''}
+                        </span>
+                        {yacht.length_meters != null && (
+                          <span className="text-charcoal-500 text-sm ml-2">{yacht.length_meters}m</span>
+                        )}
+                        {yacht.max_guests != null && (
+                          <span className="text-charcoal-500 text-sm ml-2">· {yacht.max_guests} guests</span>
+                        )}
+                      </div>
+                    </label>
+                  )
+                })}
+              </div>
+            )}
+            {pairedYachtIds.length > 0 && (
+              <p className="text-sm text-charcoal-500 mt-4">
+                {pairedYachtIds.length} yacht{pairedYachtIds.length !== 1 ? 's' : ''} paired. Save the property to apply.
+              </p>
+            )}
           </div>
         )}
       </main>

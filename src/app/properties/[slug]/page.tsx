@@ -30,15 +30,29 @@ async function getPropertyImages(propertyId: number) {
   return images
 }
 
-// Fetch yachts for the region (currently all yachts are in Mallorca)
-async function getYachtsForRegion() {
-  noStore();
+// Fetch yachts paired with this property (property_yacht_options); fallback to region yachts if none paired
+async function getYachtsForProperty(propertyId: number) {
+  noStore()
+  try {
+    const paired = await sql`
+      SELECT y.id, y.name, y.slug, y.manufacturer, y.model, y.yacht_type,
+             y.year_built, y.length_meters, y.max_guests, y.guest_cabins,
+             y.short_description, y.featured_image, y.is_featured, y.region
+      FROM yachts y
+      INNER JOIN property_yacht_options pyo ON y.id = pyo.yacht_id
+      WHERE pyo.property_id = ${propertyId} AND y.is_active = true
+      ORDER BY pyo.is_recommended DESC, y.name ASC
+      LIMIT 6
+    `
+    if (paired.length > 0) return paired
+  } catch (_) {
+    // property_yacht_options may not exist
+  }
   const yachts = await sql`
-    SELECT 
-      id, name, slug, manufacturer, model, yacht_type,
-      year_built, length_meters, max_guests, guest_cabins,
-      short_description, featured_image, is_featured, region
-    FROM yachts 
+    SELECT id, name, slug, manufacturer, model, yacht_type,
+           year_built, length_meters, max_guests, guest_cabins,
+           short_description, featured_image, is_featured, region
+    FROM yachts
     WHERE is_active = true
     ORDER BY is_featured DESC, name ASC
     LIMIT 3
@@ -133,8 +147,8 @@ export default async function PropertyPage({ params }: PropertyPageProps) {
   // Fetch gallery images from database
   const galleryImages = await getPropertyImages(property.id)
   
-  // Fetch yachts for the region
-  const yachts = await getYachtsForRegion()
+  // Fetch yachts paired with this property (or fallback to region)
+  const yachts = await getYachtsForProperty(property.id)
 
   // Map and filter out any with missing URLs
   const mappedImages = galleryImages
