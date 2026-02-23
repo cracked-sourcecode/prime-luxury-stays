@@ -732,6 +732,11 @@ export default function YachtDetailClient({ yacht }: YachtDetailClientProps) {
                       <div className={`absolute top-2 right-2 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${selectedProperty?.id === property.id ? 'bg-gold-500 border-gold-500' : 'border-white/50 bg-black/20'}`}>
                         {selectedProperty?.id === property.id && <Check className="w-4 h-4 text-white" />}
                       </div>
+                      {property.price_per_week && (
+                        <div className="absolute top-2 left-2 bg-black/60 backdrop-blur-sm text-white px-2 py-0.5 rounded-full text-xs font-medium">
+                          €{Number(property.price_per_week).toLocaleString()}/{locale === 'de' ? 'Woche' : 'week'}
+                        </div>
+                      )}
                       <div className="absolute bottom-2 left-2 right-2">
                         <h4 className="font-semibold text-white text-sm group-hover:text-gold-300 transition-colors">
                           {property.name}
@@ -748,6 +753,11 @@ export default function YachtDetailClient({ yacht }: YachtDetailClientProps) {
                         <Users className="w-3 h-3" />
                         {property.max_guests} {locale === 'de' ? 'Gäste' : 'guests'}
                       </span>
+                      {property.price_per_week && (
+                        <span className="ml-auto text-gold-400 font-medium">
+                          €{Number(property.price_per_week).toLocaleString()}/{locale === 'de' ? 'W' : 'wk'}
+                        </span>
+                      )}
                     </div>
                   </div>
                 ))}
@@ -761,7 +771,12 @@ export default function YachtDetailClient({ yacht }: YachtDetailClientProps) {
                         {locale === 'de' ? 'Ausgewählte Villa' : 'Selected Villa'}
                       </p>
                       <p className="text-white font-semibold">{selectedProperty.name}</p>
-                      <p className="text-white/60 text-sm">{selectedProperty.bedrooms} {locale === 'de' ? 'Schlafzimmer' : 'bedrooms'} · {selectedProperty.max_guests} {locale === 'de' ? 'Gäste' : 'guests'}</p>
+                      <p className="text-white/60 text-sm">
+                        {selectedProperty.bedrooms} {locale === 'de' ? 'Schlafzimmer' : 'bedrooms'} · {selectedProperty.max_guests} {locale === 'de' ? 'Gäste' : 'guests'}
+                        {selectedProperty.price_per_week && (
+                          <span className="text-gold-400 ml-2">· €{Number(selectedProperty.price_per_week).toLocaleString()}/{locale === 'de' ? 'Woche' : 'week'}</span>
+                        )}
+                      </p>
                     </div>
                     <button
                       onClick={() => setSelectedProperty(null)}
@@ -789,7 +804,7 @@ export default function YachtDetailClient({ yacht }: YachtDetailClientProps) {
                   className={`inline-flex items-center justify-center gap-2 text-white px-6 py-3 rounded-xl font-medium transition-all ${selectedProperty ? 'bg-gold-500 hover:bg-gold-600' : 'bg-white/10 hover:bg-white/20 border border-white/20'}`}
                 >
                   {selectedProperty
-                    ? (locale === 'de' ? `Villa + ${yacht.name} buchen` : `Book ${selectedProperty.name} + ${yacht.name}`)
+                    ? (locale === 'de' ? `${selectedProperty.name} + ${yacht.name} buchen` : `Book ${selectedProperty.name} + ${yacht.name}`)
                     : (locale === 'de' ? 'Villa + Yacht anfragen' : 'Inquire Villa + Yacht')}
                   <ChevronRight className="w-4 h-4" />
                 </Link>

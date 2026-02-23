@@ -35,7 +35,7 @@ async function getYacht(slug: string) {
     try {
       relatedProperties = await sql`
         SELECT p.id, p.name, p.slug, p.featured_image, p.short_description, p.short_description_de, 
-               p.bedrooms, p.max_guests, p.region, p.city
+               p.bedrooms, p.max_guests, p.region, p.city, p.price_per_week
         FROM properties p
         INNER JOIN property_yacht_options pyo ON p.id = pyo.property_id
         WHERE pyo.yacht_id = ${yacht.id} AND p.is_active = true
@@ -46,7 +46,7 @@ async function getYacht(slug: string) {
     if (relatedProperties.length === 0) {
       const fallback = await sql`
         SELECT id, name, slug, featured_image, short_description, short_description_de,
-               bedrooms, max_guests, region, city
+               bedrooms, max_guests, region, city, price_per_week
         FROM properties
         WHERE is_active = true
         ORDER BY is_featured DESC, name ASC
