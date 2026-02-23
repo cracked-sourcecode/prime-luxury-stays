@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
         SELECT 
           id, name, slug, manufacturer, model, yacht_type, year_built,
           length_meters, beam_meters, draft_meters, guest_cabins, max_guests, crew_members,
-          long_description AS description, short_description,
+          long_description AS description, short_description, short_description_de, long_description_de,
           cruising_speed_knots, max_speed_knots, has_stabilizers,
           water_toys_list, has_jacuzzi, has_gym, has_wifi, has_air_conditioning,
           amenities, featured_image, home_port, region, cruising_area,
@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
         SELECT 
           id, name, slug, manufacturer, model, yacht_type, year_built,
           length_meters, beam_meters, draft_meters, guest_cabins, max_guests, crew_members,
-          long_description AS description, short_description,
+          long_description AS description, short_description, short_description_de, long_description_de,
           cruising_speed_knots, max_speed_knots, has_stabilizers,
           water_toys_list, has_jacuzzi, has_gym, has_wifi, has_air_conditioning,
           amenities, featured_image, home_port, region, cruising_area,
@@ -44,7 +44,7 @@ export async function GET(request: NextRequest) {
         SELECT 
           id, name, slug, manufacturer, model, yacht_type, year_built,
           length_meters, beam_meters, draft_meters, guest_cabins, max_guests, crew_members,
-          long_description AS description, short_description,
+          long_description AS description, short_description, short_description_de, long_description_de,
           cruising_speed_knots, max_speed_knots, has_stabilizers,
           water_toys_list, has_jacuzzi, has_gym, has_wifi, has_air_conditioning,
           amenities, featured_image, home_port, region, cruising_area,

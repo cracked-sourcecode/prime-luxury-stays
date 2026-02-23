@@ -19,7 +19,7 @@ async function getFeaturedYachts() {
   try {
     const yachts = await sql`
       SELECT id, name, slug, manufacturer, model, year_built, length_meters, 
-             max_guests, guest_cabins, short_description, featured_image, is_featured
+             max_guests, guest_cabins, short_description, short_description_de, featured_image, is_featured
       FROM yachts 
       WHERE is_active = true
       ORDER BY is_featured DESC, name ASC

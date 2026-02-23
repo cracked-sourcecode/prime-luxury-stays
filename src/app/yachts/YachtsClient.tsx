@@ -305,7 +305,7 @@ export default function YachtsClient({ yachts }: YachtsClientProps) {
                           )}
                         </div>
                         
-                        <p className="text-charcoal-600 text-sm mb-4 line-clamp-4">
+                        <p className="text-charcoal-600 text-sm mb-4 line-clamp-2">
                           {getLocalizedField(yacht, 'short_description')}
                         </p>
                         
