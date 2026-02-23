@@ -30,7 +30,7 @@ async function getYacht(slug: string) {
       ORDER BY display_order ASC
     `
     
-    // Fetch related properties (yacht add-ons)
+    // Fetch related properties (paired villas); fallback to 3 featured villas so widget always has options
     let relatedProperties: any[] = []
     try {
       relatedProperties = await sql`
@@ -42,12 +42,20 @@ async function getYacht(slug: string) {
         ORDER BY pyo.is_recommended DESC
         LIMIT 4
       `
-    } catch (err) {
-      // property_yacht_options table might not exist yet
-      console.log('No related properties found')
+    } catch (_) {}
+    if (relatedProperties.length === 0) {
+      const fallback = await sql`
+        SELECT id, name, slug, featured_image, short_description, short_description_de,
+               bedrooms, max_guests, region, city
+        FROM properties
+        WHERE is_active = true
+        ORDER BY is_featured DESC, name ASC
+        LIMIT 3
+      `
+      relatedProperties = fallback as any[]
     }
     
-    return { ...yacht, images, relatedProperties }
+    return { ...yacht, images, relatedProperties } as typeof yacht & { images: typeof images; relatedProperties: typeof relatedProperties }
   } catch (error) {
     console.error('Error fetching yacht:', error)
     return null
@@ -87,7 +95,7 @@ export default async function YachtPage({ params }: YachtPageProps) {
     <>
       <Navigation />
       <main className="min-h-screen bg-cream-50">
-        <YachtDetailClient yacht={yacht} />
+        <YachtDetailClient yacht={yacht as any} />
       </main>
       <Footer />
     </>

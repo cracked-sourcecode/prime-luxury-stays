@@ -676,145 +676,111 @@ export default function YachtDetailClient({ yacht }: YachtDetailClientProps) {
         </div>
       </div>
 
-      {/* ========== PAIR WITH A VILLA SECTION (always visible) ========== */}
-      <section className="py-16 bg-charcoal-900">
-        <div className="max-w-7xl mx-auto px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-12"
-          >
-            <h2 className="font-merriweather text-3xl text-white mb-3">
-              {locale === 'de' ? 'Villa + Yacht Paket' : 'Pair With a Villa'}
-            </h2>
-            <p className="text-white/70 max-w-2xl mx-auto">
-              {locale === 'de' 
-                ? 'Kombinieren Sie Ihren Yachtcharter mit einem luxuriösen Villenaufenthalt für das ultimative Erlebnis.'
-                : 'Combine your yacht charter with a luxury villa stay for the ultimate experience.'}
-            </p>
-          </motion.div>
+      {/* ========== PAIR WITH A VILLA SECTION (matches villa page yacht widget: 3 options, select, add together, UTM) ========== */}
+      {yacht.relatedProperties?.length > 0 && (
+        <section className="py-16 bg-charcoal-900">
+          <div className="max-w-7xl mx-auto px-6">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="mb-8"
+            >
+              <h2 className="font-merriweather text-3xl text-white mb-3">
+                {locale === 'de' ? 'Villa + Yacht Paket' : 'Pair With a Villa'}
+              </h2>
+              <p className="text-white/70 max-w-2xl">
+                {locale === 'de' 
+                  ? 'Kombinieren Sie Ihren Yachtcharter mit einem luxuriösen Villenaufenthalt für das ultimative Erlebnis.'
+                  : 'Combine your yacht charter with a luxury villa stay for the ultimate experience.'}
+              </p>
+              <p className="text-white/50 text-sm mt-4">
+                {locale === 'de' ? 'Wählen Sie eine Villa für Ihren Charter:' : 'Select a villa for your charter:'}
+              </p>
+            </motion.div>
 
-          {yacht.relatedProperties?.length > 0 ? (
-            <>
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-              {yacht.relatedProperties.map((property, index) => (
+            <div className="grid md:grid-cols-3 gap-4 mb-8">
+              {yacht.relatedProperties.slice(0, 3).map((property, index) => (
                 <motion.div
                   key={property.id}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.1 }}
+                  onClick={() => setSelectedProperty(selectedProperty?.id === property.id ? null : property)}
+                  className={`group cursor-pointer transition-all rounded-xl overflow-hidden ${selectedProperty?.id === property.id ? 'ring-2 ring-gold-500' : ''}`}
                 >
-                  <button
-                    onClick={() => setSelectedProperty(selectedProperty?.id === property.id ? null : property)}
-                    className={`w-full text-left group rounded-xl overflow-hidden transition-all ${
-                      selectedProperty?.id === property.id 
-                        ? 'ring-2 ring-gold-500 bg-white/10' 
-                        : 'bg-white/5 hover:bg-white/10'
-                    }`}
-                  >
-                    <div className="aspect-[4/3] overflow-hidden relative">
-                      <img
-                        src={property.featured_image}
-                        alt={property.name}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                      />
-                      {selectedProperty?.id === property.id && (
-                        <div className="absolute top-2 right-2 w-8 h-8 bg-gold-500 rounded-full flex items-center justify-center">
-                          <Check className="w-5 h-5 text-white" />
-                        </div>
-                      )}
+                  <div className="relative aspect-[4/3] overflow-hidden mb-3">
+                    <img
+                      src={property.featured_image || 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=800'}
+                      alt={property.name}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                    <div className={`absolute top-2 right-2 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${selectedProperty?.id === property.id ? 'bg-gold-500 border-gold-500' : 'border-white/50 bg-black/20'}`}>
+                      {selectedProperty?.id === property.id && <Check className="w-4 h-4 text-white" />}
                     </div>
-                    <div className="p-4">
-                      <h3 className="font-merriweather text-lg text-white group-hover:text-gold-400 transition-colors">
+                    <div className="absolute bottom-2 left-2 right-2">
+                      <h4 className="font-semibold text-white text-sm group-hover:text-gold-300 transition-colors">
                         {property.name}
-                      </h3>
-                      <p className="text-white/60 text-sm">{property.city}, {property.region}</p>
-                      <div className="mt-2 flex items-center gap-3 text-white/50 text-xs">
-                        <span>{property.bedrooms} {locale === 'de' ? 'Schlafzimmer' : 'bedrooms'}</span>
-                        <span>•</span>
-                        <span>{property.max_guests} {locale === 'de' ? 'Gäste' : 'guests'}</span>
-                      </div>
+                      </h4>
+                      <p className="text-white/70 text-xs">{property.city}, {property.region}</p>
                     </div>
-                  </button>
+                  </div>
+                  <div className="flex items-center gap-3 text-white/60 text-xs">
+                    <span>{property.bedrooms} {locale === 'de' ? 'Schlafzimmer' : 'bedrooms'}</span>
+                    <span>·</span>
+                    <span>{property.max_guests} {locale === 'de' ? 'Gäste' : 'guests'}</span>
+                  </div>
                 </motion.div>
               ))}
             </div>
 
-            {/* Combined Inquiry CTA */}
             {selectedProperty && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="bg-gold-500/10 border border-gold-500/30 rounded-2xl p-6 md:p-8"
-              >
-                <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-                  <div className="text-center md:text-left">
-                    <h3 className="text-white font-semibold text-xl mb-2">
-                      {yacht.name} + {selectedProperty.name}
-                    </h3>
-                    <p className="text-white/70">
-                      {locale === 'de' 
-                        ? 'Das perfekte Kombinationspaket für Ihren Luxusurlaub'
-                        : 'The perfect combination for your luxury vacation'}
+              <div className="bg-gold-500/20 border border-gold-500/40 rounded-xl p-4 mb-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-gold-400 text-xs font-medium uppercase tracking-wide mb-1">
+                      {locale === 'de' ? 'Ausgewählte Villa' : 'Selected Villa'}
                     </p>
+                    <p className="text-white font-semibold">{selectedProperty.name}</p>
+                    <p className="text-white/60 text-sm">{selectedProperty.bedrooms} {locale === 'de' ? 'Schlafzimmer' : 'bedrooms'} · {selectedProperty.max_guests} {locale === 'de' ? 'Gäste' : 'guests'}</p>
                   </div>
-                  <Link
-                    href={`/inquire?type=combined&yacht=${yacht.slug}&property=${selectedProperty.slug}`}
-                    className="bg-gold-500 hover:bg-gold-600 text-white px-8 py-4 rounded-xl font-semibold transition-all flex items-center gap-2 whitespace-nowrap"
+                  <button
+                    onClick={() => setSelectedProperty(null)}
+                    className="text-white/60 hover:text-white transition-colors p-1"
+                    aria-label={locale === 'de' ? 'Auswahl aufheben' : 'Clear selection'}
                   >
-                    {locale === 'de' ? 'Kombianfrage stellen' : 'Request Combined Package'}
-                    <ArrowRight className="w-5 h-5" />
-                  </Link>
+                    <X className="w-5 h-5" />
+                  </button>
                 </div>
-              </motion.div>
+              </div>
             )}
 
-            {!selectedProperty && (
-              <div className="text-center">
-                <p className="text-white/50 text-sm mb-4">
-                  {locale === 'de' 
-                    ? 'Wählen Sie eine Villa oben aus, um ein Kombinationspaket anzufragen'
-                    : 'Select a villa above to request a combined package'}
-                </p>
-                <Link
-                  href="/properties"
-                  className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white px-6 py-3 rounded-xl font-medium transition-all border border-white/20"
-                >
-                  {locale === 'de' ? 'Alle Villen ansehen' : 'View All Villas'}
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
-              </div>
-            )}
-            </>
-          ) : (
-            <div className="text-center max-w-xl mx-auto">
-              <p className="text-white/70 mb-6">
-                {locale === 'de' 
-                  ? 'Kombinieren Sie diese Yacht mit einer unserer Luxusvillen für ein unvergessliches Urlaubserlebnis.'
-                  : 'Combine this yacht with one of our luxury villas for an unforgettable holiday.'}
-              </p>
-              <div className="flex flex-wrap items-center justify-center gap-4">
-                <Link
-                  href={`/inquire?type=combined&yacht=${yacht.slug}`}
-                  className="inline-flex items-center gap-2 bg-gold-500 hover:bg-gold-600 text-white px-6 py-3 rounded-xl font-medium transition-all"
-                >
-                  {locale === 'de' ? 'Villa + Yacht anfragen' : 'Request Villa + Yacht'}
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
-                <Link
-                  href="/properties"
-                  className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white px-6 py-3 rounded-xl font-medium transition-all border border-white/20"
-                >
-                  {locale === 'de' ? 'Villen entdecken' : 'Explore Villas'}
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
-              </div>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Link
+                href="/properties?utm_source=yacht_page&utm_medium=villa_widget&utm_campaign=villa_yacht_match"
+                className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white px-6 py-3 rounded-xl font-medium transition-all border border-white/20"
+              >
+                {locale === 'de' ? 'Alle Villen ansehen' : 'View All Villas'}
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+              <Link
+                href={selectedProperty 
+                  ? `/inquire?type=combined&yacht=${yacht.slug}&property=${selectedProperty.slug}&utm_source=yacht_page&utm_medium=villa_widget&utm_campaign=villa_yacht_combined`
+                  : `/inquire?type=combined&yacht=${yacht.slug}&utm_source=yacht_page&utm_medium=villa_widget&utm_campaign=villa_yacht_combined`
+                }
+                className={`inline-flex items-center justify-center gap-2 text-white px-6 py-3 rounded-xl font-medium transition-all ${selectedProperty ? 'bg-gold-500 hover:bg-gold-600' : 'bg-white/10 hover:bg-white/20 border border-white/20'}`}
+              >
+                {selectedProperty 
+                  ? (locale === 'de' ? `Villa ${selectedProperty.name} + Yacht buchen` : `Book Villa + ${yacht.name}`)
+                  : (locale === 'de' ? 'Villa + Yacht anfragen' : 'Inquire Villa + Yacht')}
+                <ArrowRight className="w-4 h-4" />
+              </Link>
             </div>
-          )}
-        </div>
-      </section>
+          </div>
+        </section>
+      )}
 
       {/* ========== MOBILE STICKY CTA ========== */}
       <div className="fixed bottom-0 left-0 right-0 z-50 lg:hidden bg-white border-t border-gray-200 p-4 shadow-2xl">
