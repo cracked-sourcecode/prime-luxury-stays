@@ -11,13 +11,6 @@ async function checkAuth() {
   return await validateSession(token)
 }
 
-// Normalize DB row to client-expected field names
-function normalizeYacht(row: any) {
-  if (!row) return row
-  const { long_description, ...rest } = row
-  return { ...rest, description: long_description ?? rest.description }
-}
-
 // GET - Fetch single yacht
 export async function GET(
   request: NextRequest,
@@ -31,17 +24,7 @@ export async function GET(
   try {
     const { id } = await params
     const result = await sql`
-      SELECT 
-        id, name, slug, manufacturer, model, yacht_type, year_built,
-        length_meters, beam_meters, draft_meters, guest_cabins, max_guests, crew_members,
-        long_description AS description, short_description,
-        cruising_speed_knots, max_speed_knots, has_stabilizers,
-        water_toys_list, has_jacuzzi, has_gym, has_wifi, has_air_conditioning,
-        amenities, featured_image, home_port, region, cruising_area,
-        price_per_day, price_per_week, is_active, is_featured,
-        has_jet_ski, has_tender, has_water_toys,
-        created_at, updated_at
-      FROM yachts WHERE id = ${parseInt(id)}
+      SELECT * FROM yachts WHERE id = ${parseInt(id)}
     `
     
     if (result.length === 0) {
@@ -92,7 +75,7 @@ export async function PUT(
       short_description,
       short_description_de,
       long_description,
-      description_de,
+      long_description_de,
       cruising_speed_knots,
       max_speed_knots,
       has_stabilizers,
@@ -129,7 +112,9 @@ export async function PUT(
         max_guests = COALESCE(${max_guests}, max_guests),
         crew_members = COALESCE(${crew_members}, crew_members),
         short_description = COALESCE(${short_description}, short_description),
+        short_description_de = ${short_description_de ?? null},
         long_description = COALESCE(${long_description}, long_description),
+        long_description_de = ${long_description_de ?? null},
         cruising_speed_knots = COALESCE(${cruising_speed_knots}, cruising_speed_knots),
         max_speed_knots = COALESCE(${max_speed_knots}, max_speed_knots),
         has_stabilizers = COALESCE(${has_stabilizers}, has_stabilizers),
@@ -159,7 +144,7 @@ export async function PUT(
       return NextResponse.json({ error: 'Yacht not found' }, { status: 404 })
     }
     
-    return NextResponse.json({ success: true, yacht: normalizeYacht(result[0]) })
+    return NextResponse.json({ success: true, yacht: result[0] })
   } catch (error: any) {
     console.error('Error updating yacht:', error)
     if (error.message?.includes('unique constraint')) {

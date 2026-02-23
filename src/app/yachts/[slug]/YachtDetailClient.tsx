@@ -49,8 +49,8 @@ interface Yacht {
   crew_members: number
   short_description: string
   short_description_de?: string
-  description: string
-  description_de?: string
+  long_description: string
+  long_description_de?: string
   cruising_speed_knots: number
   max_speed_knots: number
   has_stabilizers: boolean
@@ -86,7 +86,7 @@ export default function YachtDetailClient({ yacht }: YachtDetailClientProps) {
   const [selectedProperty, setSelectedProperty] = useState<RelatedProperty | null>(null)
 
   // Localized field helper
-  const getLocalizedField = (field: 'short_description' | 'description'): string => {
+  const getLocalizedField = (field: 'short_description' | 'long_description'): string => {
     if (locale === 'de') {
       const deField = yacht[`${field}_de` as keyof Yacht] as string | undefined
       if (deField) return deField
@@ -379,7 +379,7 @@ export default function YachtDetailClient({ yacht }: YachtDetailClientProps) {
               </h2>
               
               <p className="text-charcoal-600 text-lg leading-relaxed whitespace-pre-wrap">
-                {getLocalizedField('description')}
+                {getLocalizedField('long_description')}
               </p>
             </motion.section>
 

@@ -16,6 +16,7 @@ interface Yacht {
   max_guests: number
   guest_cabins: number
   short_description: string
+  short_description_de?: string
   featured_image: string
   is_featured: boolean
 }
@@ -140,7 +141,7 @@ export default function YachtsSection({ yachts }: YachtsSectionProps) {
                     </div>
                     
                     <p className="text-white/60 text-sm line-clamp-2">
-                      {yacht.short_description}
+                      {locale === 'de' && yacht.short_description_de ? yacht.short_description_de : yacht.short_description}
                     </p>
                   </div>
                 </div>

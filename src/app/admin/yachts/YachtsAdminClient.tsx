@@ -83,8 +83,8 @@ interface Yacht {
   crew_members: number
   short_description: string
   short_description_de: string
-  description: string
-  description_de: string
+  long_description: string
+  long_description_de: string
   cruising_speed_knots: number
   has_stabilizers: boolean
   water_toys_list: string[]
@@ -118,7 +118,7 @@ const emptyFormData = {
   short_description: '',
   short_description_de: '',
   long_description: '',
-  description_de: '',
+  long_description_de: '',
   cruising_speed_knots: '',
   has_stabilizers: false,
   water_toys_list: [] as string[],
@@ -200,7 +200,7 @@ export default function YachtsAdminClient({ user, initialYachts, stats }: Yachts
     field: 'short_description' | 'long_description',
     value: string
   ) => {
-    const germanField = field === 'long_description' ? 'description_de' : `${field}_de` as keyof typeof formData
+    const germanField = field === 'long_description' ? 'long_description_de' : `${field}_de` as keyof typeof formData
     
     setFormData(prev => ({ ...prev, [field]: value }))
 
@@ -226,7 +226,7 @@ export default function YachtsAdminClient({ user, initialYachts, stats }: Yachts
     try {
       const fields = [
         { en: 'short_description', de: 'short_description_de' },
-        { en: 'long_description', de: 'description_de' }
+        { en: 'long_description', de: 'long_description_de' }
       ] as const
       for (const { en, de } of fields) {
         if (formData[en]) {
@@ -246,7 +246,7 @@ export default function YachtsAdminClient({ user, initialYachts, stats }: Yachts
     try {
       const fields = [
         { de: 'short_description_de', en: 'short_description' },
-        { de: 'description_de', en: 'long_description' }
+        { de: 'long_description_de', en: 'long_description' }
       ] as const
       for (const { de, en } of fields) {
         if (formData[de]) {
@@ -294,8 +294,8 @@ export default function YachtsAdminClient({ user, initialYachts, stats }: Yachts
       crew_members: yacht.crew_members?.toString() || '',
       short_description: yacht.short_description || '',
       short_description_de: yacht.short_description_de || '',
-      long_description: yacht.description || '',
-      description_de: yacht.description_de || '',
+      long_description: yacht.long_description || '',
+      long_description_de: yacht.long_description_de || '',
       cruising_speed_knots: yacht.cruising_speed_knots?.toString() || '',
       has_stabilizers: yacht.has_stabilizers || false,
       water_toys_list: typeof yacht.water_toys_list === 'string' ? JSON.parse(yacht.water_toys_list) : yacht.water_toys_list || [],
@@ -1169,7 +1169,7 @@ export default function YachtsAdminClient({ user, initialYachts, stats }: Yachts
                         <div className="flex items-center justify-between mb-2">
                           <label className="block text-sm font-medium text-charcoal-700">
                             🇩🇪 Vollständige Beschreibung (Deutsch)
-                            {translating === 'description_de' && (
+                            {translating === 'long_description_de' && (
                               <span className="ml-2 text-blue-600 text-xs inline-flex items-center gap-1">
                                 <Loader2 className="w-3 h-3 animate-spin" />
                                 Translating...
@@ -1178,8 +1178,8 @@ export default function YachtsAdminClient({ user, initialYachts, stats }: Yachts
                           </label>
                         </div>
                         <textarea
-                          value={formData.description_de}
-                          onChange={(e) => setFormData(prev => ({ ...prev, description_de: e.target.value }))}
+                          value={formData.long_description_de}
+                          onChange={(e) => setFormData(prev => ({ ...prev, long_description_de: e.target.value }))}
                           className="w-full px-4 py-3 border border-cream-200 rounded-xl focus:ring-2 focus:ring-gold-500 outline-none resize-none"
                           rows={5}
                           placeholder="Auto-translates from English"

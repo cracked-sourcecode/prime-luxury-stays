@@ -23,7 +23,9 @@ interface Yacht {
   max_guests: number
   crew_members: number
   short_description: string
-  description: string
+  short_description_de?: string
+  long_description: string
+  long_description_de?: string
   cruising_speed_knots: number
   has_stabilizers: boolean
   water_toys_list: string[]
@@ -72,8 +74,12 @@ export default function YachtsClient({ yachts }: YachtsClientProps) {
     }
   }
 
-  const getLocalizedField = (yacht: Yacht, field: 'description' | 'short_description') => {
-    // For now, yacht descriptions are in English only
+  const getLocalizedField = (yacht: Yacht, field: 'long_description' | 'short_description') => {
+    if (locale === 'de') {
+      const deField = `${field}_de` as keyof Yacht
+      const deValue = yacht[deField] as string | undefined
+      if (deValue) return deValue
+    }
     return yacht[field] || ''
   }
 
@@ -187,29 +193,29 @@ export default function YachtsClient({ yachts }: YachtsClientProps) {
 
       {/* ========== STATS BAR ========== */}
       <section className="bg-charcoal-900 py-8 border-t border-white/10">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+        <div className="max-w-3xl mx-auto px-6">
+          <div className="grid grid-cols-3 gap-4 md:gap-8">
             <div className="text-center">
-              <div className="text-3xl md:text-4xl font-merriweather text-gold-400 mb-2">
+              <div className="text-2xl md:text-4xl font-merriweather text-gold-400 mb-1 md:mb-2">
                 {yachts.length}+
               </div>
-              <div className="text-white/60 text-sm">
+              <div className="text-white/60 text-xs md:text-sm">
                 {locale === 'de' ? 'Luxusyachten' : 'Luxury Yachts'}
               </div>
             </div>
             <div className="text-center">
-              <div className="text-3xl md:text-4xl font-merriweather text-gold-400 mb-2">
+              <div className="text-2xl md:text-4xl font-merriweather text-gold-400 mb-1 md:mb-2">
                 8-12
               </div>
-              <div className="text-white/60 text-sm">
+              <div className="text-white/60 text-xs md:text-sm">
                 {locale === 'de' ? 'Gäste pro Yacht' : 'Guests per Yacht'}
               </div>
             </div>
             <div className="text-center">
-              <div className="text-3xl md:text-4xl font-merriweather text-gold-400 mb-2">
+              <div className="text-2xl md:text-4xl font-merriweather text-gold-400 mb-1 md:mb-2">
                 100%
               </div>
-              <div className="text-white/60 text-sm">
+              <div className="text-white/60 text-xs md:text-sm">
                 {locale === 'de' ? 'Maßgeschneidert' : 'Bespoke Experience'}
               </div>
             </div>
