@@ -6,7 +6,7 @@ import {
   Anchor, Plus, Pencil, Trash2, Search, Eye, EyeOff, Star, 
   Ship, Users, Ruler, ChevronRight, X, Save, Image as ImageIcon,
   Upload, Loader2, Languages, Sparkles, CloudUpload, ChevronUp, ChevronDown,
-  ArrowLeft
+  ArrowLeft, Home, Check
 } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -145,7 +145,12 @@ export default function YachtsAdminClient({ user, initialYachts, stats }: Yachts
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
   const [waterToyInput, setWaterToyInput] = useState('')
-  const [activeTab, setActiveTab] = useState<'details' | 'images'>('details')
+  const [activeTab, setActiveTab] = useState<'details' | 'images' | 'villas'>('details')
+  
+  // Paired villas (property-yacht options)
+  const [allProperties, setAllProperties] = useState<{ id: number; name: string; slug: string; region: string; price_per_week?: number }[]>([])
+  const [pairedPropertyIds, setPairedPropertyIds] = useState<number[]>([])
+  const [propertiesLoading, setPropertiesLoading] = useState(false)
   
   // Image management state
   const [images, setImages] = useState<YachtImage[]>([])
@@ -322,6 +327,21 @@ export default function YachtsAdminClient({ user, initialYachts, stats }: Yachts
       console.error('Failed to load yacht images:', err)
       setImages([])
     }
+
+    // Load paired villas (properties)
+    setPropertiesLoading(true)
+    try {
+      const propRes = await fetch(`/api/admin/yachts/${yacht.id}/properties`)
+      const propData = await propRes.json()
+      setAllProperties(propData.properties || [])
+      setPairedPropertyIds(propData.linkedPropertyIds || [])
+    } catch (err) {
+      console.error('Failed to load yacht properties:', err)
+      setAllProperties([])
+      setPairedPropertyIds([])
+    } finally {
+      setPropertiesLoading(false)
+    }
   }
 
   const handleSave = async () => {
@@ -359,6 +379,13 @@ export default function YachtsAdminClient({ user, initialYachts, stats }: Yachts
       const data = await res.json()
 
       if (data.success) {
+        if (editingYacht) {
+          await fetch(`/api/admin/yachts/${editingYacht.id}/properties`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ propertyIds: pairedPropertyIds }),
+          })
+        }
         setSuccess(editingYacht ? 'Yacht updated!' : 'Yacht created!')
         setIsModalOpen(false)
         router.refresh()
@@ -878,6 +905,17 @@ export default function YachtsAdminClient({ user, initialYachts, stats }: Yachts
                   >
                     <ImageIcon className="w-5 h-5" />
                     Images ({images.length})
+                  </button>
+                  <button
+                    onClick={() => setActiveTab('villas')}
+                    className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-lg font-medium transition-all ${
+                      activeTab === 'villas' 
+                        ? 'bg-white text-charcoal-900 shadow-sm' 
+                        : 'text-charcoal-500 hover:text-charcoal-700'
+                    }`}
+                  >
+                    <Home className="w-5 h-5" />
+                    Pair with villas ({pairedPropertyIds.length})
                   </button>
                 </div>
               </div>
@@ -1472,6 +1510,63 @@ export default function YachtsAdminClient({ user, initialYachts, stats }: Yachts
                     )}
                   </div>
                 </>
+              )}
+
+              {/* Villas Tab - Pair this yacht with villas */}
+              {activeTab === 'villas' && editingYacht && (
+                <div className="space-y-4">
+                  <p className="text-charcoal-600 text-sm">
+                    Select villas to show as &quot;Pair with a villa&quot; on this yacht&apos;s page. Guests can combine a charter with a stay at these properties.
+                  </p>
+                  {propertiesLoading ? (
+                    <div className="flex items-center justify-center py-12 gap-2 text-charcoal-500">
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                      Loading villas...
+                    </div>
+                  ) : allProperties.length === 0 ? (
+                    <p className="text-charcoal-500 py-6">No active properties found. Add properties in the Properties admin first.</p>
+                  ) : (
+                    <div className="max-h-80 overflow-y-auto border border-cream-200 rounded-xl divide-y divide-cream-100">
+                      {allProperties.map((prop) => {
+                        const isPaired = pairedPropertyIds.includes(prop.id)
+                        return (
+                          <label
+                            key={prop.id}
+                            className={`flex items-center gap-4 p-4 cursor-pointer hover:bg-cream-50 transition-colors ${isPaired ? 'bg-gold-50/50' : ''}`}
+                          >
+                            <div className={`w-6 h-6 rounded border-2 flex items-center justify-center flex-shrink-0 ${isPaired ? 'border-gold-500 bg-gold-500 text-white' : 'border-cream-300'}`}>
+                              {isPaired ? <Check className="w-4 h-4" /> : null}
+                            </div>
+                            <input
+                              type="checkbox"
+                              checked={isPaired}
+                              onChange={() => {
+                                setPairedPropertyIds((prev) =>
+                                  isPaired ? prev.filter((id) => id !== prop.id) : [...prev, prop.id]
+                                )
+                              }}
+                              className="sr-only"
+                            />
+                            <div className="flex-1 min-w-0">
+                              <span className="font-medium text-charcoal-900">{prop.name}</span>
+                              <span className="text-charcoal-400 ml-2">· {prop.region}</span>
+                              {prop.price_per_week != null && (
+                                <span className="text-charcoal-500 text-sm ml-2">
+                                  €{Number(prop.price_per_week).toLocaleString()}/week
+                                </span>
+                              )}
+                            </div>
+                          </label>
+                        )
+                      })}
+                    </div>
+                  )}
+                  {pairedPropertyIds.length > 0 && (
+                    <p className="text-sm text-charcoal-500">
+                      {pairedPropertyIds.length} villa{pairedPropertyIds.length !== 1 ? 's' : ''} paired. Save the yacht to apply.
+                    </p>
+                  )}
+                </div>
               )}
             </div>
 
